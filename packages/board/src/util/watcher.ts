@@ -1,8 +1,4 @@
-type TypeDataPosition = {
-  x: number,
-  y: number,
-  t: number,
-}
+import { TypePoint } from '@idraw/types';
 
 interface TypeWatcher {
   onMove(callback: TypeWatchCallback): void,
@@ -11,7 +7,7 @@ interface TypeWatcher {
 }
 
 
-type TypeWatchCallback = (p: TypeDataPosition) => void
+type TypeWatchCallback = (p: TypePoint) => void
 
 export class Watcher implements TypeWatcher {
 
@@ -65,7 +61,7 @@ export class Watcher implements TypeWatcher {
     this._isPainting = true;
     if (typeof this._onMoveStart === 'function') {
       const p = this._getPosition(e);
-      if (this._isVaildPosition(p)) {
+      if (this._isVaildPoint(p)) {
         this._onMoveStart(p);
       }
     }
@@ -77,7 +73,7 @@ export class Watcher implements TypeWatcher {
     if (this._isPainting === true) {
       if (typeof this._onMove === 'function') {
         const p = this._getPosition(e);
-        if (this._isVaildPosition(p)) {
+        if (this._isVaildPoint(p)) {
           this._onMove(p);
         }
       }
@@ -89,7 +85,7 @@ export class Watcher implements TypeWatcher {
     this._isPainting = false;
     if (typeof this._onMoveEnd === 'function') {
       const p = this._getPosition(e);
-      if (this._isVaildPosition(p)) {
+      if (this._isVaildPoint(p)) {
         this._onMoveEnd(p);
       }
     }
@@ -119,8 +115,8 @@ export class Watcher implements TypeWatcher {
     return p;
   }
 
-  private _isVaildPosition(p: TypeDataPosition) {
-    return ( p.x > 0 && p.y > 0 && p.t > 0)
+  private _isVaildPoint(p: TypePoint) {
+    return ( p.x > 0 && p.y > 0)
   }
   
 }

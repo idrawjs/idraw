@@ -1,4 +1,4 @@
 
 ```sh
-lerna add @idraw/drag-types --scope=@idraw/drag  --dev
+lerna add @idraw/types --scope=idraw  --dev
 ```
