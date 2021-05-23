@@ -10,7 +10,7 @@ const resolveFile = function(names = []) {
 }
 
 const modules = [];
-const external = [ '@idraw/idraw-types'];
+const external = [ '@idraw/types'];
 
 for(let i = 0; i < packages.length; i++) {
   const pkg = packages[i];

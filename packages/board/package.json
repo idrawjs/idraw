@@ -1,6 +1,6 @@
 {
-  "name": "@idraw/canvas",
-  "version": "0.0.1",
+  "name": "@idraw/board",
+  "version": "0.0.3",
   "description": "",
   "main": "dist/index.cjs.js",
   "module": "dist/index.es.js",

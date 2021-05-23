@@ -1,8 +1,8 @@
 module.exports = {
   packages: [
     {
-      dirName: 'canvas',
-      globalName: 'iDraw.Canvas',
+      dirName: 'board',
+      globalName: 'iDraw.Board',
     },
     {
       dirName: 'idraw',
