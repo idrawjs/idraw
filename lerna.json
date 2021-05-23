@@ -1,0 +1,8 @@
+{
+  "packages": [
+    "packages/types",
+    "packages/canvas",
+    "packages/idraw"
+  ],
+  "version": "0.0.1"
+}

@@ -1,0 +1,43 @@
+{
+  "name": "root",
+  "private": false,
+  "scripts": {
+    "dev": "node ./scripts/dev.js",
+    "build": "node ./scripts/build.js",
+    "snapshot": "node ./scripts/build.js && node ./scripts/snapshot.js",
+    "e2e": "mocha --exit ./__tests__/e2e.test.js",
+    "init": "lerna bootstrap --npm-client=cnpm",
+    "clear": "rm -rf ./packages/*/dist/ & rm -rf ./packages/*/node_modules/",
+    "jest": "jest --config jest.config.js",
+    "test": "lerna bootstrap --no-ci && npm run build && npm run jest && npm run e2e"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.13.14",
+    "@babel/preset-env": "^7.13.12",
+    "@babel/preset-typescript": "^7.13.0",
+    "@microsoft/api-extractor": "^7.13.2",
+    "@rollup/plugin-node-resolve": "^11.2.1",
+    "babel-jest": "^26.6.3",
+    "chalk": "^4.1.0",
+    "execa": "^5.0.0",
+    "fs-extra": "^9.1.0",
+    "http-server": "^0.12.3",
+    "jest": "^26.6.3",
+    "jimp": "^0.16.1",
+    "koa-compose": "^4.1.0",
+    "lerna": "^3.22.1",
+    "less": "^4.1.1",
+    "mocha": "^8.3.2",
+    "pixelmatch": "^5.2.1",
+    "pngjs": "^6.0.0",
+    "postcss": "^8.2.9",
+    "puppeteer": "^8.0.0",
+    "rollup": "^2.40.0",
+    "rollup-plugin-postcss": "^4.0.0",
+    "rollup-plugin-typescript2": "^0.30.0",
+    "serve-handler": "^6.1.3",
+    "ts-node": "^9.1.1",
+    "tslib": "^2.2.0",
+    "typescript": "^4.2.3"
+  }
+}
