@@ -2,6 +2,7 @@
   "packages": [
     "packages/types",
     "packages/board",
+    "packages/core",
     "packages/idraw"
   ],
   "version": "0.0.3"
