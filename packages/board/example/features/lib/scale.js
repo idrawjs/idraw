@@ -1,8 +1,13 @@
 const input = document.querySelector('#scale');
 let hasInited = false;
 
-export function doScale(board) {
+export function doScale(board, scale) {
   if (hasInited === true)  return;
+  if (scale > 0) {
+    input.value = scale;
+    board.scale(scale);
+    board.draw();
+  }
   input.addEventListener('change', () => {
     const val = input.value * 1;
     if (val > 0) {
@@ -11,4 +16,12 @@ export function doScale(board) {
     }
   });
   hasInited = true;
+}
+
+export function getScale() {
+  let val = 1;
+  if (input.value * 1 > 0) {
+    val = input.value * 1;
+  }
+  return val;
 }

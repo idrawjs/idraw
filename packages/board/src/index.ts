@@ -47,15 +47,24 @@ class Board {
   }
 
   scale(scaleRatio: number) {
-    if (scaleRatio > 0) this._scaleRatio = scaleRatio;
+    if (scaleRatio > 0) {
+      this._scaleRatio = scaleRatio;
+      this._ctx.setConfig({ scale: scaleRatio });
+    }
   }
 
   scrollX(x: number) {
-    if (x > 0) this._scrollX = x;
+    if (x >= 0) {
+      this._scrollX = x;
+      this._ctx.setConfig({ scrollX: x });
+    }
   }
 
   scrollY(y: number) {
-    if (y > 0) this._scrollY = y;
+    if (y >= 0) {
+      this._scrollY = y;
+      this._ctx.setConfig({ scrollY: y });
+    }
   }
 
   draw() {
