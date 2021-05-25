@@ -1,7 +1,8 @@
 // import { TypePoint } from '@idraw/types';
-// import { Watcher } from './util/watcher';
+import { Watcher } from './util/watcher';
 import { setStyle } from './util/style';
 import Context from './util/context';
+import { TypeBoardEventArgMap } from './util/event';
 
 type Options = {
   width: number;
@@ -24,7 +25,7 @@ class Board {
   private _scaleRatio: number = 1;
   private _scrollX: number = 0;
   private _scrollY: number = 0;
-  // private _watcher: Watcher;
+  private _watcher: Watcher;
 
   constructor(mount: HTMLDivElement, opts: Options) {
     this._mount = mount;
@@ -36,7 +37,8 @@ class Board {
     const displayCtx = this._displayCanvas.getContext('2d') as CanvasRenderingContext2D;
     this._ctx = new Context(ctx, this._opts);
     this._displayCtx = displayCtx;
-    // this._watcher = new Watcher(this._canvas);
+    this._watcher = new Watcher(this._displayCanvas);
+
     this._render();
   }
 
@@ -64,6 +66,14 @@ class Board {
 
   clear() {
     this._displayCtx.clearRect(0, 0, this._displayCanvas.width, this._displayCanvas.height)
+  }
+
+  on<T extends keyof TypeBoardEventArgMap >(name: T, callback: (p: TypeBoardEventArgMap[T]) => void) {
+    this._watcher.on(name, callback)
+  }
+
+  off<T extends keyof TypeBoardEventArgMap >(name: T, callback: (p: TypeBoardEventArgMap[T]) => void) {
+    this._watcher.off(name, callback)
   }
 
   private _render() {
@@ -104,7 +114,6 @@ class Board {
     size.h = height * pxRatio * _scaleRatio;
     return size;
   }
-
   
 }
 

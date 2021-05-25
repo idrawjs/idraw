@@ -1,17 +1,14 @@
-export function draw(board) {
+import opts from './opts.js';
+import { getData } from './data.js';
+
+export function drawData(board) {
   const ctx = board.getContext();
-
-  ctx.setFillStyle('#f0f0f0');
-  ctx.fillRect(10, 10, 200, 120);
-
-  ctx.setFillStyle('#cccccc');
-  ctx.fillRect(80, 80, 200, 120);
-
-  ctx.setFillStyle('#c0c0c0');
-  ctx.fillRect(160, 160, 200, 120);
-
-  ctx.setFillStyle('#e0e0e0');
-  ctx.fillRect(400 - 10, 300 - 10, 200, 100);
-
+  const data = getData();
+  board.clear();
+  ctx.clearRect(0, 0, opts.width, opts.height);
+  data.elements.forEach(ele => {
+    ctx.setFillStyle(ele.desc.color);
+    ctx.fillRect(ele.x, ele.y, ele.w, ele.h);
+  });
   board.draw();
 }

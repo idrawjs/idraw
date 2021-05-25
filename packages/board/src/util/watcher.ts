@@ -1,94 +1,84 @@
 import { TypePoint } from '@idraw/types';
-
-interface TypeWatcher {
-  onMove(callback: TypeWatchCallback): void,
-  onMoveEnd(callback: TypeWatchCallback): void,
-  onMoveEnd(callback: TypeWatchCallback): void,
-}
+import { BoardEvent, TypeBoardEventArgMap } from './event';
 
 
-type TypeWatchCallback = (p: TypePoint) => void
-
-export class Watcher implements TypeWatcher {
+export class Watcher {
 
   private _canvas: HTMLCanvasElement;
-  private _isPainting: boolean = false;
-  private _onMove?: TypeWatchCallback;
-  private _onMoveStart?: TypeWatchCallback;
-  private _onMoveEnd?: TypeWatchCallback;
+  private _isMoving: boolean = false;
+  // private _onMove?: TypeWatchCallback;
+  // private _onMoveStart?: TypeWatchCallback;
+  // private _onMoveEnd?: TypeWatchCallback;
+  private _event: BoardEvent;
 
   constructor(canvas: HTMLCanvasElement) {
     this._canvas = canvas;
-    this._isPainting = false;
+    this._isMoving = false;
     this._initEvent();
+    this._event = new BoardEvent;
   }
 
-  onMove(callback: TypeWatchCallback) {
-    this._onMove = callback;
+  on<T extends keyof TypeBoardEventArgMap >(name: T, callback: (p: TypeBoardEventArgMap[T]) => void) {
+    this._event.on(name, callback)
   }
 
-  onMoveEnd(callback: TypeWatchCallback) {
-    this._onMoveEnd = callback;
-  }
-
-  onMoveStart(callback: TypeWatchCallback) {
-    this._onMoveStart = callback;
+  off<T extends keyof TypeBoardEventArgMap >(name: T, callback: (p: TypeBoardEventArgMap[T]) => void) {
+    this._event.off(name, callback)
   }
 
   _initEvent() {
     const canvas = this._canvas;
-    canvas.addEventListener('mousedown', this._listenStart.bind(this));
+    canvas.addEventListener('mousedown', this._listenMoveStart.bind(this));
     canvas.addEventListener('mousemove', this._listenMove.bind(this));
-    canvas.addEventListener('mouseup', this._listenEnd.bind(this));
+    canvas.addEventListener('mouseup', this._listenMoveEnd.bind(this));
 
-    canvas.addEventListener('touchstart', this._listenStart.bind(this));
+    canvas.addEventListener('touchstart', this._listenMoveStart.bind(this));
     canvas.addEventListener('touchmove', this._listenMove.bind(this));
-    canvas.addEventListener('touchend', this._listenEnd.bind(this));
+    canvas.addEventListener('touchend', this._listenMoveEnd.bind(this));
 
     const mouseupEvent = new MouseEvent('mouseup');
     document.querySelector('body')?.addEventListener('mousemove', (e) => {
       // @ts-ignore
       if (e && e.path && e.path[0] !== canvas) {
-        if (this._isPainting === true) {
-          canvas.dispatchEvent(mouseupEvent);
-        }
+        canvas.dispatchEvent(mouseupEvent);
       }
     }, false)
   }
 
-  _listenStart(e: MouseEvent|TouchEvent) {
+  _listenMoveStart(e: MouseEvent|TouchEvent) {
     e.preventDefault();
-    this._isPainting = true;
-    if (typeof this._onMoveStart === 'function') {
-      const p = this._getPosition(e);
-      if (this._isVaildPoint(p)) {
-        this._onMoveStart(p);
+    const p = this._getPosition(e);
+    if (this._isVaildPoint(p)) {
+      if (this._event.has('point')) {
+        this._event.trigger('point', p);
+      }
+      if (this._event.has('moveStart')) {
+        this._event.trigger('moveStart', p);
       }
     }
+    this._isMoving = true;
   }
   
   _listenMove(e: MouseEvent|TouchEvent) {
     e.preventDefault();
     e.stopPropagation();
-    if (this._isPainting === true) {
-      if (typeof this._onMove === 'function') {
-        const p = this._getPosition(e);
-        if (this._isVaildPoint(p)) {
-          this._onMove(p);
-        }
+    if (this._event.has('move') && this._isMoving === true) {
+      const p = this._getPosition(e);
+      if (this._isVaildPoint(p)) {
+        this._event.trigger('move', p);
       }
     }
   }
   
-  _listenEnd(e: MouseEvent|TouchEvent) {
+  _listenMoveEnd(e: MouseEvent|TouchEvent) {
     e.preventDefault();
-    this._isPainting = false;
-    if (typeof this._onMoveEnd === 'function') {
+    if (this._event.has('moveEnd')) {
       const p = this._getPosition(e);
       if (this._isVaildPoint(p)) {
-        this._onMoveEnd(p);
+        this._event.trigger('moveEnd', p);
       }
     }
+    this._isMoving = false;
   }
 
   _getPosition(e: MouseEvent|TouchEvent) {

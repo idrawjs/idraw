@@ -1,7 +1,7 @@
 const input = document.querySelector('#scale');
 let hasInited = false;
 
-export function onScale(board) {
+export function doScale(board) {
   if (hasInited === true)  return;
   input.addEventListener('change', () => {
     const val = input.value * 1;

@@ -52,7 +52,7 @@ class Context {
   }
 
   isPointInPath(x: number, y: number) {
-    return this._ctx.lineTo(this._doSize(x), this._doSize(y));
+    return this._ctx.isPointInPath(this._doSize(x), this._doSize(y));
   }
 
   private _doSize(num: number) {
