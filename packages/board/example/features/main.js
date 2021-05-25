@@ -1,5 +1,6 @@
 import { draw } from './lib/draw.js';
 import { onScale } from './lib/scale.js';
+import { onScroll } from './lib/scroll.js';
 
 const { Board } = window.iDraw; 
 
@@ -12,6 +13,7 @@ const board = new Board(mount, {
 
 draw(board);
 onScale(board);
+onScroll(board);
 
 // board.scale(2);
 // board.draw();

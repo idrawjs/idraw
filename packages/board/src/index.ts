@@ -22,6 +22,8 @@ class Board {
   private _ctx: Context;
   private _displayCtx: CanvasRenderingContext2D;
   private _scaleRatio: number = 1;
+  private _scrollX: number = 0;
+  private _scrollY: number = 0;
   // private _watcher: Watcher;
 
   constructor(mount: HTMLDivElement, opts: Options) {
@@ -43,16 +45,21 @@ class Board {
   }
 
   scale(scaleRatio: number) {
-    this._scaleRatio = scaleRatio;
+    if (scaleRatio > 0) this._scaleRatio = scaleRatio;
+  }
+
+  scrollX(x: number) {
+    if (x > 0) this._scrollX = x;
+  }
+
+  scrollY(y: number) {
+    if (y > 0) this._scrollY = y;
   }
 
   draw() {
     this.clear();
-    this._displayCtx.drawImage(
-      this._canvas, 0, 0,
-      this._canvas.width * this._scaleRatio,
-      this._canvas.height * this._scaleRatio,
-    );
+    const size = this._calculateSize();
+    this._displayCtx.drawImage(this._canvas, size.x, size.y, size.w, size.h);
   }
 
   clear() {
@@ -85,6 +92,17 @@ class Board {
       devicePixelRatio: 1,
     }
     return { ...defaultOpts, ...opts }
+  }
+
+  private _calculateSize(): { x: number; y: number; w: number; h: number } {
+    const { _scrollX, _scrollY, _scaleRatio, } = this;
+    const { devicePixelRatio: pxRatio, width, height } = this._opts;
+    const size = { x: 0, y: 0, w: width * pxRatio, h: height * pxRatio };
+    size.x = _scrollX * pxRatio * _scaleRatio;
+    size.y = _scrollY * pxRatio * _scaleRatio;
+    size.w = width * pxRatio * _scaleRatio;
+    size.h = height * pxRatio * _scaleRatio;
+    return size;
   }
 
   
