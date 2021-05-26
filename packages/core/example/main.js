@@ -10,5 +10,3 @@ const core = new Core(mount, {
 });
 core.setData(data);
 core.draw();
-
-console.log('hello world =', Core);

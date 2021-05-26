@@ -1,5 +1,6 @@
 import { TypeData } from '@idraw/types';
 import Board from '@idraw/board';
+import Renderer from './lib/renderer';
 
 type Options = {
   width: number;
@@ -12,31 +13,17 @@ class Core {
   private _board: Board;
   private _data: TypeData;
   private _opts: Options;
+  private _renderer: Renderer;
 
   constructor(mount: HTMLDivElement, opts: Options) {
     this._data = { elements: [] };
     this._opts = opts;
     this._board = new Board(mount, this._opts);
+    this._renderer = new Renderer(this._board); 
   }
 
   draw() {
-    const board = this._board;
-    const ctx = board.getContext();
-    const data = this.getData();
-    const { width, height } = this._opts;
-    board.clear();
-    ctx.clearRect(0, 0, width, height);
-    ctx.setFillStyle('#ffffff');
-    ctx.fillRect(0, 0, width, height);
-    data.elements.forEach(ele => {
-      // @ts-ignore
-      if (ele.type === 'rect' && typeof ele.desc.color === 'string') {
-        // @ts-ignore
-        ctx.setFillStyle(ele.desc.color);
-      }
-      ctx.fillRect(ele.x, ele.y, ele.w, ele.h);
-    });
-    board.draw();
+    this._renderer.render(this._data);
   }
 
   getData() {

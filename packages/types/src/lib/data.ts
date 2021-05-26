@@ -1,21 +1,12 @@
-import { TypeElementsDesc } from './element';
+import { TypeElemDesc, TypeElement } from './element';
 
-type TypeDataElement<T extends keyof TypeElementsDesc> = {
-  uuid?: string;
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-  type: T;
-  desc: TypeElementsDesc[T];
-}
+
 
 type TypeData = {
-  elements: TypeDataElement<keyof TypeElementsDesc>[]
+  elements: TypeElement<keyof TypeElemDesc>[]
   selectedElements?: string[] // uuids
 }
 
 export {
-  TypeDataElement,
   TypeData
 }

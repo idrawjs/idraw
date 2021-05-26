@@ -1,6 +1,16 @@
 import { TypePaintData } from './paint';
 
-type TypeElementsDesc = {
+type TypeElement<T extends keyof TypeElemDesc> = {
+  uuid?: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  type: T;
+  desc: TypeElemDesc[T];
+}
+
+type TypeElemDesc = {
   text: TypeElemDescText,
   rect: TypeElemDescRect,
   circle: TypeElemDescCircle,
@@ -33,5 +43,6 @@ export {
   TypeElemDescText,
   TypeElemDescRect,
   TypeElemDescCircle,
-  TypeElementsDesc,
+  TypeElemDesc,
+  TypeElement,
 }

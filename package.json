@@ -9,7 +9,8 @@
     "init": "lerna bootstrap --npm-client=cnpm",
     "clear": "rm -rf ./packages/*/dist/ & rm -rf ./packages/*/node_modules/",
     "jest": "jest --config jest.config.js",
-    "test": "lerna bootstrap --no-ci && npm run build && npm run jest && npm run e2e"
+    "test": "lerna bootstrap --no-ci && npm run build && npm run jest && npm run e2e",
+    "serve": "http-server ./"
   },
   "devDependencies": {
     "@babel/core": "^7.13.14",
