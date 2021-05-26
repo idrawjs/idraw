@@ -44,10 +44,6 @@ const data = {
   ]
 }
 
-function getData() {
-  return data;
-}
 
-export {
-  getData
-};
+
+export default data;

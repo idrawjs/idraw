@@ -1,10 +1,9 @@
-import { getData } from './lib/data.js';
+import data from './lib/data.js';
 import { doScale } from './lib/scale.js';
 import { doScroll } from './lib/scroll.js';
 
 const { Core } = window.iDraw;
 
-const data = getData();
 const mount = document.querySelector('#mount');
 const defaultConf = {
   scale: 0.5,
