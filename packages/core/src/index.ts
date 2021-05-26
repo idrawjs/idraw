@@ -1,4 +1,4 @@
-import { TypeData } from '@idraw/types';
+import { TypeData, TypePoint } from '@idraw/types';
 import Board from '@idraw/board';
 import Renderer from './lib/renderer';
 import { Element } from './lib/element';
@@ -60,10 +60,21 @@ class Core {
     if (this._hasInited === true) {
       return;
     }
-    this._board.on('point', (p) => {
-      const idx = this._element.isPointInElement(p, this._data);
-      console.log('idx ====', idx);
+    // let prevPoint: TypePoint | null;
+    let selectedIndex: number = -1;
+    this._board.on('point', (p: TypePoint) => {
+      selectedIndex = this._element.isPointInElement(p, this._data);
+      console.log('selectedIndex =', selectedIndex);
     });
+    // this._board.on('moveStart', (p) => {
+    //   prevPoint = p;
+    // });
+    // this._board.on('move', (p) => {
+    //   prevPoint = p;
+    // });
+    // this._board.on('moveEnd', (p) => {
+    //   prevPoint = null;
+    // })
   }
 }
 

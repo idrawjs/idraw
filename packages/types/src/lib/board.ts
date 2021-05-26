@@ -9,6 +9,11 @@ interface TypeContext {
     scrollX?: number;
     scrollY?: number;
   }): void;
+  getSize(): {
+    width: number;
+    height: number;
+    devicePixelRatio: number;
+  };
   setFillStyle(color: string): void;
   fillRect(x: number, y: number, w: number, h: number): void;
   clearRect(x: number, y: number, w: number, h: number): void;

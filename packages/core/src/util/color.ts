@@ -5,3 +5,7 @@ export function toColorHexNum(color: string): number {
 export function toColorHexStr(color: number): string {
   return '#' + color.toString(16);
 }
+
+export function isColorStr(color?: string): boolean {
+  return  typeof color === 'string' && /^\#[0-9a-z]{3,8}$/i.test(color);
+}

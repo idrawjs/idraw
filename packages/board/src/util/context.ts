@@ -37,6 +37,14 @@ class Context implements TypeContext {
     }
   }
 
+  getSize() {
+    return  {
+      width: this._opts.width,
+      height: this._opts.height,
+      devicePixelRatio: this._opts.devicePixelRatio,
+    }
+  }
+
   setConfig(config: Config) {
     this._conf = {...this._conf, ...config};
   }
