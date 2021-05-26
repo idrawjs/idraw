@@ -1,38 +1,17 @@
+import { TypeElementsDesc } from './element';
 
-
-type ElementsDescMap = {
-  text: {
-    size: number;
-  },
-  rect: {
-    color: string;
-  },
-  circle: {
-    color: string;
-    r: number;
-    x: number;
-    y: number;
-  },
-  image: {
-    src: number;
-  },
-  paint: {
-    
-  }
-}
-
-type TypeDataElement<T extends keyof ElementsDescMap> = {
+type TypeDataElement<T extends keyof TypeElementsDesc> = {
   uuid?: string;
   x: number;
   y: number;
   w: number;
   h: number;
   type: T;
-  desc: ElementsDescMap[T];
+  desc: TypeElementsDesc[T];
 }
 
 type TypeData = {
-  elements: TypeDataElement<keyof ElementsDescMap>[]
+  elements: TypeDataElement<keyof TypeElementsDesc>[]
   selectedElements?: string[] // uuids
 }
 

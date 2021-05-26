@@ -1,3 +1,5 @@
+import { TypeContext } from '@idraw/types';
+
 type Options = {
   width: number;
   height: number;
@@ -16,7 +18,7 @@ type PrivateConfig = {
   scrollY: number;
 }
 
-class Context {
+class Context implements TypeContext {
   private _opts: Options;
   private _ctx: CanvasRenderingContext2D;
   private _conf: PrivateConfig; 
