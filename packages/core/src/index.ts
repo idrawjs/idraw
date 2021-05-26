@@ -60,21 +60,25 @@ class Core {
     if (this._hasInited === true) {
       return;
     }
-    // let prevPoint: TypePoint | null;
+    let prevPoint: TypePoint | null;
     let selectedIndex: number = -1;
     this._board.on('point', (p: TypePoint) => {
       selectedIndex = this._element.isPointInElement(p, this._data);
       console.log('selectedIndex =', selectedIndex);
     });
-    // this._board.on('moveStart', (p) => {
-    //   prevPoint = p;
-    // });
-    // this._board.on('move', (p) => {
-    //   prevPoint = p;
-    // });
-    // this._board.on('moveEnd', (p) => {
-    //   prevPoint = null;
-    // })
+    this._board.on('moveStart', (p: TypePoint) => {
+      prevPoint = p;
+    });
+    this._board.on('move', (p: TypePoint) => {
+      if (prevPoint) {
+        this._element.dragElement(this._data, selectedIndex, p, prevPoint, this._board.getContext().getTransform().scale);
+        this.draw();
+        prevPoint = p;
+      }
+    });
+    this._board.on('moveEnd', (p: TypePoint) => {
+      prevPoint = null;
+    })
   }
 }
 

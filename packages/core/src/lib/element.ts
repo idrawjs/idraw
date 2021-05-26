@@ -26,7 +26,12 @@ export class Element {
     return idx;
   }
 
-  moveElement() {
-    
+  dragElement(data: TypeData, index: number, point: TypePoint, prevPoint: TypePoint, scale: number) {
+    if (data.elements[index]) {
+      const moveX = point.x - prevPoint.x;
+      const moveY = point.y - prevPoint.y;
+      data.elements[index].x += (moveX / scale);
+      data.elements[index].y += (moveY / scale);
+    }
   }
 }

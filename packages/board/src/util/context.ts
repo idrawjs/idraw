@@ -6,13 +6,13 @@ type Options = {
   devicePixelRatio: number;
 }
 
-type Config = {
+type Transform = {
   scale?: number;
   scrollX?: number;
   scrollY?: number;
 }
 
-type PrivateConfig = {
+type PrivateTransform = {
   scale: number;
   scrollX: number;
   scrollY: number;
@@ -21,7 +21,7 @@ type PrivateConfig = {
 class Context implements TypeContext {
   private _opts: Options;
   private _ctx: CanvasRenderingContext2D;
-  private _conf: PrivateConfig; 
+  private _transform: PrivateTransform; 
 
   // private _scale: number;
   // private _scrollX: number;
@@ -30,7 +30,7 @@ class Context implements TypeContext {
   constructor(ctx: CanvasRenderingContext2D, opts: Options) {
     this._opts = opts;
     this._ctx = ctx;
-    this._conf = {
+    this._transform = {
       scale: 1,
       scrollX: 0,
       scrollY: 0,
@@ -45,8 +45,16 @@ class Context implements TypeContext {
     }
   }
 
-  setConfig(config: Config) {
-    this._conf = {...this._conf, ...config};
+  setTransform(config: Transform) {
+    this._transform = {...this._transform, ...config};
+  }
+
+  getTransform() {
+    return {
+      scale: this._transform.scale,
+      scrollX: this._transform.scrollX,
+      scrollY: this._transform.scrollY,
+    }
   }
 
   setFillStyle(color: string) {
@@ -104,13 +112,13 @@ class Context implements TypeContext {
   }
 
   private _doX(x: number) {
-    const { scale, scrollX } = this._conf;
+    const { scale, scrollX } = this._transform;
     const _x = (x - scrollX * scale) / scale;
     return this._doSize(_x);
   }
 
   private _doY(y: number) {
-    const { scale, scrollY } = this._conf;
+    const { scale, scrollY } = this._transform;
     const _y = (y - scrollY * scale) / scale;
     return this._doSize(_y);
   }

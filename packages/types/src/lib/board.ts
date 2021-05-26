@@ -4,11 +4,16 @@ type TypePoint = {
 }
 
 interface TypeContext {
-  setConfig(config: {
+  setTransform(config: {
     scale?: number;
     scrollX?: number;
     scrollY?: number;
   }): void;
+  getTransform(): {
+    scale: number;
+    scrollX: number;
+    scrollY: number;
+  }
   getSize(): {
     width: number;
     height: number;
