@@ -1,18 +1,18 @@
 const input = document.querySelector('#scale');
 let hasInited = false;
 
-export function doScale(board, scale) {
+export function doScale(core, scale) {
   if (hasInited === true)  return;
   if (scale > 0) {
     input.value = scale;
-    board.scale(scale);
-    board.draw();
+    core.scale(scale);
+    core.draw();
   }
   input.addEventListener('change', () => {
     const val = input.value * 1;
     if (val > 0) {
-      board.scale(val);
-      board.draw();
+      core.scale(val);
+      core.draw();
     }
   });
   hasInited = true;

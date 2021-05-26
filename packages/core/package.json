@@ -1,5 +1,5 @@
 {
-  "name": "@idraw/board",
+  "name": "@idraw/core",
   "version": "0.0.3",
   "description": "",
   "main": "dist/index.cjs.js",
@@ -13,5 +13,8 @@
   "license": "MIT",
   "devDependencies": {
     "@idraw/types": "^0.0.3"
+  },
+  "dependencies": {
+    "@idraw/board": "^0.0.3"
   }
 }

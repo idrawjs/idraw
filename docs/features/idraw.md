@@ -1,0 +1,3 @@
+- [] Dashboard
+- [] Data input
+- [] Result export

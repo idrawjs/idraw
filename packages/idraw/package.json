@@ -12,6 +12,9 @@
   "author": "chenshenhai",
   "license": "MIT",
   "devDependencies": {
-    "@idraw/types": "^0.0.1"
+    "@idraw/types": "^0.0.3"
+  },
+  "dependencies": {
+    "@idraw/board": "^0.0.3"
   }
 }

@@ -1,3 +1,12 @@
+import { TypeElemDesc, TypeElement } from './element';
 
 
-export {}
+
+type TypeData = {
+  elements: TypeElement<keyof TypeElemDesc>[]
+  selectedElements?: string[] // uuids
+}
+
+export {
+  TypeData
+}
