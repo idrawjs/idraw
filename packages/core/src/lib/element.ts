@@ -34,4 +34,11 @@ export class Element {
       data.elements[index].y += (moveY / scale);
     }
   }
+
+  createTransformWrapper(data: TypeData, index: number) {
+    if (!data.elements[index]) {
+      return;
+    }
+    
+  }
 }

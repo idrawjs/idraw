@@ -1,13 +1,15 @@
 import { TypeElemDesc, TypeElement } from './element';
 
 
-
-type TypeData = {
+type TypeDataBase = {
   elements: TypeElement<keyof TypeElemDesc>[];
   bgColor?: string;
-  selectedElements?: string[]; // uuids
 }
 
+
+type TypeData = TypeDataBase & {}
+
 export {
+  TypeDataBase,
   TypeData
 }
