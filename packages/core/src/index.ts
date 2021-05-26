@@ -46,10 +46,6 @@ class Core {
     console.log('index');
   }
 
-  getData() {
-    return this._data;
-  }
-
   scale(ratio: number) {
     this._board.scale(ratio);
   }
@@ -60,6 +56,10 @@ class Core {
 
   scrollY(y: number) {
     this._board.scrollY(y);
+  }
+
+  getData(): TypeData {
+    return JSON.parse(JSON.stringify(this._data));
   }
 
   setData(data: TypeData) {
