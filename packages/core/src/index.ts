@@ -9,6 +9,12 @@ type Options = {
   devicePixelRatio: number;
 }
 
+enum Mode {
+  NULL = 'null',
+  SELECT_ELEMENT = 'select-element',
+  PAINTING = 'painting',
+}
+
 class Core {
 
   private _board: Board;
@@ -17,6 +23,10 @@ class Core {
   private _renderer: Renderer;
   private _element: Element;
   private _hasInited: boolean = false; 
+  private _mode: Mode = Mode.NULL;
+
+  private _selectedIndex: number = -1;
+  private _prevPoint: TypePoint | null = null;
 
   constructor(mount: HTMLDivElement, opts: Options) {
     this._data = { elements: [] };
@@ -60,25 +70,43 @@ class Core {
     if (this._hasInited === true) {
       return;
     }
-    let prevPoint: TypePoint | null;
-    let selectedIndex: number = -1;
-    this._board.on('point', (p: TypePoint) => {
-      selectedIndex = this._element.isPointInElement(p, this._data);
-      console.log('selectedIndex =', selectedIndex);
-    });
-    this._board.on('moveStart', (p: TypePoint) => {
-      prevPoint = p;
-    });
-    this._board.on('move', (p: TypePoint) => {
-      if (prevPoint) {
-        this._element.dragElement(this._data, selectedIndex, p, prevPoint, this._board.getContext().getTransform().scale);
-        this.draw();
-        prevPoint = p;
-      }
-    });
-    this._board.on('moveEnd', (p: TypePoint) => {
-      prevPoint = null;
-    })
+    this._board.on('point', this._handlePoint.bind(this));
+    this._board.on('moveStart', this._handleMoveStart.bind(this));
+    this._board.on('move', this._handleMove.bind(this));
+    this._board.on('moveEnd', this._handleMoveEnd.bind(this));
+  }
+
+  private _handlePoint(point: TypePoint) {
+    this._selectedIndex = this._element.isPointInElement(point, this._data);
+    if (this._selectedIndex >= 0) {
+      this._mode = Mode.SELECT_ELEMENT;
+    }
+  }
+
+  private _handleMoveStart(point: TypePoint) {
+    this._prevPoint = point;
+  }
+
+  private _handleMove(point: TypePoint) {
+    if (this._mode === Mode.SELECT_ELEMENT) {
+      this._dragElement(this._selectedIndex, point, this._prevPoint);
+    }
+    this._prevPoint = point;
+    this.draw();
+  }
+
+  private _handleMoveEnd(point: TypePoint) {
+    this._selectedIndex = -1;
+    this._prevPoint = null;
+  }
+
+  private _dragElement(selectedIndex: number, point: TypePoint, prevPoint: TypePoint|null) {
+    if (!prevPoint) {
+      return;
+    }
+    this._element.dragElement(this._data, selectedIndex, point, prevPoint, this._board.getContext().getTransform().scale);
+    this.draw();
+    prevPoint = point;
   }
 }
 
