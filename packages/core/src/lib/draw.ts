@@ -23,8 +23,9 @@ export function drawContext(ctx: TypeContext, data: TypeData, config: TypeHelper
         // nothing
       }
     }
-    drawElementWrapper(ctx, ele.uuid, config);
   }
+
+  drawElementWrapper(ctx, config);
 }
 
 
@@ -40,8 +41,11 @@ function drawBgColor(ctx: TypeContext, color: string) {
   ctx.fillRect(0, 0, size.width, size.height);
 }
 
-function drawElementWrapper(ctx: TypeContext, uuid: string, config: TypeHelperConfig) {
-  if (uuid !== config?.selectedElementWrapper?.uuid) {
+function drawElementWrapper(ctx: TypeContext, config: TypeHelperConfig) {
+  // if (uuid !== config?.selectedElementWrapper?.uuid) {
+  //   return;
+  // }
+  if (!config?.selectedElementWrapper) {
     return;
   }
   const wrapper = config.selectedElementWrapper;
