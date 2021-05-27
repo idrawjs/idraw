@@ -6,13 +6,13 @@ type Options = {
   devicePixelRatio: number;
 }
 
-type Config = {
+type Transform = {
   scale?: number;
   scrollX?: number;
   scrollY?: number;
 }
 
-type PrivateConfig = {
+type PrivateTransform = {
   scale: number;
   scrollX: number;
   scrollY: number;
@@ -21,7 +21,7 @@ type PrivateConfig = {
 class Context implements TypeContext {
   private _opts: Options;
   private _ctx: CanvasRenderingContext2D;
-  private _conf: PrivateConfig; 
+  private _transform: PrivateTransform; 
 
   // private _scale: number;
   // private _scrollX: number;
@@ -30,21 +30,45 @@ class Context implements TypeContext {
   constructor(ctx: CanvasRenderingContext2D, opts: Options) {
     this._opts = opts;
     this._ctx = ctx;
-    this._conf = {
+    this._transform = {
       scale: 1,
       scrollX: 0,
       scrollY: 0,
     }
   }
 
-  setConfig(config: Config) {
-    this._conf = {...this._conf, ...config};
+  getSize() {
+    return  {
+      width: this._opts.width,
+      height: this._opts.height,
+      devicePixelRatio: this._opts.devicePixelRatio,
+    }
+  }
+
+  setTransform(config: Transform) {
+    this._transform = {...this._transform, ...config};
+  }
+
+  getTransform() {
+    return {
+      scale: this._transform.scale,
+      scrollX: this._transform.scrollX,
+      scrollY: this._transform.scrollY,
+    }
   }
 
   setFillStyle(color: string) {
     this._ctx.fillStyle = color;
   }
 
+  fill(fillRule?: CanvasFillRule | undefined) {
+    return this._ctx.fill(fillRule);
+  }
+
+  arc(x: number, y: number, radius: number, startAngle: number, endAngle: number, anticlockwise?: boolean | undefined) {
+    return this._ctx.arc(this._doSize(x), this._doSize(y), this._doSize(radius), startAngle, endAngle, anticlockwise);
+  }
+  
   fillRect(x: number, y: number, w: number, h: number) {
     return this._ctx.fillRect(
       this._doSize(x), 
@@ -75,8 +99,16 @@ class Context implements TypeContext {
     return this._ctx.lineTo(this._doSize(x), this._doSize(y));
   }
 
+  moveTo(x: number, y: number) {
+    return this._ctx.moveTo(this._doSize(x), this._doSize(y));
+  }
+
   setLineWidth(w: number) {
-    this._ctx.lineWidth = w;
+    return this._ctx.lineWidth = this._doSize(w);
+  }
+
+  setLineDash(nums: number[]) {
+    return this._ctx.setLineDash(nums.map(n => this._doSize(n)));
   }
 
   isPointInPath(x: number, y: number) {
@@ -96,13 +128,13 @@ class Context implements TypeContext {
   }
 
   private _doX(x: number) {
-    const { scale, scrollX } = this._conf;
+    const { scale, scrollX } = this._transform;
     const _x = (x - scrollX * scale) / scale;
     return this._doSize(_x);
   }
 
   private _doY(y: number) {
-    const { scale, scrollY } = this._conf;
+    const { scale, scrollY } = this._transform;
     const _y = (y - scrollY * scale) / scale;
     return this._doSize(_y);
   }

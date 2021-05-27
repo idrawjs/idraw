@@ -5,10 +5,16 @@ import { doScroll } from './lib/scroll.js';
 const { Core } = window.iDraw;
 
 const mount = document.querySelector('#mount');
+// const defaultConf = {
+//   scale: 0.8,
+//   scrollX: 100,
+//   scrollY: 50,
+// }
+
 const defaultConf = {
-  scale: 0.5,
-  scrollX: 100,
-  scrollY: 200,
+  scale: 1,
+  scrollX: 0,
+  scrollY: 0,
 }
 const core = new Core(mount, {
   width: 600,

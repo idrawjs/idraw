@@ -1,5 +1,6 @@
 
 const data = {
+  bgColor: '#ffffff',
   elements: [
     {
       x: 10,

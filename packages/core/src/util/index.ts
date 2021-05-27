@@ -1,7 +1,8 @@
 import { loadImage } from './loader';
 import { delay, compose, throttle } from './time';
 import { downloadImageFromCanvas } from './file';
-import { toColorHexStr, toColorHexNum } from './color';
+import { toColorHexStr, toColorHexNum, isColorStr } from './color';
+import { createUUID } from './uuid';
 
 export default {
   time: {
@@ -18,5 +19,9 @@ export default {
   color: {
     toColorHexStr,
     toColorHexNum,
+    isColorStr,
+  },
+  uuid: {
+    createUUID
   }
 }
