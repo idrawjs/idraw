@@ -24,8 +24,10 @@ interface TypeContext {
   clearRect(x: number, y: number, w: number, h: number): void;
   beginPath(): void;
   closePath(): void;
+  moveTo(x: number, y: number): void;
   lineTo(x: number, y: number): void;
   setLineWidth(w: number): void;
+  setLineDash(nums: number[]): void;
   isPointInPath(x: number, y: number): boolean;
   setStrokeStyle(color: string): void;
   stroke(): void;

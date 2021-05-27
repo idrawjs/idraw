@@ -67,6 +67,10 @@ class Board {
     }
   }
 
+  getTransform() {
+    return this._ctx.getTransform();
+  }
+
   draw() {
     this.clear();
     const size = this._calculateSize();

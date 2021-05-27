@@ -4,9 +4,13 @@ import { TypePoint } from './board';
 // type test = {[uuid string]: TypeElement}
 
 type TypeHelperConfig = {
-  elementIndexMap: {[key: string]: Number},
+  elementIndexMap: {[key: string]: number},
   selectedElementWrapper?: {
-    size: number;
+    uuid: string;
+    dotSize: number;
+    lineDash: number[];
+    lineWidth: number;
+    color: string;
     topLeft: TypePoint,
     top: TypePoint,
     topRight: TypePoint,
@@ -18,14 +22,16 @@ type TypeHelperConfig = {
   }
 }
 
-type TypeHelperCreateOpts = {
-  selectedUUID?: string | null,
+type TypeHelperUpdateOpts = {
+  selectedUUID?: string | null;
+  devicePixelRatio: number;
+  scale: number;
 }
 
 interface TypeHelper {
   updateConfig(
     data: TypeData,
-    opts: TypeHelperCreateOpts
+    opts: TypeHelperUpdateOpts
   ): void;
   getConfig(): TypeHelperConfig;
 }
@@ -33,5 +39,5 @@ interface TypeHelper {
 export {
   TypeHelper,
   TypeHelperConfig,
-  TypeHelperCreateOpts,
+  TypeHelperUpdateOpts,
 }

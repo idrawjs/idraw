@@ -42,11 +42,17 @@ class Core {
   }
 
   draw() {
-    this._helper.updateConfig(this._data, { selectedUUID: this._selectedUUID });
+    this._helper.updateConfig(this._data, {
+      selectedUUID: this._selectedUUID,
+      devicePixelRatio: this._opts.devicePixelRatio,
+      scale: this._board.getTransform().scale // TODO
+    });
     this._renderer.render(this._data, this._helper.getConfig());
   }
 
+  // TODO
   selectElement(index: number) {
+    // TODO
     console.log('index');
   }
 
@@ -84,7 +90,8 @@ class Core {
     const [index, uuid] = this._element.isPointInElement(point, this._data);
     if (index >= 0) {
       this._mode = Mode.SELECT_ELEMENT;
-      this._selectedUUID = uuid
+      this._selectedUUID = uuid;
+      this.draw();
     }
   }
 

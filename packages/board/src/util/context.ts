@@ -91,8 +91,16 @@ class Context implements TypeContext {
     return this._ctx.lineTo(this._doSize(x), this._doSize(y));
   }
 
+  moveTo(x: number, y: number) {
+    return this._ctx.moveTo(this._doSize(x), this._doSize(y));
+  }
+
   setLineWidth(w: number) {
-    this._ctx.lineWidth = w;
+    return this._ctx.lineWidth = this._doSize(w);
+  }
+
+  setLineDash(nums: number[]) {
+    return this._ctx.setLineDash(nums.map(n => this._doSize(n)));
   }
 
   isPointInPath(x: number, y: number) {
