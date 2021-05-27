@@ -1,21 +1,33 @@
 import { TypeData } from './data';
-import { TypeElement, TypeElemDesc } from './element';
+import { TypePoint } from './board';
 
 // type test = {[uuid string]: TypeElement}
 
-type TypeHelperConfig<T extends keyof TypeElemDesc> = {
-  elementMap: {[key: string]: TypeElement<T>}
+type TypeHelperConfig = {
+  elementIndexMap: {[key: string]: Number},
+  selectedElementWrapper?: {
+    size: number;
+    topLeft: TypePoint,
+    top: TypePoint,
+    topRight: TypePoint,
+    right: TypePoint,
+    bottomRight: TypePoint,
+    bottom: TypePoint,
+    bottomLeft: TypePoint,
+    left: TypePoint,
+  }
 }
 
 type TypeHelperCreateOpts = {
-  selectedIndex: number
+  selectedUUID?: string | null,
 }
 
 interface TypeHelper {
-  createConfig<T extends keyof TypeElemDesc>(
+  updateConfig(
     data: TypeData,
     opts: TypeHelperCreateOpts
-  ): TypeHelperConfig<T>;
+  ): void;
+  getConfig(): TypeHelperConfig;
 }
 
 export {

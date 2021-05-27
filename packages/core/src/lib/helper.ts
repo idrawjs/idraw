@@ -3,20 +3,39 @@ import {
   TypeHelper,
   TypeHelperConfig,
   TypeHelperCreateOpts,
+  TypeElement,
   TypeElemDesc
 } from '@idraw/types';
 
 export class Helper implements TypeHelper {
 
-  constructor() {}
+  private _config: TypeHelperConfig;
 
-  createConfig<T extends keyof TypeElemDesc>(
-    data: TypeData,
-    opts: TypeHelperCreateOpts ): TypeHelperConfig<T> {
-    const config = {
-      elementMap: {}
+  constructor() {
+    this._config = {
+      elementIndexMap: {},
     }
-    
-    return config
-  } 
+  }
+
+  updateConfig (
+    data: TypeData,
+    opts: TypeHelperCreateOpts ) {
+    this._updateElementIndex(data);
+  }
+
+  getConfig() {
+    // TODO 
+    return JSON.parse(JSON.stringify(this._config));
+  }
+
+  private _updateElementIndex(data: TypeData) {
+    this._config.elementIndexMap = {};
+    data.elements.forEach((elem: TypeElement<keyof TypeElemDesc>, i) => {
+      this._config.elementIndexMap[elem.uuid] = i;
+    });
+  }
+
+  // private _updateSelectedElementWrapper() {
+
+  // }
 }

@@ -2,6 +2,7 @@ import { TypeData, TypePoint } from '@idraw/types';
 import Board from '@idraw/board';
 import Renderer from './lib/renderer';
 import { Element } from './lib/element';
+import { Helper } from './lib/helper';
 
 type Options = {
   width: number;
@@ -22,6 +23,7 @@ class Core {
   private _opts: Options;
   private _renderer: Renderer;
   private _element: Element;
+  private _helper: Helper;
   private _hasInited: boolean = false; 
   private _mode: Mode = Mode.NULL;
 
@@ -34,12 +36,14 @@ class Core {
     this._board = new Board(mount, this._opts);
     this._renderer = new Renderer(this._board); 
     this._element = new Element(this._board.getContext());
+    this._helper = new Helper();
     this._initEvent();
     this._hasInited = true;
   }
 
   draw() {
-    this._renderer.render(this._data);
+    this._helper.updateConfig(this._data, { selectedUUID: this._selectedUUID });
+    this._renderer.render(this._data, this._helper.getConfig());
   }
 
   selectElement(index: number) {
