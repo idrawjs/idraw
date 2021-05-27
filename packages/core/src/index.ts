@@ -25,7 +25,7 @@ class Core {
   private _hasInited: boolean = false; 
   private _mode: Mode = Mode.NULL;
 
-  private _selectedIndex: number = -1;
+  private _selectedUUID: string | null = null;
   private _prevPoint: TypePoint | null = null;
 
   constructor(mount: HTMLDivElement, opts: Options) {
@@ -63,7 +63,7 @@ class Core {
   }
 
   setData(data: TypeData) {
-    return this._data = data;
+    return this._data = this._element.initData(data);
   }
 
   private _initEvent() {
@@ -77,9 +77,10 @@ class Core {
   }
 
   private _handlePoint(point: TypePoint) {
-    this._selectedIndex = this._element.isPointInElement(point, this._data);
-    if (this._selectedIndex >= 0) {
+    const [index, uuid] = this._element.isPointInElement(point, this._data);
+    if (index >= 0) {
       this._mode = Mode.SELECT_ELEMENT;
+      this._selectedUUID = uuid
     }
   }
 
@@ -89,22 +90,24 @@ class Core {
 
   private _handleMove(point: TypePoint) {
     if (this._mode === Mode.SELECT_ELEMENT) {
-      this._dragElement(this._selectedIndex, point, this._prevPoint);
+      if (this._selectedUUID) {
+        this._dragElement(this._selectedUUID, point, this._prevPoint);
+      }
     }
     this._prevPoint = point;
     this.draw();
   }
 
   private _handleMoveEnd(point: TypePoint) {
-    this._selectedIndex = -1;
+    this._selectedUUID = null;
     this._prevPoint = null;
   }
 
-  private _dragElement(selectedIndex: number, point: TypePoint, prevPoint: TypePoint|null) {
+  private _dragElement(uuid: string, point: TypePoint, prevPoint: TypePoint|null) {
     if (!prevPoint) {
       return;
     }
-    this._element.dragElement(this._data, selectedIndex, point, prevPoint, this._board.getContext().getTransform().scale);
+    this._element.dragElement(this._data, uuid, point, prevPoint, this._board.getContext().getTransform().scale);
     this.draw();
     prevPoint = point;
   }
