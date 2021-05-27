@@ -45,6 +45,7 @@ function drawElementWrapper(ctx: TypeContext, uuid: string, config: TypeHelperCo
     return;
   }
   const wrapper = config.selectedElementWrapper;
+  // draw wrapper's box
   ctx.beginPath();
   ctx.setLineDash(wrapper.lineDash);
   ctx.setLineWidth(wrapper.lineWidth);
@@ -56,4 +57,17 @@ function drawElementWrapper(ctx: TypeContext, uuid: string, config: TypeHelperCo
   ctx.lineTo(wrapper.topLeft.x, wrapper.topLeft.y - wrapper.lineWidth / 2);
   ctx.stroke();
   ctx.closePath();
+
+  // draw wrapper's dots
+  ctx.setFillStyle(wrapper.color);
+  [
+    wrapper.topLeft, wrapper.top, wrapper.topRight, wrapper.right,
+    wrapper.bottomRight, wrapper.bottom, wrapper.bottomLeft, wrapper.left,
+  ].forEach((dot) => {
+    ctx.beginPath();
+    ctx.arc(dot.x, dot.y, wrapper.dotSize, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.closePath();
+  })
+ 
 }

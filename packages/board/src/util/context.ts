@@ -61,6 +61,14 @@ class Context implements TypeContext {
     this._ctx.fillStyle = color;
   }
 
+  fill(fillRule?: CanvasFillRule | undefined) {
+    return this._ctx.fill(fillRule);
+  }
+
+  arc(x: number, y: number, radius: number, startAngle: number, endAngle: number, anticlockwise?: boolean | undefined) {
+    return this._ctx.arc(this._doSize(x), this._doSize(y), this._doSize(radius), startAngle, endAngle, anticlockwise);
+  }
+  
   fillRect(x: number, y: number, w: number, h: number) {
     return this._ctx.fillRect(
       this._doSize(x), 

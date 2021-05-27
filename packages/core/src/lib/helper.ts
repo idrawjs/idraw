@@ -48,7 +48,7 @@ export class Helper implements TypeHelper {
     // TODO
     const dotSize = 4 / Math.min(1, scale);
     const lineWidth = 1 / Math.min(1, scale);
-    const lineDash = [4, 2].map(n => (n / Math.min(1, scale)))
+    const lineDash = [4, 3].map(n => (n / Math.min(1, scale)));
     
     const wrapper = {
       uuid,
@@ -78,14 +78,14 @@ export class Helper implements TypeHelper {
       },
       bottom: {
         x: elem.x + elem.w / 2,
-        y: elem.y + elem.h / 2 + dotSize,
+        y: elem.y + elem.h + dotSize,
       },
       bottomLeft: {
         x: elem.x - dotSize,
         y: elem.y + elem.h + dotSize,
       },
       left: {
-        x: elem.x + dotSize,
+        x: elem.x - dotSize,
         y: elem.y + elem.h / 2 - dotSize,
       },
     }
