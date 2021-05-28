@@ -22,6 +22,9 @@ const core = new Core(mount, {
   height: 400,
   devicePixelRatio: 4
 });
+
+console.log('core ===', core);
+
 core.setData(data);
 doScale(core, defaultConf.scale);
 doScroll(core, defaultConf);
