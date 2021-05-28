@@ -1,6 +1,7 @@
 import { TypePaintData } from './paint';
 
 type TypeElement<T extends keyof TypeElemDesc> = {
+  name?: string;
   uuid: string;
   x: number;
   y: number;

@@ -1,6 +1,7 @@
 import data from './lib/data.js';
 import { doScale } from './lib/scale.js';
 import { doScroll } from './lib/scroll.js';
+import { doElemens } from './lib/element.js';
 
 const { Core } = window.iDraw;
 
@@ -24,4 +25,5 @@ const core = new Core(mount, {
 core.setData(data);
 doScale(core, defaultConf.scale);
 doScroll(core, defaultConf);
+doElemens(core);
 
