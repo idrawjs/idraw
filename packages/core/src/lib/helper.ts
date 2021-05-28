@@ -10,6 +10,7 @@ import {
   TypePoint,
   TypeConfigStrict,
 } from '@idraw/types';
+import { translateRotateAngle, translateRotateCenter } from './calculate';
 
 export class Helper implements TypeHelper {
 
@@ -63,11 +64,27 @@ export class Helper implements TypeHelper {
     ];
     for (let i = 0; i < dots.length; i ++) {
       const dot = dots[i];
+
+      if (typeof wrapper.angle === 'number' && wrapper.translate) {
+        ctx.translate(wrapper.translate.x, wrapper.translate.y);
+        ctx.rotate(wrapper.angle);
+        ctx.translate(0 - wrapper.translate.x, 0 - wrapper.translate.y);
+      }
+
       ctx.beginPath();
       ctx.arc(dot.x, dot.y, wrapper.dotSize, 0, Math.PI * 2);
       ctx.closePath();
       if (ctx.isPointInPath(p.x, p.y)) {
         direction = directionNames[i];
+      }
+
+      // reset rotate
+      if (typeof wrapper.angle === 'number' && wrapper.translate) {
+        ctx.translate(wrapper.translate.x, wrapper.translate.y);
+        ctx.rotate(0 - wrapper.angle);
+        ctx.translate(0 - wrapper.translate.x, 0 - wrapper.translate.y);
+      }
+      if (direction) {
         break;
       }
     }
@@ -94,7 +111,7 @@ export class Helper implements TypeHelper {
     const lineWidth = this._coreConfig.elementWrapper.lineWidth / scale;
     const lineDash = this._coreConfig.elementWrapper.lineDash.map(n => (n / scale));
     
-    const wrapper = {
+    const wrapper: TypeHelperConfig['selectedElementWrapper'] = {
       uuid,
       dotSize: dotSize,
       lineWidth: lineWidth,
@@ -132,7 +149,13 @@ export class Helper implements TypeHelper {
         x: elem.x - dotSize,
         y: elem.y + elem.h / 2 - dotSize / 2,
       },
+    };
+
+    if (typeof elem.angle === 'number' && (elem.angle > 0 || elem.angle < 0)) {
+      wrapper.angle = translateRotateAngle(elem.angle);
+      wrapper.translate = translateRotateCenter(elem);
     }
+
     this._helperConfig.selectedElementWrapper = wrapper;
   }
 }

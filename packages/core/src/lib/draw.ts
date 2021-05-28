@@ -4,9 +4,10 @@ import {
   TypeElement,
   TypeElemDesc,
   TypeHelperConfig,
-  TypePoint,
+  // TypePoint,
 } from '@idraw/types';
 import util from './../util';
+import { translateRotateAngle, translateRotateCenter } from './calculate';
 
 const { isColorStr } = util.color;
 
@@ -37,7 +38,7 @@ function drawRect<T extends keyof TypeElemDesc>(ctx: TypeContext, ele: TypeEleme
   const desc = ele.desc as TypeElemDesc['rect'];
 
   const angle = translateRotateAngle(ele.angle);
-  const p = translateRotateCenter(ele, angle);
+  const p = translateRotateCenter(ele);
   
   if (angle > 0 || angle < 0) {
     ctx.translate(p.x, p.y);
@@ -63,13 +64,17 @@ function drawBgColor(ctx: TypeContext, color: string) {
 }
 
 function drawElementWrapper(ctx: TypeContext, config: TypeHelperConfig) {
-  // if (uuid !== config?.selectedElementWrapper?.uuid) {
-  //   return;
-  // }
   if (!config?.selectedElementWrapper) {
     return;
   }
   const wrapper = config.selectedElementWrapper;
+
+  if (typeof wrapper.angle === 'number' && wrapper.translate) {
+    ctx.translate(wrapper.translate.x, wrapper.translate.y);
+    ctx.rotate(wrapper.angle);
+    ctx.translate(0 - wrapper.translate.x, 0 - wrapper.translate.y);
+  }
+
   // draw wrapper's box
   ctx.beginPath();
   ctx.setLineDash(wrapper.lineDash);
@@ -94,30 +99,11 @@ function drawElementWrapper(ctx: TypeContext, config: TypeHelperConfig) {
     ctx.fill();
     ctx.closePath();
   });
-}
 
-
-function translateRotateCenter(elem: TypeElement<keyof TypeElemDesc>, angle: number): TypePoint {
-  // const p = {
-  //   x: elem.x + elem.w / 2 - Math.sqrt(elem.h * elem.h + elem.w * elem.w) / 2 * Math.sin(Math.PI / 4 - angle),
-  //   y: elem.y + elem.h / 2 - Math.sqrt(elem.h * elem.h + elem.w * elem.w) / 2 * Math.cos(Math.PI / 4 - angle),
-  // };
-  const p = {
-    x: elem.x + elem.w / 2,
-    y: elem.y + elem.h / 2,
-  };
-  // const p = {
-  //   x: elem.w / 2,
-  //   y: elem.h / 2,
-  // };
-  return p;
-}
-
-function translateRotateAngle(angle?: number) {
-  if (typeof angle === 'number' && (angle > 0 || angle <= 0)) {
-    const _angle = angle / 360 * (2 * Math.PI);
-    return _angle;
-  } else {
-    return 0;
+  // reset rotate
+  if (typeof wrapper.angle === 'number' && wrapper.translate) {
+    ctx.translate(wrapper.translate.x, wrapper.translate.y);
+    ctx.rotate(0 - wrapper.angle);
+    ctx.translate(0 - wrapper.translate.x, 0 - wrapper.translate.y);
   }
 }

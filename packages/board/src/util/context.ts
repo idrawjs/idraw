@@ -68,6 +68,10 @@ class Context implements TypeContext {
   arc(x: number, y: number, radius: number, startAngle: number, endAngle: number, anticlockwise?: boolean | undefined) {
     return this._ctx.arc(this._doSize(x), this._doSize(y), this._doSize(radius), startAngle, endAngle, anticlockwise);
   }
+
+  rect(x: number, y: number, w: number, h: number) {
+    return this._ctx.rect(this._doSize(x), this._doSize(y), this._doSize(w), this._doSize(h));
+  }
   
   fillRect(x: number, y: number, w: number, h: number) {
     return this._ctx.fillRect(

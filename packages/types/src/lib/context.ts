@@ -19,6 +19,7 @@ interface TypeContext {
   arc(x: number, y: number, radius: number, startAngle: number, endAngle: number, anticlockwise?: boolean | undefined): void;
   fillRect(x: number, y: number, w: number, h: number): void;
   clearRect(x: number, y: number, w: number, h: number): void;
+  rect(x: number, y: number, w: number, h: number): void;
   beginPath(): void;
   closePath(): void;
   moveTo(x: number, y: number): void;

@@ -145,8 +145,10 @@ class Core {
       this[_selectedUUID] = uuid;
     } else {
       const [index] = this[_element].isPointInElement(point, this[_data]);
+      // console.log('index ===', index);
       this.selectElement(index);
     }
+    // console.log('this[_mode] =', this[_mode], point)
   }
 
   private _handleMoveStart(point: TypePoint) {

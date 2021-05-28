@@ -7,6 +7,7 @@ import {
   // TypeElemDesc,
 } from '@idraw/types';
 import util from './../util';
+// import { translateRotateAngle, translateRotateCenter } from './calculate';
 
 const { createUUID } = util.uuid;
 
@@ -32,15 +33,37 @@ export class Element {
     let uuid = null
     for (let i = data.elements.length - 1; i >= 0; i--) {
       const ele = data.elements[i];
+      // const angle = translateRotateAngle(ele.angle);
+      // const p = translateRotateCenter(ele);
+    
+      // if (angle > 0 || angle < 0) {
+      //   ctx.translate(p.x, p.y);
+      //   ctx.rotate(angle);
+      //   ctx.translate(0 - p.x, 0 - p.y);
+      // }
+
       ctx.beginPath();
-      ctx.lineTo(ele.x, ele.y);
-      ctx.lineTo(ele.x + ele.w, ele.y);
-      ctx.lineTo(ele.x + ele.w, ele.y + ele.h);
-      ctx.lineTo(ele.x, ele.y + ele.h);
+      // ctx.moveTo(ele.x, ele.y);
+      // ctx.lineTo(ele.x + ele.w, ele.y);
+      // ctx.lineTo(ele.x + ele.w, ele.y + ele.h);
+      // ctx.lineTo(ele.x, ele.y + ele.h);
+      // ctx.lineTo(ele.x, ele.y);
+
+      ctx.rect(ele.x, ele.y, ele.w, ele.h);
       ctx.closePath();
       if (ctx.isPointInPath(p.x, p.y)) {
         idx = i;
         uuid = ele.uuid;
+      }
+
+      // // reset rotate
+      // if (angle > 0 || angle < 0) {
+      //   ctx.translate(p.x, p.y);
+      //   ctx.rotate(0 - angle);
+      //   ctx.translate(0 - p.x, 0 - p.y);
+      // }
+
+      if (idx >= 0) {
         break;
       }
     }

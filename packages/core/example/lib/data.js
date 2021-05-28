@@ -11,7 +11,7 @@ const data = {
       w: 200,
       h: 100,
       type: 'rect',
-      angle: 30,
+      // angle: 30,
       // angle: 0,
       desc: {
         color: '#f0f0f0',
@@ -23,6 +23,7 @@ const data = {
       y: 80,
       w: 200,
       h: 120,
+      angle: 30,
       type: 'rect',
       desc: {
         color: '#cccccc',
@@ -35,6 +36,7 @@ const data = {
       w: 200,
       h: 120,
       type: 'rect',
+      // angle: 60,
       desc: {
         color: '#c0c0c0',
       }

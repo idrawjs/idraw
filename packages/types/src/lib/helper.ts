@@ -19,6 +19,8 @@ type TypeHelperConfig = {
     bottom: TypePoint,
     bottomLeft: TypePoint,
     left: TypePoint,
+    angle?: number;
+    translate?: TypePoint;
   }
 }
 
