@@ -62,31 +62,29 @@ export class Helper implements TypeHelper {
       'top-left', 'top', 'top-right', 'right',
       'bottom-right', 'bottom', 'bottom-left', 'left',
     ];
+
+    if (typeof wrapper.angle === 'number' && wrapper.translate) {
+      ctx.translate(wrapper.translate.x, wrapper.translate.y);
+      ctx.rotate(wrapper.angle);
+      ctx.translate(0 - wrapper.translate.x, 0 - wrapper.translate.y);
+    }
     for (let i = 0; i < dots.length; i ++) {
       const dot = dots[i];
-
-      if (typeof wrapper.angle === 'number' && wrapper.translate) {
-        ctx.translate(wrapper.translate.x, wrapper.translate.y);
-        ctx.rotate(wrapper.angle);
-        ctx.translate(0 - wrapper.translate.x, 0 - wrapper.translate.y);
-      }
-
       ctx.beginPath();
       ctx.arc(dot.x, dot.y, wrapper.dotSize, 0, Math.PI * 2);
       ctx.closePath();
       if (ctx.isPointInPath(p.x, p.y)) {
         direction = directionNames[i];
       }
-
-      // reset rotate
-      if (typeof wrapper.angle === 'number' && wrapper.translate) {
-        ctx.translate(wrapper.translate.x, wrapper.translate.y);
-        ctx.rotate(0 - wrapper.angle);
-        ctx.translate(0 - wrapper.translate.x, 0 - wrapper.translate.y);
-      }
       if (direction) {
         break;
       }
+    }
+    // reset rotate
+    if (typeof wrapper.angle === 'number' && wrapper.translate) {
+      ctx.translate(wrapper.translate.x, wrapper.translate.y);
+      ctx.rotate(0 - wrapper.angle);
+      ctx.translate(0 - wrapper.translate.x, 0 - wrapper.translate.y);
     }
     return [uuid, direction];
   }
