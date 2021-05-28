@@ -12,44 +12,40 @@ export function doElemens(core) {
 function renderElemens(core) {
   const data = core.getData();
   const elems = data.elements;
-  const items = elems.map((ele) => {
-    return `
+  const items = [];
+  for (let i = elems.length - 1; i >= 0; i --) {
+    const ele = elems[i];
+    items.push(`
     <div class="elem-item">
       <span class="elem-item-name" data-elem-name="${ele.uuid || ''}">${ele.name || 'Unnamed'}</span>
-      <span class="elem-item-btn" data-elem-btn-up="${ele.uuid || ''}">Up</span>
-      <span class="elem-item-btn" data-elem-btn-up="${ele.uuid || ''}">Down</span>
+      <span class="elem-item-btn ${i === elems.length - 1 ? 'btn-hidden' : ''}" data-elem-btn-up="${ele.uuid || ''}">Up</span>
+      <span class="elem-item-btn ${i === 0 ? 'btn-hidden' : ''} " data-elem-btn-down="${ele.uuid || ''}">Down</span>
     </div>
-    `;
-  });
+    `);
+  }
   dom.innerHTML = items.join('');
 }
 
 function listenElements(core) {
-  const names = dom.querySelectorAll('[data-elem-name]');  
-  const upBtns = dom.querySelectorAll('[data-elem-btn-up]');
-  const downBtns = dom.querySelectorAll('[data-elem-btn-down]');
 
-  names.forEach((el) => {
-    el.addEventListener('click', () => {
+  dom.addEventListener('click', (e) => {
+    if (!e.path[0]) {
+      return;
+    }
+    const el = e.path[0];
+    if (el.hasAttribute('data-elem-name')) {
       const uuid = el.getAttribute('data-elem-name');
-      core.selectElement(uuid);
-    }, false);
-  });
-
-  upBtns.forEach((el) => {
-    el.addEventListener('click', () => {
+      core.selectElementByUUID(uuid);
+    } else if (el.hasAttribute('data-elem-btn-up')) {
       const uuid = el.getAttribute('data-elem-btn-up');
       core.moveUpElement(uuid);
       renderElemens(core);
-    }, false);
-  });
-
-  downBtns.forEach((el) => {
-    el.addEventListener('click', () => {
+    } else if (el.hasAttribute('data-elem-btn-down')) {
       const uuid = el.getAttribute('data-elem-btn-down');
       core.moveDownElement(uuid);
       renderElemens(core);
-    }, false);
-  })
+    }
+  }, true);
+
 }
 

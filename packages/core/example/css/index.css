@@ -86,6 +86,10 @@ html, body {
   cursor: pointer;
 }
 
+.btn-hidden {
+  visibility: hidden;
+}
+
 .elem-item-btn:hover {
   color: #4183c4;
   border-color: #4183c4;

@@ -16,7 +16,6 @@ export class Helper implements TypeHelper {
   private _helperConfig: TypeHelperConfig;
   private _coreConfig: TypeConfigStrict;
   private _ctx: TypeContext;
-  // private _helperConfig: TypeConfig;
 
   constructor(ctx: TypeContext, config: TypeConfigStrict) {
     this._ctx = ctx;
@@ -36,6 +35,14 @@ export class Helper implements TypeHelper {
   getConfig() {
     // TODO 
     return JSON.parse(JSON.stringify(this._helperConfig));
+  }
+
+  getElementIndexByUUID(uuid: string): number | null {
+    const index = this._helperConfig.elementIndexMap[uuid];
+    if (index >= 0) {
+      return index
+    }
+    return null;
   }
 
   isPointInElementWrapperDot(p: TypePoint): [string | null | undefined, TypeHelperWrapperDotDirection | null] {
