@@ -10,8 +10,8 @@
   - [] Circle
   - [] Image
   - [] Point
-- [] Drag elements
+- [x] Drag elements
 - [] Move elements' index
 - [] Rotate elements
-- [] Transform elements's size
+- [x] Transform elements's size
 - [] Undo action record

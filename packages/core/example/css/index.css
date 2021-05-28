@@ -1,0 +1,52 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#mount canvas {
+  /* border-right: 1px solid #aaaaaa40; */
+  border: 1px solid #aaaaaa40;
+  background-image:
+  linear-gradient(#aaaaaa40 1px, transparent 0),
+  linear-gradient(90deg, #aaaaaa40 1px, transparent 0),
+  linear-gradient(#aaa 1px, transparent 0),
+  linear-gradient(90deg, #aaa 1px, transparent 0);
+  background-size: 10px 10px, 10px 10px, 50px 50px, 50px 50px;
+}
+
+.dashboard {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+}
+
+.dashboard .row {
+  margin-top: 20px;
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+}
+
+.dashboard .row .col {
+  display: flex;
+  flex: 1;
+  width: 100%;
+}
+
+.center {
+  justify-content: center;
+  align-items: center;
+}
+
+
+.transform {
+  display: flex;
+  margin-top: 10px;
+}
+
+.transform input {
+  width: 100px;
+  margin-right: 12px;
+}
