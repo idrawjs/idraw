@@ -4,7 +4,7 @@ import {
   TypeElement,
   TypeElemDesc,
   TypeHelperConfig,
-  // TypePoint,
+  TypePoint,
 } from '@idraw/types';
 import util from './../util';
 
@@ -36,15 +36,24 @@ export function drawContext(ctx: TypeContext, data: TypeData, config: TypeHelper
 function drawRect<T extends keyof TypeElemDesc>(ctx: TypeContext, ele: TypeElement<T>) {
   const desc = ele.desc as TypeElemDesc['rect'];
 
-  // const p = translateRotateCenter(ele);
-  // const angle = translateRotateAngle(ele.angle);
-  // // ctx.translate(p.x, p.y);
-  // // ctx.rotate(translateRotateAngle(ele.angle));
-
-  // console.log('p = ', p, 'angle = ',angle)
- 
+  const angle = translateRotateAngle(ele.angle);
+  const p = translateRotateCenter(ele, angle);
+  
+  if (angle > 0 || angle < 0) {
+    ctx.translate(p.x, p.y);
+    ctx.rotate(angle);
+    ctx.translate(0 - p.x, 0 - p.y);
+  }
+  
   ctx.setFillStyle(desc.color);
   ctx.fillRect(ele.x, ele.y, ele.w, ele.h);
+
+  // reset rotate
+  if (angle > 0 || angle < 0) {
+    ctx.translate(p.x, p.y);
+    ctx.rotate(0 - angle);
+    ctx.translate(0 - p.x, 0 - p.y);
+  }
 }
 
 function drawBgColor(ctx: TypeContext, color: string) {
@@ -88,19 +97,27 @@ function drawElementWrapper(ctx: TypeContext, config: TypeHelperConfig) {
 }
 
 
-// function translateRotateCenter(elem: TypeElement<keyof TypeElemDesc>): TypePoint {
-//   const p = {
-//     x: elem.x + elem.w / 2,
-//     y: elem.y + elem.h / 2
-//   };
-//   return p;
-// }
+function translateRotateCenter(elem: TypeElement<keyof TypeElemDesc>, angle: number): TypePoint {
+  // const p = {
+  //   x: elem.x + elem.w / 2 - Math.sqrt(elem.h * elem.h + elem.w * elem.w) / 2 * Math.sin(Math.PI / 4 - angle),
+  //   y: elem.y + elem.h / 2 - Math.sqrt(elem.h * elem.h + elem.w * elem.w) / 2 * Math.cos(Math.PI / 4 - angle),
+  // };
+  const p = {
+    x: elem.x + elem.w / 2,
+    y: elem.y + elem.h / 2,
+  };
+  // const p = {
+  //   x: elem.w / 2,
+  //   y: elem.h / 2,
+  // };
+  return p;
+}
 
-// function translateRotateAngle(angle?: number) {
-//   if (typeof angle === 'number' && (angle > 0 || angle <= 0)) {
-//     const _angle = (angle - 45) / 360 * (2 * Math.PI);
-//     return _angle;
-//   } else {
-//     return 0;
-//   }
-// }
+function translateRotateAngle(angle?: number) {
+  if (typeof angle === 'number' && (angle > 0 || angle <= 0)) {
+    const _angle = angle / 360 * (2 * Math.PI);
+    return _angle;
+  } else {
+    return 0;
+  }
+}

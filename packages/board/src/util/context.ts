@@ -124,7 +124,7 @@ class Context implements TypeContext {
   }
 
   translate(x: number, y: number) {
-    return this._ctx.translate(this._doX(x), this._doY(y));
+    return this._ctx.translate(this._doSize(x), this._doSize(y));
   }
   
   rotate(angle: number) {

@@ -4,12 +4,15 @@ const data = {
   elements: [
     {
       name: 'rect-001',
-      x: 10,
-      y: 10,
+      // x: 10,
+      // y: 10,
+      x: 0,
+      y: 0,
       w: 200,
-      h: 120,
+      h: 100,
       type: 'rect',
-      angle: 0,
+      angle: 30,
+      // angle: 0,
       desc: {
         color: '#f0f0f0',
       }
@@ -20,7 +23,6 @@ const data = {
       y: 80,
       w: 200,
       h: 120,
-      angle: 40,
       type: 'rect',
       desc: {
         color: '#cccccc',
