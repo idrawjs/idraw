@@ -1,4 +1,4 @@
-import { TypeData, TypePoint, TypeHelperWrapperDotPosition, TypeConfig, TypeConfigStrict } from '@idraw/types';
+import { TypeData, TypePoint, TypeHelperWrapperDotDirection, TypeConfig, TypeConfigStrict } from '@idraw/types';
 import Board from '@idraw/board';
 import Renderer from './lib/renderer';
 import { Element } from './lib/element';
@@ -32,7 +32,7 @@ class Core {
 
   private _selectedUUID: string | null = null;
   private _prevPoint: TypePoint | null = null;
-  private _selectedDotPosition: TypeHelperWrapperDotPosition | null = null;
+  private _selectedDotDirection: TypeHelperWrapperDotDirection | null = null;
 
   constructor(mount: HTMLDivElement, opts: Options, config: TypeConfig) {
     this._data = { elements: [] };
@@ -92,10 +92,11 @@ class Core {
   }
 
   private _handlePoint(point: TypePoint) {
-    const [uuid, position] = this._helper.isPointInElementWrapperDot(point);
-    if (uuid && position && uuid === this._selectedUUID) {
+    const [uuid, direction] = this._helper.isPointInElementWrapperDot(point);
+    if (uuid && direction) {
       this._mode = Mode.SELECT_ELEMENT_WRAPPER_DOT;
-      this._selectedDotPosition = position;
+      this._selectedDotDirection = direction;
+      this._selectedUUID = uuid;
     } else {
       const [index, uuid] = this._element.isPointInElement(point, this._data);
       if (index >= 0) {
@@ -111,14 +112,15 @@ class Core {
   }
 
   private _handleMove(point: TypePoint) {
-    if (this._mode === Mode.SELECT_ELEMENT) {
-      if (this._selectedUUID) {
+    if (this._selectedUUID) {
+      if (this._mode === Mode.SELECT_ELEMENT) {
         this._dragElement(this._selectedUUID, point, this._prevPoint);
+        this.draw();
+      } else if (this._mode === Mode.SELECT_ELEMENT_WRAPPER_DOT && this._selectedDotDirection) {
+        this._transfromElement(this._selectedUUID, point, this._prevPoint, this._selectedDotDirection);
       }
-      this.draw();
-    } else if (this._mode === Mode.SELECT_ELEMENT_WRAPPER_DOT) {
-      this._transfromElement(point, this._prevPoint);
     }
+    
     this._prevPoint = point;
   }
 
@@ -133,13 +135,14 @@ class Core {
     }
     this._element.dragElement(this._data, uuid, point, prevPoint, this._board.getContext().getTransform().scale);
     this.draw();
-    prevPoint = point;
   }
 
-  private _transfromElement(point: TypePoint, prevPoint: TypePoint|null) {
-    const uuid = this._selectedUUID;
-    const position = this._selectedDotPosition;
-    console.log(uuid, position);
+  private _transfromElement(uuid: string, point: TypePoint, prevPoint: TypePoint|null, direction: TypeHelperWrapperDotDirection) {
+    if (!prevPoint) {
+      return;
+    }
+    this._element.transformElement(this._data, uuid, point, prevPoint, this._board.getContext().getTransform().scale, direction);
+    this.draw();
   }
 }
 
