@@ -3,7 +3,7 @@ import {
   TypeHelper,
   TypeHelperConfig,
   TypeHelperUpdateOpts,
-  TypeHelperWrapperDotPosition,
+  TypeHelperWrapperDotDirection,
   TypeElement,
   TypeElemDesc,
   TypeContext,
@@ -16,7 +16,6 @@ export class Helper implements TypeHelper {
   private _helperConfig: TypeHelperConfig;
   private _coreConfig: TypeConfigStrict;
   private _ctx: TypeContext;
-  // private _helperConfig: TypeConfig;
 
   constructor(ctx: TypeContext, config: TypeConfigStrict) {
     this._ctx = ctx;
@@ -38,10 +37,18 @@ export class Helper implements TypeHelper {
     return JSON.parse(JSON.stringify(this._helperConfig));
   }
 
-  isPointInElementWrapperDot(p: TypePoint): [string | null | undefined, TypeHelperWrapperDotPosition | null] {
+  getElementIndexByUUID(uuid: string): number | null {
+    const index = this._helperConfig.elementIndexMap[uuid];
+    if (index >= 0) {
+      return index
+    }
+    return null;
+  }
+
+  isPointInElementWrapperDot(p: TypePoint): [string | null | undefined, TypeHelperWrapperDotDirection | null] {
     const ctx = this._ctx;
     const uuid = this._helperConfig?.selectedElementWrapper?.uuid;
-    let position: TypeHelperWrapperDotPosition | null = null;
+    let direction: TypeHelperWrapperDotDirection | null = null;
     if (!this._helperConfig.selectedElementWrapper) {
       return [null, null];
     }
@@ -50,7 +57,7 @@ export class Helper implements TypeHelper {
       wrapper.topLeft, wrapper.top, wrapper.topRight, wrapper.right,
       wrapper.bottomRight, wrapper.bottom, wrapper.bottomLeft, wrapper.left,
     ];
-    const names: TypeHelperWrapperDotPosition[] = [
+    const directionNames: TypeHelperWrapperDotDirection[] = [
       'top-left', 'top', 'top-right', 'right',
       'bottom-right', 'bottom', 'bottom-left', 'left',
     ];
@@ -60,11 +67,11 @@ export class Helper implements TypeHelper {
       ctx.arc(dot.x, dot.y, wrapper.dotSize, 0, Math.PI * 2);
       ctx.closePath();
       if (ctx.isPointInPath(p.x, p.y)) {
-        position = names[i];
+        direction = directionNames[i];
         break;
       }
     }
-    return [uuid, position];
+    return [uuid, direction];
   }
 
   private _updateElementIndex(data: TypeData) {
@@ -83,9 +90,9 @@ export class Helper implements TypeHelper {
     const index: number = this._helperConfig.elementIndexMap[uuid];
     const elem = data.elements[index];
 
-    const dotSize = this._coreConfig.elementWrapper.dotSize / Math.min(1, scale);
-    const lineWidth = this._coreConfig.elementWrapper.lineWidth / Math.min(1, scale);
-    const lineDash = this._coreConfig.elementWrapper.lineDash.map(n => (n / Math.min(1, scale)));
+    const dotSize = this._coreConfig.elementWrapper.dotSize / scale;
+    const lineWidth = this._coreConfig.elementWrapper.lineWidth / scale;
+    const lineDash = this._coreConfig.elementWrapper.lineDash.map(n => (n / scale));
     
     const wrapper = {
       uuid,
@@ -123,7 +130,7 @@ export class Helper implements TypeHelper {
       },
       left: {
         x: elem.x - dotSize,
-        y: elem.y + elem.h / 2 - dotSize,
+        y: elem.y + elem.h / 2 - dotSize / 2,
       },
     }
     this._helperConfig.selectedElementWrapper = wrapper;

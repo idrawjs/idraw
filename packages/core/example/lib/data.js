@@ -3,6 +3,7 @@ const data = {
   bgColor: '#ffffff',
   elements: [
     {
+      name: 'rect-001',
       x: 10,
       y: 10,
       w: 200,
@@ -13,6 +14,7 @@ const data = {
       }
     },
     {
+      name: 'rect-002',
       x: 80,
       y: 80,
       w: 200,
@@ -23,6 +25,7 @@ const data = {
       }
     },
     {
+      name: 'rect-003',
       x: 160,
       y: 160,
       w: 200,
@@ -33,6 +36,7 @@ const data = {
       }
     },
     {
+      name: 'rect-004',
       x: 400 - 10,
       y: 300 - 10,
       w: 200,

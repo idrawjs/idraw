@@ -1,4 +1,9 @@
-import { TypeContext, TypePoint, TypeData } from '@idraw/types';
+import {
+  TypeContext,
+  TypePoint,
+  TypeData,
+  TypeHelperWrapperDotDirection
+} from '@idraw/types';
 import util from './../util';
 
 const { createUUID } = util.uuid;
@@ -42,11 +47,70 @@ export class Element {
 
   dragElement(data: TypeData, uuid: string, point: TypePoint, prevPoint: TypePoint, scale: number) {
     const index = this.getElementIndex(data, uuid);
-    if (data.elements[index]) {
-      const moveX = point.x - prevPoint.x;
-      const moveY = point.y - prevPoint.y;
-      data.elements[index].x += (moveX / scale);
-      data.elements[index].y += (moveY / scale);
+    if (!data.elements[index]) {
+      return;
+    }
+    const moveX = point.x - prevPoint.x;
+    const moveY = point.y - prevPoint.y;
+    data.elements[index].x += (moveX / scale);
+    data.elements[index].y += (moveY / scale);
+  }
+
+  transformElement(data: TypeData, uuid: string, point: TypePoint, prevPoint: TypePoint, scale: number, direction: TypeHelperWrapperDotDirection) {
+    const index = this.getElementIndex(data, uuid);
+    if (!data.elements[index]) {
+      return;
+    }
+    const moveX = (point.x - prevPoint.x) / scale;
+    const moveY = (point.y - prevPoint.y) / scale;
+    const elem = data.elements[index];
+
+    switch (direction) {
+      case 'top-left': {
+        elem.x += moveX;
+        elem.y += moveY;
+        elem.w -= moveX;
+        elem.h -= moveY;
+        break;
+      };
+      case 'top': {
+        elem.y += moveY;
+        elem.h -= moveY;
+        break;
+      };
+      case 'top-right': {
+        elem.y += moveY;
+        elem.w += moveX;
+        elem.h -= moveY;
+        break;
+      };
+      case 'right': {
+        elem.w += moveX;
+        break;
+      };
+      case 'bottom-right': {
+        elem.w += moveX;
+        elem.h += moveY;
+        break;
+      };
+      case 'bottom': {
+        elem.h += moveY;
+        break;
+      };
+      case 'bottom-left': {
+        elem.x += moveX;
+        elem.w -= moveX;
+        elem.h += moveY;
+        break;
+      };
+      case 'left': {
+        elem.x += moveX;
+        elem.w -= moveX;
+        break;
+      };
+      default: {
+        break;
+      }
     }
   }
 
