@@ -123,6 +123,14 @@ class Context implements TypeContext {
     return this._ctx.stroke();
   }
 
+  translate(x: number, y: number) {
+    return this._ctx.translate(this._doX(x), this._doY(y));
+  }
+  
+  rotate(angle: number) {
+    return this._ctx.rotate(angle)
+  }
+
   private _doSize(num: number) {
     return this._opts.devicePixelRatio * num;
   }

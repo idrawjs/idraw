@@ -4,12 +4,16 @@ import {
   TypeElement,
   TypeElemDesc,
   TypeHelperConfig,
+  // TypePoint,
 } from '@idraw/types';
 import util from './../util';
 
 const { isColorStr } = util.color;
 
 export function drawContext(ctx: TypeContext, data: TypeData, config: TypeHelperConfig) {
+  const size = ctx.getSize();
+  ctx.clearRect(0, 0, size.width, size.height)
+
   if (typeof data.bgColor === 'string' && isColorStr(data.bgColor)) {
     drawBgColor(ctx, data.bgColor);
   }
@@ -31,6 +35,14 @@ export function drawContext(ctx: TypeContext, data: TypeData, config: TypeHelper
 
 function drawRect<T extends keyof TypeElemDesc>(ctx: TypeContext, ele: TypeElement<T>) {
   const desc = ele.desc as TypeElemDesc['rect'];
+
+  // const p = translateRotateCenter(ele);
+  // const angle = translateRotateAngle(ele.angle);
+  // // ctx.translate(p.x, p.y);
+  // // ctx.rotate(translateRotateAngle(ele.angle));
+
+  // console.log('p = ', p, 'angle = ',angle)
+ 
   ctx.setFillStyle(desc.color);
   ctx.fillRect(ele.x, ele.y, ele.w, ele.h);
 }
@@ -72,6 +84,23 @@ function drawElementWrapper(ctx: TypeContext, config: TypeHelperConfig) {
     ctx.arc(dot.x, dot.y, wrapper.dotSize, 0, Math.PI * 2);
     ctx.fill();
     ctx.closePath();
-  })
- 
+  });
 }
+
+
+// function translateRotateCenter(elem: TypeElement<keyof TypeElemDesc>): TypePoint {
+//   const p = {
+//     x: elem.x + elem.w / 2,
+//     y: elem.y + elem.h / 2
+//   };
+//   return p;
+// }
+
+// function translateRotateAngle(angle?: number) {
+//   if (typeof angle === 'number' && (angle > 0 || angle <= 0)) {
+//     const _angle = (angle - 45) / 360 * (2 * Math.PI);
+//     return _angle;
+//   } else {
+//     return 0;
+//   }
+// }

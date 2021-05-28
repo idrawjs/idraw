@@ -2,7 +2,9 @@ import {
   TypeContext,
   TypePoint,
   TypeData,
-  TypeHelperWrapperDotDirection
+  TypeHelperWrapperDotDirection,
+  // TypeElement,
+  // TypeElemDesc,
 } from '@idraw/types';
 import util from './../util';
 

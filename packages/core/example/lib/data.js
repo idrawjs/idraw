@@ -1,6 +1,6 @@
 
 const data = {
-  bgColor: '#ffffff',
+  // bgColor: '#ffffff',
   elements: [
     {
       name: 'rect-001',
@@ -9,6 +9,7 @@ const data = {
       w: 200,
       h: 120,
       type: 'rect',
+      angle: 0,
       desc: {
         color: '#f0f0f0',
       }
@@ -19,6 +20,7 @@ const data = {
       y: 80,
       w: 200,
       h: 120,
+      angle: 40,
       type: 'rect',
       desc: {
         color: '#cccccc',

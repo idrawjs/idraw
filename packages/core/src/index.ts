@@ -135,6 +135,9 @@ class Core {
   }
 
   private _handlePoint(point: TypePoint) {
+
+    // console.log('handlePoint = ', point);
+
     const [uuid, direction] = this[_helper].isPointInElementWrapperDot(point);
     if (uuid && direction) {
       this[_mode] = Mode.SELECT_ELEMENT_WRAPPER_DOT;

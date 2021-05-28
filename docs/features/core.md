@@ -11,7 +11,7 @@
   - [] Image
   - [] Point
 - [x] Drag elements
-- [] Move elements' index
+- [x] Move elements' index
 - [] Rotate elements
 - [x] Transform elements's size
 - [] Undo action record

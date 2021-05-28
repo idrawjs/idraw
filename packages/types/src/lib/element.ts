@@ -7,6 +7,7 @@ type TypeElement<T extends keyof TypeElemDesc> = {
   y: number;
   w: number;
   h: number;
+  angle?: number;
   type: T;
   desc: TypeElemDesc[T];
 }
