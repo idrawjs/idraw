@@ -139,6 +139,8 @@ class Core {
     // console.log('handlePoint = ', point);
 
     const [uuid, direction] = this[_helper].isPointInElementWrapperDot(point);
+    console.log('uuid, direction =', uuid, direction);
+    
     if (uuid && direction) {
       this[_mode] = Mode.SELECT_ELEMENT_WRAPPER_DOT;
       this[_selectedDotDirection] = direction;

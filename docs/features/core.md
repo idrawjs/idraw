@@ -15,3 +15,4 @@
 - [] Rotate elements
 - [x] Transform elements's size
 - [] Undo action record
+- [] Controll elements by data

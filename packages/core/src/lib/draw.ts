@@ -7,7 +7,7 @@ import {
   // TypePoint,
 } from '@idraw/types';
 import util from './../util';
-import { translateRotateAngle, translateRotateCenter } from './calculate';
+import { rotateContext, rotateElement } from './transform';
 
 const { isColorStr } = util.color;
 
@@ -36,25 +36,10 @@ export function drawContext(ctx: TypeContext, data: TypeData, config: TypeHelper
 
 function drawRect<T extends keyof TypeElemDesc>(ctx: TypeContext, ele: TypeElement<T>) {
   const desc = ele.desc as TypeElemDesc['rect'];
-
-  const angle = translateRotateAngle(ele.angle);
-  const center = translateRotateCenter(ele);
-  
-  if (angle > 0 || angle < 0) {
-    ctx.translate(center.x, center.y);
-    ctx.rotate(angle);
-    ctx.translate(0 - center.x, 0 - center.y);
-  }
-  
-  ctx.setFillStyle(desc.color);
-  ctx.fillRect(ele.x, ele.y, ele.w, ele.h);
-
-  // reset rotate
-  if (angle > 0 || angle < 0) {
-    ctx.translate(center.x, center.y);
-    ctx.rotate(0 - angle);
-    ctx.translate(0 - center.x, 0 - center.y);
-  }
+  rotateElement(ctx, ele, () => {
+    ctx.setFillStyle(desc.color);
+    ctx.fillRect(ele.x, ele.y, ele.w, ele.h);
+  });
 }
 
 function drawBgColor(ctx: TypeContext, color: string) {
@@ -69,41 +54,47 @@ function drawElementWrapper(ctx: TypeContext, config: TypeHelperConfig) {
   }
   const wrapper = config.selectedElementWrapper;
 
-  if (typeof wrapper.angle === 'number' && wrapper.translate) {
-    ctx.translate(wrapper.translate.x, wrapper.translate.y);
-    ctx.rotate(wrapper.angle);
-    ctx.translate(0 - wrapper.translate.x, 0 - wrapper.translate.y);
-  }
-
-  // draw wrapper's box
-  ctx.beginPath();
-  ctx.setLineDash(wrapper.lineDash);
-  ctx.setLineWidth(wrapper.lineWidth);
-  ctx.setStrokeStyle(wrapper.color);
-  ctx.moveTo(wrapper.topLeft.x, wrapper.topLeft.y);
-  ctx.lineTo(wrapper.topRight.x, wrapper.topRight.y);
-  ctx.lineTo(wrapper.bottomRight.x, wrapper.bottomRight.y);
-  ctx.lineTo(wrapper.bottomLeft.x, wrapper.bottomLeft.y);
-  ctx.lineTo(wrapper.topLeft.x, wrapper.topLeft.y - wrapper.lineWidth / 2);
-  ctx.stroke();
-  ctx.closePath();
-
-  // draw wrapper's dots
-  ctx.setFillStyle(wrapper.color);
-  [
-    wrapper.topLeft, wrapper.top, wrapper.topRight, wrapper.right,
-    wrapper.bottomRight, wrapper.bottom, wrapper.bottomLeft, wrapper.left,
-  ].forEach((dot) => {
+  rotateContext(ctx, wrapper.translate, wrapper.angle || 0, () => {
+    // draw wrapper's box
     ctx.beginPath();
-    ctx.arc(dot.x, dot.y, wrapper.dotSize, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.setLineDash(wrapper.lineDash);
+    ctx.setLineWidth(wrapper.lineWidth);
+    ctx.setStrokeStyle(wrapper.color);
+    ctx.moveTo(wrapper.dots.topLeft.x, wrapper.dots.topLeft.y);
+    ctx.lineTo(wrapper.dots.topRight.x, wrapper.dots.topRight.y);
+    ctx.lineTo(wrapper.dots.bottomRight.x, wrapper.dots.bottomRight.y);
+    ctx.lineTo(wrapper.dots.bottomLeft.x, wrapper.dots.bottomLeft.y);
+    ctx.lineTo(wrapper.dots.topLeft.x, wrapper.dots.topLeft.y - wrapper.lineWidth / 2);
+    ctx.stroke();
     ctx.closePath();
-  });
 
-  // reset rotate
-  if (typeof wrapper.angle === 'number' && wrapper.translate) {
-    ctx.translate(wrapper.translate.x, wrapper.translate.y);
-    ctx.rotate(0 - wrapper.angle);
-    ctx.translate(0 - wrapper.translate.x, 0 - wrapper.translate.y);
-  }
+
+    // draw wrapper's rotate line
+    ctx.beginPath();
+    ctx.moveTo(wrapper.dots.top.x, wrapper.dots.top.y);
+    ctx.lineTo(wrapper.dots.rotate.x, wrapper.dots.rotate.y + wrapper.dotSize);
+    ctx.stroke();
+    ctx.closePath();
+
+    // draw wrapper's rotate
+    ctx.beginPath();
+    ctx.setLineDash([]);
+    ctx.setLineWidth(wrapper.dotSize / 2);
+    ctx.arc(wrapper.dots.rotate.x, wrapper.dots.rotate.y, wrapper.dotSize * 0.8, Math.PI / 6, Math.PI * 2);
+    ctx.stroke();
+    ctx.closePath();
+
+    // draw wrapper's dots
+    ctx.setFillStyle(wrapper.color);
+    [
+      wrapper.dots.topLeft, wrapper.dots.top, wrapper.dots.topRight, wrapper.dots.right,
+      wrapper.dots.bottomRight, wrapper.dots.bottom, wrapper.dots.bottomLeft, wrapper.dots.left,
+    ].forEach((dot) => {
+      ctx.beginPath();
+      ctx.arc(dot.x, dot.y, wrapper.dotSize, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.closePath();
+    });
+
+  });
 }
