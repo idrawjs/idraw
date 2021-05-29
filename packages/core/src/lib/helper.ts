@@ -145,7 +145,7 @@ export class Helper implements TypeHelper {
       },
       left: {
         x: elem.x - dotSize,
-        y: elem.y + elem.h / 2 - dotSize / 2,
+        y: elem.y + elem.h / 2,
       },
     };
 

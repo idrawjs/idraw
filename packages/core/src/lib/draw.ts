@@ -38,12 +38,12 @@ function drawRect<T extends keyof TypeElemDesc>(ctx: TypeContext, ele: TypeEleme
   const desc = ele.desc as TypeElemDesc['rect'];
 
   const angle = translateRotateAngle(ele.angle);
-  const p = translateRotateCenter(ele);
+  const center = translateRotateCenter(ele);
   
   if (angle > 0 || angle < 0) {
-    ctx.translate(p.x, p.y);
+    ctx.translate(center.x, center.y);
     ctx.rotate(angle);
-    ctx.translate(0 - p.x, 0 - p.y);
+    ctx.translate(0 - center.x, 0 - center.y);
   }
   
   ctx.setFillStyle(desc.color);
@@ -51,9 +51,9 @@ function drawRect<T extends keyof TypeElemDesc>(ctx: TypeContext, ele: TypeEleme
 
   // reset rotate
   if (angle > 0 || angle < 0) {
-    ctx.translate(p.x, p.y);
+    ctx.translate(center.x, center.y);
     ctx.rotate(0 - angle);
-    ctx.translate(0 - p.x, 0 - p.y);
+    ctx.translate(0 - center.x, 0 - center.y);
   }
 }
 

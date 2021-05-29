@@ -34,9 +34,9 @@ const data = {
       x: 160,
       y: 160,
       w: 200,
-      h: 120,
+      h: 20,
       type: 'rect',
-      // angle: 60,
+      angle: 80,
       desc: {
         color: '#c0c0c0',
       }
