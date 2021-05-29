@@ -1,14 +1,18 @@
 
 const data = {
-  bgColor: '#ffffff',
+  // bgColor: '#ffffff',
   elements: [
     {
       name: 'rect-001',
-      x: 10,
-      y: 10,
+      // x: 10,
+      // y: 10,
+      x: 0,
+      y: 0,
       w: 200,
-      h: 120,
+      h: 100,
       type: 'rect',
+      // angle: 30,
+      // angle: 0,
       desc: {
         color: '#f0f0f0',
       }
@@ -19,6 +23,7 @@ const data = {
       y: 80,
       w: 200,
       h: 120,
+      angle: 30,
       type: 'rect',
       desc: {
         color: '#cccccc',
@@ -29,8 +34,9 @@ const data = {
       x: 160,
       y: 160,
       w: 200,
-      h: 120,
+      h: 20,
       type: 'rect',
+      angle: 80,
       desc: {
         color: '#c0c0c0',
       }

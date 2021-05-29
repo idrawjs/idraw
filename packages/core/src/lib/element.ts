@@ -2,9 +2,12 @@ import {
   TypeContext,
   TypePoint,
   TypeData,
-  TypeHelperWrapperDotDirection
+  TypeHelperWrapperDotDirection,
+  // TypeElement,
+  // TypeElemDesc,
 } from '@idraw/types';
 import util from './../util';
+import { rotateElement } from './transform';
 
 const { createUUID } = util.uuid;
 
@@ -30,15 +33,24 @@ export class Element {
     let uuid = null
     for (let i = data.elements.length - 1; i >= 0; i--) {
       const ele = data.elements[i];
-      ctx.beginPath();
-      ctx.lineTo(ele.x, ele.y);
-      ctx.lineTo(ele.x + ele.w, ele.y);
-      ctx.lineTo(ele.x + ele.w, ele.y + ele.h);
-      ctx.lineTo(ele.x, ele.y + ele.h);
-      ctx.closePath();
-      if (ctx.isPointInPath(p.x, p.y)) {
-        idx = i;
-        uuid = ele.uuid;
+
+      rotateElement(ctx, ele, () => {
+        ctx.beginPath();
+        ctx.moveTo(ele.x, ele.y);
+        ctx.lineTo(ele.x + ele.w, ele.y);
+        ctx.lineTo(ele.x + ele.w, ele.y + ele.h);
+        ctx.lineTo(ele.x, ele.y + ele.h);
+        ctx.lineTo(ele.x, ele.y);
+
+        ctx.rect(ele.x, ele.y, ele.w, ele.h);
+        ctx.closePath();
+        if (ctx.isPointInPath(p.x, p.y)) {
+          idx = i;
+          uuid = ele.uuid;
+        }
+      });
+
+      if (idx >= 0) {
         break;
       }
     }

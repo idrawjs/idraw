@@ -135,15 +135,22 @@ class Core {
   }
 
   private _handlePoint(point: TypePoint) {
+
+    // console.log('handlePoint = ', point);
+
     const [uuid, direction] = this[_helper].isPointInElementWrapperDot(point);
+    console.log('uuid, direction =', uuid, direction);
+    
     if (uuid && direction) {
       this[_mode] = Mode.SELECT_ELEMENT_WRAPPER_DOT;
       this[_selectedDotDirection] = direction;
       this[_selectedUUID] = uuid;
     } else {
       const [index] = this[_element].isPointInElement(point, this[_data]);
+      // console.log('index ===', index);
       this.selectElement(index);
     }
+    // console.log('this[_mode] =', this[_mode], point)
   }
 
   private _handleMoveStart(point: TypePoint) {
