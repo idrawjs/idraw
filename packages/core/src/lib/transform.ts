@@ -4,14 +4,14 @@ import {
   TypeElement,
   TypeElemDesc,
 } from '@idraw/types';
-import { translateRotateCenter, translateRotateAngle } from './calculate';
+import { calcElementCenter, translateRotateAngle } from './calculate';
 
 function rotateElement(
   ctx: TypeContext,
   elem: TypeElement<keyof TypeElemDesc>,
   callback: (ctx: TypeContext) => void
 ) {
-  const center: TypePoint = translateRotateCenter(elem);
+  const center: TypePoint = calcElementCenter(elem);
   const angle = translateRotateAngle(elem.angle);
   return rotateContext(ctx, center, angle || 0, callback);
 }

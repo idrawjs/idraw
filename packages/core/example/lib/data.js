@@ -23,7 +23,7 @@ const data = {
       y: 80,
       w: 200,
       h: 120,
-      angle: 30,
+      // angle: 30,
       type: 'rect',
       desc: {
         color: '#cccccc',
