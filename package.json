@@ -11,7 +11,9 @@
     "jest": "jest --config jest.config.js",
     "test": "lerna bootstrap --no-ci && npm run build && npm run jest && npm run e2e",
     "serve": "http-server ./",
-    "lint": "eslint  --fix --ext .ts packages/*/src/**"
+    "lint": "eslint  --fix --ext .ts packages/*/src/**",
+    "precommit": "npm run lint",
+    "prepush": "npm run lint"
   },
   "devDependencies": {
     "@babel/core": "^7.13.14",
