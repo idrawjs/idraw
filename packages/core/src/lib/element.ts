@@ -6,7 +6,7 @@ import {
   // TypeElement,
   // TypeElemDesc,
 } from '@idraw/types';
-import util from './../util';
+import util from '@idraw/util';
 import { rotateElement } from './transform';
 import { calcRadian, calcElementCenter, parseRadianToAngle } from './calculate';
 

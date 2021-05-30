@@ -15,6 +15,7 @@
     "@idraw/types": "^0.0.3"
   },
   "dependencies": {
-    "@idraw/board": "^0.0.3"
+    "@idraw/board": "^0.0.3",
+    "@idraw/util": "^0.0.3"
   }
 }

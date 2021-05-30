@@ -1,6 +1,7 @@
 {
   "packages": [
     "packages/types",
+    "packages/util",
     "packages/board",
     "packages/core",
     "packages/idraw"

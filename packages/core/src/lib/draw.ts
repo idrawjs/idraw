@@ -6,7 +6,7 @@ import {
   TypeHelperConfig,
   // TypePoint,
 } from '@idraw/types';
-import util from './../util';
+import util from '@idraw/util';
 import { rotateContext, rotateElement } from './transform';
 
 const { isColorStr } = util.color;
