@@ -9,7 +9,7 @@
   - [] Rect
   - [] Circle
   - [] Image
-  - [] Point
+  - [] Write
 - [x] Drag elements
 - [x] Move elements' index
 - [x] Rotate elements

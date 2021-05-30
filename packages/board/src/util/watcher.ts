@@ -5,7 +5,7 @@ import { BoardEvent, TypeBoardEventArgMap } from './event';
 export class Watcher {
 
   private _canvas: HTMLCanvasElement;
-  private _isMoving: boolean = false;
+  private _isMoving = false;
   // private _onMove?: TypeWatchCallback;
   // private _onMoveStart?: TypeWatchCallback;
   // private _onMoveEnd?: TypeWatchCallback;
@@ -18,15 +18,15 @@ export class Watcher {
     this._event = new BoardEvent;
   }
 
-  on<T extends keyof TypeBoardEventArgMap >(name: T, callback: (p: TypeBoardEventArgMap[T]) => void) {
-    this._event.on(name, callback)
+  on<T extends keyof TypeBoardEventArgMap >(name: T, callback: (p: TypeBoardEventArgMap[T]) => void): void {
+    this._event.on(name, callback);
   }
 
-  off<T extends keyof TypeBoardEventArgMap >(name: T, callback: (p: TypeBoardEventArgMap[T]) => void) {
-    this._event.off(name, callback)
+  off<T extends keyof TypeBoardEventArgMap >(name: T, callback: (p: TypeBoardEventArgMap[T]) => void): void {
+    this._event.off(name, callback);
   }
 
-  _initEvent() {
+  _initEvent(): void {
     const canvas = this._canvas;
     canvas.addEventListener('mousedown', this._listenMoveStart.bind(this));
     canvas.addEventListener('mousemove', this._listenMove.bind(this));
@@ -36,16 +36,16 @@ export class Watcher {
     canvas.addEventListener('touchmove', this._listenMove.bind(this));
     canvas.addEventListener('touchend', this._listenMoveEnd.bind(this));
 
-    const mouseupEvent = new MouseEvent('mouseup');
-    document.querySelector('body')?.addEventListener('mousemove', (e) => {
-      // @ts-ignore
-      if (e && e.path && e.path[0] !== canvas) {
-        canvas.dispatchEvent(mouseupEvent);
-      }
-    }, false)
+    // const mouseupEvent = new MouseEvent('mouseup');
+    // document.querySelector('body')?.addEventListener('mousemove', (e) => {
+    //   // @ts-ignore
+    //   if (e && e.path && e.path[0] !== canvas) {
+    //     canvas.dispatchEvent(mouseupEvent);
+    //   }
+    // }, false)
   }
 
-  _listenMoveStart(e: MouseEvent|TouchEvent) {
+  _listenMoveStart(e: MouseEvent|TouchEvent): void {
     e.preventDefault();
     const p = this._getPosition(e);
     if (this._isVaildPoint(p)) {
@@ -59,7 +59,7 @@ export class Watcher {
     this._isMoving = true;
   }
   
-  _listenMove(e: MouseEvent|TouchEvent) {
+  _listenMove(e: MouseEvent|TouchEvent): void {
     e.preventDefault();
     e.stopPropagation();
     if (this._event.has('move') && this._isMoving === true) {
@@ -70,7 +70,7 @@ export class Watcher {
     }
   }
   
-  _listenMoveEnd(e: MouseEvent|TouchEvent) {
+  _listenMoveEnd(e: MouseEvent|TouchEvent): void {
     e.preventDefault();
     if (this._event.has('moveEnd')) {
       const p = this._getPosition(e);
@@ -81,7 +81,7 @@ export class Watcher {
     this._isMoving = false;
   }
 
-  _getPosition(e: MouseEvent|TouchEvent) {
+  _getPosition(e: MouseEvent|TouchEvent): TypePoint {
     const canvas = this._canvas;
     let x = 0;
     let y = 0;
@@ -105,8 +105,8 @@ export class Watcher {
     return p;
   }
 
-  private _isVaildPoint(p: TypePoint) {
-    return ( p.x > 0 && p.y > 0)
+  private _isVaildPoint(p: TypePoint): boolean {
+    return ( p.x > 0 && p.y > 0);
   }
   
 }

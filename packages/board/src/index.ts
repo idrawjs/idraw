@@ -19,12 +19,12 @@ class Board {
   private _displayCanvas: HTMLCanvasElement;
   private _mount: HTMLDivElement;
   private _opts: PrivateOptions;
-  private _hasRendered: boolean = false;
+  private _hasRendered = false;
   private _ctx: Context;
   private _displayCtx: CanvasRenderingContext2D;
-  private _scaleRatio: number = 1;
-  private _scrollX: number = 0;
-  private _scrollY: number = 0;
+  private _scaleRatio = 1;
+  private _scrollX = 0;
+  private _scrollY = 0;
   private _watcher: Watcher;
 
   constructor(mount: HTMLDivElement, opts: Options) {
@@ -78,15 +78,15 @@ class Board {
   }
 
   clear() {
-    this._displayCtx.clearRect(0, 0, this._displayCanvas.width, this._displayCanvas.height)
+    this._displayCtx.clearRect(0, 0, this._displayCanvas.width, this._displayCanvas.height);
   }
 
   on<T extends keyof TypeBoardEventArgMap >(name: T, callback: (p: TypeBoardEventArgMap[T]) => void) {
-    this._watcher.on(name, callback)
+    this._watcher.on(name, callback);
   }
 
   off<T extends keyof TypeBoardEventArgMap >(name: T, callback: (p: TypeBoardEventArgMap[T]) => void) {
-    this._watcher.off(name, callback)
+    this._watcher.off(name, callback);
   }
 
   private _render() {
@@ -113,8 +113,8 @@ class Board {
   private _parsePrivateOptions(opts: Options): PrivateOptions {
     const defaultOpts = {
       devicePixelRatio: 1,
-    }
-    return { ...defaultOpts, ...opts }
+    };
+    return { ...defaultOpts, ...opts };
   }
 
   private _calculateSize(): { x: number; y: number; w: number; h: number } {

@@ -18,8 +18,8 @@
 // console.log('data =', data)
 
 class IDraw {
-  render() {
-    console.log('hello world')
+  render(): void {
+    console.log('hello world');
   }
 }
 

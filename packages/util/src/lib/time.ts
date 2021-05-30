@@ -1,23 +1,24 @@
+type  Middleware = (ctx: any, next: Middleware) => any;
 
-export function compose (middleware: Function[]) {
-  return function (context: any, next?: Function) {
+export function compose (middleware: Middleware[]): (context: any, next?: Middleware) => any {
+  return function (context: any, next?: Middleware) {
     // let index = -1;
     return dispatch(0);
 
     function dispatch (i: number): Promise<any> {
       // index = i
-      let fn = middleware[i]
+      let fn: Middleware = middleware[i];
       if (i === middleware.length && next) {
         fn = next;
       }
-      if (!fn) return Promise.resolve()
+      if (!fn) return Promise.resolve();
       try {
         return Promise.resolve(fn(context, dispatch.bind(null, i + 1)));
       } catch (err) {
-        return Promise.reject(err)
+        return Promise.reject(err);
       }
     }
-  }
+  };
 }
 
 
@@ -26,10 +27,10 @@ export function delay(time: number): Promise<void> {
     setTimeout(() => {
       resolve();
     }, time);
-  })
+  });
 }
 
-export function throttle(fn: Function, timeout: number) {
+export function throttle(fn: (...args: any[]) => any, timeout: number): (...args: any[]) => any {
   let timer: any = -1;
   return function(...args: any[]) {
     if (timer > 0) {
@@ -38,7 +39,7 @@ export function throttle(fn: Function, timeout: number) {
     timer = setTimeout(() => {
       fn(...args);
       timer = -1;
-    }, timeout)
-  }
+    }, timeout);
+  };
 }
 

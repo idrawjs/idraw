@@ -1,6 +1,6 @@
 import { TypeData, TypePoint, TypeHelperWrapperDotDirection, TypeConfig, TypeConfigStrict } from '@idraw/types';
 import Board from '@idraw/board';
-import Renderer from './lib/renderer';
+import { Renderer } from './lib/renderer';
 import { Element } from './lib/element';
 import { Helper } from './lib/helper';
 import { mergeConfig } from './lib/config';
@@ -40,7 +40,7 @@ class Core {
   private [_renderer]: Renderer;
   private [_element]: Element;
   private [_helper]: Helper;
-  private [_hasInited]: boolean = false; 
+  private [_hasInited] = false; 
   private [_mode]: Mode = Mode.NULL;
 
   private [_selectedUUID]: string | null = null;
@@ -59,7 +59,7 @@ class Core {
     this[_hasInited] = true;
   }
 
-  draw() {
+  draw(): void {
     this[_helper].updateConfig(this[_data], {
       selectedUUID: this[_selectedUUID],
       devicePixelRatio: this[_opts].devicePixelRatio,
@@ -68,7 +68,7 @@ class Core {
     this[_renderer].render(this[_data], this[_helper].getConfig());
   }
 
-  selectElement(index: number) {
+  selectElement(index: number): void {
     if (this[_data].elements[index]) {
       const uuid = this[_data].elements[index].uuid;
       this[_mode] = Mode.SELECT_ELEMENT;
@@ -77,14 +77,14 @@ class Core {
     }
   }
 
-  selectElementByUUID(uuid: string) {
+  selectElementByUUID(uuid: string): void {
     const index = this[_helper].getElementIndexByUUID(uuid);
     if (typeof index === 'number' && index >= 0) {
       this.selectElement(index);
     }
   }
 
-  moveUpElement(uuid: string) {
+  moveUpElement(uuid: string): void {
     const index = this[_helper].getElementIndexByUUID(uuid);
     if (typeof index === 'number' && index >= 0 && index < this[_data].elements.length - 1) {
       const temp = this[_data].elements[index];
@@ -94,7 +94,7 @@ class Core {
     this.draw();
   }
 
-  moveDownElement(uuid: string) {
+  moveDownElement(uuid: string): void {
     const index = this[_helper].getElementIndexByUUID(uuid);
     if (typeof index === 'number' && index > 0 && index < this[_data].elements.length) {
       const temp = this[_data].elements[index];
@@ -104,15 +104,15 @@ class Core {
     this.draw();
   }
 
-  scale(ratio: number) {
+  scale(ratio: number): void {
     this[_board].scale(ratio);
   }
 
-  scrollX(x: number) {
+  scrollX(x: number): void {
     this[_board].scrollX(x);
   }
 
-  scrollY(y: number) {
+  scrollY(y: number): void {
     this[_board].scrollY(y);
   }
 
@@ -120,11 +120,11 @@ class Core {
     return JSON.parse(JSON.stringify(this[_data]));
   }
 
-  setData(data: TypeData) {
-    return this[_data] = this[_element].initData(data);
+  setData(data: TypeData): void {
+    this[_data] = this[_element].initData(data);
   }
 
-  private _initEvent() {
+  private _initEvent(): void {
     if (this[_hasInited] === true) {
       return;
     }
@@ -134,7 +134,7 @@ class Core {
     this[_board].on('moveEnd', this._handleMoveEnd.bind(this));
   }
 
-  private _handlePoint(point: TypePoint) {
+  private _handlePoint(point: TypePoint): void {
 
     const [uuid, direction] = this[_helper].isPointInElementWrapperDot(point);
     
@@ -150,11 +150,11 @@ class Core {
     // console.log('this[_mode] =', this[_mode], point)
   }
 
-  private _handleMoveStart(point: TypePoint) {
+  private _handleMoveStart(point: TypePoint): void {
     this[_prevPoint] = point;
   }
 
-  private _handleMove(point: TypePoint) {
+  private _handleMove(point: TypePoint): void {
     if (typeof this[_selectedUUID] === 'string') {
       if (this[_mode] === Mode.SELECT_ELEMENT) {
         this._dragElement(this[_selectedUUID] as string, point, this[_prevPoint]);
@@ -167,12 +167,12 @@ class Core {
     this[_prevPoint] = point;
   }
 
-  private _handleMoveEnd(point: TypePoint) {
+  private _handleMoveEnd(): void {
     this[_selectedUUID] = null;
     this[_prevPoint] = null;
   }
 
-  private _dragElement(uuid: string, point: TypePoint, prevPoint: TypePoint|null) {
+  private _dragElement(uuid: string, point: TypePoint, prevPoint: TypePoint|null): void {
     if (!prevPoint) {
       return;
     }

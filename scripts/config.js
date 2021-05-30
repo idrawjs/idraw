@@ -1,6 +1,10 @@
 module.exports = {
   packages: [
     {
+      dirName: 'util',
+      globalName: 'iDraw.util',
+    },
+    {
       dirName: 'board',
       globalName: 'iDraw.Board',
     },

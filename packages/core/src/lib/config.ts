@@ -7,13 +7,13 @@ const defaultConfig: TypeConfigStrict = {
     lineWidth: 1,
     lineDash: [4, 3],
   }
-}
+};
 
 function mergeConfig(config?: TypeConfig): TypeConfigStrict {
   const result = defaultConfig;
   if (config) {
     if (config.elementWrapper) {
-      result.elementWrapper = {...result.elementWrapper, ...config.elementWrapper}
+      result.elementWrapper = {...result.elementWrapper, ...config.elementWrapper};
     }
   }
   return result;
@@ -21,5 +21,5 @@ function mergeConfig(config?: TypeConfig): TypeConfigStrict {
 
 export {
   mergeConfig,
-}
+};
 

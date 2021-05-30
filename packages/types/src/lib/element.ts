@@ -47,4 +47,4 @@ export {
   TypeElemDescCircle,
   TypeElemDesc,
   TypeElement,
-}
+};

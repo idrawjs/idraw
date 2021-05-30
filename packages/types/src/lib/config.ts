@@ -19,4 +19,4 @@ type TypeConfigStrict = TypeConfig & {
 export {
   TypeConfig,
   TypeConfigStrict
-}
+};

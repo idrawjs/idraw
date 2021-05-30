@@ -6,14 +6,14 @@ import {
   TypeHelperConfig,
   // TypePoint,
 } from '@idraw/types';
-import util from './../util';
+import util from '@idraw/util';
 import { rotateContext, rotateElement } from './transform';
 
 const { isColorStr } = util.color;
 
-export function drawContext(ctx: TypeContext, data: TypeData, config: TypeHelperConfig) {
+export function drawContext(ctx: TypeContext, data: TypeData, config: TypeHelperConfig): void {
   const size = ctx.getSize();
-  ctx.clearRect(0, 0, size.width, size.height)
+  ctx.clearRect(0, 0, size.width, size.height);
 
   if (typeof data.bgColor === 'string' && isColorStr(data.bgColor)) {
     drawBgColor(ctx, data.bgColor);
@@ -23,7 +23,7 @@ export function drawContext(ctx: TypeContext, data: TypeData, config: TypeHelper
     switch (ele.type) {
       case 'rect': {
         drawRect<'rect'>(ctx, ele as TypeElement<'rect'>);
-      };
+      }
       default: {
         // nothing
       }

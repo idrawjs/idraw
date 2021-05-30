@@ -34,7 +34,7 @@ class Context implements TypeContext {
       scale: 1,
       scrollX: 0,
       scrollY: 0,
-    }
+    };
   }
 
   getSize() {
@@ -42,7 +42,7 @@ class Context implements TypeContext {
       width: this._opts.width,
       height: this._opts.height,
       devicePixelRatio: this._opts.devicePixelRatio,
-    }
+    };
   }
 
   setTransform(config: Transform) {
@@ -54,7 +54,7 @@ class Context implements TypeContext {
       scale: this._transform.scale,
       scrollX: this._transform.scrollX,
       scrollY: this._transform.scrollY,
-    }
+    };
   }
 
   setFillStyle(color: string) {
@@ -132,7 +132,7 @@ class Context implements TypeContext {
   }
   
   rotate(angle: number) {
-    return this._ctx.rotate(angle)
+    return this._ctx.rotate(angle);
   }
 
   private _doSize(num: number) {
