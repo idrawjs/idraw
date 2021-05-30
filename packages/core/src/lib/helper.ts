@@ -10,8 +10,8 @@ import {
   TypePoint,
   TypeConfigStrict,
 } from '@idraw/types';
-import { translateRotateAngle, translateRotateCenter } from './calculate';
-import { rotateContext } from './transform';
+import { parseAngleToRadian, calcElementCenter } from './calculate';
+import { rotateContext, } from './transform';
 
 export class Helper implements TypeHelper {
 
@@ -65,7 +65,7 @@ export class Helper implements TypeHelper {
       'bottom-right', 'bottom', 'bottom-left', 'left', 
       'rotate',
     ];
-    rotateContext(ctx, wrapper.translate, wrapper.angle || 0, () => {
+    rotateContext(ctx, wrapper.translate, wrapper.radian || 0, () => {
       for (let i = 0; i < dots.length; i ++) {
         const dot = dots[i];
         ctx.beginPath();
@@ -150,8 +150,8 @@ export class Helper implements TypeHelper {
     };
 
     if (typeof elem.angle === 'number' && (elem.angle > 0 || elem.angle < 0)) {
-      wrapper.angle = translateRotateAngle(elem.angle);
-      wrapper.translate = translateRotateCenter(elem);
+      wrapper.radian = parseAngleToRadian(elem.angle);
+      wrapper.translate = calcElementCenter(elem);
     }
 
     this._helperConfig.selectedElementWrapper = wrapper;

@@ -4,36 +4,36 @@ import {
   TypeElement,
   TypeElemDesc,
 } from '@idraw/types';
-import { translateRotateCenter, translateRotateAngle } from './calculate';
+import { calcElementCenter, parseAngleToRadian } from './calculate';
 
 function rotateElement(
   ctx: TypeContext,
   elem: TypeElement<keyof TypeElemDesc>,
   callback: (ctx: TypeContext) => void
 ) {
-  const center: TypePoint = translateRotateCenter(elem);
-  const angle = translateRotateAngle(elem.angle);
-  return rotateContext(ctx, center, angle || 0, callback);
+  const center: TypePoint = calcElementCenter(elem);
+  const radian = parseAngleToRadian(elem.angle || 0);
+  return rotateContext(ctx, center, radian || 0, callback);
 }
 
 
 function rotateContext(
   ctx: TypeContext,
   center: TypePoint | undefined,
-  angle: number,
+  radian: number,
   callback: (ctx: TypeContext) => void
 ): void {
-  if (center && (angle > 0 || angle < 0)) {
+  if (center && (radian > 0 || radian < 0)) {
     ctx.translate(center.x, center.y);
-    ctx.rotate(angle);
+    ctx.rotate(radian);
     ctx.translate(- center.x, - center.y);
   }
 
   callback(ctx);
 
-  if (center && (angle > 0 || angle < 0)) {
+  if (center && (radian > 0 || radian < 0)) {
     ctx.translate(center.x, center.y);
-    ctx.rotate(- angle);
+    ctx.rotate(- radian);
     ctx.translate(- center.x, - center.y);
   }
 }

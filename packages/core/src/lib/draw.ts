@@ -54,7 +54,7 @@ function drawElementWrapper(ctx: TypeContext, config: TypeHelperConfig) {
   }
   const wrapper = config.selectedElementWrapper;
 
-  rotateContext(ctx, wrapper.translate, wrapper.angle || 0, () => {
+  rotateContext(ctx, wrapper.translate, wrapper.radian || 0, () => {
     // draw wrapper's box
     ctx.beginPath();
     ctx.setLineDash(wrapper.lineDash);
