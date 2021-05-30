@@ -3,6 +3,7 @@ import { delay, compose, throttle } from './lib/time';
 import { downloadImageFromCanvas } from './lib/file';
 import { toColorHexStr, toColorHexNum, isColorStr } from './lib/color';
 import { createUUID } from './lib/uuid';
+import { deepClone } from './lib/data';
 import istype from './lib/istype';
 
 export default {
@@ -26,4 +27,7 @@ export default {
     createUUID
   },
   istype,
+  data: {
+    deepClone,
+  }
 };

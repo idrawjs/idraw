@@ -1,6 +1,6 @@
 import { TypeData, TypePoint, TypeHelperWrapperDotDirection, TypeConfig, TypeConfigStrict } from '@idraw/types';
 import Board from '@idraw/board';
-import Renderer from './lib/renderer';
+import { Renderer } from './lib/renderer';
 import { Element } from './lib/element';
 import { Helper } from './lib/helper';
 import { mergeConfig } from './lib/config';
