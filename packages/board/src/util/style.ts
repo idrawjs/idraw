@@ -20,7 +20,8 @@ export const mergeCSS2StyleAttr = function(
 
 export function setStyle(
   dom: HTMLElement, 
-  style: {[key: string]: string} ) {
+  style: {[key: string]: string}
+): void {
   const originStyle = getStyle(dom);
   const _style = {...originStyle, ...style}
   const keys: string[] = Object.keys(_style);
@@ -85,7 +86,7 @@ export function setDomTransform(dom: HTMLElement, matrix: {
   scaleY: number;
   translateX: number;
   translateY: number;
-}) {
+}): void {
   // transform: matrix( scaleX(), skewY(), skewX(), scaleY(), translateX(), translateY() )
   // matrix(1, 2, -1, 1, 80, 80)
 

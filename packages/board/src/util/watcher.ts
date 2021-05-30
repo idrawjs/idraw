@@ -18,15 +18,15 @@ export class Watcher {
     this._event = new BoardEvent;
   }
 
-  on<T extends keyof TypeBoardEventArgMap >(name: T, callback: (p: TypeBoardEventArgMap[T]) => void) {
+  on<T extends keyof TypeBoardEventArgMap >(name: T, callback: (p: TypeBoardEventArgMap[T]) => void): void {
     this._event.on(name, callback)
   }
 
-  off<T extends keyof TypeBoardEventArgMap >(name: T, callback: (p: TypeBoardEventArgMap[T]) => void) {
+  off<T extends keyof TypeBoardEventArgMap >(name: T, callback: (p: TypeBoardEventArgMap[T]) => void): void {
     this._event.off(name, callback)
   }
 
-  _initEvent() {
+  _initEvent(): void {
     const canvas = this._canvas;
     canvas.addEventListener('mousedown', this._listenMoveStart.bind(this));
     canvas.addEventListener('mousemove', this._listenMove.bind(this));
@@ -45,7 +45,7 @@ export class Watcher {
     // }, false)
   }
 
-  _listenMoveStart(e: MouseEvent|TouchEvent) {
+  _listenMoveStart(e: MouseEvent|TouchEvent): void {
     e.preventDefault();
     const p = this._getPosition(e);
     if (this._isVaildPoint(p)) {
@@ -59,7 +59,7 @@ export class Watcher {
     this._isMoving = true;
   }
   
-  _listenMove(e: MouseEvent|TouchEvent) {
+  _listenMove(e: MouseEvent|TouchEvent): void {
     e.preventDefault();
     e.stopPropagation();
     if (this._event.has('move') && this._isMoving === true) {
@@ -70,7 +70,7 @@ export class Watcher {
     }
   }
   
-  _listenMoveEnd(e: MouseEvent|TouchEvent) {
+  _listenMoveEnd(e: MouseEvent|TouchEvent): void {
     e.preventDefault();
     if (this._event.has('moveEnd')) {
       const p = this._getPosition(e);
@@ -81,7 +81,7 @@ export class Watcher {
     this._isMoving = false;
   }
 
-  _getPosition(e: MouseEvent|TouchEvent) {
+  _getPosition(e: MouseEvent|TouchEvent): TypePoint {
     const canvas = this._canvas;
     let x = 0;
     let y = 0;
@@ -105,7 +105,7 @@ export class Watcher {
     return p;
   }
 
-  private _isVaildPoint(p: TypePoint) {
+  private _isVaildPoint(p: TypePoint): boolean {
     return ( p.x > 0 && p.y > 0)
   }
   

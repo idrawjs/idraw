@@ -10,7 +10,7 @@ function rotateElement(
   ctx: TypeContext,
   elem: TypeElement<keyof TypeElemDesc>,
   callback: (ctx: TypeContext) => void
-) {
+): void {
   const center: TypePoint = calcElementCenter(elem);
   const radian = parseAngleToRadian(elem.angle || 0);
   return rotateContext(ctx, center, radian || 0, callback);

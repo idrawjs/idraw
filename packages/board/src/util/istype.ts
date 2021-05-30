@@ -1,56 +1,56 @@
-function parsePrototype (data: any) {
+function parsePrototype (data: any): string {
   const typeStr = Object.prototype.toString.call(data) || '';
   const result = typeStr.replace(/(\[object|\])/ig, '').trim();
   return result;
 }
 const istype = {
 
-  type(data: any, lowerCase?: boolean) {
+  type(data: any, lowerCase?: boolean): string {
     const result = parsePrototype(data);
     return lowerCase === true ? result.toLocaleLowerCase() : result;
   },
 
-  array (data: any) {
+  array (data: any): boolean {
     return parsePrototype(data) === 'Array';
   },
 
-  json (data: any) {
+  json (data: any): boolean {
     return parsePrototype(data) === 'Object';
   },
 
-  function (data: any) {
+  function (data: any): boolean {
     return parsePrototype(data) === 'Function';
   },
 
-  asyncFunction (data: any) {
+  asyncFunction (data: any): boolean {
     return parsePrototype(data) === 'AsyncFunction';
   },
 
-  string (data: any) {
+  string (data: any): boolean {
     return parsePrototype(data) === 'String';
   },
 
-  number (data: any) {
+  number (data: any): boolean {
     return parsePrototype(data) === 'Number';
   },
 
-  undefined (data: any) {
+  undefined (data: any): boolean {
     return parsePrototype(data) === 'Undefined';
   },
 
-  null (data: any) {
+  null (data: any): boolean {
     return parsePrototype(data) === 'Null';
   },
 
-  promise (data: any) {
+  promise (data: any): boolean {
     return parsePrototype(data) === 'Promise';
   },
 
-  nodeList (data: any) {
+  nodeList (data: any): boolean {
     return parsePrototype(data) === 'NodeList';
   },
 
-  imageData(data: any) {
+  imageData(data: any): boolean {
     return parsePrototype(data) === 'ImageData';
   }
   

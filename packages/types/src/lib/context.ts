@@ -15,7 +15,7 @@ interface TypeContext {
     devicePixelRatio: number;
   };
   setFillStyle(color: string): void;
-  fill(fillRule?: CanvasFillRule | undefined): any;
+  fill(fillRule?: CanvasFillRule | undefined): void;
   arc(x: number, y: number, radius: number, startAngle: number, endAngle: number, anticlockwise?: boolean | undefined): void;
   fillRect(x: number, y: number, w: number, h: number): void;
   clearRect(x: number, y: number, w: number, h: number): void;

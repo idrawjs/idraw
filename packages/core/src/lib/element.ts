@@ -19,7 +19,7 @@ export class Element {
     this._ctx = ctx;
   }
 
-  initData (data: TypeData) {
+  initData (data: TypeData): TypeData {
     data.elements.forEach((elem) => {
       if (!(elem.uuid && typeof elem.uuid === 'string')) {
         elem.uuid = createUUID();
@@ -58,7 +58,7 @@ export class Element {
     return [idx, uuid];
   }
 
-  dragElement(data: TypeData, uuid: string, point: TypePoint, prevPoint: TypePoint, scale: number) {
+  dragElement(data: TypeData, uuid: string, point: TypePoint, prevPoint: TypePoint, scale: number): void {
     const index = this.getElementIndex(data, uuid);
     if (!data.elements[index]) {
       return;
@@ -69,7 +69,7 @@ export class Element {
     data.elements[index].y += (moveY / scale);
   }
 
-  transformElement(data: TypeData, uuid: string, point: TypePoint, prevPoint: TypePoint, scale: number, direction: TypeHelperWrapperDotDirection) {
+  transformElement(data: TypeData, uuid: string, point: TypePoint, prevPoint: TypePoint, scale: number, direction: TypeHelperWrapperDotDirection): void {
     const index = this.getElementIndex(data, uuid);
     if (!data.elements[index]) {
       return;
@@ -134,7 +134,7 @@ export class Element {
     }
   }
 
-  getElementIndex(data: TypeData, uuid: string) {
+  getElementIndex(data: TypeData, uuid: string): number {
     let idx = -1;
     for (let i = 0; i < data.elements.length; i++) {
       if (data.elements[i].uuid === uuid) {

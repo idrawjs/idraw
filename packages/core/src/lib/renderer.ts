@@ -13,7 +13,7 @@ export default class Renderer {
     this._ctx = this._board.getContext();
   }
 
-  render(data: TypeData, config: TypeHelperConfig) {
+  render(data: TypeData, config: TypeHelperConfig): void {
     this._data = data;
     drawContext(this._ctx, this._data, config);
     this._board.draw();

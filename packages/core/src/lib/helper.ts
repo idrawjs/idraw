@@ -29,12 +29,13 @@ export class Helper implements TypeHelper {
 
   updateConfig (
     data: TypeData,
-    opts: TypeHelperUpdateOpts ) {
+    opts: TypeHelperUpdateOpts
+  ): void {
     this._updateElementIndex(data);
     this._updateSelectedElementWrapper(data, opts);
   }
 
-  getConfig() {
+  getConfig(): TypeHelperConfig {
     // TODO 
     return JSON.parse(JSON.stringify(this._helperConfig));
   }

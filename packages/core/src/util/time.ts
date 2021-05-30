@@ -1,6 +1,6 @@
 type  Middleware = (ctx: any, next: Middleware) => any;
 
-export function compose (middleware: Middleware[]) {
+export function compose (middleware: Middleware[]): (context: any, next?: Middleware) => any {
   return function (context: any, next?: Middleware) {
     // let index = -1;
     return dispatch(0);
@@ -30,7 +30,7 @@ export function delay(time: number): Promise<void> {
   })
 }
 
-export function throttle(fn: (...args: any[]) => any, timeout: number) {
+export function throttle(fn: (...args: any[]) => any, timeout: number): (...args: any[]) => any {
   let timer: any = -1;
   return function(...args: any[]) {
     if (timer > 0) {

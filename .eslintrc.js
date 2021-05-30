@@ -6,7 +6,6 @@ module.exports = {
     "sourceType": "module"
   },
   "rules": {
-    "@typescript-eslint/rule-name": "off",
     "indent": ["error", 2, {
       "SwitchCase": 1,
       "VariableDeclarator": 1,
@@ -21,5 +20,8 @@ module.exports = {
       "flatTernaryExpressions": false,
       "ignoreComments": false
     }],
+    "@typescript-eslint/rule-name": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off"
   }
 }

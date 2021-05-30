@@ -18,7 +18,7 @@
 // console.log('data =', data)
 
 class IDraw {
-  render() {
+  render(): void {
     console.log('hello world')
   }
 }
