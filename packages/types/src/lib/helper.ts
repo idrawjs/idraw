@@ -22,7 +22,7 @@ type TypeHelperConfig = {
     lineDash: number[];
     lineWidth: number;
     color: string;
-    angle?: number;
+    radian?: number;
     translate?: TypePoint;
   }
 }

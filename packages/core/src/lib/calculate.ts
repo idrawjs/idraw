@@ -5,6 +5,14 @@ import {
 } from '@idraw/types';
 
 
+export function parseRadianToAngle(radian: number): number {
+  return radian / Math.PI * 180;
+}
+
+export function parseAngleToRadian(angle: number): number {
+  return angle / 180 * Math.PI;
+}
+
 export function calcElementCenter(elem: TypeElement<keyof TypeElemDesc>): TypePoint {
   const p = {
     x: elem.x + elem.w / 2,
@@ -13,17 +21,8 @@ export function calcElementCenter(elem: TypeElement<keyof TypeElemDesc>): TypePo
   return p;
 }
 
-export function translateRotateAngle(angle?: number) {
-  if (typeof angle === 'number' && (angle > 0 || angle <= 0)) {
-    const _angle = angle / 360 * (2 * Math.PI);
-    return _angle;
-  } else {
-    return 0;
-  }
-}
 
-
-export function calcAngle(center: TypePoint, start: TypePoint, end: TypePoint): number {
+export function calcRadian(center: TypePoint, start: TypePoint, end: TypePoint): number {
   const startAngle = calcLineAngle(center, start);
   const endAngle = calcLineAngle(center, end);
   if (endAngle !== null && startAngle !== null ) {

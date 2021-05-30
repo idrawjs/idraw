@@ -8,7 +8,7 @@ import {
 } from '@idraw/types';
 import util from './../util';
 import { rotateElement } from './transform';
-import { calcAngle, calcElementCenter } from './calculate';
+import { calcRadian, calcElementCenter, parseRadianToAngle } from './calculate';
 
 const { createUUID } = util.uuid;
 
@@ -77,7 +77,7 @@ export class Element {
     const moveX = (point.x - prevPoint.x) / scale;
     const moveY = (point.y - prevPoint.y) / scale;
     const elem = data.elements[index];
-    const { devicePixelRatio } = this._ctx.getSize();
+    // const { devicePixelRatio } = this._ctx.getSize();
 
     switch (direction) {
       case 'top-left': {
@@ -124,12 +124,8 @@ export class Element {
       };
       case 'rotate': {
         const center = calcElementCenter(elem);
-        const angle = calcAngle(center, prevPoint, point);
-        // if (!elem.angle) {
-        //   elem.angle = 0;
-        // }
-        // console.log('angle =', angle / Math.PI * 180);
-        elem.angle = (elem.angle || 0) + angle * devicePixelRatio;
+        const radian = calcRadian(center, prevPoint, point);
+        elem.angle = (elem.angle || 0) + parseRadianToAngle(radian);
         break;
       };
       default: {

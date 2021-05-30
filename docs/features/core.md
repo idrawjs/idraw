@@ -12,7 +12,7 @@
   - [] Point
 - [x] Drag elements
 - [x] Move elements' index
-- [] Rotate elements
+- [x] Rotate elements
 - [x] Transform elements's size
 - [] Undo action record
 - [] Controll elements by data
