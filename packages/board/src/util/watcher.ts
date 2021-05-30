@@ -19,11 +19,11 @@ export class Watcher {
   }
 
   on<T extends keyof TypeBoardEventArgMap >(name: T, callback: (p: TypeBoardEventArgMap[T]) => void): void {
-    this._event.on(name, callback)
+    this._event.on(name, callback);
   }
 
   off<T extends keyof TypeBoardEventArgMap >(name: T, callback: (p: TypeBoardEventArgMap[T]) => void): void {
-    this._event.off(name, callback)
+    this._event.off(name, callback);
   }
 
   _initEvent(): void {
@@ -106,7 +106,7 @@ export class Watcher {
   }
 
   private _isVaildPoint(p: TypePoint): boolean {
-    return ( p.x > 0 && p.y > 0)
+    return ( p.x > 0 && p.y > 0);
   }
   
 }

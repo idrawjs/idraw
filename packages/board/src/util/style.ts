@@ -15,7 +15,7 @@ export const mergeCSS2StyleAttr = function(
   }
   const styleAttr = cssList.join('; ');
   return styleAttr;
-}
+};
 
 
 export function setStyle(
@@ -23,11 +23,11 @@ export function setStyle(
   style: {[key: string]: string}
 ): void {
   const originStyle = getStyle(dom);
-  const _style = {...originStyle, ...style}
+  const _style = {...originStyle, ...style};
   const keys: string[] = Object.keys(_style);
   let styleStr = '';
   keys.forEach((key: string) => {
-    styleStr += `${key}:${_style[key] || ''};`
+    styleStr += `${key}:${_style[key] || ''};`;
   });
   dom.setAttribute('style', styleStr);
 }
@@ -41,7 +41,7 @@ export function getStyle(dom: HTMLElement): {[key: string]: string} {
     if (dataList[0] && typeof dataList[0] === 'string') {
       styleObj[dataList[0]] = dataList[1] || '';
     }
-  })
+  });
 
   return styleObj;
 }
@@ -74,7 +74,7 @@ export function getDomTransform(dom: HTMLElement): {
     scaleY: matrixList[3] || 1,
     translateX: matrixList[4] || 0,
     translateY: matrixList[5] || 0,
-  }
+  };
   return matrix;
 }
 

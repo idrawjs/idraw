@@ -1,4 +1,4 @@
-import { TypePoint } from '@idraw/types'
+import { TypePoint } from '@idraw/types';
 
 export interface TypeBoardEventArgMap {
   'point': TypePoint;
@@ -29,7 +29,7 @@ export class BoardEvent implements TypeBoardEvent {
     if (this._listeners.has(eventKey)) {
       const callbacks = this._listeners.get(eventKey);
       callbacks?.push(callback);
-      this._listeners.set(eventKey, callbacks || [])
+      this._listeners.set(eventKey, callbacks || []);
     } else {
       this._listeners.set(eventKey, [callback]);
     }
@@ -46,7 +46,7 @@ export class BoardEvent implements TypeBoardEvent {
           }
         }
       }
-      this._listeners.set(eventKey, callbacks || [])
+      this._listeners.set(eventKey, callbacks || []);
     }
   }
 

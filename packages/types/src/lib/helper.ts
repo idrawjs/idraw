@@ -51,4 +51,4 @@ export {
   TypeHelperConfig,
   TypeHelperUpdateOpts,
   TypeHelperWrapperDotDirection,
-}
+};

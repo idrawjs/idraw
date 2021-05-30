@@ -7,4 +7,4 @@ type TypeData = {
 
 export {
   TypeData
-}
+};

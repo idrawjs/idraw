@@ -5,4 +5,4 @@ type TypePoint = {
 
 export {
   TypePoint,
-}
+};

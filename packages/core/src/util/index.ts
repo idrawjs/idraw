@@ -24,4 +24,4 @@ export default {
   uuid: {
     createUUID
   }
-}
+};

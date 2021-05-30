@@ -13,7 +13,7 @@ const { isColorStr } = util.color;
 
 export function drawContext(ctx: TypeContext, data: TypeData, config: TypeHelperConfig): void {
   const size = ctx.getSize();
-  ctx.clearRect(0, 0, size.width, size.height)
+  ctx.clearRect(0, 0, size.width, size.height);
 
   if (typeof data.bgColor === 'string' && isColorStr(data.bgColor)) {
     drawBgColor(ctx, data.bgColor);

@@ -40,12 +40,12 @@ export function calcRadian(center: TypePoint, start: TypePoint, end: TypePoint):
 
 function calcLineAngle(center: TypePoint, p: TypePoint): number | null {
   const x = p.x - center.x;
-  const y = center.y - p.y
+  const y = center.y - p.y;
   if (x === 0) {
     if (y < 0) {
-      return Math.PI / 2
+      return Math.PI / 2;
     } else if (y > 0) {
-      return Math.PI * ( 3 / 2 )
+      return Math.PI * ( 3 / 2 );
     }
   } else if (y === 0) {
     if (x < 0) {
@@ -55,13 +55,13 @@ function calcLineAngle(center: TypePoint, p: TypePoint): number | null {
     }
   }
   if (x > 0 && y < 0) {
-    return Math.atan(Math.abs(y) / Math.abs(x))
+    return Math.atan(Math.abs(y) / Math.abs(x));
   } else if (x < 0 && y < 0) {
-    return Math.PI - Math.atan(Math.abs(y) / Math.abs(x))
+    return Math.PI - Math.atan(Math.abs(y) / Math.abs(x));
   } else if (x < 0 && y > 0) {
-    return Math.PI + Math.atan(Math.abs(y) / Math.abs(x))
+    return Math.PI + Math.atan(Math.abs(y) / Math.abs(x));
   } else if (x > 0 && y > 0) {
-    return Math.PI * 2 - Math.atan(Math.abs(y) / Math.abs(x))
+    return Math.PI * 2 - Math.atan(Math.abs(y) / Math.abs(x));
   }
   return null;
 }

@@ -43,7 +43,7 @@ export class Helper implements TypeHelper {
   getElementIndexByUUID(uuid: string): number | null {
     const index = this._helperConfig.elementIndexMap[uuid];
     if (index >= 0) {
-      return index
+      return index;
     }
     return null;
   }

@@ -6,6 +6,7 @@ module.exports = {
     "sourceType": "module"
   },
   "rules": {
+    "semi": "error",
     "indent": ["error", 2, {
       "SwitchCase": 1,
       "VariableDeclarator": 1,

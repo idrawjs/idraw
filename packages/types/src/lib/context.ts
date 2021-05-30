@@ -35,4 +35,4 @@ interface TypeContext {
 
 export {
   TypeContext
-}
+};

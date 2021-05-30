@@ -7,18 +7,18 @@ export function compose (middleware: Middleware[]): (context: any, next?: Middle
 
     function dispatch (i: number): Promise<any> {
       // index = i
-      let fn: Middleware = middleware[i]
+      let fn: Middleware = middleware[i];
       if (i === middleware.length && next) {
         fn = next;
       }
-      if (!fn) return Promise.resolve()
+      if (!fn) return Promise.resolve();
       try {
         return Promise.resolve(fn(context, dispatch.bind(null, i + 1)));
       } catch (err) {
-        return Promise.reject(err)
+        return Promise.reject(err);
       }
     }
-  }
+  };
 }
 
 
@@ -27,7 +27,7 @@ export function delay(time: number): Promise<void> {
     setTimeout(() => {
       resolve();
     }, time);
-  })
+  });
 }
 
 export function throttle(fn: (...args: any[]) => any, timeout: number): (...args: any[]) => any {
@@ -39,7 +39,7 @@ export function throttle(fn: (...args: any[]) => any, timeout: number): (...args
     timer = setTimeout(() => {
       fn(...args);
       timer = -1;
-    }, timeout)
-  }
+    }, timeout);
+  };
 }
 

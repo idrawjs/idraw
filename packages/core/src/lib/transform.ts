@@ -41,4 +41,4 @@ function rotateContext(
 export {
   rotateContext,
   rotateElement,
-}
+};
