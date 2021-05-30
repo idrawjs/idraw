@@ -40,7 +40,7 @@ class Core {
   private [_renderer]: Renderer;
   private [_element]: Element;
   private [_helper]: Helper;
-  private [_hasInited]: boolean = false; 
+  private [_hasInited] = false; 
   private [_mode]: Mode = Mode.NULL;
 
   private [_selectedUUID]: string | null = null;

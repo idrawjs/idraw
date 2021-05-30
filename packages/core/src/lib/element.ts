@@ -86,48 +86,48 @@ export class Element {
         elem.w -= moveX;
         elem.h -= moveY;
         break;
-      };
+      }
       case 'top': {
         elem.y += moveY;
         elem.h -= moveY;
         break;
-      };
+      }
       case 'top-right': {
         elem.y += moveY;
         elem.w += moveX;
         elem.h -= moveY;
         break;
-      };
+      }
       case 'right': {
         elem.w += moveX;
         break;
-      };
+      }
       case 'bottom-right': {
         elem.w += moveX;
         elem.h += moveY;
         break;
-      };
+      }
       case 'bottom': {
         elem.h += moveY;
         break;
-      };
+      }
       case 'bottom-left': {
         elem.x += moveX;
         elem.w -= moveX;
         elem.h += moveY;
         break;
-      };
+      }
       case 'left': {
         elem.x += moveX;
         elem.w -= moveX;
         break;
-      };
+      }
       case 'rotate': {
         const center = calcElementCenter(elem);
         const radian = calcRadian(center, prevPoint, point);
         elem.angle = (elem.angle || 0) + parseRadianToAngle(radian);
         break;
-      };
+      }
       default: {
         break;
       }

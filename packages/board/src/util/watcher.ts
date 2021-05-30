@@ -5,7 +5,7 @@ import { BoardEvent, TypeBoardEventArgMap } from './event';
 export class Watcher {
 
   private _canvas: HTMLCanvasElement;
-  private _isMoving: boolean = false;
+  private _isMoving = false;
   // private _onMove?: TypeWatchCallback;
   // private _onMoveStart?: TypeWatchCallback;
   // private _onMoveEnd?: TypeWatchCallback;
@@ -36,13 +36,13 @@ export class Watcher {
     canvas.addEventListener('touchmove', this._listenMove.bind(this));
     canvas.addEventListener('touchend', this._listenMoveEnd.bind(this));
 
-    const mouseupEvent = new MouseEvent('mouseup');
-    document.querySelector('body')?.addEventListener('mousemove', (e) => {
-      // @ts-ignore
-      if (e && e.path && e.path[0] !== canvas) {
-        canvas.dispatchEvent(mouseupEvent);
-      }
-    }, false)
+    // const mouseupEvent = new MouseEvent('mouseup');
+    // document.querySelector('body')?.addEventListener('mousemove', (e) => {
+    //   // @ts-ignore
+    //   if (e && e.path && e.path[0] !== canvas) {
+    //     canvas.dispatchEvent(mouseupEvent);
+    //   }
+    // }, false)
   }
 
   _listenMoveStart(e: MouseEvent|TouchEvent) {

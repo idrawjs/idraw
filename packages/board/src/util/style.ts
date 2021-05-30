@@ -6,8 +6,8 @@ export const mergeCSS2StyleAttr = function(
   const cssList = [];
   if (istype.json(cssMap) === true) {
     for (const key in cssMap) {
-      let cssKey: string = `${key}`;
-      let cssVal: string = `${cssMap[key]}`;
+      let cssKey = `${key}`;
+      let cssVal = `${cssMap[key]}`;
       cssKey = cssKey.trim();
       cssVal = cssVal.trim();
       cssList.push(`${cssKey}:${cssVal}`);

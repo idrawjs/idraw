@@ -2,11 +2,11 @@ function parsePrototype (data: any) {
   const typeStr = Object.prototype.toString.call(data) || '';
   const result = typeStr.replace(/(\[object|\])/ig, '').trim();
   return result;
-};
+}
 const istype = {
 
   type(data: any, lowerCase?: boolean) {
-    let result = parsePrototype(data);
+    const result = parsePrototype(data);
     return lowerCase === true ? result.toLocaleLowerCase() : result;
   },
 

@@ -19,12 +19,12 @@ class Board {
   private _displayCanvas: HTMLCanvasElement;
   private _mount: HTMLDivElement;
   private _opts: PrivateOptions;
-  private _hasRendered: boolean = false;
+  private _hasRendered = false;
   private _ctx: Context;
   private _displayCtx: CanvasRenderingContext2D;
-  private _scaleRatio: number = 1;
-  private _scrollX: number = 0;
-  private _scrollY: number = 0;
+  private _scaleRatio = 1;
+  private _scrollX = 0;
+  private _scrollY = 0;
   private _watcher: Watcher;
 
   constructor(mount: HTMLDivElement, opts: Options) {

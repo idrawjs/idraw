@@ -1,12 +1,13 @@
+type  Middleware = (ctx: any, next: Middleware) => any;
 
-export function compose (middleware: Function[]) {
-  return function (context: any, next?: Function) {
+export function compose (middleware: Middleware[]) {
+  return function (context: any, next?: Middleware) {
     // let index = -1;
     return dispatch(0);
 
     function dispatch (i: number): Promise<any> {
       // index = i
-      let fn = middleware[i]
+      let fn: Middleware = middleware[i]
       if (i === middleware.length && next) {
         fn = next;
       }
@@ -29,7 +30,7 @@ export function delay(time: number): Promise<void> {
   })
 }
 
-export function throttle(fn: Function, timeout: number) {
+export function throttle(fn: (...args: any[]) => any, timeout: number) {
   let timer: any = -1;
   return function(...args: any[]) {
     if (timer > 0) {

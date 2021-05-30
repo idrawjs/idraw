@@ -23,7 +23,7 @@ export function drawContext(ctx: TypeContext, data: TypeData, config: TypeHelper
     switch (ele.type) {
       case 'rect': {
         drawRect<'rect'>(ctx, ele as TypeElement<'rect'>);
-      };
+      }
       default: {
         // nothing
       }
