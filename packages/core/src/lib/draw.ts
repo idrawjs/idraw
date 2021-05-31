@@ -24,6 +24,9 @@ export function drawContext(ctx: TypeContext, data: TypeData, config: TypeHelper
       case 'rect': {
         drawRect<'rect'>(ctx, ele as TypeElement<'rect'>);
       }
+      case 'image': {
+        drawImage<'image'>(ctx, ele as TypeElement<'image'>);
+      }
       default: {
         // nothing
       }
@@ -35,6 +38,14 @@ export function drawContext(ctx: TypeContext, data: TypeData, config: TypeHelper
 
 
 function drawRect<T extends keyof TypeElemDesc>(ctx: TypeContext, ele: TypeElement<T>) {
+  const desc = ele.desc as TypeElemDesc['rect'];
+  rotateElement(ctx, ele, () => {
+    ctx.setFillStyle(desc.color);
+    ctx.fillRect(ele.x, ele.y, ele.w, ele.h);
+  });
+}
+
+function drawImage<T extends keyof TypeElemDesc>(ctx: TypeContext, ele: TypeElement<T>) {
   const desc = ele.desc as TypeElemDesc['rect'];
   rotateElement(ctx, ele, () => {
     ctx.setFillStyle(desc.color);
