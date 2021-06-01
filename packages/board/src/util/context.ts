@@ -135,6 +135,25 @@ class Context implements TypeContext {
     return this._ctx.rotate(angle);
   }
 
+  drawImage(...args: any[]) {
+    const image: CanvasImageSource = args[0];
+    const sx: number = args[1];
+    const sy: number = args[2];
+    const sw: number = args[3];
+    const sh: number = args[4];
+
+    const dx: number = args[args.length - 4];
+    const dy: number = args[args.length - 3];
+    const dw: number = args[args.length - 2];
+    const dh: number = args[args.length - 1];
+
+    if (args.length === 9) {
+      return this._ctx.drawImage(image, this._doSize(sx), this._doSize(sy), this._doSize(sw), this._doSize(sh), this._doSize(dx), this._doSize(dy), this._doSize(dw), this._doSize(dh));
+    } else {
+      return this._ctx.drawImage(image,this._doSize(dx), this._doSize(dy), this._doSize(dw), this._doSize(dh));
+    }
+  }
+
   private _doSize(num: number) {
     return this._opts.devicePixelRatio * num;
   }

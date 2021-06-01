@@ -54,6 +54,13 @@ export default class Loader {
     return this._status === LoaderStatus.COMPLETE;
   }
 
+  getContent(uuid: string): null | HTMLImageElement | HTMLCanvasElement {
+    if (this._loadData[uuid]?.status === 'loaded') {
+      return this._loadData[uuid].content;
+    }
+    return null;
+  }
+
   private _resetLoadData(data: TypeData): [string[], TypeLoadData] {
     const loadData: TypeLoadData = this._loadData;
     const uuidQueue: string[] = [];

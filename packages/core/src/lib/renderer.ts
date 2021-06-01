@@ -54,7 +54,7 @@ export class Renderer {
       if (this._loader.isComplete() !== true) {
         this._drawFrame();
       } else if (item) {
-        drawContext(this._board.getContext(), item.data, item.helper);
+        drawContext(this._board.getContext(), item.data, item.helper, this._loader);
         this._board.draw();
         this._retainQueueOneItem();
         this._drawFrame();

@@ -31,6 +31,10 @@ interface TypeContext {
   stroke(): void;
   translate(x: number, y: number): void;
   rotate(angle: number): void;
+
+  // drawImage(image: CanvasImageSource, dx: number, dy: number): void;
+  drawImage(image: CanvasImageSource, dx: number, dy: number, dw: number, dh: number): void;
+  drawImage(image: CanvasImageSource, sx: number, sy: number, sw: number, sh: number, dx: number, dy: number, dw: number, dh: number): void;
 }
 
 export {
