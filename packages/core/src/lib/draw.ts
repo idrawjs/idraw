@@ -18,6 +18,7 @@ export function drawContext(
   config: TypeHelperConfig,
   loader: Loader,
 ): void {
+  clearContext(ctx);
   const size = ctx.getSize();
   ctx.clearRect(0, 0, size.width, size.height);
 
@@ -44,6 +45,7 @@ export function drawContext(
 
 
 function drawRect<T extends keyof TypeElemDesc>(ctx: TypeContext, elem: TypeElement<T>) {
+  clearContext(ctx);
   const desc = elem.desc as TypeElemDesc['rect'];
   rotateElement(ctx, elem, () => {
     ctx.setFillStyle(desc.color);
@@ -123,4 +125,10 @@ function drawElementWrapper(ctx: TypeContext, config: TypeHelperConfig) {
     });
 
   });
+}
+
+
+function clearContext(ctx: TypeContext) {
+  ctx.setFillStyle('rgb(0 0 0 / 0%)');
+  ctx.setStrokeStyle('rgb(0 0 0 / 0%)');
 }
