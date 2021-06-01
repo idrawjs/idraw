@@ -5,6 +5,8 @@ export type TypeLoadData = {
     type: 'image' | 'svg',
     status: 'null' | 'loaded' | 'fail',
     content: null | HTMLImageElement | HTMLCanvasElement,
+    elemW: number;
+    elemH: number;
     source: string,
     error?: any,
   }

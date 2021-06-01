@@ -1,5 +1,6 @@
-// import data from './lib/data-rect.js';
-import data from './lib/data-image.js';
+// import data from './lib/data/rect.js';
+// import data from './lib/data/image.js';
+import data from './lib/data/svg.js';
 import { doScale } from './lib/scale.js';
 import { doScroll } from './lib/scroll.js';
 import { doElemens } from './lib/element.js';

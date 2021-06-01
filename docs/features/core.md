@@ -4,12 +4,29 @@
 - [x] Scroll canvas
 - [] Render by requestAnimateFrame
 - [] Image load queue
-- [] Render data's elements
+- Render data's elements
   - [] Text
-  - [] Rect
+    - [] Text content
+    - [] Font size
+    - [] Font family
+    - [] Font color
+    - [] Border
+  - Rect
+    - [x] Rect content
+    - [] border
+    - [] Radius
   - [] Circle
-  - [] Image
+  - Image
+    - [x] Image content
+    - [] Border 
+    - [] Radius
+  - [x] SVG
+    - [] Border 
+    - [] Radius
   - [] Write
+    - [] Brush
+    - [] Border 
+    - [] Radius
 - [x] Drag elements
 - [x] Move elements' index
 - [x] Rotate elements

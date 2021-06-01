@@ -2,7 +2,7 @@ import { TypeData, TypeElement, TypeElemDesc } from '@idraw/types';
 import util from '@idraw/util';
 import { LoaderEvent, TypeLoadData, TypeLoaderEventArgMap } from './loader-event';
 
-const { loadImage } = util.loader;
+const { loadImage, loadSVG } = util.loader;
 
 type Options = {
   maxParallelNum: number
@@ -86,7 +86,7 @@ export default class Loader {
 
   private _createEmptyLoadItem(elem: TypeElement<keyof TypeElemDesc>): TypeLoadData[string] {
     let source = '';
-    let type: TypeLoadData[string]['type'] = 'image';
+    let type: TypeLoadData[string]['type'] = elem.type as TypeLoadData[string]['type'];
     if (elem.type === 'image') {
       const _elem = elem as TypeElement<'image'>;
       source = _elem.desc.src || '';
@@ -99,6 +99,8 @@ export default class Loader {
       status: 'null',
       content: null,
       source,
+      elemW: elem.w,
+      elemH: elem.h,
     }
   }
 
@@ -151,6 +153,8 @@ export default class Loader {
             status: this._loadData[uuid].status,
             content: this._loadData[uuid].content,
             source: this._loadData[uuid].source,
+            elemW: this._loadData[uuid].elemW,
+            elemH: this._loadData[uuid].elemH,
           });
         }).catch((err) => {
           loadUUIDList.splice(loadUUIDList.indexOf(uuid), 1);
@@ -166,6 +170,8 @@ export default class Loader {
             status: this._loadData[uuid].status,
             content: this._loadData[uuid].content,
             source: this._loadData[uuid].source,
+            elemW: this._loadData[uuid].elemW,
+            elemH: this._loadData[uuid].elemH,
           })
         })
  
@@ -180,6 +186,14 @@ export default class Loader {
   ): Promise<HTMLImageElement> {
     if (params.type === 'image') {
       const image = await loadImage(params.source);
+      return image;
+    } else if (params.type === 'svg') {
+      const image = await loadSVG(
+        params.source,
+        {
+          width: params.elemW, height: params.elemH
+        }
+      );
       return image;
     }
     throw Error('Element\'s source is not support!')
