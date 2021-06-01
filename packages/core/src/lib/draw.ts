@@ -34,6 +34,9 @@ export function drawContext(
       case 'image': {
         drawImage<'image'>(ctx, elem as TypeElement<'image'>, loader);
       }
+      case 'svg': {
+        drawSVG<'svg'>(ctx, elem as TypeElement<'svg'>, loader);
+      }
       default: {
         // nothing
       }
@@ -54,6 +57,23 @@ function drawRect<T extends keyof TypeElemDesc>(ctx: TypeContext, elem: TypeElem
 }
 
 function drawImage<T extends keyof TypeElemDesc>(
+  ctx: TypeContext,
+  elem: TypeElement<T>,
+  loader: Loader,
+) {
+  // const desc = elem.desc as TypeElemDesc['rect'];
+  const content = loader.getContent(elem.uuid);
+  rotateElement(ctx, elem, () => {
+    // ctx.setFillStyle(desc.color);
+    // ctx.fillRect(elem.x, elem.y, elem.w, elem.h);
+    if (content) {
+      // ctx.drawImage(content, 0, 0, elem.w, elem.h, elem.x, elem.y, elem.w, elem.h);
+      ctx.drawImage(content, elem.x, elem.y, elem.w, elem.h);
+    }
+  });
+}
+
+function drawSVG<T extends keyof TypeElemDesc>(
   ctx: TypeContext,
   elem: TypeElement<T>,
   loader: Loader,

@@ -6,9 +6,10 @@
 - [] Image load queue
 - [] Render data's elements
   - [] Text
-  - [] Rect
+  - [x] Rect
   - [] Circle
-  - [] Image
+  - [x] Image
+  - [] SVG
   - [] Write
 - [x] Drag elements
 - [x] Move elements' index
