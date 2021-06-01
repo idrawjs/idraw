@@ -1,4 +1,4 @@
-import { TypePaintData } from './paint';
+// import { TypePaintData } from './paint';
 
 type TypeElement<T extends keyof TypeElemDesc> = {
   name?: string;
@@ -17,7 +17,8 @@ type TypeElemDesc = {
   rect: TypeElemDescRect,
   circle: TypeElemDescCircle,
   image: TypeElemDescImage,
-  paint: TypeElemDescPaint
+  svg: TypeElemDescSVG,
+  // paint: TypeElemDescPaint,
 }
 
 type TypeElemDescRect = {
@@ -36,15 +37,21 @@ type TypeElemDescCircle = {
 }
 
 type TypeElemDescImage = {
-  src: number;
+  src: string;
 }
 
-type TypeElemDescPaint = TypePaintData
+type TypeElemDescSVG = {
+  svg: string;
+}
+
+// type TypeElemDescPaint = TypePaintData
 
 export {
   TypeElemDescText,
   TypeElemDescRect,
   TypeElemDescCircle,
+  TypeElemDescImage,
+  TypeElemDescSVG,
   TypeElemDesc,
   TypeElement,
 };

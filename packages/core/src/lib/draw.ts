@@ -8,10 +8,16 @@ import {
 } from '@idraw/types';
 import util from '@idraw/util';
 import { rotateContext, rotateElement } from './transform';
+import Loader from './loader';
 
 const { isColorStr } = util.color;
 
-export function drawContext(ctx: TypeContext, data: TypeData, config: TypeHelperConfig): void {
+export function drawContext(
+  ctx: TypeContext,
+  data: TypeData,
+  config: TypeHelperConfig,
+  loader: Loader,
+): void {
   const size = ctx.getSize();
   ctx.clearRect(0, 0, size.width, size.height);
 
@@ -19,10 +25,13 @@ export function drawContext(ctx: TypeContext, data: TypeData, config: TypeHelper
     drawBgColor(ctx, data.bgColor);
   }
   for (let i = 0; i < data.elements.length; i++) {
-    const ele = data.elements[i];
-    switch (ele.type) {
+    const elem = data.elements[i];
+    switch (elem.type) {
       case 'rect': {
-        drawRect<'rect'>(ctx, ele as TypeElement<'rect'>);
+        drawRect<'rect'>(ctx, elem as TypeElement<'rect'>);
+      }
+      case 'image': {
+        drawImage<'image'>(ctx, elem as TypeElement<'image'>, loader);
       }
       default: {
         // nothing
@@ -34,11 +43,28 @@ export function drawContext(ctx: TypeContext, data: TypeData, config: TypeHelper
 }
 
 
-function drawRect<T extends keyof TypeElemDesc>(ctx: TypeContext, ele: TypeElement<T>) {
-  const desc = ele.desc as TypeElemDesc['rect'];
-  rotateElement(ctx, ele, () => {
+function drawRect<T extends keyof TypeElemDesc>(ctx: TypeContext, elem: TypeElement<T>) {
+  const desc = elem.desc as TypeElemDesc['rect'];
+  rotateElement(ctx, elem, () => {
     ctx.setFillStyle(desc.color);
-    ctx.fillRect(ele.x, ele.y, ele.w, ele.h);
+    ctx.fillRect(elem.x, elem.y, elem.w, elem.h);
+  });
+}
+
+function drawImage<T extends keyof TypeElemDesc>(
+  ctx: TypeContext,
+  elem: TypeElement<T>,
+  loader: Loader,
+) {
+  // const desc = elem.desc as TypeElemDesc['rect'];
+  const content = loader.getContent(elem.uuid);
+  rotateElement(ctx, elem, () => {
+    // ctx.setFillStyle(desc.color);
+    // ctx.fillRect(elem.x, elem.y, elem.w, elem.h);
+    if (content) {
+      // ctx.drawImage(content, 0, 0, elem.w, elem.h, elem.x, elem.y, elem.w, elem.h);
+      ctx.drawImage(content, elem.x, elem.y, elem.w, elem.h);
+    }
   });
 }
 
