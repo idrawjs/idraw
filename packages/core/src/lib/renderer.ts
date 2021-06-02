@@ -50,6 +50,7 @@ export class Renderer {
 
   private _drawFrame() {
     requestAnimationFrame(() => {
+      // console.log('------ render frame ------', this._loader.isComplete())
       let item: QueueItem | undefined = this._queue[0];
       if (this._queue.length > 1) {
         item = this._queue.shift();
@@ -61,7 +62,11 @@ export class Renderer {
         drawContext(ctx, item.data, item.helper, this._loader);
         this._board.draw();
         this._retainQueueOneItem();
-        this._drawFrame();
+        if (this._queue.length > 1) {
+          this._drawFrame();
+        } else {
+          this._status = DrawStatus.FREE
+        }
       } else {
         this._status = DrawStatus.FREE
       }

@@ -34,13 +34,14 @@ export class Element {
     let uuid = null;
     for (let i = data.elements.length - 1; i >= 0; i--) {
       const ele = data.elements[i];
+      const bw = ele.borderWidth || 0;
 
       rotateElement(ctx, ele, () => {
         ctx.beginPath();
-        ctx.moveTo(ele.x, ele.y);
-        ctx.lineTo(ele.x + ele.w, ele.y);
-        ctx.lineTo(ele.x + ele.w, ele.y + ele.h);
-        ctx.lineTo(ele.x, ele.y + ele.h);
+        ctx.moveTo(ele.x - bw, ele.y - bw);
+        ctx.lineTo(ele.x + ele.w + bw, ele.y - bw);
+        ctx.lineTo(ele.x + ele.w + bw, ele.y + ele.h + bw);
+        ctx.lineTo(ele.x - bw, ele.y + ele.h + bw);
         ctx.lineTo(ele.x, ele.y);
 
         ctx.rect(ele.x, ele.y, ele.w, ele.h);

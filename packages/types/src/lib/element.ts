@@ -11,7 +11,7 @@ type TypeElement<T extends keyof TypeElemDesc> = {
   angle?: number;
   radius?: number;
   borderWidth?: number;
-  borderColor?: number;
+  borderColor?: string;
   desc: TypeElemDesc[T];
 }
 
