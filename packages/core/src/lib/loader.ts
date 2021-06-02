@@ -2,6 +2,7 @@ import { TypeData, TypeElement, TypeElemDesc } from '@idraw/types';
 import Board from '@idraw/board';
 import util from '@idraw/util';
 import { LoaderEvent, TypeLoadData, TypeLoaderEventArgMap } from './loader-event';
+import { createTextSVG } from './draw/text';
 
 const { loadImage, loadSVG } = util.loader;
 
@@ -99,7 +100,7 @@ export default class Loader {
     // add new load-data
     for (let i = data.elements.length - 1; i >= 0; i --) {
       const elem = data.elements[i];
-      if (['image', 'svg'].includes(elem.type) && !loadData[elem.uuid]) {
+      if (['image', 'svg', 'text'].includes(elem.type) && !loadData[elem.uuid]) {
         loadData[elem.uuid] = this._createEmptyLoadItem(elem);
         uuidQueue.push(elem.uuid);
       }
@@ -124,6 +125,9 @@ export default class Loader {
     } else if (elem.type === 'svg') {
       const _elem = elem as TypeElement<'svg'>;
       source = _elem.desc.svg || '';
+    } else if (elem.type === 'text') {
+      const _elem = elem as TypeElement<'text'>;
+      source = createTextSVG(_elem);
     }
     return {
       type: type,
@@ -220,8 +224,14 @@ export default class Loader {
       return image;
     } else if (params.type === 'svg') {
       const image = await loadSVG(
-        params.source,
-        {
+        params.source, {
+          width: params.elemW, height: params.elemH
+        }
+      );
+      return image;
+    } else if (params.type === 'text') {
+      const image = await loadSVG(
+        params.source, {
           width: params.elemW, height: params.elemH
         }
       );

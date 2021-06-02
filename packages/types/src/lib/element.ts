@@ -29,8 +29,11 @@ type TypeElemDescRect = {
 }
 
 type TypeElemDescText = {
+  text: string;
   size: number;
   color: number;
+  fontFamily: string;
+  backgroundColor?: string;
 }
 
 type TypeElemDescCircle = {
