@@ -52,8 +52,11 @@ export class Renderer {
     requestAnimationFrame(() => {
       // console.log('------ render frame ------', this._loader.isComplete())
       let item: QueueItem | undefined = this._queue[0];
+      let isLastFrame = false;
       if (this._queue.length > 1) {
         item = this._queue.shift();
+      } else {
+        isLastFrame = true;
       }
       if (this._loader.isComplete() !== true) {
         this._drawFrame();
@@ -62,13 +65,13 @@ export class Renderer {
         drawContext(ctx, item.data, item.helper, this._loader);
         this._board.draw();
         this._retainQueueOneItem();
-        if (this._queue.length > 1) {
+        if (!isLastFrame) {
           this._drawFrame();
         } else {
-          this._status = DrawStatus.FREE
+          this._status = DrawStatus.FREE;
         }
       } else {
-        this._status = DrawStatus.FREE
+        this._status = DrawStatus.FREE;
       }
     })
   }
