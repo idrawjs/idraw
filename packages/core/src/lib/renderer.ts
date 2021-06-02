@@ -22,7 +22,10 @@ export class Renderer {
 
   constructor(board: Board) {
     this._board = board;
-    this._loader = new Loader({ maxParallelNum: 6 });
+    this._loader = new Loader({
+      board: board,
+      maxParallelNum: 6
+    });
     // TODO
     this._loader.on('load', (res) => {
       console.log('load: ', res);
@@ -54,7 +57,8 @@ export class Renderer {
       if (this._loader.isComplete() !== true) {
         this._drawFrame();
       } else if (item) {
-        drawContext(this._board.getContext(), item.data, item.helper, this._loader);
+        const ctx = this._board.getContext();
+        drawContext(ctx, item.data, item.helper, this._loader);
         this._board.draw();
         this._retainQueueOneItem();
         this._drawFrame();

@@ -32,7 +32,7 @@ export function drawContext(
     const elem = data.elements[i];
     switch (elem.type) {
       case 'rect': {
-        drawRect<'rect'>(ctx, elem as TypeElement<'rect'>);
+        drawRect(ctx, elem as TypeElement<'rect'>);
       }
       case 'image': {
         drawImage<'image'>(ctx, elem as TypeElement<'image'>, loader);
