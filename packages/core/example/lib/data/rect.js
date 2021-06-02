@@ -4,15 +4,14 @@ const data = {
   elements: [
     {
       name: 'rect-001',
-      // x: 10,
-      // y: 10,
-      x: 0,
-      y: 0,
+      x: 10,
+      y: 10,
       w: 200,
       h: 100,
       type: 'rect',
-      // angle: 30,
-      // angle: 0,
+      radius: 20,
+      borderWidth: 10,
+      borderColor: '#bd0b64',
       desc: {
         color: '#f0f0f0',
       }
@@ -25,6 +24,9 @@ const data = {
       h: 120,
       // angle: 30,
       type: 'rect',
+      radius: 60,
+      borderWidth: 10,
+      borderColor: '#bd0b64',
       desc: {
         color: '#cccccc',
       }
@@ -37,6 +39,9 @@ const data = {
       h: 20,
       type: 'rect',
       angle: 80,
+      radius: 20,
+      borderWidth: 10,
+      borderColor: '#bd0b64',
       desc: {
         color: '#c0c0c0',
       }
@@ -48,6 +53,9 @@ const data = {
       w: 200,
       h: 100,
       type: 'rect',
+      radius: 20,
+      borderWidth: 10,
+      borderColor: '#bd0b64',
       desc: {
         color: '#e0e0e0',
       }

@@ -14,7 +14,8 @@ interface TypeContext {
     height: number;
     devicePixelRatio: number;
   };
-  setFillStyle(color: string): void;
+
+  setFillStyle(color: string | CanvasPattern): void;
   fill(fillRule?: CanvasFillRule | undefined): void;
   arc(x: number, y: number, radius: number, startAngle: number, endAngle: number, anticlockwise?: boolean | undefined): void;
   fillRect(x: number, y: number, w: number, h: number): void;
@@ -24,6 +25,7 @@ interface TypeContext {
   closePath(): void;
   moveTo(x: number, y: number): void;
   lineTo(x: number, y: number): void;
+  arcTo(x1: number, y1: number, x2: number, y2: number, radius: number): void;
   setLineWidth(w: number): void;
   setLineDash(nums: number[]): void;
   isPointInPath(x: number, y: number): boolean;
@@ -35,6 +37,7 @@ interface TypeContext {
   // drawImage(image: CanvasImageSource, dx: number, dy: number): void;
   drawImage(image: CanvasImageSource, dx: number, dy: number, dw: number, dh: number): void;
   drawImage(image: CanvasImageSource, sx: number, sy: number, sw: number, sh: number, dx: number, dy: number, dw: number, dh: number): void;
+  createPattern(image: CanvasImageSource, repetition: string | null): CanvasPattern | null
 }
 
 export {

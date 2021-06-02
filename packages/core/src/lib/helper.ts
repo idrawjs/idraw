@@ -103,41 +103,42 @@ export class Helper implements TypeHelper {
     const lineWidth = this._coreConfig.elementWrapper.lineWidth / scale;
     const lineDash = this._coreConfig.elementWrapper.lineDash.map(n => (n / scale));
     const rotateLimit = 12;
+    const borderWidth = elem.borderWidth || 0; 
     
     const wrapper: TypeHelperConfig['selectedElementWrapper'] = {
       uuid,
       dotSize: dotSize,
       dots: {
         topLeft: {
-          x: elem.x - dotSize,
-          y: elem.y - dotSize,
+          x: elem.x - dotSize - borderWidth,
+          y: elem.y - dotSize - borderWidth,
         },
         top: {
           x: elem.x + elem.w / 2,
-          y: elem.y - dotSize,
+          y: elem.y - dotSize - borderWidth,
         },
         topRight: {
-          x: elem.x + elem.w + dotSize,
-          y: elem.y - dotSize,
+          x: elem.x + elem.w + dotSize + borderWidth,
+          y: elem.y - dotSize - borderWidth,
         },
         right: {
-          x: elem.x + elem.w + dotSize,
+          x: elem.x + elem.w + dotSize + borderWidth,
           y: elem.y + elem.h / 2,
         },
         bottomRight: {
-          x: elem.x + elem.w + dotSize,
-          y: elem.y + elem.h + dotSize,
+          x: elem.x + elem.w + dotSize + borderWidth,
+          y: elem.y + elem.h + dotSize + borderWidth,
         },
         bottom: {
           x: elem.x + elem.w / 2,
-          y: elem.y + elem.h + dotSize,
+          y: elem.y + elem.h + dotSize + borderWidth,
         },
         bottomLeft: {
-          x: elem.x - dotSize,
-          y: elem.y + elem.h + dotSize,
+          x: elem.x - dotSize - borderWidth,
+          y: elem.y + elem.h + dotSize + borderWidth,
         },
         left: {
-          x: elem.x - dotSize,
+          x: elem.x - dotSize - borderWidth,
           y: elem.y + elem.h / 2,
         },
         rotate: {

@@ -2,14 +2,15 @@ import {
   TypeContext,
   TypeHelperConfig,
 } from '@idraw/types';
-import { rotateContext } from './../transform'; 
+import { rotateContext } from './../transform';
+import { clearContext } from './base';
 
 export function drawElementWrapper(ctx: TypeContext, config: TypeHelperConfig) {
   if (!config?.selectedElementWrapper) {
     return;
   }
   const wrapper = config.selectedElementWrapper;
-
+  clearContext(ctx);
   rotateContext(ctx, wrapper.translate, wrapper.radian || 0, () => {
     // draw wrapper's box
     ctx.beginPath();

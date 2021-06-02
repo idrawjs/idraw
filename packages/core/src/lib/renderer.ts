@@ -22,7 +22,10 @@ export class Renderer {
 
   constructor(board: Board) {
     this._board = board;
-    this._loader = new Loader({ maxParallelNum: 6 });
+    this._loader = new Loader({
+      board: board,
+      maxParallelNum: 6
+    });
     // TODO
     this._loader.on('load', (res) => {
       console.log('load: ', res);
@@ -47,6 +50,7 @@ export class Renderer {
 
   private _drawFrame() {
     requestAnimationFrame(() => {
+      // console.log('------ render frame ------', this._loader.isComplete())
       let item: QueueItem | undefined = this._queue[0];
       if (this._queue.length > 1) {
         item = this._queue.shift();
@@ -54,10 +58,15 @@ export class Renderer {
       if (this._loader.isComplete() !== true) {
         this._drawFrame();
       } else if (item) {
-        drawContext(this._board.getContext(), item.data, item.helper, this._loader);
+        const ctx = this._board.getContext();
+        drawContext(ctx, item.data, item.helper, this._loader);
         this._board.draw();
         this._retainQueueOneItem();
-        this._drawFrame();
+        if (this._queue.length > 1) {
+          this._drawFrame();
+        } else {
+          this._status = DrawStatus.FREE
+        }
       } else {
         this._status = DrawStatus.FREE
       }
@@ -71,6 +80,8 @@ export class Renderer {
     const lastOne = deepClone(this._queue[this._queue.length - 1]);
     this._queue = [lastOne];
   }
+
+  
 }
 
 

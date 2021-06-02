@@ -46,6 +46,21 @@ class Board {
     return this._ctx;
   }
 
+  createContext(canvas: HTMLCanvasElement) {
+    const opts = this._opts;
+    canvas.width = opts.width * opts.devicePixelRatio;
+    canvas.height = opts.height * opts.devicePixelRatio;
+    return new Context(canvas.getContext('2d') as CanvasRenderingContext2D, this._opts);
+  }
+
+  createCanvas() {
+    const opts = this._opts;
+    const canvas = document.createElement('canvas');
+    canvas.width = opts.width * opts.devicePixelRatio;
+    canvas.height = opts.height * opts.devicePixelRatio;
+    return canvas;
+  }
+
   scale(scaleRatio: number) {
     if (scaleRatio > 0) {
       this._scaleRatio = scaleRatio;

@@ -3,12 +3,15 @@
 type TypeElement<T extends keyof TypeElemDesc> = {
   name?: string;
   uuid: string;
+  type: T;
   x: number;
   y: number;
   w: number;
   h: number;
   angle?: number;
-  type: T;
+  radius?: number;
+  borderWidth?: number;
+  borderColor?: string;
   desc: TypeElemDesc[T];
 }
 

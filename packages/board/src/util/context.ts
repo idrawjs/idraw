@@ -57,7 +57,7 @@ class Context implements TypeContext {
     };
   }
 
-  setFillStyle(color: string) {
+  setFillStyle(color: string | CanvasPattern) {
     this._ctx.fillStyle = color;
   }
 
@@ -65,7 +65,7 @@ class Context implements TypeContext {
     return this._ctx.fill(fillRule);
   }
 
-  arc(x: number, y: number, radius: number, startAngle: number, endAngle: number, anticlockwise?: boolean | undefined) {
+  arc(x: number, y: number, radius: number, startAngle: number, endAngle: number, anticlockwise?: boolean | undefined): void {
     return this._ctx.arc(this._doSize(x), this._doSize(y), this._doSize(radius), startAngle, endAngle, anticlockwise);
   }
 
@@ -105,6 +105,10 @@ class Context implements TypeContext {
 
   moveTo(x: number, y: number) {
     return this._ctx.moveTo(this._doSize(x), this._doSize(y));
+  }
+
+  arcTo(x1: number, y1: number, x2: number, y2: number, radius: number): void {
+    return this._ctx.arcTo(this._doSize(x1), this._doSize(y1), this._doSize(x2), this._doSize(y2), this._doSize(radius));
   }
 
   setLineWidth(w: number) {
@@ -152,6 +156,10 @@ class Context implements TypeContext {
     } else {
       return this._ctx.drawImage(image,this._doSize(dx), this._doSize(dy), this._doSize(dw), this._doSize(dh));
     }
+  }
+
+  createPattern(image: CanvasImageSource, repetition: string | null): CanvasPattern | null {
+    return this._ctx.createPattern(image, repetition)
   }
 
   private _doSize(num: number) {

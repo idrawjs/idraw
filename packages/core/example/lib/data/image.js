@@ -9,6 +9,9 @@ const data = {
       w: 200,
       h: 100,
       type: 'image',
+      radius: 20,
+      borderWidth: 10,
+      borderColor: '#bd0b64',
       // angle: 30,
       // angle: 0,
       desc: {
@@ -22,6 +25,9 @@ const data = {
       w: 200,
       h: 120,
       // angle: 30,
+      radius: 20,
+      borderWidth: 10,
+      borderColor: '#bd0b64',
       type: 'image',
       desc: {
         src: './images/chart.png',

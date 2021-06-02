@@ -1,12 +1,10 @@
-// import data from './lib/data/rect.js';
-// import data from './lib/data/image.js';
-import data from './lib/data/svg.js';
+import { getData } from './lib/data/index.js';
 import { doScale } from './lib/scale.js';
 import { doScroll } from './lib/scroll.js';
 import { doElemens } from './lib/element.js';
 
 const { Core } = window.iDraw;
-
+const data = getData();
 const mount = document.querySelector('#mount');
 // const defaultConf = {
 //   scale: 0.8,
@@ -31,4 +29,3 @@ core.setData(data);
 doScale(core, defaultConf.scale);
 doScroll(core, defaultConf);
 doElemens(core);
-

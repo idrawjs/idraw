@@ -1,10 +1,12 @@
 import { TypeData, TypeElement, TypeElemDesc } from '@idraw/types';
+import Board from '@idraw/board';
 import util from '@idraw/util';
 import { LoaderEvent, TypeLoadData, TypeLoaderEventArgMap } from './loader-event';
 
 const { loadImage, loadSVG } = util.loader;
 
 type Options = {
+  board: Board;
   maxParallelNum: number
 }
 
@@ -19,6 +21,7 @@ export default class Loader {
   private _opts: Options;
   private _event: LoaderEvent;
   private _loadData: TypeLoadData = {};
+  private _patternMap: {[uuid: string]: CanvasPattern} = {}
   private _uuidQueue: string[] = [];
   private _status: LoaderStatus = LoaderStatus.FREE
 
@@ -57,6 +60,34 @@ export default class Loader {
   getContent(uuid: string): null | HTMLImageElement | HTMLCanvasElement {
     if (this._loadData[uuid]?.status === 'loaded') {
       return this._loadData[uuid].content;
+    }
+    return null;
+  }
+
+  getPattern(
+    elem: TypeElement<keyof TypeElemDesc>,
+    opts?: {
+      forceUpdate: boolean
+    }
+  ): null | CanvasPattern {
+    if (this._patternMap[elem.uuid] ) {
+      if (!(opts && opts.forceUpdate === true)) {
+        return this._patternMap[elem.uuid];
+      }
+    }
+    const item = this._loadData[elem.uuid];
+    if (item?.status === 'loaded') {
+      const board = this._opts.board;
+      const tempCanvas = board.createCanvas();
+      const tempCtx = board.createContext(tempCanvas);
+      const image = this.getContent(elem.uuid);
+      tempCtx.drawImage(image, elem.x, elem.y, elem.w, elem.h);
+    
+      const canvas = board.createCanvas();
+      const ctx = board.createContext(canvas);
+      const pattern = ctx.createPattern(tempCanvas, 'no-repeat');
+      if (pattern) this._patternMap[elem.uuid] = pattern;
+      return pattern;
     }
     return null;
   }
