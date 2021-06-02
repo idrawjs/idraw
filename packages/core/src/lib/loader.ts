@@ -21,6 +21,7 @@ export default class Loader {
   private _opts: Options;
   private _event: LoaderEvent;
   private _loadData: TypeLoadData = {};
+  private _patternMap: {[uuid: string]: CanvasPattern} = {}
   private _uuidQueue: string[] = [];
   private _status: LoaderStatus = LoaderStatus.FREE
 
@@ -63,7 +64,17 @@ export default class Loader {
     return null;
   }
 
-  getPattern(elem: TypeElement<keyof TypeElemDesc>): null | CanvasPattern {
+  getPattern(
+    elem: TypeElement<keyof TypeElemDesc>,
+    opts?: {
+      forceUpdate: boolean
+    }
+  ): null | CanvasPattern {
+    if (this._patternMap[elem.uuid] ) {
+      if (!(opts && opts.forceUpdate === true)) {
+        return this._patternMap[elem.uuid];
+      }
+    }
     const item = this._loadData[elem.uuid];
     if (item?.status === 'loaded') {
       const board = this._opts.board;
@@ -75,6 +86,7 @@ export default class Loader {
       const canvas = board.createCanvas();
       const ctx = board.createContext(canvas);
       const pattern = ctx.createPattern(tempCanvas, 'no-repeat');
+      if (pattern) this._patternMap[elem.uuid] = pattern;
       return pattern;
     }
     return null;

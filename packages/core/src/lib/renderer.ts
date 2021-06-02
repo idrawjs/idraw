@@ -75,6 +75,8 @@ export class Renderer {
     const lastOne = deepClone(this._queue[this._queue.length - 1]);
     this._queue = [lastOne];
   }
+
+  
 }
 
 

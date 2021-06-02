@@ -22,7 +22,7 @@ export function drawBgColor(ctx: TypeContext, color: string) {
 export function drawBox(
   ctx: TypeContext,
   elem: TypeElement<keyof TypeElemDesc>,
-  pattern: string | CanvasPattern | null
+  pattern: string | CanvasPattern | null,
 ): void {
   clearContext(ctx);
   rotateElement(ctx, elem, () => {

@@ -18,7 +18,7 @@ const { isColorStr } = util.color;
 export function drawContext(
   ctx: TypeContext,
   data: TypeData,
-  config: TypeHelperConfig,
+  helperConfig: TypeHelperConfig,
   loader: Loader,
 ): void {
   clearContext(ctx);
@@ -35,10 +35,10 @@ export function drawContext(
         drawRect(ctx, elem as TypeElement<'rect'>);
       }
       case 'image': {
-        drawImage<'image'>(ctx, elem as TypeElement<'image'>, loader);
+        drawImage<'image'>(ctx, elem as TypeElement<'image'>, loader, helperConfig);
       }
       case 'svg': {
-        drawSVG<'svg'>(ctx, elem as TypeElement<'svg'>, loader);
+        drawSVG<'svg'>(ctx, elem as TypeElement<'svg'>, loader, helperConfig);
       }
       default: {
         // nothing
@@ -46,6 +46,6 @@ export function drawContext(
     }
   }
 
-  drawElementWrapper(ctx, config);
+  drawElementWrapper(ctx, helperConfig);
 }
 
