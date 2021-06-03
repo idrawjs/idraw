@@ -15,7 +15,7 @@ const data = {
       desc: {
         fontSize: 20,
         color: '#333333',
-        text: 'Hello World',
+        text: '生活就像海洋，只有意志坚强的人，才能到达彼岸。',
         fontFamily: ''
       }
     },

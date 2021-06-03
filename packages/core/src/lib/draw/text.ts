@@ -41,7 +41,7 @@ export function drawText(
         lineText += (desc.text[i] || '');
       } else {
         ctx.fillText(lineText, elem.x, elem.y + lineNum * fontHeight);
-        lineText = '';
+        lineText = (desc.text[i] || '');
         lineNum ++;
       }
       if ((lineNum + 1) * fontHeight > elem.h) {
