@@ -9,7 +9,7 @@ const data = {
       w: 200,
       h: 100,
       type: 'text',
-      radius: 20,
+      borderRadius: 20,
       borderWidth: 2,
       borderColor: '#bd0b64',
       desc: {
@@ -27,7 +27,7 @@ const data = {
       h: 120,
       // angle: 30,
       type: 'text',
-      radius: 60,
+      borderRadius: 60,
       borderWidth: 10,
       borderColor: '#bd0b64',
       desc: {
@@ -44,7 +44,7 @@ const data = {
     //   h: 20,
     //   type: 'text',
     //   angle: 80,
-    //   radius: 20,
+    //   borderRadius: 20,
     //   borderWidth: 10,
     //   borderColor: '#bd0b64',
     //   desc: {
@@ -58,7 +58,7 @@ const data = {
     //   w: 200,
     //   h: 100,
     //   type: 'text',
-    //   radius: 20,
+    //   borderRadius: 20,
     //   borderWidth: 10,
     //   borderColor: '#bd0b64',
     //   desc: {

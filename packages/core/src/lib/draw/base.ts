@@ -28,7 +28,7 @@ export function drawBox(
   drawBoxBorder(ctx, elem);
   rotateElement(ctx, elem, () => {
     const { x, y, w, h } = elem;
-    let r: number = elem.radius || 0;
+    let r: number = elem.borderRadius || 0;
     r = Math.min(r, w / 2, h / 2);
     ctx.beginPath();
     ctx.moveTo(x + r, y);
@@ -66,7 +66,7 @@ export function drawBoxBorder(
     const w = elem.w + bw;
     const h = elem.h + bw;
 
-    let r: number = elem.radius || 0;
+    let r: number = elem.borderRadius || 0;
     r = Math.min(r, w / 2, h / 2);
     if (r < w / 2 && r < h / 2) {
       r = r + bw / 2

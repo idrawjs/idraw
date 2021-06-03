@@ -9,7 +9,7 @@ type TypeElement<T extends keyof TypeElemDesc> = {
   w: number;
   h: number;
   angle?: number;
-  radius?: number;
+  borderRadius?: number;
   borderWidth?: number;
   borderColor?: string;
   desc: TypeElemDesc[T];
