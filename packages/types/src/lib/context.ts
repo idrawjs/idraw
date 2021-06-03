@@ -14,6 +14,7 @@ interface TypeContext {
     height: number;
     devicePixelRatio: number;
   };
+  calcDeviceNum(num: number): number;
 
   setFillStyle(color: string | CanvasPattern): void;
   fill(fillRule?: CanvasFillRule | undefined): void;
@@ -33,8 +34,12 @@ interface TypeContext {
   stroke(): void;
   translate(x: number, y: number): void;
   rotate(angle: number): void;
-
-  // drawImage(image: CanvasImageSource, dx: number, dy: number): void;
+  measureText(text: string): TextMetrics;
+  setTextAlign(align: CanvasTextAlign): void;
+  fillText(text: string, x: number, y: number, maxWidth?: number | undefined): void;
+  setFont(opts: { fontSize: number, fontFamily?: string, fontWeight?: string }): void
+  setTextBaseline(baseline: CanvasTextBaseline): void;
+  
   drawImage(image: CanvasImageSource, dx: number, dy: number, dw: number, dh: number): void;
   drawImage(image: CanvasImageSource, sx: number, sy: number, sw: number, sh: number, dx: number, dy: number, dw: number, dh: number): void;
   createPattern(image: CanvasImageSource, repetition: string | null): CanvasPattern | null

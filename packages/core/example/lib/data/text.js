@@ -13,7 +13,7 @@ const data = {
       borderWidth: 2,
       borderColor: '#bd0b64',
       desc: {
-        size: 20,
+        fontSize: 20,
         color: '#333333',
         text: 'Hello World',
         fontFamily: ''
@@ -31,7 +31,7 @@ const data = {
       borderWidth: 10,
       borderColor: '#bd0b64',
       desc: {
-        size: 20,
+        fontSize: 20,
         text: 'Hello Text',
         color: '#666666',
       }

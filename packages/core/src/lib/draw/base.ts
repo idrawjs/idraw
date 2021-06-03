@@ -47,7 +47,7 @@ export function drawBox(
 }
 
 
-function drawBoxBorder(
+export function drawBoxBorder(
   ctx: TypeContext,
   elem: TypeElement<keyof TypeElemDesc>,
 ): void {

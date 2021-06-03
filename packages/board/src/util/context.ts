@@ -37,6 +37,10 @@ class Context implements TypeContext {
     };
   }
 
+  calcDeviceNum(num: number): number {
+    return this._opts.devicePixelRatio * num;
+  }
+
   getSize() {
     return  {
       width: this._opts.width,
@@ -160,6 +164,37 @@ class Context implements TypeContext {
 
   createPattern(image: CanvasImageSource, repetition: string | null): CanvasPattern | null {
     return this._ctx.createPattern(image, repetition)
+  }
+
+  measureText(text: string): TextMetrics {
+    return this._ctx.measureText(text);
+  }
+
+  setTextAlign(align: CanvasTextAlign): void {
+    this._ctx.textAlign = align;
+  }
+
+  fillText(text: string, x: number, y: number, maxWidth?: number | undefined): void {
+    if (maxWidth !== undefined) {
+      return this._ctx.fillText(text, this._doSize(x), this._doSize(y), this._doSize(maxWidth));
+    } else {
+      return this._ctx.fillText(text, this._doSize(x), this._doSize(y));
+    }
+  }
+
+  setFont(opts: { fontSize: number, fontFamily?: string, fontWeight?: string }): void {
+    const strList: string[] = [];
+    if (opts.fontWeight) {
+      strList.push(`${opts.fontWeight}`);
+    }
+    strList.push(`${this._doSize(opts.fontSize || 12)}px`);
+    strList.push(`${opts.fontFamily || 'sans-serif'}`);
+    this._ctx.font = `${strList.join(' ')}`;
+    // console.log('this._ctx.font =',this._ctx.font);
+  }
+
+  setTextBaseline(baseline: CanvasTextBaseline): void {
+    this._ctx.textBaseline = baseline;
   }
 
   private _doSize(num: number) {

@@ -30,9 +30,11 @@ type TypeElemDescRect = {
 
 type TypeElemDescText = {
   text: string;
-  size: number;
-  color: number;
-  fontFamily: string;
+  color: string;
+  fontSize: number;
+  lineHeight?: number;
+  fontWeight?: string;
+  fontFamily?: string;
   backgroundColor?: string;
 }
 

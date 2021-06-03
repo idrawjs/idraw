@@ -87,23 +87,3 @@ export class Renderer {
   
 }
 
-
-
-
-// import { TypeData, TypeHelperConfig, } from '@idraw/types';
-// import Board from '@idraw/board';
-// import { drawContext } from './draw';
-
-// export class Renderer {
-
-//   private _board: Board;  
-
-//   constructor(board: Board) {
-//     this._board = board;
-//   }
-
-//   render(data: TypeData, helper: TypeHelperConfig): void {
-//     drawContext(this._board.getContext(), data, helper);
-//     this._board.draw();
-//   }
-// }
