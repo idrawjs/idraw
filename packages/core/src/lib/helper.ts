@@ -143,7 +143,7 @@ export class Helper implements TypeHelper {
         },
         rotate: {
           x: elem.x + elem.w / 2,
-          y: elem.y - dotSize - (dotSize * 2 + rotateLimit),
+          y: elem.y - dotSize - (dotSize * 2 + rotateLimit) - borderWidth,
         }
       },
       lineWidth: lineWidth,

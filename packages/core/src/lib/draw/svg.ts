@@ -1,15 +1,14 @@
 import {
   TypeContext, 
   TypeElement,
-  TypeElemDesc,
   TypeHelperConfig,
 } from '@idraw/types';
 import Loader from '../loader';
 import { drawBox } from './base';
 
-export function drawSVG<T extends keyof TypeElemDesc>(
+export function drawSVG(
   ctx: TypeContext,
-  elem: TypeElement<T>,
+  elem: TypeElement<'svg'>,
   loader: Loader,
   helperConfig: TypeHelperConfig
 ) {

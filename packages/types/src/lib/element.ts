@@ -9,7 +9,7 @@ type TypeElement<T extends keyof TypeElemDesc> = {
   w: number;
   h: number;
   angle?: number;
-  radius?: number;
+  borderRadius?: number;
   borderWidth?: number;
   borderColor?: string;
   desc: TypeElemDesc[T];
@@ -29,8 +29,13 @@ type TypeElemDescRect = {
 }
 
 type TypeElemDescText = {
-  size: number;
-  color: number;
+  text: string;
+  color: string;
+  fontSize: number;
+  lineHeight?: number;
+  fontWeight?: string;
+  fontFamily?: string;
+  backgroundColor?: string;
 }
 
 type TypeElemDescCircle = {

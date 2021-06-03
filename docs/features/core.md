@@ -2,34 +2,29 @@
 
 - [x] Scale canvas
 - [x] Scroll canvas
-- [] Render by requestAnimateFrame
-- [] Image load queue
+- [x] Render by requestAnimateFrame
+- [x] Image load queue
 - Render data's elements
+  - Basic box
+    - [x] Border
+    - [x] Radius
+    - [] Gradient Color
   - [] Text
     - [] Text content
     - [] Font size
     - [] Font family
     - [] Font color
-    - [] Border
   - Rect
     - [x] Rect content
-    - [] border
-    - [] Radius
-  - [] Circle
+  - Circle
+    - [] Rect content
   - Image
     - [x] Image content
-    - [] Border 
-    - [] Radius
   - [x] SVG
-    - [] Border 
-    - [] Radius
-  - [] Write
-    - [] Brush
-    - [] Border 
-    - [] Radius
+    - [x] SVG content
 - [x] Drag elements
 - [x] Move elements' index
 - [x] Rotate elements
 - [x] Transform elements's size
+- [] Loader update image/svg resource
 - [] Undo action record
-- [] Controll elements by data

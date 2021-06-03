@@ -8,7 +8,7 @@ const data = {
       y: 10,
       w: 200,
       h: 100,
-      type: 'rect',
+      type: 'circle',
       borderRadius: 20,
       borderWidth: 10,
       borderColor: '#bd0b64',

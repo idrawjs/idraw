@@ -11,6 +11,7 @@ import { clearContext, drawBgColor } from './base';
 import { drawRect } from './rect';
 import { drawImage } from './image';
 import { drawSVG } from './svg';
+import { drawText } from './text';
 import { drawElementWrapper } from './wrapper';
 
 const { isColorStr } = util.color;
@@ -34,11 +35,14 @@ export function drawContext(
       case 'rect': {
         drawRect(ctx, elem as TypeElement<'rect'>);
       }
+      case 'text': {
+        drawText(ctx, elem as TypeElement<'text'>, loader, helperConfig);
+      }
       case 'image': {
-        drawImage<'image'>(ctx, elem as TypeElement<'image'>, loader, helperConfig);
+        drawImage(ctx, elem as TypeElement<'image'>, loader, helperConfig);
       }
       case 'svg': {
-        drawSVG<'svg'>(ctx, elem as TypeElement<'svg'>, loader, helperConfig);
+        drawSVG(ctx, elem as TypeElement<'svg'>, loader, helperConfig);
       }
       default: {
         // nothing

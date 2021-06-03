@@ -52,8 +52,11 @@ export class Renderer {
     requestAnimationFrame(() => {
       // console.log('------ render frame ------', this._loader.isComplete())
       let item: QueueItem | undefined = this._queue[0];
+      let isLastFrame = false;
       if (this._queue.length > 1) {
         item = this._queue.shift();
+      } else {
+        isLastFrame = true;
       }
       if (this._loader.isComplete() !== true) {
         this._drawFrame();
@@ -62,13 +65,13 @@ export class Renderer {
         drawContext(ctx, item.data, item.helper, this._loader);
         this._board.draw();
         this._retainQueueOneItem();
-        if (this._queue.length > 1) {
+        if (!isLastFrame) {
           this._drawFrame();
         } else {
-          this._status = DrawStatus.FREE
+          this._status = DrawStatus.FREE;
         }
       } else {
-        this._status = DrawStatus.FREE
+        this._status = DrawStatus.FREE;
       }
     })
   }
@@ -84,23 +87,3 @@ export class Renderer {
   
 }
 
-
-
-
-// import { TypeData, TypeHelperConfig, } from '@idraw/types';
-// import Board from '@idraw/board';
-// import { drawContext } from './draw';
-
-// export class Renderer {
-
-//   private _board: Board;  
-
-//   constructor(board: Board) {
-//     this._board = board;
-//   }
-
-//   render(data: TypeData, helper: TypeHelperConfig): void {
-//     drawContext(this._board.getContext(), data, helper);
-//     this._board.draw();
-//   }
-// }

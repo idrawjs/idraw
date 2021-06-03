@@ -99,7 +99,7 @@ export default class Loader {
     // add new load-data
     for (let i = data.elements.length - 1; i >= 0; i --) {
       const elem = data.elements[i];
-      if (['image', 'svg'].includes(elem.type) && !loadData[elem.uuid]) {
+      if (['image', 'svg',].includes(elem.type) && !loadData[elem.uuid]) {
         loadData[elem.uuid] = this._createEmptyLoadItem(elem);
         uuidQueue.push(elem.uuid);
       }
@@ -220,8 +220,7 @@ export default class Loader {
       return image;
     } else if (params.type === 'svg') {
       const image = await loadSVG(
-        params.source,
-        {
+        params.source, {
           width: params.elemW, height: params.elemH
         }
       );
