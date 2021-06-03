@@ -36,35 +36,42 @@ const data = {
         color: '#666666',
       }
     },
-    // {
-    //   name: 'text-003',
-    //   x: 160,
-    //   y: 160,
-    //   w: 200,
-    //   h: 20,
-    //   type: 'text',
-    //   angle: 80,
-    //   borderRadius: 20,
-    //   borderWidth: 10,
-    //   borderColor: '#bd0b64',
-    //   desc: {
-    //     color: '#c0c0c0',
-    //   }
-    // },
-    // {
-    //   name: 'text-004',
-    //   x: 400 - 10,
-    //   y: 300 - 10,
-    //   w: 200,
-    //   h: 100,
-    //   type: 'text',
-    //   borderRadius: 20,
-    //   borderWidth: 10,
-    //   borderColor: '#bd0b64',
-    //   desc: {
-    //     color: '#e0e0e0',
-    //   }
-    // }
+    {
+      name: 'text-003',
+      x: 160,
+      y: 160,
+      w: 200,
+      h: 100,
+      type: 'text',
+      borderRadius: 20,
+      borderWidth: 2,
+      borderColor: '#bd0b64',
+      desc: {
+        fontSize: 20,
+        color: '#333333',
+        text: '生活就像海洋，只有意志坚强的人，才能到达彼岸。',
+        fontFamily: '',
+        textAlign: 'right',
+      }
+    },
+    {
+      name: 'text-004',
+      x: 400 - 10,
+      y: 300 - 10,
+      w: 200,
+      h: 100,
+      type: 'text',
+      borderRadius: 20,
+      borderWidth: 2,
+      borderColor: '#bd0b64',
+      desc: {
+        fontSize: 20,
+        color: '#333333',
+        text: '生活就像海洋，只有意志坚强的人，才能到达彼岸。',
+        fontFamily: '',
+        textAlign: 'left',
+      }
+    }
   ]
 }
 

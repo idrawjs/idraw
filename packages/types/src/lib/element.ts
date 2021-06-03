@@ -35,7 +35,8 @@ type TypeElemDescText = {
   lineHeight?: number;
   fontWeight?: string;
   fontFamily?: string;
-  backgroundColor?: string;
+  textAlign?: 'center' | 'left' | 'right'
+  // backgroundColor?: string;
 }
 
 type TypeElemDescCircle = {

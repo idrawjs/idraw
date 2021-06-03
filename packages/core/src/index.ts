@@ -1,9 +1,12 @@
 import { TypeData, TypePoint, TypeHelperWrapperDotDirection, TypeConfig, TypeConfigStrict } from '@idraw/types';
 import Board from '@idraw/board';
+import util from '@idraw/util';
 import { Renderer } from './lib/renderer';
 import { Element } from './lib/element';
 import { Helper } from './lib/helper';
 import { mergeConfig } from './lib/config';
+
+const { time } = util;
 
 type Options = {
   width: number;
@@ -130,7 +133,7 @@ class Core {
     }
     this[_board].on('point', this._handlePoint.bind(this));
     this[_board].on('moveStart', this._handleMoveStart.bind(this));
-    this[_board].on('move', this._handleMove.bind(this));
+    this[_board].on('move', time.throttle(this._handleMove.bind(this), 16));
     this[_board].on('moveEnd', this._handleMoveEnd.bind(this));
   }
 

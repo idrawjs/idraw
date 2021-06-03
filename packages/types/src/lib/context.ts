@@ -15,6 +15,7 @@ interface TypeContext {
     devicePixelRatio: number;
   };
   calcDeviceNum(num: number): number;
+  calcScreenNum(num: number): number;
 
   setFillStyle(color: string | CanvasPattern): void;
   fill(fillRule?: CanvasFillRule | undefined): void;
