@@ -1,16 +1,11 @@
-import { getData } from './lib/data/index.js';
-import { doScale } from './lib/scale.js';
-import { doScroll } from './lib/scroll.js';
-import { doElemens } from './lib/element.js';
+import { getData } from './data/index.js';
+import { doScale } from './scale.js';
+import { doScroll } from './scroll.js';
+import { doElemens } from './element.js';
 
 const { Core } = window.iDraw;
 const data = getData();
 const mount = document.querySelector('#mount');
-// const defaultConf = {
-//   scale: 0.8,
-//   scrollX: 100,
-//   scrollY: 50,
-// }
 
 const defaultConf = {
   scale: 1,
@@ -23,9 +18,11 @@ const core = new Core(mount, {
   devicePixelRatio: 4
 });
 
-console.log('core ===', core);
 
 core.setData(data);
+core.draw();
+
 doScale(core, defaultConf.scale);
 doScroll(core, defaultConf);
 doElemens(core);
+

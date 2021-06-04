@@ -15,7 +15,7 @@ const data = {
       // angle: 30,
       // angle: 0,
       desc: {
-        src: './images/computer.png',
+        src: './../images/computer.png',
       }
     },
     {
@@ -30,7 +30,7 @@ const data = {
       borderColor: '#bd0b64',
       type: 'image',
       desc: {
-        src: './images/chart.png',
+        src: './../images/chart.png',
       }
     },
     {
@@ -42,7 +42,7 @@ const data = {
       type: 'image',
       angle: 80,
       desc: {
-        src: './images/phone.png',
+        src: './../images/phone.png',
       }
     },
     {
@@ -53,7 +53,7 @@ const data = {
       h: 100,
       type: 'image',
       desc: {
-        src: './images/building-001.png',
+        src: './../images/building-001.png',
       }
     },
     {
@@ -64,7 +64,7 @@ const data = {
       h: 100,
       type: 'image',
       desc: {
-        src: './images/building-002.png',
+        src: './../images/building-002.png',
       }
     },
     {
@@ -75,7 +75,7 @@ const data = {
       h: 100,
       type: 'image',
       desc: {
-        src: './images/building-003.png',
+        src: './../images/building-003.png',
       }
     }
   ]

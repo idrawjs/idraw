@@ -26,7 +26,7 @@ function isPointInElement(board, p = {x, y}) {
 
 function moveElement(board, idx, moveX, moveY) {
   const data = getData();
-  const scale = getScale();
+  const scale = getScale() || 1;
   if (data.elements[idx]) {
     // data.elements[idx].x += (moveX * scale * opts.devicePixelRatio);
     // data.elements[idx].y += (moveY * scale * opts.devicePixelRatio);

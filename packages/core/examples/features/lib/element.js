@@ -5,6 +5,7 @@ let hasInited = false;
 
 export function doElemens(core) {
   if (hasInited === true)  return;
+  if (!dom) return;
   renderElemens(core);
   listenElements(core);
 }
