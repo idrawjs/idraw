@@ -22,6 +22,7 @@ class Board {
   private _hasRendered = false;
   private _ctx: Context;
   private _displayCtx: CanvasRenderingContext2D;
+  private _originCtx: CanvasRenderingContext2D;
   private _scaleRatio = 1;
   private _scrollX = 0;
   private _scrollY = 0;
@@ -33,13 +34,20 @@ class Board {
     this._displayCanvas = document.createElement('canvas');
     this._mount.appendChild(this._displayCanvas);
     this._opts = this._parsePrivateOptions(opts);
-    const ctx = this._canvas.getContext('2d') as CanvasRenderingContext2D;
-    const displayCtx = this._displayCanvas.getContext('2d') as CanvasRenderingContext2D;
-    this._ctx = new Context(ctx, this._opts);
-    this._displayCtx = displayCtx;
+    this._originCtx = this._canvas.getContext('2d') as CanvasRenderingContext2D;
+    this._displayCtx = this._displayCanvas.getContext('2d') as CanvasRenderingContext2D;
+    this._ctx = new Context(this._originCtx, this._opts);
     this._watcher = new Watcher(this._displayCanvas);
 
     this._render();
+  }
+
+  getDisplayContext(): CanvasRenderingContext2D {
+    return this._displayCtx;
+  }
+
+  getOriginContext(): CanvasRenderingContext2D {
+    return this._displayCtx;
   }
 
   getContext(): Context {
