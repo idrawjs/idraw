@@ -34,18 +34,23 @@ export function drawContext(
     switch (elem.type) {
       case 'rect': {
         drawRect(ctx, elem as TypeElement<'rect'>);
+        break;
       }
       case 'text': {
         drawText(ctx, elem as TypeElement<'text'>, loader, helperConfig);
+        break;
       }
       case 'image': {
         drawImage(ctx, elem as TypeElement<'image'>, loader, helperConfig);
+        break;
       }
       case 'svg': {
         drawSVG(ctx, elem as TypeElement<'svg'>, loader, helperConfig);
+        break;
       }
       default: {
         // nothing
+        break;
       }
     }
   }

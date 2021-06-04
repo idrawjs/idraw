@@ -1,7 +1,10 @@
 const pageList = [
-  // { path: 'paint/examples/path/draw.html', w: 600, h: 600, delay: 200 },
-  // { path: 'paint/examples/path/play.html', w: 600, h: 600, delay: 8000 },
-  { path: 'drag-core/examples/demo.html', w: 500, h: 1000, delay: 2000 },
+  { path: 'board/examples/features/test.html', w: 600, h: 400, delay: 1000 },
+  { path: 'core/examples/features/rect.html', w: 600, h: 400, delay: 1000 },
+  { path: 'core/examples/features/text.html', w: 600, h: 400, delay: 1000 },
+  { path: 'core/examples/features/svg.html', w: 600, h: 400, delay: 1000 },
+  { path: 'core/examples/features/image.html', w: 600, h: 400, delay: 1000 },
+  // { path: 'core/examples/test.html', w: 600, h: 600, delay: 8000 },
 ]
 
 module.exports = {

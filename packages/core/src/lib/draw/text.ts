@@ -22,6 +22,7 @@ export function drawText(
       ...{
         fontSize: 12,
         fontFamily: 'sans-serif',
+        textAlign: 'center',
       },
       ...elem.desc
     };
@@ -32,7 +33,7 @@ export function drawText(
       fontFamily: desc.fontFamily
     });
     const fontHeight = desc.lineHeight || desc.fontSize;
-    
+    const lines: {text: string, width: number}[] = [];
     let lineText = '';
     let lineNum = 0;
     for (let i = 0; i < desc.text.length; i++) {
@@ -40,7 +41,10 @@ export function drawText(
       if (ctx.measureText(lineText + (desc.text[i] || '')).width < ctx.calcDeviceNum(elem.w)) {
         lineText += (desc.text[i] || '');
       } else {
-        ctx.fillText(lineText, elem.x, elem.y + lineNum * fontHeight);
+        lines.push({
+          text: lineText,
+          width: ctx.calcScreenNum(ctx.measureText(lineText).width),
+        });
         lineText = (desc.text[i] || '');
         lineNum ++;
       }
@@ -49,13 +53,33 @@ export function drawText(
       }
       if (lineText && desc.text.length - 1 === i) {
         if ((lineNum + 1) * fontHeight < elem.h) {
-          ctx.fillText(lineText, elem.x, elem.y + lineNum * fontHeight);
+          lines.push({
+            text: lineText,
+            width: ctx.calcScreenNum(ctx.measureText(lineText).width),
+          });
           break;
         }
       }
     }
+
+    // draw text lines
+    let _y = elem.y;
+    if (lines.length * fontHeight < elem.h) {
+      _y += ((elem.h - lines.length * fontHeight) / 2);
+    }
+    lines.forEach((line, i) => {
+      let _x = elem.x;
+      if (desc.textAlign === 'center') {
+        _x = elem.x + (elem.w - line.width) / 2
+      } else if (desc.textAlign === 'right') {
+        _x = elem.x + (elem.w - line.width);
+      }
+      ctx.fillText(line.text, _x, _y + fontHeight * i);
+    });
+
   });
 }
+
 
 
 // export function createTextSVG(elem: TypeElement<'text'>): string {

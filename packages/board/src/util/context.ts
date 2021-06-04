@@ -38,7 +38,11 @@ class Context implements TypeContext {
   }
 
   calcDeviceNum(num: number): number {
-    return this._opts.devicePixelRatio * num;
+    return num * this._opts.devicePixelRatio;
+  }
+
+  calcScreenNum(num: number): number {
+    return num / this._opts.devicePixelRatio;
   }
 
   getSize() {

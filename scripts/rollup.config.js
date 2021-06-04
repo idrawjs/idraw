@@ -51,7 +51,7 @@ function createConfigItem(params) {
       format,
       name: name,
       esModule: esModule === true,
-      sourcemap: true,
+      // sourcemap: true,
       exports
     }, 
     plugins: [
