@@ -30,6 +30,9 @@ export function drawBox(
     const { x, y, w, h } = elem;
     let r: number = elem.borderRadius || 0;
     r = Math.min(r, w / 2, h / 2);
+    if (w < r * 2 || h < r * 2) {
+      r = 0;
+    }
     ctx.beginPath();
     ctx.moveTo(x + r, y);
     ctx.arcTo(x + w, y, x + w, y + h, r);

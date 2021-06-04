@@ -104,6 +104,12 @@ export class Helper implements TypeHelper {
     const lineDash = this._coreConfig.elementWrapper.lineDash.map(n => (n / scale));
     const rotateLimit = 12;
     const borderWidth = elem.borderWidth || 0; 
+    // if (!(
+    //   elem.x - dotSize - borderWidth > 0 
+    //   && elem.y - dotSize - borderWidth > 0
+    //   && elem.x - dotSize - borderWidth > 0)) {
+    //   return;
+    // }
     
     const wrapper: TypeHelperConfig['selectedElementWrapper'] = {
       uuid,

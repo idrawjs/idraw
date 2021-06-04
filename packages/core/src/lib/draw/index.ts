@@ -26,6 +26,8 @@ export function drawContext(
   const size = ctx.getSize();
   ctx.clearRect(0, 0, size.width, size.height);
 
+  drawElementWrapper(ctx, helperConfig);
+
   if (typeof data.bgColor === 'string' && isColorStr(data.bgColor)) {
     drawBgColor(ctx, data.bgColor);
   }
@@ -54,7 +56,5 @@ export function drawContext(
       }
     }
   }
-
-  drawElementWrapper(ctx, helperConfig);
 }
 

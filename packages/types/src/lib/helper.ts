@@ -18,7 +18,11 @@ type TypeHelperConfig = {
       bottomLeft: TypePoint,
       left: TypePoint,
       rotate: TypePoint,
-    }
+    },
+    // limit: {
+    //   minWidth: number;
+    //   minHeight: number;
+    // },
     lineDash: number[];
     lineWidth: number;
     color: string;

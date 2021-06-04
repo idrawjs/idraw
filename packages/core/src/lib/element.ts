@@ -82,45 +82,61 @@ export class Element {
 
     switch (direction) {
       case 'top-left': {
-        elem.x += moveX;
-        elem.y += moveY;
-        elem.w -= moveX;
-        elem.h -= moveY;
+        if (elem.w - moveX > 0 && elem.h - moveY > 0)  {
+          elem.x += moveX;
+          elem.y += moveY;
+          elem.w -= moveX;
+          elem.h -= moveY;
+        }
         break;
       }
       case 'top': {
-        elem.y += moveY;
-        elem.h -= moveY;
+        if (elem.h - moveY > 0) {
+          elem.y += moveY;
+          elem.h -= moveY;
+        }
         break;
       }
       case 'top-right': {
-        elem.y += moveY;
-        elem.w += moveX;
-        elem.h -= moveY;
+        if (elem.h - moveY > 0 && elem.w + moveX > 0) {
+          elem.y += moveY;
+          elem.w += moveX;
+          elem.h -= moveY;
+        }
         break;
       }
       case 'right': {
-        elem.w += moveX;
+        if (elem.w + moveX > 0) {
+          elem.w += moveX;
+        }
         break;
       }
       case 'bottom-right': {
-        elem.w += moveX;
-        elem.h += moveY;
+        if (elem.w + moveX > 0 && elem.h + moveY > 0) {
+          elem.w += moveX;
+          elem.h += moveY;
+        }
         break;
       }
       case 'bottom': {
-        elem.h += moveY;
+        if (elem.h + moveY > 0) {
+          elem.h += moveY;
+        }
         break;
       }
       case 'bottom-left': {
-        elem.x += moveX;
-        elem.w -= moveX;
-        elem.h += moveY;
+        if (elem.w - moveX > 0 && elem.h + moveY > 0) {
+          elem.x += moveX;
+          elem.w -= moveX;
+          elem.h += moveY;
+        }
         break;
       }
       case 'left': {
-        elem.x += moveX;
-        elem.w -= moveX;
+        if (elem.w - moveX > 0) {
+          elem.x += moveX;
+          elem.w -= moveX;
+        }
         break;
       }
       case 'rotate': {
