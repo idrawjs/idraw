@@ -7,6 +7,7 @@ import { Helper } from './lib/helper';
 import { mergeConfig } from './lib/config';
 
 const { time } = util;
+const { deepClone } = util.data;
 
 type Options = {
   width: number;
@@ -120,11 +121,11 @@ class Core {
   }
 
   getData(): TypeData {
-    return JSON.parse(JSON.stringify(this[_data]));
+    return deepClone(this[_data]);
   }
 
   setData(data: TypeData): void {
-    this[_data] = this[_element].initData(data);
+    this[_data] = this[_element].initData(deepClone(data));
   }
 
   private _initEvent(): void {
