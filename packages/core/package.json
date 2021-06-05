@@ -1,6 +1,6 @@
 {
   "name": "@idraw/core",
-  "version": "0.0.4-alpha.2",
+  "version": "0.0.4-alpha.3",
   "description": "",
   "main": "dist/index.cjs.js",
   "module": "dist/index.es.js",
@@ -23,10 +23,13 @@
   "author": "chenshenhai",
   "license": "MIT",
   "devDependencies": {
-    "@idraw/types": "^0.0.4-alpha.2"
+    "@idraw/types": "^0.0.4-alpha.3"
   },
   "dependencies": {
-    "@idraw/board": "^0.0.4-alpha.2",
-    "@idraw/util": "^0.0.4-alpha.2"
+    "@idraw/board": "^0.0.4-alpha.3",
+    "@idraw/util": "^0.0.4-alpha.3"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
