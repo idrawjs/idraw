@@ -5,7 +5,8 @@ import {
   TypeConfig,
   TypeConfigStrict,
   TypeElement,
-  TypeElemDesc
+  TypeElemDesc,
+  TypeCoreOptions,
 }  from '@idraw/types';
 import Board from '@idraw/board';
 import util from '@idraw/util';
@@ -19,11 +20,6 @@ const { time } = util;
 const { deepClone } = util.data;
 const { createUUID } = util.uuid;
 
-type Options = {
-  width: number;
-  height: number;
-  devicePixelRatio: number;
-}
 
 enum Mode {
   NULL = 'null',
@@ -50,7 +46,7 @@ class Core {
 
   private [_board]: Board;
   private [_data]: TypeData;
-  private [_opts]: Options;
+  private [_opts]: TypeCoreOptions;
   private [_config]: TypeConfigStrict;
   private [_renderer]: Renderer;
   private [_element]: Element;
@@ -63,7 +59,7 @@ class Core {
   private [_prevPoint]: TypePoint | null = null;
   private [_selectedDotDirection]: TypeHelperWrapperDotDirection | null = null;
 
-  constructor(mount: HTMLDivElement, opts: Options, config: TypeConfig) {
+  constructor(mount: HTMLDivElement, opts: TypeCoreOptions, config: TypeConfig) {
     this[_data] = { elements: [] };
     this[_opts] = opts;
     this[_config] = mergeConfig(config);

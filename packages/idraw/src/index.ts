@@ -1,26 +1,24 @@
-// import { TypeData } from '@idraw/types';
+import Core from '@idraw/core';
+import { TypeCoreOptions, TypeConfig} from '@idraw/types';
 
-// const data: TypeData = {
-//   elements: [
-//     {
-//       x: 0,
-//       y: 0,
-//       w: 0,
-//       h: 0,
-//       type: 'circle',
-//       desc: {
-//         color: '#f0f0f0',
-//       }
-//     }
-//   ]
-// }
+// type Options = {} & TypeCoreOptions;
 
-// console.log('data =', data)
+// const _opts = Symbol('_opts');
 
-class IDraw {
-  render(): void {
-    console.log('hello world');
+class IDraw extends Core {
+
+  // private [_opts]: Options;
+
+  constructor(mount: HTMLDivElement, opts: TypeCoreOptions, config: TypeConfig) {
+    super(mount, {
+      width: opts.width,
+      height: opts.height,
+      devicePixelRatio: opts.devicePixelRatio
+    }, config);
+    // this[_opts] = opts;
   }
+
+
 }
 
 export default IDraw;
