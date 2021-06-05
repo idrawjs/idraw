@@ -11,6 +11,14 @@
     "src",
     "index.ts"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/idrawjs/idraw.git"
+  },
+  "bugs": {
+    "url": "https://github.com/idrawjs/idraw/issues"
+  },
+  "homepage": "https://github.com/idrawjs/idraw#readme",
   "publishConfig": {
     "access": "public"
   }

@@ -9,6 +9,17 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/idrawjs/idraw.git"
+  },
+  "bugs": {
+    "url": "https://github.com/idrawjs/idraw/issues"
+  },
+  "homepage": "https://github.com/idrawjs/idraw#readme",
   "author": "chenshenhai",
   "license": "MIT",
   "devDependencies": {
