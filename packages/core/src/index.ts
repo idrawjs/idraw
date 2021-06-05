@@ -1,10 +1,19 @@
-import { TypeData, TypePoint, TypeHelperWrapperDotDirection, TypeConfig, TypeConfigStrict } from '@idraw/types';
+import {
+  TypeData,
+  TypePoint,
+  TypeHelperWrapperDotDirection,
+  TypeConfig,
+  TypeConfigStrict,
+  TypeElement,
+  TypeElemDesc
+}  from '@idraw/types';
 import Board from '@idraw/board';
 import util from '@idraw/util';
 import { Renderer } from './lib/renderer';
 import { Element } from './lib/element';
 import { Helper } from './lib/helper';
 import { mergeConfig } from './lib/config';
+import { CoreEvent, TypeCoreEventArgMap } from './lib/core-event';
 
 const { time } = util;
 const { deepClone } = util.data;
@@ -34,6 +43,7 @@ const _mode = Symbol('_mode');
 const _selectedUUID = Symbol('_selectedUUID');
 const _prevPoint = Symbol('_prevPoint');
 const _selectedDotDirection = Symbol('_selectedDotDirection');
+const _coreEvent = Symbol('_coreEvent');
 
 class Core {
 
@@ -46,6 +56,7 @@ class Core {
   private [_helper]: Helper;
   private [_hasInited] = false; 
   private [_mode]: Mode = Mode.NULL;
+  private [_coreEvent]: CoreEvent = new CoreEvent();
 
   private [_selectedUUID]: string | null = null;
   private [_prevPoint]: TypePoint | null = null;
@@ -67,7 +78,7 @@ class Core {
     this[_helper].updateConfig(this[_data], {
       selectedUUID: this[_selectedUUID],
       devicePixelRatio: this[_opts].devicePixelRatio,
-      scale: this[_board].getTransform().scale // TODO
+      scale: this[_board].getTransform().scale,
     });
     this[_renderer].render(this[_data], this[_helper].getConfig());
   }
@@ -126,6 +137,27 @@ class Core {
 
   setData(data: TypeData): void {
     this[_data] = this[_element].initData(deepClone(data));
+    this.draw();
+  }
+
+  updateElement(elem: TypeElement<keyof TypeElemDesc>) {
+    const _elem  = deepClone(elem) as TypeElement<keyof TypeElemDesc>;
+    const data = this[_data];
+    for (let i = 0; i < data.elements.length; i++) {
+      if (_elem.uuid === data.elements[i]?.uuid) {
+        data.elements[i] = _elem;
+        break;
+      }
+    }
+    this.draw();
+  }
+
+  on<T extends keyof TypeCoreEventArgMap >(key: T, callback: (p: TypeCoreEventArgMap[T]) => void) {
+    this[_coreEvent].on(key, callback);
+  }
+
+  off<T extends keyof TypeCoreEventArgMap >(key: T, callback: (p: TypeCoreEventArgMap[T]) => void) {
+    this[_coreEvent].off(key, callback);
   }
 
   private _initEvent(): void {
@@ -149,12 +181,27 @@ class Core {
     } else {
       const [index] = this[_element].isPointInElement(point, this[_data]);
       this.selectElement(index);
+      if (typeof uuid === 'string') {
+        this[_coreEvent].trigger(
+          'screenSelectElement', 
+          { index, uuid, element: deepClone(this[_data].elements?.[index])}
+        );
+      }
     }
     this.draw();
   }
 
   private _handleMoveStart(point: TypePoint): void {
     this[_prevPoint] = point;
+    const uuid = this[_selectedUUID];
+    if (typeof uuid === 'string') {
+      this[_coreEvent].trigger('screenMoveElementStart', {
+        index: this[_element].getElementIndex(this[_data], uuid),
+        uuid,
+        x: point.x,
+        y: point.y
+      });
+    }
   }
 
   private _handleMove(point: TypePoint): void {
@@ -164,13 +211,44 @@ class Core {
         this.draw();
       } else if (this[_mode] === Mode.SELECT_ELEMENT_WRAPPER_DOT && this[_selectedDotDirection]) {
         this._transfromElement(this[_selectedUUID] as string, point, this[_prevPoint], this[_selectedDotDirection] as TypeHelperWrapperDotDirection);
+        
+        // const changeData = this._transfromElement(this[_selectedUUID] as string, point, this[_prevPoint], this[_selectedDotDirection] as TypeHelperWrapperDotDirection);
+        // const uuid = this[_selectedUUID];
+        // if (changeData && typeof uuid === 'string') {
+        //   this[_coreEvent].trigger('screenChangeElement', {
+        //     index: this[_element].getElementIndex(this[_data], uuid),
+        //     uuid,
+        //     width: changeData.width,
+        //     height: changeData.height,
+        //     angle: changeData.angle
+        //   })
+        // }
       }
     }
-    
     this[_prevPoint] = point;
   }
 
-  private _handleMoveEnd(): void {
+  private _handleMoveEnd(point: TypePoint): void {
+    const uuid = this[_selectedUUID];
+    if (typeof uuid === 'string') {
+      const index = this[_element].getElementIndex(this[_data], uuid);
+      const elem = this[_data].elements[index];
+      if (elem) {
+        this[_coreEvent].trigger('screenMoveElementEnd', {
+          index,
+          uuid,
+          x: point.x,
+          y: point.y
+        });
+        this[_coreEvent].trigger('screenChangeElement', {
+          index,
+          uuid,
+          width: elem.w,
+          height: elem.h,
+          angle: elem.angle || 0
+        });
+      }
+    }
     this[_selectedUUID] = null;
     this[_prevPoint] = null;
   }
@@ -183,12 +261,19 @@ class Core {
     this.draw();
   }
 
-  private _transfromElement(uuid: string, point: TypePoint, prevPoint: TypePoint|null, direction: TypeHelperWrapperDotDirection) {
+  private _transfromElement(
+    uuid: string, point: TypePoint, prevPoint: TypePoint|null, direction: TypeHelperWrapperDotDirection
+  ): null | {
+    width: number,
+    height: number,
+    angle: number,
+  } {
     if (!prevPoint) {
-      return;
+      return null;
     }
-    this[_element].transformElement(this[_data], uuid, point, prevPoint, this[_board].getContext().getTransform().scale, direction);
+    const result = this[_element].transformElement(this[_data], uuid, point, prevPoint, this[_board].getContext().getTransform().scale, direction);
     this.draw();
+    return result;
   }
 }
 

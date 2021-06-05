@@ -26,8 +26,6 @@ export function drawContext(
   const size = ctx.getSize();
   ctx.clearRect(0, 0, size.width, size.height);
 
-  drawElementWrapper(ctx, helperConfig);
-
   if (typeof data.bgColor === 'string' && isColorStr(data.bgColor)) {
     drawBgColor(ctx, data.bgColor);
   }
@@ -43,11 +41,11 @@ export function drawContext(
         break;
       }
       case 'image': {
-        drawImage(ctx, elem as TypeElement<'image'>, loader, helperConfig);
+        drawImage(ctx, elem as TypeElement<'image'>, loader);
         break;
       }
       case 'svg': {
-        drawSVG(ctx, elem as TypeElement<'svg'>, loader, helperConfig);
+        drawSVG(ctx, elem as TypeElement<'svg'>, loader);
         break;
       }
       default: {
@@ -56,5 +54,6 @@ export function drawContext(
       }
     }
   }
+  drawElementWrapper(ctx, helperConfig);
 }
 

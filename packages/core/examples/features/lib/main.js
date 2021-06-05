@@ -19,6 +19,23 @@ const core = new Core(mount, {
 });
 
 
+core.on('error', (data) => {
+  console.log('error: ', data);
+});
+core.on('screenSelectElement', (data) => {
+  console.log('screenSelectElement: ', data);
+});
+core.on('screenMoveElementStart', (data) => {
+  console.log('screenMoveElementStart: ', data);
+});
+core.on('screenMoveElementEnd', (data) => {
+  console.log('screenMoveElementEnd: ', data);
+});
+core.on('screenChangeElement', (data) => {
+  console.log('screenChangeElement: ', data);
+});
+
+
 core.setData(data);
 core.draw();
 

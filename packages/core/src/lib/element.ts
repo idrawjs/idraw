@@ -34,7 +34,12 @@ export class Element {
     let uuid = null;
     for (let i = data.elements.length - 1; i >= 0; i--) {
       const ele = data.elements[i];
-      const bw = ele.borderWidth || 0;
+      let bw = 0;
+      // @ts-ignore
+      if (ele.desc?.borderWidth > 0) {
+        // @ts-ignore
+        bw = ele.desc.borderWidth;
+      }
 
       rotateElement(ctx, ele, () => {
         ctx.beginPath();
@@ -70,10 +75,21 @@ export class Element {
     data.elements[index].y += (moveY / scale);
   }
 
-  transformElement(data: TypeData, uuid: string, point: TypePoint, prevPoint: TypePoint, scale: number, direction: TypeHelperWrapperDotDirection): void {
+  transformElement(
+    data: TypeData,
+    uuid: string,
+    point: TypePoint,
+    prevPoint: TypePoint,
+    scale: number,
+    direction: TypeHelperWrapperDotDirection
+  ): null | {
+    width: number,
+    height: number,
+    angle: number,
+  } {
     const index = this.getElementIndex(data, uuid);
     if (!data.elements[index]) {
-      return;
+      return null;
     }
     const moveX = (point.x - prevPoint.x) / scale;
     const moveY = (point.y - prevPoint.y) / scale;
@@ -148,6 +164,12 @@ export class Element {
       default: {
         break;
       }
+    }
+
+    return {
+      width: elem.w,
+      height: elem.h,
+      angle: elem.angle || 0,
     }
   }
 
