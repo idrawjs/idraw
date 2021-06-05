@@ -3,15 +3,15 @@ const dom = document.querySelector('#elem-list');
 
 let hasInited = false;
 
-export function doElemens(core) {
+export function doElemens(idraw) {
   if (hasInited === true)  return;
   if (!dom) return;
-  renderElemens(core);
-  listenElements(core);
+  renderElemens(idraw);
+  listenElements(idraw);
 }
 
-function renderElemens(core) {
-  const data = core.getData();
+function renderElemens(idraw) {
+  const data = idraw.getData();
   const elems = data.elements;
   const items = [];
   for (let i = elems.length - 1; i >= 0; i --) {
@@ -27,7 +27,7 @@ function renderElemens(core) {
   dom.innerHTML = items.join('');
 }
 
-function listenElements(core) {
+function listenElements(idraw) {
 
   dom.addEventListener('click', (e) => {
     if (!e.path[0]) {
@@ -36,15 +36,15 @@ function listenElements(core) {
     const el = e.path[0];
     if (el.hasAttribute('data-elem-name')) {
       const uuid = el.getAttribute('data-elem-name');
-      core.selectElementByUUID(uuid);
+      idraw.selectElementByUUID(uuid);
     } else if (el.hasAttribute('data-elem-btn-up')) {
       const uuid = el.getAttribute('data-elem-btn-up');
-      core.moveUpElement(uuid);
-      renderElemens(core);
+      idraw.moveUpElement(uuid);
+      renderElemens(idraw);
     } else if (el.hasAttribute('data-elem-btn-down')) {
       const uuid = el.getAttribute('data-elem-btn-down');
-      core.moveDownElement(uuid);
-      renderElemens(core);
+      idraw.moveDownElement(uuid);
+      renderElemens(idraw);
     }
   }, true);
 

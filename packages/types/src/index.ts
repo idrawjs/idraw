@@ -6,3 +6,4 @@ export * from './lib/element';
 export * from './lib/helper';
 export * from './lib/config';
 export * from './lib/core';
+export * from './lib/screen';
