@@ -36,6 +36,7 @@ const _renderer = Symbol('_renderer');
 const _element = Symbol('_element');
 const _helper = Symbol('_helper');
 const _hasInited = Symbol('_hasInited');
+const _hasInitedData = Symbol('_hasInitedData');
 const _mode = Symbol('_mode');
 const _selectedUUID = Symbol('_selectedUUID');
 const _prevPoint = Symbol('_prevPoint');
@@ -52,6 +53,7 @@ class Core {
   private [_element]: Element;
   private [_helper]: Helper;
   private [_hasInited] = false; 
+  private [_hasInitedData] = false; 
   private [_mode]: Mode = Mode.NULL;
   private [_coreEvent]: CoreEvent = new CoreEvent();
 
@@ -135,10 +137,18 @@ class Core {
     return deepClone(this[_data]);
   }
 
+  initData(data: TypeData): void {
+    if (this[_hasInitedData] === true) {
+      return;
+    }
+    this.setData(data);
+    this._emitChangeData();
+    this[_hasInitedData] = true;
+  }
+
   setData(data: TypeData): void {
     this[_data] = this[_element].initData(deepClone(data));
     this.draw();
-    this._emitChangeData();
   }
 
   updateElement(elem: TypeElement<keyof TypeElemDesc>) {
