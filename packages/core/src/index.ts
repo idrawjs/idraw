@@ -17,6 +17,7 @@ import { CoreEvent, TypeCoreEventArgMap } from './lib/core-event';
 
 const { time } = util;
 const { deepClone } = util.data;
+const { createUUID } = util.uuid;
 
 type Options = {
   width: number;
@@ -134,7 +135,6 @@ class Core {
     this. _emitChangeScreen();
   }
 
-
   getData(): TypeData {
     return deepClone(this[_data]);
   }
@@ -156,6 +156,23 @@ class Core {
     }
     this._emitChangeData();
     this.draw();
+  }
+
+  addElement(elem: TypeElement<keyof TypeElemDesc>) {
+    const _elem = deepClone(elem);
+    _elem.uuid = createUUID();
+    this[_data].elements.push(_elem);
+    this._emitChangeData();
+    this.draw();
+  }
+
+  deleteElement(uuid: string) {
+    const index = this[_element].getElementIndex(this[_data], uuid);
+    if (index >= 0) {
+      this[_data].elements.splice(index, 1);
+      this._emitChangeData();
+      this.draw();
+    }
   }
 
   on<T extends keyof TypeCoreEventArgMap >(key: T, callback: (p: TypeCoreEventArgMap[T]) => void) {
