@@ -108,11 +108,13 @@ export default class Loader {
             const _ele = elem as TypeElement<'image'>;
             if (_ele.desc.src !== loadData[elem.uuid].source) {
               loadData[elem.uuid].status = 'null';
+              uuidQueue.push(elem.uuid);
             }
           } else if (elem.type === 'svg') {
             const _ele = elem as TypeElement<'svg'>;
             if (_ele.desc.svg !== loadData[elem.uuid].source) {
               loadData[elem.uuid].status = 'null';
+              uuidQueue.push(elem.uuid);
             }
           } 
         }
