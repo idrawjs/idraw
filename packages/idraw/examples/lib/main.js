@@ -1,10 +1,9 @@
-import { getData } from './data/index.js';
+import data from './data.js';
 import { doScale } from './scale.js';
 import { doScroll } from './scroll.js';
 import { doElemens } from './element.js';
 
-const { Core } = window.iDraw;
-const data = getData();
+const { IDraw } = window.iDraw;
 const mount = document.querySelector('#mount');
 
 const defaultConf = {
@@ -12,7 +11,7 @@ const defaultConf = {
   scrollX: 0,
   scrollY: 0,
 }
-const core = new Core(mount, {
+const core = new IDraw(mount, {
   width: 600,
   height: 400,
   devicePixelRatio: 4

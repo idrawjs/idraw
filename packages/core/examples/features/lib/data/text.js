@@ -9,14 +9,14 @@ const data = {
       w: 200,
       h: 100,
       type: 'text',
-      borderRadius: 20,
-      borderWidth: 2,
-      borderColor: '#bd0b64',
       desc: {
         fontSize: 20,
         color: '#333333',
         text: '生活就像海洋，只有意志坚强的人，才能到达彼岸。',
-        fontFamily: ''
+        fontFamily: '',
+        borderRadius: 20,
+        borderWidth: 2,
+        borderColor: '#bd0b64',
       }
     },
     {
@@ -27,13 +27,13 @@ const data = {
       h: 120,
       // angle: 30,
       type: 'text',
-      borderRadius: 60,
-      borderWidth: 10,
-      borderColor: '#bd0b64',
       desc: {
         fontSize: 20,
         text: 'Hello Text',
         color: '#666666',
+        borderRadius: 60,
+        borderWidth: 10,
+        borderColor: '#bd0b64',
       }
     },
     {
@@ -43,15 +43,15 @@ const data = {
       w: 200,
       h: 100,
       type: 'text',
-      borderRadius: 20,
-      borderWidth: 2,
-      borderColor: '#bd0b64',
       desc: {
         fontSize: 20,
         color: '#333333',
         text: '生活就像海洋，只有意志坚强的人，才能到达彼岸。',
         fontFamily: '',
         textAlign: 'right',
+        borderRadius: 20,
+        borderWidth: 2,
+        borderColor: '#bd0b64',
       }
     },
     {
@@ -61,15 +61,15 @@ const data = {
       w: 200,
       h: 100,
       type: 'text',
-      borderRadius: 20,
-      borderWidth: 2,
-      borderColor: '#bd0b64',
       desc: {
         fontSize: 20,
         color: '#333333',
         text: '生活就像海洋，只有意志坚强的人，才能到达彼岸。',
         fontFamily: '',
         textAlign: 'left',
+        borderRadius: 20,
+        borderWidth: 2,
+        borderColor: '#bd0b64',
       }
     }
   ]

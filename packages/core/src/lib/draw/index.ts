@@ -41,11 +41,11 @@ export function drawContext(
         break;
       }
       case 'image': {
-        drawImage(ctx, elem as TypeElement<'image'>, loader, helperConfig);
+        drawImage(ctx, elem as TypeElement<'image'>, loader);
         break;
       }
       case 'svg': {
-        drawSVG(ctx, elem as TypeElement<'svg'>, loader, helperConfig);
+        drawSVG(ctx, elem as TypeElement<'svg'>, loader);
         break;
       }
       default: {
@@ -54,7 +54,6 @@ export function drawContext(
       }
     }
   }
-
   drawElementWrapper(ctx, helperConfig);
 }
 

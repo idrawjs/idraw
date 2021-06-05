@@ -62,7 +62,9 @@ export class Renderer {
         this._drawFrame();
       } else if (item) {
         const ctx = this._board.getContext();
+        
         drawContext(ctx, item.data, item.helper, this._loader);
+
         this._board.draw();
         this._retainQueueOneItem();
         if (!isLastFrame) {

@@ -1,6 +1,6 @@
 import {
   TypeContext,
-  TypeElemDesc,
+  // TypeElemDesc,
   TypeElement,
 } from '@idraw/types';
 import util from '@idraw/util';
@@ -21,15 +21,18 @@ export function drawBgColor(ctx: TypeContext, color: string) {
 
 export function drawBox(
   ctx: TypeContext,
-  elem: TypeElement<keyof TypeElemDesc>,
+  elem: TypeElement<'text' | 'rect'>,
   pattern: string | CanvasPattern | null,
 ): void {
   clearContext(ctx);
   drawBoxBorder(ctx, elem);
   rotateElement(ctx, elem, () => {
     const { x, y, w, h } = elem;
-    let r: number = elem.borderRadius || 0;
+    let r: number = elem.desc.borderRadius || 0;
     r = Math.min(r, w / 2, h / 2);
+    if (w < r * 2 || h < r * 2) {
+      r = 0;
+    }
     ctx.beginPath();
     ctx.moveTo(x + r, y);
     ctx.arcTo(x + w, y, x + w, y + h, r);
@@ -49,24 +52,24 @@ export function drawBox(
 
 export function drawBoxBorder(
   ctx: TypeContext,
-  elem: TypeElement<keyof TypeElemDesc>,
+  elem: TypeElement<'text'|'rect'>,
 ): void {
   clearContext(ctx);
   rotateElement(ctx, elem, () => {
-    if (!(elem.borderWidth && elem.borderWidth > 0)) {
+    if (!(elem.desc.borderWidth && elem.desc.borderWidth > 0)) {
       return;
     }
-    let bw = elem.borderWidth;
+    let bw = elem.desc.borderWidth;
     let borderColor: string = '#000000';
-    if (color.isColorStr(elem.borderColor) === true) {
-      borderColor = elem.borderColor as string;
+    if (color.isColorStr(elem.desc.borderColor) === true) {
+      borderColor = elem.desc.borderColor as string;
     }
     const x = elem.x - bw / 2;
     const y = elem.y - bw / 2;
     const w = elem.w + bw;
     const h = elem.h + bw;
 
-    let r: number = elem.borderRadius || 0;
+    let r: number = elem.desc.borderRadius || 0;
     r = Math.min(r, w / 2, h / 2);
     if (r < w / 2 && r < h / 2) {
       r = r + bw / 2

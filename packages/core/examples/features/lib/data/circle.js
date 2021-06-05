@@ -9,9 +9,6 @@ const data = {
       w: 200,
       h: 100,
       type: 'circle',
-      borderRadius: 20,
-      borderWidth: 10,
-      borderColor: '#bd0b64',
       desc: {
         color: '#f0f0f0',
       }
@@ -24,9 +21,6 @@ const data = {
       h: 120,
       // angle: 30,
       type: 'rect',
-      borderRadius: 60,
-      borderWidth: 10,
-      borderColor: '#bd0b64',
       desc: {
         color: '#cccccc',
       }
@@ -39,9 +33,6 @@ const data = {
       h: 20,
       type: 'rect',
       angle: 80,
-      borderRadius: 20,
-      borderWidth: 10,
-      borderColor: '#bd0b64',
       desc: {
         color: '#c0c0c0',
       }
@@ -53,9 +44,6 @@ const data = {
       w: 200,
       h: 100,
       type: 'rect',
-      borderRadius: 20,
-      borderWidth: 10,
-      borderColor: '#bd0b64',
       desc: {
         color: '#e0e0e0',
       }

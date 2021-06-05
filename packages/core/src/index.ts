@@ -1,18 +1,25 @@
-import { TypeData, TypePoint, TypeHelperWrapperDotDirection, TypeConfig, TypeConfigStrict } from '@idraw/types';
+import {
+  TypeData,
+  TypePoint,
+  TypeHelperWrapperDotDirection,
+  TypeConfig,
+  TypeConfigStrict,
+  TypeElement,
+  TypeElemDesc,
+  TypeCoreOptions,
+}  from '@idraw/types';
 import Board from '@idraw/board';
 import util from '@idraw/util';
 import { Renderer } from './lib/renderer';
 import { Element } from './lib/element';
 import { Helper } from './lib/helper';
 import { mergeConfig } from './lib/config';
+import { CoreEvent, TypeCoreEventArgMap } from './lib/core-event';
 
 const { time } = util;
+const { deepClone } = util.data;
+const { createUUID } = util.uuid;
 
-type Options = {
-  width: number;
-  height: number;
-  devicePixelRatio: number;
-}
 
 enum Mode {
   NULL = 'null',
@@ -33,24 +40,26 @@ const _mode = Symbol('_mode');
 const _selectedUUID = Symbol('_selectedUUID');
 const _prevPoint = Symbol('_prevPoint');
 const _selectedDotDirection = Symbol('_selectedDotDirection');
+const _coreEvent = Symbol('_coreEvent');
 
 class Core {
 
   private [_board]: Board;
   private [_data]: TypeData;
-  private [_opts]: Options;
+  private [_opts]: TypeCoreOptions;
   private [_config]: TypeConfigStrict;
   private [_renderer]: Renderer;
   private [_element]: Element;
   private [_helper]: Helper;
   private [_hasInited] = false; 
   private [_mode]: Mode = Mode.NULL;
+  private [_coreEvent]: CoreEvent = new CoreEvent();
 
   private [_selectedUUID]: string | null = null;
   private [_prevPoint]: TypePoint | null = null;
   private [_selectedDotDirection]: TypeHelperWrapperDotDirection | null = null;
 
-  constructor(mount: HTMLDivElement, opts: Options, config: TypeConfig) {
+  constructor(mount: HTMLDivElement, opts: TypeCoreOptions, config: TypeConfig) {
     this[_data] = { elements: [] };
     this[_opts] = opts;
     this[_config] = mergeConfig(config);
@@ -66,7 +75,7 @@ class Core {
     this[_helper].updateConfig(this[_data], {
       selectedUUID: this[_selectedUUID],
       devicePixelRatio: this[_opts].devicePixelRatio,
-      scale: this[_board].getTransform().scale // TODO
+      scale: this[_board].getTransform().scale,
     });
     this[_renderer].render(this[_data], this[_helper].getConfig());
   }
@@ -109,22 +118,65 @@ class Core {
 
   scale(ratio: number): void {
     this[_board].scale(ratio);
+    this. _emitChangeScreen();
   }
 
   scrollX(x: number): void {
     this[_board].scrollX(x);
+    this. _emitChangeScreen();
   }
 
   scrollY(y: number): void {
     this[_board].scrollY(y);
+    this. _emitChangeScreen();
   }
 
   getData(): TypeData {
-    return JSON.parse(JSON.stringify(this[_data]));
+    return deepClone(this[_data]);
   }
 
   setData(data: TypeData): void {
-    this[_data] = this[_element].initData(data);
+    this[_data] = this[_element].initData(deepClone(data));
+    this.draw();
+    this._emitChangeData();
+  }
+
+  updateElement(elem: TypeElement<keyof TypeElemDesc>) {
+    const _elem  = deepClone(elem) as TypeElement<keyof TypeElemDesc>;
+    const data = this[_data];
+    for (let i = 0; i < data.elements.length; i++) {
+      if (_elem.uuid === data.elements[i]?.uuid) {
+        data.elements[i] = _elem;
+        break;
+      }
+    }
+    this._emitChangeData();
+    this.draw();
+  }
+
+  addElement(elem: TypeElement<keyof TypeElemDesc>) {
+    const _elem = deepClone(elem);
+    _elem.uuid = createUUID();
+    this[_data].elements.push(_elem);
+    this._emitChangeData();
+    this.draw();
+  }
+
+  deleteElement(uuid: string) {
+    const index = this[_element].getElementIndex(this[_data], uuid);
+    if (index >= 0) {
+      this[_data].elements.splice(index, 1);
+      this._emitChangeData();
+      this.draw();
+    }
+  }
+
+  on<T extends keyof TypeCoreEventArgMap >(key: T, callback: (p: TypeCoreEventArgMap[T]) => void) {
+    this[_coreEvent].on(key, callback);
+  }
+
+  off<T extends keyof TypeCoreEventArgMap >(key: T, callback: (p: TypeCoreEventArgMap[T]) => void) {
+    this[_coreEvent].off(key, callback);
   }
 
   private _initEvent(): void {
@@ -148,12 +200,28 @@ class Core {
     } else {
       const [index] = this[_element].isPointInElement(point, this[_data]);
       this.selectElement(index);
+      if (typeof uuid === 'string' && this[_coreEvent].has('screenSelectElement')) {
+        this[_coreEvent].trigger(
+          'screenSelectElement', 
+          { index, uuid, element: deepClone(this[_data].elements?.[index])}
+        );
+        this. _emitChangeScreen();
+      }
     }
     this.draw();
   }
 
   private _handleMoveStart(point: TypePoint): void {
     this[_prevPoint] = point;
+    const uuid = this[_selectedUUID];
+    if (typeof uuid === 'string' && this[_coreEvent].has('screenMoveElementStart')) {
+      this[_coreEvent].trigger('screenMoveElementStart', {
+        index: this[_element].getElementIndex(this[_data], uuid),
+        uuid,
+        x: point.x,
+        y: point.y
+      });
+    }
   }
 
   private _handleMove(point: TypePoint): void {
@@ -165,11 +233,35 @@ class Core {
         this._transfromElement(this[_selectedUUID] as string, point, this[_prevPoint], this[_selectedDotDirection] as TypeHelperWrapperDotDirection);
       }
     }
-    
     this[_prevPoint] = point;
   }
 
-  private _handleMoveEnd(): void {
+  private _handleMoveEnd(point: TypePoint): void {
+    const uuid = this[_selectedUUID];
+    if (typeof uuid === 'string') {
+      const index = this[_element].getElementIndex(this[_data], uuid);
+      const elem = this[_data].elements[index];
+      if (elem) {
+        if (this[_coreEvent].has('screenMoveElementEnd')) {
+          this[_coreEvent].trigger('screenMoveElementEnd', {
+            index,
+            uuid,
+            x: point.x,
+            y: point.y
+          });
+        }
+        if (this[_coreEvent].has('screenChangeElement')) {
+          this[_coreEvent].trigger('screenChangeElement', {
+            index,
+            uuid,
+            width: elem.w,
+            height: elem.h,
+            angle: elem.angle || 0
+          });
+        }
+        this._emitChangeData();
+      }
+    }
     this[_selectedUUID] = null;
     this[_prevPoint] = null;
   }
@@ -182,12 +274,36 @@ class Core {
     this.draw();
   }
 
-  private _transfromElement(uuid: string, point: TypePoint, prevPoint: TypePoint|null, direction: TypeHelperWrapperDotDirection) {
+  private _transfromElement(
+    uuid: string, point: TypePoint, prevPoint: TypePoint|null, direction: TypeHelperWrapperDotDirection
+  ): null | {
+    width: number,
+    height: number,
+    angle: number,
+  } {
     if (!prevPoint) {
-      return;
+      return null;
     }
-    this[_element].transformElement(this[_data], uuid, point, prevPoint, this[_board].getContext().getTransform().scale, direction);
+    const result = this[_element].transformElement(this[_data], uuid, point, prevPoint, this[_board].getContext().getTransform().scale, direction);
     this.draw();
+    return result;
+  }
+
+  private _emitChangeScreen() {
+    if (this[_coreEvent].has('changeScreen')) {
+      this[_coreEvent].trigger('changeScreen', {
+        ...this[_board].getTransform(),
+        ...{
+          selectedElementUUID: this[_selectedUUID]
+        }
+      })
+    }
+  }
+
+  private _emitChangeData() {
+    if (this[_coreEvent].has('changeData')) {
+      this[_coreEvent].trigger('changeData', deepClone(this[_data]));
+    }
   }
 }
 

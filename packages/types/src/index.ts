@@ -5,3 +5,4 @@ export * from './lib/paint';
 export * from './lib/element';
 export * from './lib/helper';
 export * from './lib/config';
+export * from './lib/core';

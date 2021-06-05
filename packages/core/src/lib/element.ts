@@ -34,7 +34,12 @@ export class Element {
     let uuid = null;
     for (let i = data.elements.length - 1; i >= 0; i--) {
       const ele = data.elements[i];
-      const bw = ele.borderWidth || 0;
+      let bw = 0;
+      // @ts-ignore
+      if (ele.desc?.borderWidth > 0) {
+        // @ts-ignore
+        bw = ele.desc.borderWidth;
+      }
 
       rotateElement(ctx, ele, () => {
         ctx.beginPath();
@@ -70,10 +75,21 @@ export class Element {
     data.elements[index].y += (moveY / scale);
   }
 
-  transformElement(data: TypeData, uuid: string, point: TypePoint, prevPoint: TypePoint, scale: number, direction: TypeHelperWrapperDotDirection): void {
+  transformElement(
+    data: TypeData,
+    uuid: string,
+    point: TypePoint,
+    prevPoint: TypePoint,
+    scale: number,
+    direction: TypeHelperWrapperDotDirection
+  ): null | {
+    width: number,
+    height: number,
+    angle: number,
+  } {
     const index = this.getElementIndex(data, uuid);
     if (!data.elements[index]) {
-      return;
+      return null;
     }
     const moveX = (point.x - prevPoint.x) / scale;
     const moveY = (point.y - prevPoint.y) / scale;
@@ -82,45 +98,61 @@ export class Element {
 
     switch (direction) {
       case 'top-left': {
-        elem.x += moveX;
-        elem.y += moveY;
-        elem.w -= moveX;
-        elem.h -= moveY;
+        if (elem.w - moveX > 0 && elem.h - moveY > 0)  {
+          elem.x += moveX;
+          elem.y += moveY;
+          elem.w -= moveX;
+          elem.h -= moveY;
+        }
         break;
       }
       case 'top': {
-        elem.y += moveY;
-        elem.h -= moveY;
+        if (elem.h - moveY > 0) {
+          elem.y += moveY;
+          elem.h -= moveY;
+        }
         break;
       }
       case 'top-right': {
-        elem.y += moveY;
-        elem.w += moveX;
-        elem.h -= moveY;
+        if (elem.h - moveY > 0 && elem.w + moveX > 0) {
+          elem.y += moveY;
+          elem.w += moveX;
+          elem.h -= moveY;
+        }
         break;
       }
       case 'right': {
-        elem.w += moveX;
+        if (elem.w + moveX > 0) {
+          elem.w += moveX;
+        }
         break;
       }
       case 'bottom-right': {
-        elem.w += moveX;
-        elem.h += moveY;
+        if (elem.w + moveX > 0 && elem.h + moveY > 0) {
+          elem.w += moveX;
+          elem.h += moveY;
+        }
         break;
       }
       case 'bottom': {
-        elem.h += moveY;
+        if (elem.h + moveY > 0) {
+          elem.h += moveY;
+        }
         break;
       }
       case 'bottom-left': {
-        elem.x += moveX;
-        elem.w -= moveX;
-        elem.h += moveY;
+        if (elem.w - moveX > 0 && elem.h + moveY > 0) {
+          elem.x += moveX;
+          elem.w -= moveX;
+          elem.h += moveY;
+        }
         break;
       }
       case 'left': {
-        elem.x += moveX;
-        elem.w -= moveX;
+        if (elem.w - moveX > 0) {
+          elem.x += moveX;
+          elem.w -= moveX;
+        }
         break;
       }
       case 'rotate': {
@@ -132,6 +164,12 @@ export class Element {
       default: {
         break;
       }
+    }
+
+    return {
+      width: elem.w,
+      height: elem.h,
+      angle: elem.angle || 0,
     }
   }
 

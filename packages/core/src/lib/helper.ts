@@ -103,47 +103,48 @@ export class Helper implements TypeHelper {
     const lineWidth = this._coreConfig.elementWrapper.lineWidth / scale;
     const lineDash = this._coreConfig.elementWrapper.lineDash.map(n => (n / scale));
     const rotateLimit = 12;
-    const borderWidth = elem.borderWidth || 0; 
+    // @ts-ignore
+    const bw = elem.desc?.borderWidth || 0;  
     
     const wrapper: TypeHelperConfig['selectedElementWrapper'] = {
       uuid,
       dotSize: dotSize,
       dots: {
         topLeft: {
-          x: elem.x - dotSize - borderWidth,
-          y: elem.y - dotSize - borderWidth,
+          x: elem.x - dotSize - bw,
+          y: elem.y - dotSize - bw,
         },
         top: {
           x: elem.x + elem.w / 2,
-          y: elem.y - dotSize - borderWidth,
+          y: elem.y - dotSize - bw,
         },
         topRight: {
-          x: elem.x + elem.w + dotSize + borderWidth,
-          y: elem.y - dotSize - borderWidth,
+          x: elem.x + elem.w + dotSize + bw,
+          y: elem.y - dotSize - bw,
         },
         right: {
-          x: elem.x + elem.w + dotSize + borderWidth,
+          x: elem.x + elem.w + dotSize + bw,
           y: elem.y + elem.h / 2,
         },
         bottomRight: {
-          x: elem.x + elem.w + dotSize + borderWidth,
-          y: elem.y + elem.h + dotSize + borderWidth,
+          x: elem.x + elem.w + dotSize + bw,
+          y: elem.y + elem.h + dotSize + bw,
         },
         bottom: {
           x: elem.x + elem.w / 2,
-          y: elem.y + elem.h + dotSize + borderWidth,
+          y: elem.y + elem.h + dotSize + bw,
         },
         bottomLeft: {
-          x: elem.x - dotSize - borderWidth,
-          y: elem.y + elem.h + dotSize + borderWidth,
+          x: elem.x - dotSize - bw,
+          y: elem.y + elem.h + dotSize + bw,
         },
         left: {
-          x: elem.x - dotSize - borderWidth,
+          x: elem.x - dotSize - bw,
           y: elem.y + elem.h / 2,
         },
         rotate: {
           x: elem.x + elem.w / 2,
-          y: elem.y - dotSize - (dotSize * 2 + rotateLimit) - borderWidth,
+          y: elem.y - dotSize - (dotSize * 2 + rotateLimit) - bw,
         }
       },
       lineWidth: lineWidth,
