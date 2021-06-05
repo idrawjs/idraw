@@ -1,7 +1,8 @@
 import {
   TypeElement,
   TypeElemDesc,
-  TypePoint
+  TypePoint,
+  TypeData
 } from '@idraw/types';
 
 export type TypeCoreEventSelectBaseArg = {
@@ -15,6 +16,11 @@ export type TypeCoreEventArgMap  = {
   'screenMoveElementStart': TypeCoreEventSelectBaseArg & TypePoint,
   'screenMoveElementEnd': TypeCoreEventSelectBaseArg & TypePoint,
   'screenChangeElement': TypeCoreEventSelectBaseArg & { width: number, height: number, angle: number};
+  'changeData': TypeData;
+  'changeScreen': {
+    scale: number; scrollY: number;  scrollX: number;
+    selectedElementUUID: string | null;
+  }
 }
  
 export interface TypeCoreEvent {

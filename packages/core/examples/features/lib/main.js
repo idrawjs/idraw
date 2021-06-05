@@ -22,6 +22,12 @@ const core = new Core(mount, {
 core.on('error', (data) => {
   console.log('error: ', data);
 });
+core.on('changeData', (data) => {
+  console.log('changeData: ', data);
+});
+core.on('changeScreen', (data) => {
+  console.log('changeScreen: ', data);
+});
 core.on('screenSelectElement', (data) => {
   console.log('screenSelectElement: ', data);
 });

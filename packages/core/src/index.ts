@@ -121,15 +121,19 @@ class Core {
 
   scale(ratio: number): void {
     this[_board].scale(ratio);
+    this. _emitChangeScreen();
   }
 
   scrollX(x: number): void {
     this[_board].scrollX(x);
+    this. _emitChangeScreen();
   }
 
   scrollY(y: number): void {
     this[_board].scrollY(y);
+    this. _emitChangeScreen();
   }
+
 
   getData(): TypeData {
     return deepClone(this[_data]);
@@ -138,6 +142,7 @@ class Core {
   setData(data: TypeData): void {
     this[_data] = this[_element].initData(deepClone(data));
     this.draw();
+    this._emitChangeData();
   }
 
   updateElement(elem: TypeElement<keyof TypeElemDesc>) {
@@ -149,6 +154,7 @@ class Core {
         break;
       }
     }
+    this._emitChangeData();
     this.draw();
   }
 
@@ -181,11 +187,12 @@ class Core {
     } else {
       const [index] = this[_element].isPointInElement(point, this[_data]);
       this.selectElement(index);
-      if (typeof uuid === 'string') {
+      if (typeof uuid === 'string' && this[_coreEvent].has('screenSelectElement')) {
         this[_coreEvent].trigger(
           'screenSelectElement', 
           { index, uuid, element: deepClone(this[_data].elements?.[index])}
         );
+        this. _emitChangeScreen();
       }
     }
     this.draw();
@@ -194,7 +201,7 @@ class Core {
   private _handleMoveStart(point: TypePoint): void {
     this[_prevPoint] = point;
     const uuid = this[_selectedUUID];
-    if (typeof uuid === 'string') {
+    if (typeof uuid === 'string' && this[_coreEvent].has('screenMoveElementStart')) {
       this[_coreEvent].trigger('screenMoveElementStart', {
         index: this[_element].getElementIndex(this[_data], uuid),
         uuid,
@@ -211,18 +218,6 @@ class Core {
         this.draw();
       } else if (this[_mode] === Mode.SELECT_ELEMENT_WRAPPER_DOT && this[_selectedDotDirection]) {
         this._transfromElement(this[_selectedUUID] as string, point, this[_prevPoint], this[_selectedDotDirection] as TypeHelperWrapperDotDirection);
-        
-        // const changeData = this._transfromElement(this[_selectedUUID] as string, point, this[_prevPoint], this[_selectedDotDirection] as TypeHelperWrapperDotDirection);
-        // const uuid = this[_selectedUUID];
-        // if (changeData && typeof uuid === 'string') {
-        //   this[_coreEvent].trigger('screenChangeElement', {
-        //     index: this[_element].getElementIndex(this[_data], uuid),
-        //     uuid,
-        //     width: changeData.width,
-        //     height: changeData.height,
-        //     angle: changeData.angle
-        //   })
-        // }
       }
     }
     this[_prevPoint] = point;
@@ -234,19 +229,24 @@ class Core {
       const index = this[_element].getElementIndex(this[_data], uuid);
       const elem = this[_data].elements[index];
       if (elem) {
-        this[_coreEvent].trigger('screenMoveElementEnd', {
-          index,
-          uuid,
-          x: point.x,
-          y: point.y
-        });
-        this[_coreEvent].trigger('screenChangeElement', {
-          index,
-          uuid,
-          width: elem.w,
-          height: elem.h,
-          angle: elem.angle || 0
-        });
+        if (this[_coreEvent].has('screenMoveElementEnd')) {
+          this[_coreEvent].trigger('screenMoveElementEnd', {
+            index,
+            uuid,
+            x: point.x,
+            y: point.y
+          });
+        }
+        if (this[_coreEvent].has('screenChangeElement')) {
+          this[_coreEvent].trigger('screenChangeElement', {
+            index,
+            uuid,
+            width: elem.w,
+            height: elem.h,
+            angle: elem.angle || 0
+          });
+        }
+        this._emitChangeData();
       }
     }
     this[_selectedUUID] = null;
@@ -274,6 +274,23 @@ class Core {
     const result = this[_element].transformElement(this[_data], uuid, point, prevPoint, this[_board].getContext().getTransform().scale, direction);
     this.draw();
     return result;
+  }
+
+  private _emitChangeScreen() {
+    if (this[_coreEvent].has('changeScreen')) {
+      this[_coreEvent].trigger('changeScreen', {
+        ...this[_board].getTransform(),
+        ...{
+          selectedElementUUID: this[_selectedUUID]
+        }
+      })
+    }
+  }
+
+  private _emitChangeData() {
+    if (this[_coreEvent].has('changeData')) {
+      this[_coreEvent].trigger('changeData', deepClone(this[_data]));
+    }
   }
 }
 
