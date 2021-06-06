@@ -4,16 +4,17 @@
 - [x] Scroll canvas
 - [x] Render by requestAnimateFrame
 - [x] Image load queue
+- [] Input data by `any` type `core.initData/core.setData`
 - Render data's elements
   - Basic box
     - [x] Border
     - [x] Radius
     - [] Gradient Color
-  - [] Text
-    - [] Text content
-    - [] Font size
-    - [] Font family
-    - [] Font color
+  - [x] Text
+    - [x] Text content
+    - [x] Font size
+    - [x] Font family
+    - [x] Font color
   - Rect
     - [x] Rect content
   - Circle
@@ -26,5 +27,5 @@
 - [x] Move elements' index
 - [x] Rotate elements
 - [x] Transform elements's size
-- [] Loader update image/svg resource
-- [] Undo action record
+- [X] Loader update image/svg resource
+
