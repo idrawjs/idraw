@@ -176,8 +176,8 @@ class Board {
       h: contextHeight * scaleRatio,
     };
     const deviceSize = {
-      x: scrollX * pxRatio * scaleRatio,
-      y: scrollY * pxRatio * scaleRatio,
+      x: scrollX * pxRatio,
+      y: scrollY * pxRatio,
       w: contextWidth * pxRatio * scaleRatio,
       h: contextHeight * pxRatio * scaleRatio,
     };
