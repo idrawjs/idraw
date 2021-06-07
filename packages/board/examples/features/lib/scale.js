@@ -8,13 +8,15 @@ export function doScale(board, scale) {
   }
   if (scale > 0) {
     input.value = scale;
-    board.scale(scale);
+    const screen = board.scale(scale);
+    console.log('scale: screen =', screen);
     board.draw();
   }
   input.addEventListener('change', () => {
     const val = input.value * 1;
     if (val > 0) {
-      board.scale(val);
+      const screen = board.scale(val);
+      console.log('scale: screen =', screen);
       board.draw();
     }
   });

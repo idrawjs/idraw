@@ -1,4 +1,4 @@
-// import { TypePoint } from '@idraw/types';
+import { TypeScreenPosition, TypeScreenSize, TypeScreenContext } from '@idraw/types';
 import { Watcher } from './util/watcher';
 import { setStyle } from './util/style';
 import Context from './util/context';
@@ -70,32 +70,41 @@ class Board {
     return canvas;
   }
 
-  scale(scaleRatio: number) {
+  scale(scaleRatio: number): TypeScreenContext {
     if (scaleRatio > 0) {
       this._ctx.setTransform({ scale: scaleRatio });
     }
+    const { position, size } = this._calculateScreen();
+    return { position, size};
   }
 
   scrollX(x: number) {
     if (x >= 0 || x < 0) {
       this._ctx.setTransform({ scrollX: x });
     }
+    const { position, size } = this._calculateScreen();
+    return { position, size};
   }
 
-  scrollY(y: number) {
+  scrollY(y: number): TypeScreenContext {
     if (y >= 0 || y < 0) {
       this._ctx.setTransform({ scrollY: y });
     }
+    const { position, size } = this._calculateScreen();
+    return { position, size};
   }
 
   getTransform() {
     return this._ctx.getTransform();
   }
 
-  draw() {
+  draw(): TypeScreenContext {
     this.clear();
-    const size = this._calculateSize();
-    this._displayCtx.drawImage(this._canvas, size.x, size.y, size.w, size.h);
+    const { position, deviceSize, size } = this._calculateScreen();
+    this._displayCtx.drawImage(
+      this._canvas, deviceSize.x, deviceSize.y, deviceSize.w, deviceSize.h
+    );
+    return { position, size};
   }
 
   clear() {
@@ -137,50 +146,50 @@ class Board {
     };
     return { ...defaultOpts, ...opts };
   }
+ 
 
-  // private _calculateSize(): { x: number; y: number; w: number; h: number } {
-  //   const { _scrollX, _scrollY, _scaleRatio, } = this;
-  //   const { devicePixelRatio: pxRatio, width, height } = this._opts;
-  //   const size = { x: 0, y: 0, w: width * pxRatio, h: height * pxRatio };
-  //   size.x = _scrollX * pxRatio * _scaleRatio;
-  //   size.y = _scrollY * pxRatio * _scaleRatio;
-  //   size.w = width * pxRatio * _scaleRatio;
-  //   size.h = height * pxRatio * _scaleRatio;
-  //   return size;
-  // }
-
-  private _calculateSize(): { x: number; y: number; w: number; h: number } {
-    const _scaleRatio = this._ctx.getTransform().scale;
+  private _calculateScreen(): {
+    size: TypeScreenSize,
+    position: TypeScreenPosition,
+    deviceSize: TypeScreenSize,
+  } {
+    const scaleRatio = this._ctx.getTransform().scale;
     const { 
       width, height, contextWidth, contextHeight,
       devicePixelRatio: pxRatio,
     } = this._opts;
 
     // init scroll
-    if (contextWidth * _scaleRatio < width && contextWidth * _scaleRatio < width) {
+    if (contextWidth * scaleRatio < width && contextHeight * scaleRatio < height) {
       // make context center
       this._ctx.setTransform({
-        scrollX: 0,
-        scrollY: 0,
+        scrollX: (width - contextWidth * scaleRatio) / 2,
+        scrollY: (height - contextHeight * scaleRatio) / 2,
       })
     }
 
-
-    const { scrollX: _scrollX, scrollY: _scrollY } = this._ctx.getTransform();
-    
-    const left: number = Math.max(0, (width - contextWidth * _scaleRatio) / 2) * pxRatio;
-    const top: number = Math.max(0, (height - contextHeight * _scaleRatio) / 2) * pxRatio;
-
-    // const left: number = 0;
-    // const top: number = 0;
-    // console.log('left = ', left, 'top =', top);
-
-    const size = { x: 0, y: 0, w: contextWidth * pxRatio, h: contextHeight * pxRatio };
-    size.x = left + _scrollX * pxRatio * _scaleRatio;
-    size.y = top + _scrollY * pxRatio * _scaleRatio;
-    size.w = contextWidth * pxRatio * _scaleRatio;
-    size.h = contextHeight * pxRatio * _scaleRatio;
-    return size;
+    const { scrollX, scrollY } = this._ctx.getTransform();
+    const size = {
+      x: scrollX * scaleRatio,
+      y: scrollY * scaleRatio,
+      w: contextWidth * scaleRatio,
+      h: contextHeight * scaleRatio,
+    };
+    const deviceSize = {
+      x: scrollX * pxRatio,
+      y: scrollY * pxRatio,
+      w: contextWidth * pxRatio * scaleRatio,
+      h: contextHeight * pxRatio * scaleRatio,
+    };
+    const position = {
+      top: scrollX,
+      bottom: height - (contextHeight * scaleRatio + scrollY),
+      left: scrollY,
+      right: width - (contextWidth * scaleRatio + scrollX),
+    };
+    return {
+      size, position, deviceSize
+    };
   }
   
 }
