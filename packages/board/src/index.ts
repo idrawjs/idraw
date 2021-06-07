@@ -1,4 +1,4 @@
-// import { TypePoint } from '@idraw/types';
+import { TypeScreenPosition, TypeScreenSize, TypeScreenContext } from '@idraw/types';
 import { Watcher } from './util/watcher';
 import { setStyle } from './util/style';
 import Context from './util/context';
@@ -7,6 +7,8 @@ import { TypeBoardEventArgMap } from './util/event';
 type Options = {
   width: number;
   height: number;
+  contextWidth: number;
+  contextHeight: number;
   devicePixelRatio?: number;
 }
 
@@ -23,9 +25,9 @@ class Board {
   private _ctx: Context;
   private _displayCtx: CanvasRenderingContext2D;
   private _originCtx: CanvasRenderingContext2D;
-  private _scaleRatio = 1;
-  private _scrollX = 0;
-  private _scrollY = 0;
+  // private _scaleRatio = 1;
+  // private _scrollX = 0;
+  // private _scrollY = 0;
   private _watcher: Watcher;
 
   constructor(mount: HTMLDivElement, opts: Options) {
@@ -38,7 +40,6 @@ class Board {
     this._displayCtx = this._displayCanvas.getContext('2d') as CanvasRenderingContext2D;
     this._ctx = new Context(this._originCtx, this._opts);
     this._watcher = new Watcher(this._displayCanvas);
-
     this._render();
   }
 
@@ -56,48 +57,54 @@ class Board {
 
   createContext(canvas: HTMLCanvasElement) {
     const opts = this._opts;
-    canvas.width = opts.width * opts.devicePixelRatio;
-    canvas.height = opts.height * opts.devicePixelRatio;
+    canvas.width = opts.contextWidth * opts.devicePixelRatio;
+    canvas.height = opts.contextHeight * opts.devicePixelRatio;
     return new Context(canvas.getContext('2d') as CanvasRenderingContext2D, this._opts);
   }
 
   createCanvas() {
     const opts = this._opts;
     const canvas = document.createElement('canvas');
-    canvas.width = opts.width * opts.devicePixelRatio;
-    canvas.height = opts.height * opts.devicePixelRatio;
+    canvas.width = opts.contextWidth * opts.devicePixelRatio;
+    canvas.height = opts.contextHeight * opts.devicePixelRatio;
     return canvas;
   }
 
-  scale(scaleRatio: number) {
+  scale(scaleRatio: number): TypeScreenContext {
     if (scaleRatio > 0) {
-      this._scaleRatio = scaleRatio;
       this._ctx.setTransform({ scale: scaleRatio });
     }
+    const { position, size } = this._calculateScreen();
+    return { position, size};
   }
 
   scrollX(x: number) {
-    if (x >= 0) {
-      this._scrollX = x;
+    if (x >= 0 || x < 0) {
       this._ctx.setTransform({ scrollX: x });
     }
+    const { position, size } = this._calculateScreen();
+    return { position, size};
   }
 
-  scrollY(y: number) {
-    if (y >= 0) {
-      this._scrollY = y;
+  scrollY(y: number): TypeScreenContext {
+    if (y >= 0 || y < 0) {
       this._ctx.setTransform({ scrollY: y });
     }
+    const { position, size } = this._calculateScreen();
+    return { position, size};
   }
 
   getTransform() {
     return this._ctx.getTransform();
   }
 
-  draw() {
+  draw(): TypeScreenContext {
     this.clear();
-    const size = this._calculateSize();
-    this._displayCtx.drawImage(this._canvas, size.x, size.y, size.w, size.h);
+    const { position, deviceSize, size } = this._calculateScreen();
+    this._displayCtx.drawImage(
+      this._canvas, deviceSize.x, deviceSize.y, deviceSize.w, deviceSize.h
+    );
+    return { position, size};
   }
 
   clear() {
@@ -116,12 +123,12 @@ class Board {
     if (this._hasRendered === true) {
       return;
     }
-    const { width, height, devicePixelRatio } = this._opts;
-    this._canvas.width = width * devicePixelRatio;
-    this._canvas.height = height * devicePixelRatio;
+    const { width, height, contextWidth, contextHeight, devicePixelRatio } = this._opts;
+    this._canvas.width = contextWidth * devicePixelRatio;
+    this._canvas.height = contextHeight * devicePixelRatio;
 
-    this._displayCanvas.width = this._canvas.width;
-    this._displayCanvas.height = this._canvas.height;
+    this._displayCanvas.width = width * devicePixelRatio;
+    this._displayCanvas.height = height * devicePixelRatio;
 
     setStyle(this._displayCanvas, {
       width: `${width}px`,
@@ -139,16 +146,50 @@ class Board {
     };
     return { ...defaultOpts, ...opts };
   }
+ 
 
-  private _calculateSize(): { x: number; y: number; w: number; h: number } {
-    const { _scrollX, _scrollY, _scaleRatio, } = this;
-    const { devicePixelRatio: pxRatio, width, height } = this._opts;
-    const size = { x: 0, y: 0, w: width * pxRatio, h: height * pxRatio };
-    size.x = _scrollX * pxRatio * _scaleRatio;
-    size.y = _scrollY * pxRatio * _scaleRatio;
-    size.w = width * pxRatio * _scaleRatio;
-    size.h = height * pxRatio * _scaleRatio;
-    return size;
+  private _calculateScreen(): {
+    size: TypeScreenSize,
+    position: TypeScreenPosition,
+    deviceSize: TypeScreenSize,
+  } {
+    const scaleRatio = this._ctx.getTransform().scale;
+    const { 
+      width, height, contextWidth, contextHeight,
+      devicePixelRatio: pxRatio,
+    } = this._opts;
+
+    // init scroll
+    if (contextWidth * scaleRatio < width && contextHeight * scaleRatio < height) {
+      // make context center
+      this._ctx.setTransform({
+        scrollX: (width - contextWidth * scaleRatio) / 2,
+        scrollY: (height - contextHeight * scaleRatio) / 2,
+      })
+    }
+
+    const { scrollX, scrollY } = this._ctx.getTransform();
+    const size = {
+      x: scrollX * scaleRatio,
+      y: scrollY * scaleRatio,
+      w: contextWidth * scaleRatio,
+      h: contextHeight * scaleRatio,
+    };
+    const deviceSize = {
+      x: scrollX * pxRatio,
+      y: scrollY * pxRatio,
+      w: contextWidth * pxRatio * scaleRatio,
+      h: contextHeight * pxRatio * scaleRatio,
+    };
+    const position = {
+      top: scrollX,
+      bottom: height - (contextHeight * scaleRatio + scrollY),
+      left: scrollY,
+      right: width - (contextWidth * scaleRatio + scrollX),
+    };
+    return {
+      size, position, deviceSize
+    };
   }
   
 }

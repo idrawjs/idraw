@@ -1,5 +1,7 @@
 export default {
-  width: 600,
-  height: 400,
+  width: 800,
+  height: 600,
+  contextWidth: 600,
+  contextHeight: 400,
   devicePixelRatio: 4
 }

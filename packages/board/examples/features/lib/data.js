@@ -40,6 +40,16 @@ const data = {
       desc: {
         color: '#e0e0e0',
       }
+    },
+    {
+      x: 300 - 10,
+      y: 200 - 10,
+      w: 20,
+      h: 20,
+      type: 'rect',
+      desc: {
+        color: '#000000',
+      }
     }
   ]
 }

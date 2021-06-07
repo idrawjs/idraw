@@ -15,6 +15,8 @@ const defaultConf = {
 const idraw = new IDraw(mount, {
   width: 600,
   height: 400,
+  contextWidth: 600,
+  contextHeight: 400,
   devicePixelRatio: 4
 });
 

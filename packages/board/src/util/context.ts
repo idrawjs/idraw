@@ -207,13 +207,13 @@ class Context implements TypeContext {
 
   private _doX(x: number) {
     const { scale, scrollX } = this._transform;
-    const _x = (x - scrollX * scale) / scale;
+    const _x = (x - scrollX) / scale;
     return this._doSize(_x);
   }
 
   private _doY(y: number) {
     const { scale, scrollY } = this._transform;
-    const _y = (y - scrollY * scale) / scale;
+    const _y = (y - scrollY) / scale;
     return this._doSize(_y);
   }
 

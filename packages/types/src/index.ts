@@ -7,3 +7,4 @@ export * from './lib/helper';
 export * from './lib/config';
 export * from './lib/core';
 export * from './lib/screen';
+export * from './lib/device';

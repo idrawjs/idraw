@@ -7,6 +7,7 @@ import {
   TypeElement,
   TypeElemDesc,
   TypeCoreOptions,
+  TypeScreenContext,
 }  from '@idraw/types';
 import Board from '@idraw/board';
 import util from '@idraw/util';
@@ -61,10 +62,10 @@ class Core {
   private [_prevPoint]: TypePoint | null = null;
   private [_selectedDotDirection]: TypeHelperWrapperDotDirection | null = null;
 
-  constructor(mount: HTMLDivElement, opts: TypeCoreOptions, config: TypeConfig) {
+  constructor(mount: HTMLDivElement, opts: TypeCoreOptions, config?: TypeConfig) {
     this[_data] = { elements: [] };
     this[_opts] = opts;
-    this[_config] = mergeConfig(config);
+    this[_config] = mergeConfig(config || {});
     this[_board] = new Board(mount, this[_opts]);
     this[_renderer] = new Renderer(this[_board]); 
     this[_element] = new Element(this[_board].getContext());
@@ -118,19 +119,22 @@ class Core {
     this.draw();
   }
 
-  scale(ratio: number): void {
-    this[_board].scale(ratio);
+  scale(ratio: number): TypeScreenContext {
+    const screen = this[_board].scale(ratio);
     this. _emitChangeScreen();
+    return screen;
   }
 
-  scrollX(x: number): void {
-    this[_board].scrollX(x);
+  scrollX(x: number): TypeScreenContext {
+    const screen = this[_board].scrollX(x);
     this. _emitChangeScreen();
+    return screen;
   }
 
-  scrollY(y: number): void {
-    this[_board].scrollY(y);
+  scrollY(y: number): TypeScreenContext {
+    const screen = this[_board].scrollY(y);
     this. _emitChangeScreen();
+    return screen;
   }
 
   getData(): TypeData {

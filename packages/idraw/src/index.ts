@@ -33,6 +33,8 @@ class IDraw extends Core {
     super(mount, {
       width: opts.width,
       height: opts.height,
+      contextWidth: opts.contextWidth,
+      contextHeight: opts.contextHeight,
       devicePixelRatio: opts.devicePixelRatio
     }, config);
     this[_opts] = this._createOpts(opts);

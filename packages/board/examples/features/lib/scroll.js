@@ -8,29 +8,33 @@ export function doScroll(board, conf = {}) {
     return;
   }
   
-  if (conf.scrollX >= 0) {
+  if (conf.scrollX >= 0 || conf.scrollX < 0) {
     inputX.value = conf.scrollX;
-    board.scrollX(conf.scrollX);
+    const screen = board.scrollX(conf.scrollX);
+    console.log('scrollX: screen =', screen);
     board.draw();
   }
 
-  if (conf.scrollY >= 0) {
+  if (conf.scrollY >= 0 || conf.scrollY < 0) {
     inputY.value = conf.scrollY;
-    board.scrollY(conf.scrollY);
+    const screen = board.scrollY(conf.scrollY);
+    console.log('scrollY: screen =', screen);
     board.draw();
   }
 
   inputX.addEventListener('change', () => {
     const val = inputX.value * 1;
-    if (val >= 0) {
-      board.scrollX(val);
+    if (val >= 0 || val < 0) {
+      const screen = board.scrollX(val);
+      console.log('scrollX: screen =', screen);
       board.draw();
     }
   });
   inputY.addEventListener('change', () => {
     const val = inputY.value * 1;
-    if (val >= 0) {
-      board.scrollY(val);
+    if (val >= 0 || val < 0) {
+      const screen = board.scrollY(val);
+      console.log('scrollY: screen =', screen);
       board.draw();
     }
   });
