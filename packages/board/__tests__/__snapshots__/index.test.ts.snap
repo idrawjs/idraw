@@ -36,31 +36,6 @@ Array [
     ],
     "type": "clearRect",
   },
-  Object {
-    "props": Object {
-      "dHeight": 1600,
-      "dWidth": 2400,
-      "dx": 0,
-      "dy": 0,
-      "img": <canvas
-        height="1600"
-        width="2400"
-      />,
-      "sHeight": 1600,
-      "sWidth": 2400,
-      "sx": 0,
-      "sy": 0,
-    },
-    "transform": Array [
-      1,
-      0,
-      0,
-      1,
-      0,
-      0,
-    ],
-    "type": "drawImage",
-  },
 ]
 `;
 
@@ -99,31 +74,6 @@ Array [
       0,
     ],
     "type": "clearRect",
-  },
-  Object {
-    "props": Object {
-      "dHeight": 1600,
-      "dWidth": 2400,
-      "dx": 0,
-      "dy": 0,
-      "img": <canvas
-        height="1600"
-        width="2400"
-      />,
-      "sHeight": 1600,
-      "sWidth": 2400,
-      "sx": 0,
-      "sy": 0,
-    },
-    "transform": Array [
-      1,
-      0,
-      0,
-      1,
-      0,
-      0,
-    ],
-    "type": "drawImage",
   },
 ]
 `;
