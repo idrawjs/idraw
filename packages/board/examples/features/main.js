@@ -16,7 +16,7 @@ const board = new Board(mount, opts);
 // }
 
 const conf = {
-  scale: 2,
+  scale: 0.5,
   scrollX: 0,
   scrollY: 0,
 }
