@@ -8,13 +8,13 @@ export function doScroll(board, conf = {}) {
     return;
   }
   
-  if (conf.scrollX >= 0) {
+  if (conf.scrollX >= 0 || conf.scrollX < 0) {
     inputX.value = conf.scrollX;
     board.scrollX(conf.scrollX);
     board.draw();
   }
 
-  if (conf.scrollY >= 0) {
+  if (conf.scrollY >= 0 || conf.scrollY < 0) {
     inputY.value = conf.scrollY;
     board.scrollY(conf.scrollY);
     board.draw();
@@ -22,14 +22,14 @@ export function doScroll(board, conf = {}) {
 
   inputX.addEventListener('change', () => {
     const val = inputX.value * 1;
-    if (val >= 0) {
+    if (val >= 0 || val < 0) {
       board.scrollX(val);
       board.draw();
     }
   });
   inputY.addEventListener('change', () => {
     const val = inputY.value * 1;
-    if (val >= 0) {
+    if (val >= 0 || val < 0) {
       board.scrollY(val);
       board.draw();
     }

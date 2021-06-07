@@ -61,10 +61,10 @@ class Core {
   private [_prevPoint]: TypePoint | null = null;
   private [_selectedDotDirection]: TypeHelperWrapperDotDirection | null = null;
 
-  constructor(mount: HTMLDivElement, opts: TypeCoreOptions, config: TypeConfig) {
+  constructor(mount: HTMLDivElement, opts: TypeCoreOptions, config?: TypeConfig) {
     this[_data] = { elements: [] };
     this[_opts] = opts;
-    this[_config] = mergeConfig(config);
+    this[_config] = mergeConfig(config || {});
     this[_board] = new Board(mount, this[_opts]);
     this[_renderer] = new Renderer(this[_board]); 
     this[_element] = new Element(this[_board].getContext());
