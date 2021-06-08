@@ -23,7 +23,6 @@
     <script src="./../../dist/index.global.js"></script>
     <script>
       const { Board } = window.iDraw; 
-
       const mount = document.querySelector('#mount');
       const board = new Board(mount, {
         width: 600,
@@ -47,8 +46,10 @@
       ctx.setFillStyle('#e0e0e0');
       ctx.fillRect(400 - 10, 300 - 10, 200, 100);
 
+      board.scale(0.5);
       board.draw();
 
     </script>
+
   </body>
 </html>

@@ -7,6 +7,8 @@ test('testing', async () => {
   const opts = {
     width: 600,
     height: 400,
+    contextWidth: 600,
+    contextHeight: 400,
     devicePixelRatio: 4
   }
   const mount = document.querySelector('#mount') as HTMLDivElement;
@@ -74,8 +76,8 @@ test('testing', async () => {
   expect(originCalls).toMatchSnapshot();
 
   const displayCtx = board.getDisplayContext();
-   // @ts-ignore;
-   const displayCalls = displayCtx.__getDrawCalls();
-   expect(displayCalls).toMatchSnapshot();
+  // @ts-ignore;
+  const displayCalls = displayCtx.__getDrawCalls();
+  expect(displayCalls).toMatchSnapshot();
 
 });
