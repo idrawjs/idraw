@@ -28,13 +28,13 @@ export class Renderer {
     });
     // TODO
     this._loader.on('load', (res) => {
-      console.log('load: ', res);
+      // console.log('load: ', res);
     });
     this._loader.on('error', (res) => {
-      console.log('error: ', res);
+      // console.log('error: ', res);
     });
     this._loader.on('complete', (res) => {
-      console.log('complete: ', res);
+      // console.log('complete: ', res);
     })
   }
 

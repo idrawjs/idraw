@@ -212,7 +212,7 @@ class Core {
       this[_selectedDotDirection] = direction;
       this[_selectedUUID] = uuid;
     } else {
-      const [index] = this[_element].isPointInElement(point, this[_data]);
+      const [index, uuid] = this[_element].isPointInElement(point, this[_data]);
       this.selectElement(index);
       if (typeof uuid === 'string' && this[_coreEvent].has('screenSelectElement')) {
         this[_coreEvent].trigger(
