@@ -16,11 +16,11 @@ import { Element } from './lib/element';
 import { Helper } from './lib/helper';
 import { mergeConfig } from './lib/config';
 import { CoreEvent, TypeCoreEventArgMap } from './lib/core-event';
+import { parseData } from './lib/parse';
 
 const { time } = util;
 const { deepClone } = util.data;
 const { createUUID } = util.uuid;
-
 
 enum Mode {
   NULL = 'null',
@@ -141,7 +141,7 @@ class Core {
     return deepClone(this[_data]);
   }
 
-  initData(data: TypeData): void {
+  initData(data: any | TypeData): void {
     if (this[_hasInitedData] === true) {
       return;
     }
@@ -150,8 +150,8 @@ class Core {
     this[_hasInitedData] = true;
   }
 
-  setData(data: TypeData): void {
-    this[_data] = this[_element].initData(deepClone(data));
+  setData(data: any | TypeData): void {
+    this[_data] = this[_element].initData(deepClone(parseData(data)));
     this.draw();
   }
 
