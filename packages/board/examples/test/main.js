@@ -4,6 +4,8 @@ const mount = document.querySelector('#mount');
 const board = new Board(mount, {
   width: 600,
   height: 400,
+  contextWidth: 600,
+  contextHeight: 400,
   devicePixelRatio: 4
 });
 
