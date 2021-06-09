@@ -1,8 +1,9 @@
-import { requestAnimationFrameMock } from './polyfill/requestanimateframe';
-import './polyfill/image';
+import { requestAnimationFrameMock } from './../../../__tests__/polyfill/requestanimateframe';
+import './../../../__tests__/polyfill/image';
 
 import Core from './../src';
 import { getData } from './data';
+
 
 describe("@idraw/core", () => {
 

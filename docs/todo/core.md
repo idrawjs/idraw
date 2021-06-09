@@ -4,7 +4,7 @@
 * [x] Scroll canvas
 * [x] Render by requestAnimateFrame
 * [x] Image load queue
-* [] Input data by `any` type `core.initData/core.setData`
+* [x] Input data by `any` type `core.initData/core.setData`
 * Render data's elements
   * Basic box
     * [x] Border
