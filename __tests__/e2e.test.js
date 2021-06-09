@@ -15,11 +15,12 @@ const { PNG } = pngjs;
 async function diff() {
   const middlewares = [];
   const diffRateList = [];
-  pageList.forEach((p) => {
+  pageList.forEach((p, i) => {
     middlewares.push(async (ctx = {}, next) => {
       const { page, port } = ctx;
       const width = p.w;
       const height = p.h;
+      console.log(`[${i+1}/${pageList.length}] E2E Testing: ${p.path}`)
       await page.setViewport( { width: p.w, height: p.h } );
       const pageUrl = `http://127.0.0.1:${port}/packages/${p.path || ''}`;
       await page.goto(pageUrl);

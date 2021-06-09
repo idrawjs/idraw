@@ -70,7 +70,7 @@ class Context implements TypeContext {
   }
 
   fill(fillRule?: CanvasFillRule | undefined) {
-    return this._ctx.fill(fillRule);
+    return this._ctx.fill(fillRule || 'nonzero');
   }
 
   arc(x: number, y: number, radius: number, startAngle: number, endAngle: number, anticlockwise?: boolean | undefined): void {

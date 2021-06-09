@@ -1,24 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`@idraw/board context 1`] = `
+exports[`@idraw/core @idraw/core: context 1`] = `
 Array [
-  Object {
-    "props": Object {
-      "height": 1600,
-      "width": 2400,
-      "x": 0,
-      "y": 0,
-    },
-    "transform": Array [
-      1,
-      0,
-      0,
-      1,
-      0,
-      0,
-    ],
-    "type": "clearRect",
-  },
   Object {
     "props": Object {
       "height": 1600,
@@ -64,25 +47,8 @@ Array [
 ]
 `;
 
-exports[`@idraw/board context 2`] = `
+exports[`@idraw/core @idraw/core: context 2`] = `
 Array [
-  Object {
-    "props": Object {
-      "height": 1600,
-      "width": 2400,
-      "x": 0,
-      "y": 0,
-    },
-    "transform": Array [
-      1,
-      0,
-      0,
-      1,
-      0,
-      0,
-    ],
-    "type": "clearRect",
-  },
   Object {
     "props": Object {
       "height": 1600,

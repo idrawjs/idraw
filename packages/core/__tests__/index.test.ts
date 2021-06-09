@@ -1,9 +1,16 @@
-import Board from './../src';
+import { requestAnimationFrameMock } from './polyfill/requestanimateframe';
+import './polyfill/image';
+
+import Core from './../src';
 import { getData } from './data';
 
+describe("@idraw/core", () => {
 
-describe('@idraw/board', () => {
-  test('context', async () => {  
+  beforeEach(() => {
+    requestAnimationFrameMock.reset();
+  })
+
+  test('@idraw/core: context', async () => {  
     document.body.innerHTML = `
       <div id="mount"></div>
     `;
@@ -15,31 +22,25 @@ describe('@idraw/board', () => {
       devicePixelRatio: 4
     }
     const mount = document.querySelector('#mount') as HTMLDivElement;
-    const board = new Board(mount, opts);
-  
-    const ctx = board.getContext();
+    const core = new Core(mount, opts);
     const data = getData();
+    core.initData(data);
+    core.draw();
+
+    requestAnimationFrameMock.triggerNextAnimationFrame();
   
-    board.clear();
-    ctx.clearRect(0, 0, opts.width, opts.height);
-    ctx.setFillStyle('#ffffff');
-    ctx.fillRect(0, 0, opts.width, opts.height);
-    data.elements.forEach(ele => {
-      ctx.setFillStyle(ele.desc.color);
-      ctx.fillRect(ele.x, ele.y, ele.w, ele.h);
-    });
-    board.draw();
-  
-    const originCtx = board.getOriginContext();
+    const originCtx = core.__getOriginContext();
     // @ts-ignore;
     const originCalls = originCtx.__getDrawCalls();
     expect(originCalls).toMatchSnapshot();
   
-    const displayCtx = board.getDisplayContext();
+    const displayCtx = core.__getDisplayContext();
     // @ts-ignore;
     const displayCalls = displayCtx.__getDrawCalls();
     expect(displayCalls).toMatchSnapshot();
-  
   });
-})
+});
+
+
+
 

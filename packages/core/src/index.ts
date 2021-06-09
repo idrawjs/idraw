@@ -16,11 +16,11 @@ import { Element } from './lib/element';
 import { Helper } from './lib/helper';
 import { mergeConfig } from './lib/config';
 import { CoreEvent, TypeCoreEventArgMap } from './lib/core-event';
+import { parseData } from './lib/parse';
 
 const { time } = util;
 const { deepClone } = util.data;
 const { createUUID } = util.uuid;
-
 
 enum Mode {
   NULL = 'null',
@@ -141,7 +141,7 @@ class Core {
     return deepClone(this[_data]);
   }
 
-  initData(data: TypeData): void {
+  initData(data: any | TypeData): void {
     if (this[_hasInitedData] === true) {
       return;
     }
@@ -150,8 +150,8 @@ class Core {
     this[_hasInitedData] = true;
   }
 
-  setData(data: TypeData): void {
-    this[_data] = this[_element].initData(deepClone(data));
+  setData(data: any | TypeData): void {
+    this[_data] = this[_element].initData(deepClone(parseData(data)));
     this.draw();
   }
 
@@ -193,6 +193,14 @@ class Core {
     this[_coreEvent].off(key, callback);
   }
 
+  __getDisplayContext(): CanvasRenderingContext2D {
+    return this[_board].getDisplayContext()
+  }
+
+  __getOriginContext(): CanvasRenderingContext2D {
+    return this[_board].getOriginContext()
+  }
+
   private _initEvent(): void {
     if (this[_hasInited] === true) {
       return;
@@ -212,7 +220,7 @@ class Core {
       this[_selectedDotDirection] = direction;
       this[_selectedUUID] = uuid;
     } else {
-      const [index] = this[_element].isPointInElement(point, this[_data]);
+      const [index, uuid] = this[_element].isPointInElement(point, this[_data]);
       this.selectElement(index);
       if (typeof uuid === 'string' && this[_coreEvent].has('screenSelectElement')) {
         this[_coreEvent].trigger(

@@ -21,4 +21,16 @@ export function initEvent(board) {
   board.on('moveEnd', (p) => {
     selectIdx = false;
   });
+
+  board.on('scale', (num) => {
+    console.log('on("scale") = ', num);
+  });
+
+  board.on('scrollX', (num) => {
+    console.log('on("scrollX") = ', num);
+  });
+
+  board.on('scrollX', (num) => {
+    console.log('on("scrollX") = ', num);
+  });
 }

@@ -111,3 +111,5 @@ temp/
 
 __tests__/diff
 # __tests__/snapshot
+
+reports/
