@@ -19,14 +19,16 @@ type Record = {
 }
 
 const _opts = Symbol('_opts');
-const _records = Symbol('_records');
+const _doRecords = Symbol('_doRecords');
+const _unDoRecords = Symbol('_unDoRecords');
 const _hasInited = Symbol('_hasInited');
 const _initEvent = Symbol('_initEvent');
 
 class IDraw extends Core {
 
   private [_opts]: PrivateOptions;
-  private [_records]: Record[] = [];
+  private [_doRecords]: Record[] = [];
+  private [_unDoRecords]: Record[] = [];
   private [_hasInited] = false; 
 
   constructor(mount: HTMLDivElement, opts: Options, config: TypeConfig) {
@@ -42,15 +44,31 @@ class IDraw extends Core {
   }
 
   undo() {
-    if (!(this[_records].length > 1)) {
+    if (!(this[_doRecords].length > 1)) {
       return;
     }
-    this[_records].pop();
-    const record = this[_records][this[_records].length - 1];
+    const popRecord = this[_doRecords].pop();
+    if (popRecord) {
+      this[_unDoRecords].push(popRecord);
+    }
+    const record = this[_doRecords][this[_doRecords].length - 1];
     if (record?.data) {
       this.setData(record.data);
       this.draw();
     }
+    return this[_doRecords].length;
+  }
+
+  redo() {
+    if (!(this[_unDoRecords].length > 1)) {
+      return;
+    }
+    const record = this[_doRecords].pop();
+    if (record?.data) {
+      this.setData(record.data);
+      this.draw();
+    }
+    return this[_unDoRecords].length;
   }
 
   private [_initEvent]() {
@@ -64,10 +82,11 @@ class IDraw extends Core {
   }
 
   private _pushRecord(data: TypeData) {
-    if (this[_records].length >= this[_opts].maxRecords) {
-      this[_records].shift();
+    if (this[_doRecords].length >= this[_opts].maxRecords) {
+      this[_doRecords].shift();
     }
-    this[_records].push({ data, time: Date.now() })
+    this[_doRecords].push({ data, time: Date.now() })
+    this[_unDoRecords] = [];
   }
 
   private _createOpts(opts: Options): PrivateOptions {
