@@ -1,7 +1,7 @@
-import Board from './../src';
+import Board from '../src';
 import { getData } from './data';
 
-test('@idraw/board: context', async () => {  
+test('@idraw/board: scroll', async () => {  
   document.body.innerHTML = `
     <div id="mount"></div>
   `;
@@ -26,6 +26,9 @@ test('@idraw/board: context', async () => {
     ctx.setFillStyle(ele.desc.color);
     ctx.fillRect(ele.x, ele.y, ele.w, ele.h);
   });
+
+  const result = board.scale(0.5);
+  expect(result).toStrictEqual({"position":{"top":150,"bottom":100,"left":100,"right":150},"size":{"x":75,"y":50,"w":300,"h":200}})
   board.draw();
 
   const originCtx = board.getOriginContext();

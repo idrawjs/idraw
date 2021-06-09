@@ -5,9 +5,9 @@ export interface TypeBoardEventArgMap {
   'move': TypePoint;
   'moveStart': TypePoint;
   'moveEnd': TypePoint;
-  'scale': number;
-  'scrollX': number;
-  'scrollY': number;
+  // 'scale': number;
+  // 'scrollX': number;
+  // 'scrollY': number;
 }
 
 export interface TypeBoardEvent {

@@ -1,5 +1,5 @@
 module.exports = {
-  // "collectCoverage": true,
+  "collectCoverage": true,
   "coverageDirectory": "reports",
   "collectCoverageFrom": [
     "packages/**/src/**/*.ts",
@@ -7,7 +7,7 @@ module.exports = {
     "!**/node_modules/**"
   ],
   "coverageReporters": [
-    // "clover",
+    "clover",
     // "html",
     "text-summary"
   ],
@@ -25,7 +25,7 @@ module.exports = {
   "modulePaths": [
     "<rootDir>"
   ],
-  "testRegex": "(/packages/([^\/]{1,})/__tests__/.*|\\.test)\\.ts$",
+  "testRegex": "(/packages/([^\/]{1,})/__tests__/.*)\\.test.ts$",
   "setupFiles": [
     "jest-canvas-mock"
   ]

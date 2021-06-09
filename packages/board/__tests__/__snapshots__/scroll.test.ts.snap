@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`@idraw/board: context 1`] = `
+exports[`@idraw/board: scroll 1`] = `
 Array [
   Object {
     "props": Object {
@@ -40,8 +40,8 @@ Array [
     "props": Object {
       "dHeight": 1600,
       "dWidth": 2400,
-      "dx": 0,
-      "dy": 0,
+      "dx": -2400,
+      "dy": -1600,
       "img": <canvas
         height="1600"
         width="2400"
@@ -64,7 +64,7 @@ Array [
 ]
 `;
 
-exports[`@idraw/board: context 2`] = `
+exports[`@idraw/board: scroll 2`] = `
 Array [
   Object {
     "props": Object {
@@ -104,8 +104,8 @@ Array [
     "props": Object {
       "dHeight": 1600,
       "dWidth": 2400,
-      "dx": 0,
-      "dy": 0,
+      "dx": -2400,
+      "dy": -1600,
       "img": <canvas
         height="1600"
         width="2400"
