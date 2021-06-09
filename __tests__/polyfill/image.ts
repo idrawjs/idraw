@@ -3,7 +3,10 @@ window.Image = class {
   constructor() {
     setTimeout(() => {
       // @ts-ignore
-      this.onload();
+      if (typeof this.onload === 'function') {
+        // @ts-ignore
+        this.onload();
+      }
     }, 50);
   }
 }

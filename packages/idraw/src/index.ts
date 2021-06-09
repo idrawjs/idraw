@@ -31,21 +31,21 @@ class IDraw extends Core {
   private [_unDoRecords]: Record[] = [];
   private [_hasInited] = false; 
 
-  constructor(mount: HTMLDivElement, opts: Options, config: TypeConfig) {
+  constructor(mount: HTMLDivElement, opts: Options, config?: TypeConfig) {
     super(mount, {
       width: opts.width,
       height: opts.height,
       contextWidth: opts.contextWidth,
       contextHeight: opts.contextHeight,
       devicePixelRatio: opts.devicePixelRatio
-    }, config);
+    }, config || {});
     this[_opts] = this._createOpts(opts);
     this[_initEvent]();
   }
 
   undo() {
     if (!(this[_doRecords].length > 1)) {
-      return;
+      return this[_doRecords].length;
     }
     const popRecord = this[_doRecords].pop();
     if (popRecord) {
@@ -60,10 +60,10 @@ class IDraw extends Core {
   }
 
   redo() {
-    if (!(this[_unDoRecords].length > 1)) {
-      return;
+    if (!(this[_unDoRecords].length > 0)) {
+      return this[_unDoRecords].length;
     }
-    const record = this[_doRecords].pop();
+    const record = this[_unDoRecords].pop();
     if (record?.data) {
       this.setData(record.data);
       this.draw();

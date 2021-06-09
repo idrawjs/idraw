@@ -106,6 +106,7 @@ class Core {
       this[_data].elements[index] = this[_data].elements[index + 1];
       this[_data].elements[index + 1] = temp;
     }
+    this._emitChangeData();
     this.draw();
   }
 
@@ -116,24 +117,25 @@ class Core {
       this[_data].elements[index] = this[_data].elements[index - 1];
       this[_data].elements[index - 1] = temp;
     }
+    this._emitChangeData();
     this.draw();
   }
 
   scale(ratio: number): TypeScreenContext {
     const screen = this[_board].scale(ratio);
-    this. _emitChangeScreen();
+    this._emitChangeScreen();
     return screen;
   }
 
   scrollX(x: number): TypeScreenContext {
     const screen = this[_board].scrollX(x);
-    this. _emitChangeScreen();
+    this._emitChangeScreen();
     return screen;
   }
 
   scrollY(y: number): TypeScreenContext {
     const screen = this[_board].scrollY(y);
-    this. _emitChangeScreen();
+    this._emitChangeScreen();
     return screen;
   }
 
@@ -227,7 +229,7 @@ class Core {
           'screenSelectElement', 
           { index, uuid, element: deepClone(this[_data].elements?.[index])}
         );
-        this. _emitChangeScreen();
+        this._emitChangeScreen();
       }
     }
     this.draw();
