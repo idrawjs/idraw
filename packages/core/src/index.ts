@@ -193,6 +193,14 @@ class Core {
     this[_coreEvent].off(key, callback);
   }
 
+  __getDisplayContext(): CanvasRenderingContext2D {
+    return this[_board].getDisplayContext()
+  }
+
+  __getOriginContext(): CanvasRenderingContext2D {
+    return this[_board].getOriginContext()
+  }
+
   private _initEvent(): void {
     if (this[_hasInited] === true) {
       return;

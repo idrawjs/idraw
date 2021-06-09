@@ -28,13 +28,13 @@ export class Renderer {
     });
     // TODO
     this._loader.on('load', (res) => {
-      // console.log('load: ', res);
+      console.log('load: ', res);
     });
     this._loader.on('error', (res) => {
-      // console.log('error: ', res);
+      console.log('error: ', res);
     });
     this._loader.on('complete', (res) => {
-      // console.log('complete: ', res);
+      console.log('complete: ', res);
     })
   }
 
@@ -50,7 +50,9 @@ export class Renderer {
 
   private _drawFrame() {
     requestAnimationFrame(() => {
+      const ctx = this._board.getContext();
       // console.log('------ render frame ------', this._loader.isComplete())
+      
       let item: QueueItem | undefined = this._queue[0];
       let isLastFrame = false;
       if (this._queue.length > 1) {
@@ -60,11 +62,12 @@ export class Renderer {
       }
       if (this._loader.isComplete() !== true) {
         this._drawFrame();
+        if (item) {
+          drawContext(ctx, item.data, item.helper, this._loader);
+          this._board.draw();
+        }
       } else if (item) {
-        const ctx = this._board.getContext();
-        
         drawContext(ctx, item.data, item.helper, this._loader);
-
         this._board.draw();
         this._retainQueueOneItem();
         if (!isLastFrame) {
