@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`@idraw/board: scroll 1`] = `
+exports[`@idraw/board scale 1`] = `
 Array [
   Object {
     "props": Object {
@@ -64,7 +64,7 @@ Array [
 ]
 `;
 
-exports[`@idraw/board: scroll 2`] = `
+exports[`@idraw/board scale 2`] = `
 Array [
   Object {
     "props": Object {
