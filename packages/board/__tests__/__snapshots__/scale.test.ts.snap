@@ -1,0 +1,513 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`@idraw/board scale 001 1`] = `
+Array [
+  Object {
+    "props": Object {
+      "height": 1600,
+      "width": 2400,
+      "x": 0,
+      "y": 0,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "clearRect",
+  },
+  Object {
+    "props": Object {
+      "height": 1600,
+      "width": 2400,
+      "x": 0,
+      "y": 0,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "clearRect",
+  },
+  Object {
+    "props": Object {
+      "dHeight": 3600,
+      "dWidth": 4000,
+      "dx": 200,
+      "dy": 0,
+      "img": <canvas
+        height="3600"
+        width="4000"
+      />,
+      "sHeight": 3600,
+      "sWidth": 4000,
+      "sx": 0,
+      "sy": 0,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "drawImage",
+  },
+]
+`;
+
+exports[`@idraw/board scale 001 2`] = `
+Array [
+  Object {
+    "props": Object {
+      "height": 1600,
+      "width": 2400,
+      "x": 0,
+      "y": 0,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "clearRect",
+  },
+  Object {
+    "props": Object {
+      "height": 1600,
+      "width": 2400,
+      "x": 0,
+      "y": 0,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "clearRect",
+  },
+  Object {
+    "props": Object {
+      "dHeight": 3600,
+      "dWidth": 4000,
+      "dx": 200,
+      "dy": 0,
+      "img": <canvas
+        height="3600"
+        width="4000"
+      />,
+      "sHeight": 3600,
+      "sWidth": 4000,
+      "sx": 0,
+      "sy": 0,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "drawImage",
+  },
+]
+`;
+
+exports[`@idraw/board scale 002 1`] = `
+Array [
+  Object {
+    "props": Object {
+      "height": 1600,
+      "width": 2400,
+      "x": 0,
+      "y": 0,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "clearRect",
+  },
+  Object {
+    "props": Object {
+      "height": 1600,
+      "width": 2400,
+      "x": 0,
+      "y": 0,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "clearRect",
+  },
+  Object {
+    "props": Object {
+      "dHeight": 2400,
+      "dWidth": 4800,
+      "dx": 0,
+      "dy": 200,
+      "img": <canvas
+        height="2400"
+        width="4800"
+      />,
+      "sHeight": 2400,
+      "sWidth": 4800,
+      "sx": 0,
+      "sy": 0,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "drawImage",
+  },
+]
+`;
+
+exports[`@idraw/board scale 002 2`] = `
+Array [
+  Object {
+    "props": Object {
+      "height": 1600,
+      "width": 2400,
+      "x": 0,
+      "y": 0,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "clearRect",
+  },
+  Object {
+    "props": Object {
+      "height": 1600,
+      "width": 2400,
+      "x": 0,
+      "y": 0,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "clearRect",
+  },
+  Object {
+    "props": Object {
+      "dHeight": 2400,
+      "dWidth": 4800,
+      "dx": 0,
+      "dy": 200,
+      "img": <canvas
+        height="2400"
+        width="4800"
+      />,
+      "sHeight": 2400,
+      "sWidth": 4800,
+      "sx": 0,
+      "sy": 0,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "drawImage",
+  },
+]
+`;
+
+exports[`@idraw/board scale 003 1`] = `
+Array [
+  Object {
+    "props": Object {
+      "height": 1600,
+      "width": 2400,
+      "x": 0,
+      "y": 0,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "clearRect",
+  },
+  Object {
+    "props": Object {
+      "height": 1600,
+      "width": 2400,
+      "x": 0,
+      "y": 0,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "clearRect",
+  },
+  Object {
+    "props": Object {
+      "dHeight": 2400,
+      "dWidth": 4000,
+      "dx": 0,
+      "dy": 0,
+      "img": <canvas
+        height="2400"
+        width="4000"
+      />,
+      "sHeight": 2400,
+      "sWidth": 4000,
+      "sx": 0,
+      "sy": 0,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "drawImage",
+  },
+]
+`;
+
+exports[`@idraw/board scale 003 2`] = `
+Array [
+  Object {
+    "props": Object {
+      "height": 1600,
+      "width": 2400,
+      "x": 0,
+      "y": 0,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "clearRect",
+  },
+  Object {
+    "props": Object {
+      "height": 1600,
+      "width": 2400,
+      "x": 0,
+      "y": 0,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "clearRect",
+  },
+  Object {
+    "props": Object {
+      "dHeight": 2400,
+      "dWidth": 4000,
+      "dx": 0,
+      "dy": 0,
+      "img": <canvas
+        height="2400"
+        width="4000"
+      />,
+      "sHeight": 2400,
+      "sWidth": 4000,
+      "sx": 0,
+      "sy": 0,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "drawImage",
+  },
+]
+`;
+
+exports[`@idraw/board scale 1`] = `
+Array [
+  Object {
+    "props": Object {
+      "height": 1600,
+      "width": 2400,
+      "x": 0,
+      "y": 0,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "clearRect",
+  },
+  Object {
+    "props": Object {
+      "height": 1600,
+      "width": 2400,
+      "x": 0,
+      "y": 0,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "clearRect",
+  },
+  Object {
+    "props": Object {
+      "dHeight": 1600,
+      "dWidth": 2400,
+      "dx": 600,
+      "dy": 400,
+      "img": <canvas
+        height="1600"
+        width="2400"
+      />,
+      "sHeight": 1600,
+      "sWidth": 2400,
+      "sx": 0,
+      "sy": 0,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "drawImage",
+  },
+]
+`;
+
+exports[`@idraw/board scale 2`] = `
+Array [
+  Object {
+    "props": Object {
+      "height": 1600,
+      "width": 2400,
+      "x": 0,
+      "y": 0,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "clearRect",
+  },
+  Object {
+    "props": Object {
+      "height": 1600,
+      "width": 2400,
+      "x": 0,
+      "y": 0,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "clearRect",
+  },
+  Object {
+    "props": Object {
+      "dHeight": 1600,
+      "dWidth": 2400,
+      "dx": 600,
+      "dy": 400,
+      "img": <canvas
+        height="1600"
+        width="2400"
+      />,
+      "sHeight": 1600,
+      "sWidth": 2400,
+      "sx": 0,
+      "sy": 0,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "drawImage",
+  },
+]
+`;
