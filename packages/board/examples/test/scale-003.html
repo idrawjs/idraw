@@ -34,6 +34,9 @@
 
       const ctx = board.getContext();
 
+      ctx.setFillStyle('#ffffff');
+      ctx.fillRect(0, 0, 600, 400);
+
       ctx.setFillStyle('#f0f0f0');
       ctx.fillRect(10, 10, 200, 120);
 
@@ -49,7 +52,10 @@
       ctx.setFillStyle('#000');
       ctx.fillRect(300 - 10, 200 - 10, 20, 20);
 
-      board.scale(0.5);
+      board.scale(2);
+      board.scrollX(-300);
+      board.scrollY(-200);
+      board.scale(1);
       board.draw();
 
     </script>

@@ -38,16 +38,16 @@ Array [
   },
   Object {
     "props": Object {
-      "dHeight": 1600,
-      "dWidth": 2400,
+      "dHeight": 3600,
+      "dWidth": 4000,
       "dx": 0,
       "dy": 0,
       "img": <canvas
-        height="1600"
-        width="2400"
+        height="3600"
+        width="4000"
       />,
-      "sHeight": 1600,
-      "sWidth": 2400,
+      "sHeight": 3600,
+      "sWidth": 4000,
       "sx": 0,
       "sy": 0,
     },
@@ -102,16 +102,16 @@ Array [
   },
   Object {
     "props": Object {
-      "dHeight": 1600,
-      "dWidth": 2400,
+      "dHeight": 3600,
+      "dWidth": 4000,
       "dx": 0,
       "dy": 0,
       "img": <canvas
-        height="1600"
-        width="2400"
+        height="3600"
+        width="4000"
       />,
-      "sHeight": 1600,
-      "sWidth": 2400,
+      "sHeight": 3600,
+      "sWidth": 4000,
       "sx": 0,
       "sy": 0,
     },

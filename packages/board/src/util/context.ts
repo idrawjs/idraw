@@ -3,6 +3,8 @@ import { TypeContext } from '@idraw/types';
 type Options = {
   width: number;
   height: number;
+  contextWidth: number;
+  contextHeight: number;
   devicePixelRatio: number;
 }
 
@@ -49,6 +51,8 @@ class Context implements TypeContext {
     return  {
       width: this._opts.width,
       height: this._opts.height,
+      contextWidth: this._opts.contextWidth,
+      contextHeight: this._opts.contextHeight,
       devicePixelRatio: this._opts.devicePixelRatio,
     };
   }

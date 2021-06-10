@@ -20,39 +20,25 @@
 
     <div id="mount"></div>
 
+
     <script src="./../../dist/index.global.js"></script>
-    <script>
-      const { Board } = window.iDraw; 
-      const mount = document.querySelector('#mount');
-      const board = new Board(mount, {
+    <script type="module">
+      import { getData } from './data.js';
+      const { Core } = window.iDraw;
+      const data = getData();
+      const core = new Core( document.querySelector('#mount'), {
         width: 600,
         height: 400,
-        contextWidth: 600,
-        contextHeight: 400,
+        contextWidth: 1000,
+        contextHeight: 600,
         devicePixelRatio: 4
       });
-
-      const ctx = board.getContext();
-
-      ctx.setFillStyle('#f0f0f0');
-      ctx.fillRect(10, 10, 200, 120);
-
-      ctx.setFillStyle('#cccccc');
-      ctx.fillRect(80, 80, 200, 120);
-
-      ctx.setFillStyle('#c0c0c0');
-      ctx.fillRect(160, 160, 200, 120);
-
-      ctx.setFillStyle('#e0e0e0');
-      ctx.fillRect(400 - 10, 300 - 10, 200, 100);
-
-      ctx.setFillStyle('#000');
-      ctx.fillRect(300 - 10, 200 - 10, 20, 20);
-
-      board.scale(0.5);
-      board.draw();
-
+      core.initData(data);
+      core.scrollX(400);
+      core.scrollY(400);
+      const result = core.scale(0.8);
+      console.log('scale: ', result);
+      core.draw();
     </script>
-
   </body>
 </html>

@@ -160,11 +160,28 @@ class Board {
     } = this._opts;
 
     // init scroll
-    if (contextWidth * scaleRatio < width && contextHeight * scaleRatio < height) {
+    if (contextWidth * scaleRatio <= width) {
       // make context center
       this._ctx.setTransform({
         scrollX: (width - contextWidth * scaleRatio) / 2,
+      })
+    }
+
+    if (contextHeight * scaleRatio <= height) {
+      // make context center
+      this._ctx.setTransform({
         scrollY: (height - contextHeight * scaleRatio) / 2,
+      })
+    }
+
+    if (contextWidth * scaleRatio >= width && this._ctx.getTransform().scrollX > 0) {
+      this._ctx.setTransform({
+        scrollX: 0,
+      })
+    }
+    if (contextHeight * scaleRatio >= height && this._ctx.getTransform().scrollY > 0) {
+      this._ctx.setTransform({
+        scrollY: 0,
       })
     }
 

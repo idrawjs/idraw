@@ -5,5 +5,5 @@ lerna add @idraw/util --scope=@idraw/core
 ```
 
 ```sh
-lerna publish --force-publish
+npm run build && lerna publish --force-publish
 ```

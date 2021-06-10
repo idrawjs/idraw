@@ -24,15 +24,19 @@
     <script>
       const { Board } = window.iDraw; 
       const mount = document.querySelector('#mount');
-      const board = new Board(mount, {
+      const opts = {
         width: 600,
         height: 400,
-        contextWidth: 600,
-        contextHeight: 400,
+        contextWidth: 800,
+        contextHeight: 600,
         devicePixelRatio: 4
-      });
+      }
+      const board = new Board(mount, opts);
 
       const ctx = board.getContext();
+
+      ctx.setFillStyle('#ffffff');
+      ctx.fillRect(0, 0, opts.contextWidth, opts.contextHeight);
 
       ctx.setFillStyle('#f0f0f0');
       ctx.fillRect(10, 10, 200, 120);
@@ -47,7 +51,7 @@
       ctx.fillRect(400 - 10, 300 - 10, 200, 100);
 
       ctx.setFillStyle('#000');
-      ctx.fillRect(300 - 10, 200 - 10, 20, 20);
+      ctx.fillRect(400 - 10, 300 - 10, 20, 20);
 
       board.scale(0.5);
       board.draw();

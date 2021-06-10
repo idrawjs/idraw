@@ -10,8 +10,8 @@ describe('@idraw/board', () => {
     const opts = {
       width: 600,
       height: 400,
-      contextWidth: 600,
-      contextHeight: 400,
+      contextWidth: 1000,
+      contextHeight: 900,
       devicePixelRatio: 4
     }
     const mount = document.querySelector('#mount') as HTMLDivElement;
