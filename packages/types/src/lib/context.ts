@@ -12,6 +12,8 @@ interface TypeContext {
   getSize(): {
     width: number;
     height: number;
+    contextWidth: number;
+    contextHeight: number;
     devicePixelRatio: number;
   };
   calcDeviceNum(num: number): number;

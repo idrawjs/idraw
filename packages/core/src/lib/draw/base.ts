@@ -16,7 +16,7 @@ export function clearContext(ctx: TypeContext) {
 export function drawBgColor(ctx: TypeContext, color: string) {
   const size = ctx.getSize();
   ctx.setFillStyle(color);
-  ctx.fillRect(0, 0, size.width, size.height);
+  ctx.fillRect(0, 0, size.contextWidth, size.contextHeight);
 }
 
 export function drawBox(
