@@ -20,7 +20,7 @@ async function diff() {
       const { page, port } = ctx;
       const width = p.w;
       const height = p.h;
-      console.log(`[${i+1}/${pageList.length}] E2E Testing: ${p.path}`)
+
       await page.setViewport( { width: p.w, height: p.h } );
       const pageUrl = `http://127.0.0.1:${port}/packages/${p.path || ''}`;
       await page.goto(pageUrl);
@@ -36,7 +36,11 @@ async function diff() {
       if (failRate > 0) {
         (await jimp.read(diffBuf)).scale(1).quality(100).write(parsePicPath(path.join(diffDir, p.path)));
       }
-      diffRateList.push(failRate);
+      diffRateList.push({
+        path: p.path,
+        rate: failRate,
+      });
+      console.log(`[${i+1}/${pageList.length}] E2E Testing: ${p.path} | diff: ${failRate}`)
       await next();
     });
   });
@@ -59,9 +63,9 @@ describe('Screenshot testing', function() {
       
       assert.ok(Array.isArray(rateList));
       assert.ok(rateList.length > 0);
-      rateList.forEach((rate) => {
-        console.log('diff-rate =', rate);
-        assert.ok(rate < 0.05);
+      rateList.forEach((data) => {
+        // console.log(`${data.path}]diff-rate: ${data.rate}`, );
+        assert.ok(data.rate < 0.05);
       });
 
       done();
