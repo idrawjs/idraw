@@ -30,7 +30,7 @@ describe('@idraw/board', () => {
     });
   
     const result = board.scale(0.5);
-    expect(result).toStrictEqual({"position":{"top":150,"bottom":100,"left":100,"right":150},"size":{"x":75,"y":50,"w":300,"h":200}})
+    expect(result).toStrictEqual({"position":{"top":100,"bottom":100,"left":150,"right":150},"size":{"x":75,"y":50,"w":300,"h":200}})
     board.draw();
   
     const originCtx = board.getOriginContext();
@@ -72,7 +72,7 @@ describe('@idraw/board', () => {
     });
   
     const result = board.scale(0.5);
-    expect(result).toStrictEqual({"position":{"top":50,"bottom":-50,"left":0,"right":50},"size":{"x":25,"y":0,"w":500,"h":450}})
+    expect(result).toStrictEqual({"position":{"top":0,"bottom":-50,"left":50,"right":50},"size":{"x":25,"y":0,"w":500,"h":450}})
     board.draw();
   
     const originCtx = board.getOriginContext();
@@ -116,7 +116,7 @@ describe('@idraw/board', () => {
     board.scrollX(-600);
     board.scrollY(-400);
     const result = board.scale(0.5);
-    expect(result).toStrictEqual({"position":{"top":0,"bottom":50,"left":50,"right":0},"size":{"x":0,"y":25,"w":600,"h":300}})
+    expect(result).toStrictEqual({"position":{"top":50,"bottom":50,"left":0,"right":0},"size":{"x":0,"y":25,"w":600,"h":300}})
     board.draw();
   
     const originCtx = board.getOriginContext();
