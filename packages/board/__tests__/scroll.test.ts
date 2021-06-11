@@ -31,10 +31,10 @@ describe('@idraw/board', () => {
     expect(resultScale).toStrictEqual({"position":{"top":0,"bottom":-400,"left":0,"right":-600},"size":{"x":0,"y":0,"w":1200,"h":800}})
   
     const resultX =board.scrollX(-600);
-    expect(resultX).toStrictEqual({"position":{"top":-600,"bottom":-400,"left":0,"right":0},"size":{"x":-1200,"y":0,"w":1200,"h":800}})
+    expect(resultX).toStrictEqual({"position":{"top":0,"bottom":-400,"left":-600,"right":0},"size":{"x":-1200,"y":0,"w":1200,"h":800}})
   
     const resultY =board.scrollY(-400); 
-    expect(resultY).toStrictEqual({"position":{"top":-600,"bottom":0,"left":-400,"right":0},"size":{"x":-1200,"y":-800,"w":1200,"h":800}})
+    expect(resultY).toStrictEqual({"position":{"top":-400,"bottom":0,"left":-600,"right":0},"size":{"x":-1200,"y":-800,"w":1200,"h":800}})
   
     board.draw();
   

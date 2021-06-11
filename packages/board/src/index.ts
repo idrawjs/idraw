@@ -185,6 +185,21 @@ class Board {
       })
     }
 
+    const { scrollX: _scrollX, scrollY: _scrollY } = this._ctx.getTransform();
+
+    // reset scroll
+    if (_scrollX < 0 && Math.abs(_scrollX) > Math.abs(contextWidth * scaleRatio - width)) {
+      this._ctx.setTransform({
+        scrollX: 0 - Math.abs(contextWidth * scaleRatio - width)
+      })
+    }
+    if (_scrollY < 0 && Math.abs(_scrollY) > Math.abs(contextHeight * scaleRatio - height)) {
+      this._ctx.setTransform({
+        scrollY: 0 - Math.abs(contextHeight * scaleRatio - height)
+      })
+    }
+
+    // result size
     const { scrollX, scrollY } = this._ctx.getTransform();
     const size = {
       x: scrollX * scaleRatio,
@@ -199,11 +214,12 @@ class Board {
       h: contextHeight * pxRatio * scaleRatio,
     };
     const position = {
-      top: scrollX,
+      top: scrollY,
       bottom: height - (contextHeight * scaleRatio + scrollY),
-      left: scrollY,
+      left: scrollX,
       right: width - (contextWidth * scaleRatio + scrollX),
     };
+
     return {
       size, position, deviceSize
     };
