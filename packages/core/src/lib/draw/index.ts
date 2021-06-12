@@ -14,7 +14,7 @@ import { drawSVG } from './svg';
 import { drawText } from './text';
 import {
   drawElementWrapper,
-  drawDisplayContextScrollWrapper,
+  // drawDisplayContextScrollWrapper,
 } from './wrapper';
 
 const { isColorStr } = util.color;
@@ -58,6 +58,6 @@ export function drawContext(
     }
   }
   drawElementWrapper(ctx, helperConfig);
-  drawDisplayContextScrollWrapper(ctx, helperConfig)
+  // drawDisplayContextScrollWrapper(ctx, helperConfig)
 }
 

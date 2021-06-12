@@ -3,6 +3,7 @@ import { Watcher } from './util/watcher';
 import { setStyle } from './util/style';
 import Context from './util/context';
 import { TypeBoardEventArgMap } from './util/event';
+import { Scroller } from './util/scroller';
 
 
 const _canvas = Symbol('_canvas');
@@ -17,7 +18,7 @@ const _watcher = Symbol('_watcher');
 const _render = Symbol('_render');
 const _calcScreen = Symbol('_calcScreen');
 const _parsePrivateOptions = Symbol('_parsePrivateOptions');
-
+const _scroller = Symbol('_scroller');
 
 type Options = {
   width: number;
@@ -25,6 +26,7 @@ type Options = {
   contextWidth: number;
   contextHeight: number;
   devicePixelRatio?: number;
+  canScroll?: boolean;
 }
 
 type PrivateOptions = Options & {
@@ -41,6 +43,7 @@ class Board {
   private [_displayCtx]: CanvasRenderingContext2D;
   private [_originCtx]: CanvasRenderingContext2D;
   private [_watcher]: Watcher;
+  private [_scroller]: Scroller;
 
   constructor(mount: HTMLDivElement, opts: Options) {
     this[_mount] = mount;
@@ -52,6 +55,12 @@ class Board {
     this[_displayCtx] = this[_displayCanvas].getContext('2d') as CanvasRenderingContext2D;
     this[_ctx] = new Context(this[_originCtx], this[_opts]);
     this[_watcher] = new Watcher(this[_displayCanvas]);
+    this[_scroller] = new Scroller(
+      this[_displayCtx], {
+        width: opts.width,
+        height: opts.height,
+        devicePixelRatio: opts.devicePixelRatio || 1,
+      })
     this[_render]();
   }
 
@@ -116,7 +125,10 @@ class Board {
     this[_displayCtx].drawImage(
       this[_canvas], deviceSize.x, deviceSize.y, deviceSize.w, deviceSize.h
     );
-    return { position, size};
+    if (this[_opts].canScroll === true) {
+      this[_scroller].draw(position);
+    }
+    return { position, size };
   }
 
   clear() {

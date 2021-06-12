@@ -30,6 +30,7 @@
         contextWidth: 1000,
         contextHeight: 900,
         devicePixelRatio: 4,
+        canScroll: true,
       }
       const board = new Board(mount, opts);
       board.on('wheelX', (deltaX) => {
@@ -73,7 +74,7 @@
       // board.scrollY(-600);
       // board.scale(1);
 
-      const result = board.scale(0.5);
+      const result = board.scale(1);
       console.log('result =', result);
 
       board.draw();
