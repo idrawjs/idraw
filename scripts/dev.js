@@ -1,4 +1,6 @@
 const execa = require('execa');
+const process = require('process');
+
 
 async function main() {
   
@@ -6,7 +8,8 @@ async function main() {
     [
       '-w',
       '-c',
-      './scripts/rollup.config.js'
+      './scripts/rollup.config.js',
+      `--target-pkg=${process.argv[2] || ''}`,
     ], { stdio: 'inherit' }
   )
 }

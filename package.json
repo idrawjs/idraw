@@ -3,6 +3,8 @@
   "private": false,
   "scripts": {
     "dev": "node ./scripts/dev.js",
+    "dev:board": "node ./scripts/dev.js board",
+    "dev:core": "node ./scripts/dev.js core",
     "build": "node ./scripts/build.js",
     "snapshot": "node ./scripts/build.js && node ./scripts/snapshot.js",
     "e2e": "mocha --exit ./__tests__/e2e.test.js",

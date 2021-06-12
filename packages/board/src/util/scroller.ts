@@ -27,7 +27,7 @@ export class Scroller {
     const wrapper = this._calc(position);
     // TODO
     if (this._displayCtx) {
-      console.log(wrapper);
+      console.log('scroller-wrapper ===', wrapper);
     }
 
     const ctx = this._displayCtx;
