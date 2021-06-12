@@ -55,3 +55,16 @@ export function drawElementWrapper(ctx: TypeContext, config: TypeHelperConfig) {
 
   });
 }
+
+
+// export function drawDisplayContextScrollWrapper(displayCtx: TypeContext, config: TypeHelperConfig) {
+//   // console.log('config?.displayContextScrollWrapper = ', config?.displayContextScrollWrapper);
+//   // if (!config?.displayContextScrollWrapper) {
+//   //   return;
+//   // }
+
+//   // draw scroll x-line
+
+//   // draw scroll y-line
+
+// }

@@ -28,13 +28,26 @@ type TypeHelperConfig = {
     color: string;
     radian?: number;
     translate?: TypePoint;
+  },
+  displayContextScrollWrapper?: {
+    lineSize: number,
+    xSize: number,
+    ySize: number,
+    translateY: number,
+    translateX: number,
+    color: string,
   }
 }
 
 type TypeHelperUpdateOpts = {
+  width: number;
+  height: number;
   selectedUUID?: string | null;
   devicePixelRatio: number;
   scale: number;
+  canScroll: boolean;
+  scrollX: number;
+  scrollY: number;
 }
 
 interface TypeHelper {

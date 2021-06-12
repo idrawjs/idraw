@@ -1,13 +1,15 @@
 const path = require('path');
 const typescript = require('rollup-plugin-typescript2');
 const { nodeResolve } = require('@rollup/plugin-node-resolve');
-const { packages } = require('./config');
+const { getTargetPackage } = require('./config');
 const dtsPlugin = require('./util/dts-plugin');
 const stylePlugin = require('./util/style-plugin');
 
 const resolveFile = function(names = []) {
   return path.join(__dirname, '..', 'packages', ...names)
 }
+const targetMod = process.argv[5];
+const packages = getTargetPackage(targetMod);
 
 const modules = [];
 const external = [ '@idraw/types', '@idraw/util', '@idraw/board', '@idraw/core' ];
@@ -27,7 +29,8 @@ for(let i = 0; i < packages.length; i++) {
     name: pkg.globalName,
     format: 'cjs',
     exports: 'default',
-    plugins: [dtsPlugin(pkg.dirName),],
+    // plugins: [dtsPlugin(pkg.dirName),],
+    plugins: [],
     external,
   });
   modules.push({
