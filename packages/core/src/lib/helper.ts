@@ -10,17 +10,23 @@ import {
   TypePoint,
   TypeConfigStrict,
 } from '@idraw/types';
+import Board from '@idraw/board';
+import util from '@idraw/util';
 import { parseAngleToRadian, calcElementCenter } from './calculate';
 import { rotateContext, } from './transform';
+
+const { deepClone } = util.data;
 
 export class Helper implements TypeHelper {
 
   private _helperConfig: TypeHelperConfig;
   private _coreConfig: TypeConfigStrict;
   private _ctx: TypeContext;
+  private _board: Board;
 
-  constructor(ctx: TypeContext, config: TypeConfigStrict) {
-    this._ctx = ctx;
+  constructor(board: Board, config: TypeConfigStrict) {
+    this._board = board;
+    this._ctx = this._board.getContext();
     this._coreConfig = config;
     this._helperConfig = {
       elementIndexMap: {}
@@ -33,11 +39,11 @@ export class Helper implements TypeHelper {
   ): void {
     this._updateElementIndex(data);
     this._updateSelectedElementWrapper(data, opts);
+    this._updateDisplayContextScrollWrapper(data, opts);
   }
 
   getConfig(): TypeHelperConfig {
-    // TODO 
-    return JSON.parse(JSON.stringify(this._helperConfig));
+    return deepClone(this._helperConfig);
   }
 
   getElementIndexByUUID(uuid: string): number | null {
@@ -158,5 +164,54 @@ export class Helper implements TypeHelper {
     }
 
     this._helperConfig.selectedElementWrapper = wrapper;
+  }
+
+  private _updateDisplayContextScrollWrapper(data: TypeData, opts: TypeHelperUpdateOpts) {
+    if (opts.canScroll !== true) {
+      return;
+    }
+    const { width, height } = opts;
+    const sliderMinSize = 50;
+    const lineSize = 16;
+    const { position } = this._board.getScreenInfo();
+    let xSize = 0;
+    let ySize = 0;
+    if (position.left <= 0 || position.right <= 0) {
+      xSize = Math.max(
+        sliderMinSize, width - (
+          Math.abs(position.left < 0 ? position.left : 0) + Math.abs(position.right < 0 ? position.right : 0)
+        )
+      );
+      if (xSize >= width) xSize = 0;
+    }
+    if (position.top <= 0 || position.bottom <= 0) {
+      ySize = Math.max(
+        sliderMinSize, height - (
+          Math.abs(position.top < 0 ? position.top : 0) + Math.abs(position.bottom < 0 ? position.bottom : 0)
+        )
+      );
+      if (ySize >= height) ySize = 0;
+    }
+
+    let translateX = 0;
+    if (xSize > 0) {
+      translateX = width * Math.abs(position.left) / (Math.abs(position.left) + Math.abs(position.right));
+      translateX = Math.min(Math.max(0, translateX - xSize / 2), width - xSize);
+    }
+
+    let translateY = 0;
+    if (ySize > 0) {
+      translateY = height * Math.abs(position.top) / (Math.abs(position.top) + Math.abs(position.bottom));
+      translateY = Math.min(Math.max(0, translateY - ySize / 2), height - ySize);
+    }
+    this._helperConfig.displayContextScrollWrapper = {
+      lineSize,
+      xSize,
+      ySize,
+      translateY,
+      translateX,
+      color: '#e0e0e0'
+    };
+    
   }
 }

@@ -69,16 +69,22 @@ class Core {
     this[_board] = new Board(mount, this[_opts]);
     this[_renderer] = new Renderer(this[_board]); 
     this[_element] = new Element(this[_board].getContext());
-    this[_helper] = new Helper(this[_board].getContext(), this[_config]);
+    this[_helper] = new Helper(this[_board], this[_config]);
     this._initEvent();
     this[_hasInited] = true;
   }
 
   draw(): void {
+    const transfrom = this[_board].getTransform();
     this[_helper].updateConfig(this[_data], {
+      width: this[_opts].width,
+      height: this[_opts].height,
+      canScroll: this[_opts].canScroll === true,
       selectedUUID: this[_selectedUUID],
       devicePixelRatio: this[_opts].devicePixelRatio,
-      scale: this[_board].getTransform().scale,
+      scale: transfrom.scale,
+      scrollX: transfrom.scrollX,
+      scrollY: transfrom.scrollY,
     });
     this[_renderer].render(this[_data], this[_helper].getConfig());
   }

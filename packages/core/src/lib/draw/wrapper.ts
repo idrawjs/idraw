@@ -55,3 +55,11 @@ export function drawElementWrapper(ctx: TypeContext, config: TypeHelperConfig) {
 
   });
 }
+
+
+export function drawDisplayContextScrollWrapper(ctx: TypeContext, config: TypeHelperConfig) {
+  console.log('config?.displayContextScrollWrapper = ', config?.displayContextScrollWrapper);
+  if (!config?.displayContextScrollWrapper) {
+    return;
+  }
+}

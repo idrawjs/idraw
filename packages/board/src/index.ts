@@ -25,7 +25,6 @@ type Options = {
   contextWidth: number;
   contextHeight: number;
   devicePixelRatio?: number;
-  canScroll?: boolean;
 }
 
 type PrivateOptions = Options & {
@@ -130,6 +129,10 @@ class Board {
 
   off<T extends keyof TypeBoardEventArgMap >(name: T, callback: (p: TypeBoardEventArgMap[T]) => void) {
     this[_watcher].off(name, callback);
+  }
+
+  getScreenInfo() {
+    return this[_calcScreen]();
   }
 
   private [_render]() {
