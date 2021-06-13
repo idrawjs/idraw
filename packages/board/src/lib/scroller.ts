@@ -25,11 +25,6 @@ export class Scroller {
   draw(position: TypeScreenPosition) {
     const { width, height } = this._opts;
     const wrapper = this._calc(position);
-    // TODO
-    if (this._displayCtx) {
-      console.log('scroller-wrapper ===', wrapper);
-    }
-
     const ctx = this._displayCtx;
     ctx.globalAlpha = 0.4;
     ctx.fillStyle = wrapper.color;

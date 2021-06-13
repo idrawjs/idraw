@@ -1,10 +1,12 @@
 import { TypeScreenPosition, TypeScreenSize, TypeScreenContext } from '@idraw/types';
-import { Watcher } from './util/watcher';
-import { setStyle } from './util/style';
-import Context from './util/context';
-import { TypeBoardEventArgMap } from './util/event';
-import { Scroller } from './util/scroller';
+import util from '@idraw/util';
+import { Watcher } from './lib/watcher';
+import { setStyle } from './lib/style';
+import Context from './lib/context';
+import { TypeBoardEventArgMap } from './lib/event';
+import { Scroller } from './lib/scroller';
 
+const { throttle } = util.time;
 
 const _canvas = Symbol('_canvas');
 const _displayCanvas = Symbol('_displayCanvas');
@@ -19,6 +21,7 @@ const _render = Symbol('_render');
 const _calcScreen = Symbol('_calcScreen');
 const _parsePrivateOptions = Symbol('_parsePrivateOptions');
 const _scroller = Symbol('_scroller');
+const _initEvent = Symbol('_initEvent');
 
 type Options = {
   width: number;
@@ -162,6 +165,7 @@ class Board {
       width: `${width}px`,
       height: `${height}px`,
     });
+    this[_initEvent]();
     this[_hasRendered] = true;
   }
   
@@ -172,7 +176,6 @@ class Board {
     return { ...defaultOpts, ...opts };
   }
  
-
   private [_calcScreen](): {
     size: TypeScreenSize,
     position: TypeScreenPosition,
@@ -249,6 +252,27 @@ class Board {
       size, position, deviceSize
     };
   }
+
+  private [_initEvent]() {
+    if (this[_hasRendered] === true) {
+      return;
+    }
+    if (this[_opts].canScroll === true) {
+      this.on('wheelX', throttle((deltaX) => {
+        let scrollX = this[_ctx].getTransform().scrollX;
+        let dx = scrollX - deltaX;
+        this.scrollX(dx);
+        this.draw();
+      }, 16));
+      this.on('wheelY', throttle((deltaY: number) => {
+        let scrollY = this[_ctx].getTransform().scrollY;
+        let dy = scrollY - deltaY;
+        this.scrollY(dy);
+        this.draw();
+      }, 16));
+    }
+  }
+
 }
 
 export default Board;
