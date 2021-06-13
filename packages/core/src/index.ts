@@ -89,19 +89,23 @@ class Core {
     this[_renderer].render(this[_data], this[_helper].getConfig());
   }
 
-  selectElement(index: number): void {
+  selectElement(index: number, opts?: { useMode?: boolean }): void {
     if (this[_data].elements[index]) {
       const uuid = this[_data].elements[index].uuid;
-      this[_mode] = Mode.SELECT_ELEMENT;
+      if (opts?.useMode === true) {
+        this[_mode] = Mode.SELECT_ELEMENT;
+      } else {
+        this[_mode] = Mode.NULL;
+      }
       this[_selectedUUID] = uuid;
       this.draw();
     }
   }
 
-  selectElementByUUID(uuid: string): void {
+  selectElementByUUID(uuid: string, opts?: { useMode?: boolean }): void {
     const index = this[_helper].getElementIndexByUUID(uuid);
     if (typeof index === 'number' && index >= 0) {
-      this.selectElement(index);
+      this.selectElement(index, opts);
     }
   }
 
@@ -229,7 +233,7 @@ class Core {
       this[_selectedUUID] = uuid;
     } else {
       const [index, uuid] = this[_element].isPointInElement(point, this[_data]);
-      this.selectElement(index);
+      this.selectElement(index, { useMode: true });
       if (typeof uuid === 'string' && this[_coreEvent].has('screenSelectElement')) {
         this[_coreEvent].trigger(
           'screenSelectElement', 
