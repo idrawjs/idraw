@@ -95,7 +95,7 @@ export class Scroller {
     ctx.rect(
       0, 
       this._doSize(height - scrollLineWidth), 
-      this._doSize(width), 
+      this._doSize(width - scrollLineWidth), 
       this._doSize(scrollLineWidth)
     );
     ctx.closePath();
@@ -105,41 +105,36 @@ export class Scroller {
     return false;
   }
 
-  // calcPointScroll() {}
-
+  
   calc(position: TypeScreenPosition) {
     const { width, height } = this._opts;
     const sliderMinSize = 50;
     const lineSize = scrollLineWidth;
     let xSize = 0;
     let ySize = 0;
-    if (position.left <= 0 || position.right <= 0) {
-      xSize = Math.max(
-        sliderMinSize, width - (
-          Math.abs(position.left < 0 ? position.left : 0) + Math.abs(position.right < 0 ? position.right : 0)
-        )
-      );
+    if (position.left <= 0 && position.right <= 0) {
+      xSize = Math.max(sliderMinSize, width - (Math.abs(position.left) + Math.abs(position.right)));
       if (xSize >= width) xSize = 0;
     }
     if (position.top <= 0 || position.bottom <= 0) {
-      ySize = Math.max(
-        sliderMinSize, height - (
-          Math.abs(position.top < 0 ? position.top : 0) + Math.abs(position.bottom < 0 ? position.bottom : 0)
-        )
-      );
+      ySize = Math.max(sliderMinSize, height - (Math.abs(position.top) + Math.abs(position.bottom)));
       if (ySize >= height) ySize = 0;
     }
 
     let translateX = 0;
     if (xSize > 0) {
-      translateX = width * Math.abs(position.left) / (Math.abs(position.left) + Math.abs(position.right));
+      translateX = xSize / 2 + (width - xSize) * Math.abs(position.left) / (Math.abs(position.left) + Math.abs(position.right));
       translateX = Math.min(Math.max(0, translateX - xSize / 2), width - xSize);
+      // const xUnit = this.calcScreenScrollUnit(position.left, position.right, xSize, width);
+      // translateX = translateX * xUnit;
     }
 
     let translateY = 0;
     if (ySize > 0) {
-      translateY = height * Math.abs(position.top) / (Math.abs(position.top) + Math.abs(position.bottom));
+      translateY = ySize / 2 + (height - ySize) * Math.abs(position.top) / (Math.abs(position.top) + Math.abs(position.bottom));
       translateY = Math.min(Math.max(0, translateY - ySize / 2), height - ySize);
+      // const yUnit = this.calcScreenScrollUnit(position.top, position.bottom, ySize, height);
+      // translateY = translateY * yUnit;
     }
     const scrollWrapper = {
       lineSize,
@@ -151,6 +146,8 @@ export class Scroller {
     };
     return scrollWrapper;
   }
+
+
 
   private _doSize(num: number) {
     return num * this._opts.devicePixelRatio;

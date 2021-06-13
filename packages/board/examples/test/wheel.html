@@ -67,7 +67,7 @@
       ctx.fillRect(600, 600, 200, 100);
 
       ctx.setFillStyle('#cccccc');
-      ctx.fillRect(790, 690, 200, 100);
+      ctx.fillRect(790, 790, 200, 100);
 
       ctx.setFillStyle('#000');
       ctx.fillRect(500 - 10, 450 - 10, 20, 20);
@@ -77,10 +77,16 @@
       // board.scrollY(-600);
       // board.scale(1);
 
-      const result = board.scale(1);
+      // const result = board.scale(1);
+      const result = board.scale(3);
       console.log('result =', result);
-
       board.draw();
+
+      // setTimeout(() => {
+      //   const result = board.scale(2);
+      //   console.log('result =', result);
+      //   board.draw();
+      // }, 5000)
 
     </script>
 

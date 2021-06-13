@@ -341,10 +341,15 @@ class Board {
   }
 
   private [_doMoveScroll](scrollType: 'x' | 'y', point: TypePoint) {
+    if (!scrollType) {
+      return;
+    }
+    const { position } = this[_calcScreen]();
+    const { xSize, ySize } = this[_scroller].calc(position);
     if (scrollType === 'x') {
-      this[_doScrollX](point.x, 0);
+      this[_doScrollX](point.x - xSize / 2, 0);
     } else if (scrollType === 'y') {
-      this[_doScrollY](point.y, 0);
+      this[_doScrollY](point.y - ySize / 2, 0);
     }
   }
 
