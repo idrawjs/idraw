@@ -35,6 +35,6 @@ export function initEvent(board) {
   });
 
   board.on('hover', (p) => {
-    console.log('hover', p);
+    // console.log('hover', p);
   })
 }

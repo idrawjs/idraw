@@ -41,6 +41,9 @@ type PrivateOptions = Options & {
   devicePixelRatio: number
 }
 
+type TypeCursor = 'auto' | 'move' | 'n-resize' | 'e-resize' | 's-resize' | 'w-resize'
+| 'ne-resize' | 'nw-resize' | 'se-resize' | 'sw-resize'
+
 class Board {
   private [_canvas]: HTMLCanvasElement;
   private [_displayCanvas]: HTMLCanvasElement;
@@ -154,6 +157,14 @@ class Board {
 
   getScreenInfo() {
     return this[_calcScreen]();
+  }
+
+  setCursor(cursor: TypeCursor) {
+    this[_displayCanvas].style.cursor = cursor;
+  }
+
+  resetCursor() {
+    this[_displayCanvas].style.cursor = 'auto';
   }
 
   private [_render]() {

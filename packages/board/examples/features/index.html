@@ -32,6 +32,23 @@
       <input id="scrollY" type="number" value="0"/>
     </div>
 
+    <div>
+      <select id="cursor">
+        <option value="auto">auto</option>
+        <option value="move">move</option>
+        <option value="n-resize">n-resize</option>
+        <option value="e-resize">e-resize</option>
+        <option value="s-resize">s-resize</option>
+        <option value="w-resize">w-resize</option>
+        <option value="ne-resize">ne-resize</option>
+        <option value="nw-resize">nw-resize</option>
+        <option value="se-resize">se-resize</option>
+        <option value="sw-resize">sw-resize</option>
+      </select>
+
+      <button id="reset-cursor">Reset cursor</button>
+    </div>
+
     <script src="./../../dist/index.global.js"></script>
     <script type="module" src="./main.js"></script>
   </body>

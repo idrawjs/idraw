@@ -3,6 +3,7 @@ import { drawData } from './lib/draw.js';
 import { doScale } from './lib/scale.js';
 import { doScroll } from './lib/scroll.js';
 import { initEvent } from './lib/event.js';
+import { doCursor } from './lib/action.js';
 
 const { Board } = window.iDraw; 
 
@@ -26,6 +27,7 @@ drawData(board);
 initEvent(board);
 doScale(board, conf.scale);
 doScroll(board, conf);
+doCursor(board)
 
 
 // board.scale(2);

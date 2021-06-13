@@ -36,7 +36,25 @@ function moveElement(board, idx, moveX, moveY) {
   drawData(board)
 }
 
+const cursor = document.querySelector('#cursor');
+const resetCursor = document.querySelector('#reset-cursor');
+let hasInitedCursor = false;
+function doCursor(board) {
+  if (hasInitedCursor === true) {
+    return;
+  } 
+  cursor.addEventListener('change', () => {
+    // console.log('cursor.value = ', cursor.value);
+    board.setCursor(cursor.value);
+  });
+  resetCursor.addEventListener('click', () => {
+    board.resetCursor();
+  });
+  hasInitedCursor = true;
+}
+
 export {
   isPointInElement,
   moveElement,
+  doCursor
 }
