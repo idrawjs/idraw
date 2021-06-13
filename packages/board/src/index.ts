@@ -42,7 +42,7 @@ type PrivateOptions = Options & {
 }
 
 type TypeCursor = 'auto' | 'move' | 'n-resize' | 'e-resize' | 's-resize' | 'w-resize'
-| 'ne-resize' | 'nw-resize' | 'se-resize' | 'sw-resize'
+| 'ne-resize' | 'nw-resize' | 'se-resize' | 'sw-resize' | 'grab';
 
 class Board {
   private [_canvas]: HTMLCanvasElement;
