@@ -4,7 +4,7 @@ import { Watcher } from './lib/watcher';
 import { setStyle } from './lib/style';
 import Context from './lib/context';
 import { TypeBoardEventArgMap } from './lib/event';
-import { Scroller } from './lib/scroller';
+import { Scroller, TypeScrollConfig } from './lib/scroller';
 
 const { throttle } = util.time;
 
@@ -34,6 +34,7 @@ type Options = {
   contextHeight: number;
   devicePixelRatio?: number;
   canScroll?: boolean;
+  scrollConfig?: TypeScrollConfig
 }
 
 type PrivateOptions = Options & {
@@ -67,6 +68,7 @@ class Board {
         width: opts.width,
         height: opts.height,
         devicePixelRatio: opts.devicePixelRatio || 1,
+        scrollConfig: opts.scrollConfig,
       })
     this[_render]();
   }

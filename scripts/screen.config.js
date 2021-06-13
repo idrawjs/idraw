@@ -7,7 +7,7 @@ const pageList = [
   { path: 'board/examples/test/scale-003.html', w: 600, h: 400, delay: 500 },
   { path: 'board/examples/test/scale-004.html', w: 600, h: 400, delay: 500 },
   { path: 'board/examples/test/scale-005.html', w: 600, h: 400, delay: 500 },
-  { path: 'board/examples/test/scroll.html', w: 600, h: 400, delay: 500 },
+  { path: 'board/examples/test/scroll.html', w: 700, h: 500, delay: 500 },
   { path: 'core/examples/features/rect.html', w: 600, h: 400, delay: 500 },
   { path: 'core/examples/features/text.html', w: 600, h: 400, delay: 500 },
   { path: 'core/examples/features/svg.html', w: 600, h: 400, delay: 500 },
