@@ -1,4 +1,4 @@
-import { TypeScreenPosition, TypeScreenSize, TypeScreenContext } from '@idraw/types';
+import { TypeScreenPosition, TypeScreenSize, TypeScreenContext, TypePoint } from '@idraw/types';
 import util from '@idraw/util';
 import { Watcher } from './lib/watcher';
 import { setStyle } from './lib/style';
@@ -22,6 +22,10 @@ const _calcScreen = Symbol('_calcScreen');
 const _parsePrivateOptions = Symbol('_parsePrivateOptions');
 const _scroller = Symbol('_scroller');
 const _initEvent = Symbol('_initEvent');
+const _calcScreenScroll = Symbol('_calcScreenScroll');
+const _doScrollX = Symbol('_doScrollX');
+const _doScrollY = Symbol('_doScrollY');
+const _doMoveScroll = Symbol('_doMoveScroll');
 
 type Options = {
   width: number;
@@ -258,18 +262,89 @@ class Board {
       return;
     }
     if (this[_opts].canScroll === true) {
+
       this.on('wheelX', throttle((deltaX) => {
-        let scrollX = this[_ctx].getTransform().scrollX;
-        let dx = scrollX - deltaX;
-        this.scrollX(dx);
-        this.draw();
+        this[_doScrollX](deltaX);
       }, 16));
       this.on('wheelY', throttle((deltaY: number) => {
-        let scrollY = this[_ctx].getTransform().scrollY;
-        let dy = scrollY - deltaY;
-        this.scrollY(dy);
-        this.draw();
+        this[_doScrollY](deltaY);
       }, 16));
+
+      let scrollType: 'x' | 'y' | null = null;
+      this.on('moveStart', throttle((p: TypePoint) => {
+        if (this[_scroller].isPointAtScrollX(p)) {
+          scrollType = 'x';
+        } else if (this[_scroller].isPointAtScrollY(p)) {
+          scrollType = 'y';
+        }
+      }, 16));
+
+      this.on('move', throttle((p: TypePoint) => {
+        if (scrollType) {
+          this[_doMoveScroll](scrollType, p)
+        }
+      }, 16));
+
+      this.on('moveEnd', throttle((p: TypePoint) => {
+        if (scrollType) {
+          this[_doMoveScroll](scrollType, p)
+        }
+        scrollType = null;
+      }, 16));
+    }
+  }
+
+  private [_calcScreenScroll](
+    start: number,
+    end: number,
+    sliderSize: number,
+    limitLen: number, 
+    moveDistance: number
+  ): number {
+    let scrollDistance = start;
+    let scrollLen = limitLen - sliderSize;
+    if (start <= 0 && end <= 0) {
+      scrollLen = Math.abs(start) + Math.abs(end);
+    }
+    let unit = 1;
+    if (scrollLen > 0) {
+      unit = scrollLen / (limitLen - sliderSize);
+    }
+    scrollDistance = 0 - unit * moveDistance; 
+    return scrollDistance;
+  }
+
+  private [_doScrollX](dx: number, prevScrollX?: number) {
+    const { width } = this[_opts];
+    let scrollX = prevScrollX;
+    if (!(typeof scrollX === 'number' && (scrollX > 0 || scrollX <= 0))) {
+      scrollX = this[_ctx].getTransform().scrollX
+    }
+    const { position } = this[_calcScreen]();
+    const { xSize } = this[_scroller].calc(position);
+    const moveX = this[_calcScreenScroll](position.left, position.right, xSize, width, dx);
+    this.scrollX(scrollX + moveX);
+    this.draw();
+  }
+
+  private [_doScrollY](dy: number, prevScrollY?: number) {
+    const { height } = this[_opts];
+    let scrollY = prevScrollY;
+    if (!(typeof scrollY === 'number' && (scrollY > 0 || scrollY <= 0))) {
+      scrollY = this[_ctx].getTransform().scrollY
+    }
+    const { position } = this[_calcScreen]();
+    const { ySize } = this[_scroller].calc(position);
+    const moveY = this[_calcScreenScroll](position.top, position.bottom, ySize, height, dy);
+    this.scrollY(scrollY + moveY);
+    this.draw();
+  }
+
+  private [_doMoveScroll](scrollType: 'x' | 'y', point: TypePoint) {
+    if (scrollType === 'x') {
+      this[_doScrollX](point.x, 0);
+    } else if (scrollType === 'y') {
+      this[_doScrollY](point.y, 0);
     }
   }
 

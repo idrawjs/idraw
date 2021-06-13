@@ -1,4 +1,5 @@
 import {
+  TypePoint,
   TypeScreenPosition
 } from '@idraw/types';
 
@@ -8,6 +9,7 @@ type TypeOptions = {
   devicePixelRatio: number
 };
 
+const scrollLineWidth = 16;
 
 export class Scroller {
 
@@ -24,14 +26,16 @@ export class Scroller {
 
   draw(position: TypeScreenPosition) {
     const { width, height } = this._opts;
-    const wrapper = this._calc(position);
+    const wrapper = this.calc(position);
     const ctx = this._displayCtx;
-    ctx.globalAlpha = 0.4;
-    ctx.fillStyle = wrapper.color;
+    
     if (wrapper.xSize > 0) {
+      ctx.globalAlpha = 0.2;
+      ctx.fillStyle = wrapper.color;
       // x-line
       ctx.fillRect(0, this._doSize(height - wrapper.lineSize), this._doSize(width), this._doSize(wrapper.lineSize));
 
+      ctx.globalAlpha = 1;
       // x-slider
       drawBox(ctx, {
         x: this._doSize(wrapper.translateX),
@@ -44,10 +48,13 @@ export class Scroller {
     }
 
     if (wrapper.ySize > 0) {
+      ctx.globalAlpha = 0.2;
+      ctx.fillStyle = wrapper.color;
+
       // y-line
       ctx.fillRect(this._doSize(width - wrapper.lineSize), 0, this._doSize(wrapper.lineSize), this._doSize(height));
+      
       ctx.globalAlpha = 1;
-
       // y-slider
       drawBox(ctx, {
         x: this._doSize(width - wrapper.lineSize),
@@ -64,10 +71,46 @@ export class Scroller {
     
   }
 
-  private _calc(position: TypeScreenPosition) {
+  isPointAtScrollY(p: TypePoint): boolean {
+    const { width, height } = this._opts;
+    const ctx = this._displayCtx;
+    ctx.beginPath();
+    ctx.rect(
+      this._doSize(width - scrollLineWidth), 
+      0, 
+      this._doSize(scrollLineWidth), 
+      this._doSize(height)
+    );
+    ctx.closePath();
+    if (ctx.isPointInPath(this._doSize(p.x), this._doSize(p.y))) {
+      return true;
+    } 
+    return false;
+  }
+
+  isPointAtScrollX(p: TypePoint): boolean {
+    const { width, height } = this._opts;
+    const ctx = this._displayCtx;
+    ctx.beginPath();
+    ctx.rect(
+      0, 
+      this._doSize(height - scrollLineWidth), 
+      this._doSize(width), 
+      this._doSize(scrollLineWidth)
+    );
+    ctx.closePath();
+    if (ctx.isPointInPath(this._doSize(p.x), this._doSize(p.y))) {
+      return true;
+    } 
+    return false;
+  }
+
+  // calcPointScroll() {}
+
+  calc(position: TypeScreenPosition) {
     const { width, height } = this._opts;
     const sliderMinSize = 50;
-    const lineSize = 16;
+    const lineSize = scrollLineWidth;
     let xSize = 0;
     let ySize = 0;
     if (position.left <= 0 || position.right <= 0) {
@@ -104,7 +147,7 @@ export class Scroller {
       ySize,
       translateY,
       translateX,
-      color: '#e0e0e0'
+      color: '#a0a0a0'
     };
     return scrollWrapper;
   }
