@@ -1,5 +1,6 @@
 # @idraw/core
 
+* [] Reset board's size
 * [x] Scale canvas
 * [x] Scroll canvas
 * [x] Render by requestAnimateFrame
