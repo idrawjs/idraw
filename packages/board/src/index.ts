@@ -4,7 +4,7 @@ import { Watcher } from './lib/watcher';
 import { setStyle } from './lib/style';
 import Context from './lib/context';
 import { TypeBoardEventArgMap } from './lib/event';
-import { Scroller } from './lib/scroller';
+import { Scroller, TypeScrollConfig } from './lib/scroller';
 
 const { throttle } = util.time;
 
@@ -34,11 +34,15 @@ type Options = {
   contextHeight: number;
   devicePixelRatio?: number;
   canScroll?: boolean;
+  scrollConfig?: TypeScrollConfig
 }
 
 type PrivateOptions = Options & {
   devicePixelRatio: number
 }
+
+type TypeCursor = 'auto' | 'move' | 'n-resize' | 'e-resize' | 's-resize' | 'w-resize'
+| 'ne-resize' | 'nw-resize' | 'se-resize' | 'sw-resize' | 'grab';
 
 class Board {
   private [_canvas]: HTMLCanvasElement;
@@ -67,6 +71,7 @@ class Board {
         width: opts.width,
         height: opts.height,
         devicePixelRatio: opts.devicePixelRatio || 1,
+        scrollConfig: opts.scrollConfig,
       })
     this[_render]();
   }
@@ -152,6 +157,14 @@ class Board {
 
   getScreenInfo() {
     return this[_calcScreen]();
+  }
+
+  setCursor(cursor: TypeCursor) {
+    this[_displayCanvas].style.cursor = cursor;
+  }
+
+  resetCursor() {
+    this[_displayCanvas].style.cursor = 'auto';
   }
 
   private [_render]() {

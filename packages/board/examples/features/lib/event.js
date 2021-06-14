@@ -33,4 +33,8 @@ export function initEvent(board) {
   board.on('scrollX', (num) => {
     console.log('on("scrollX") = ', num);
   });
+
+  board.on('hover', (p) => {
+    // console.log('hover', p);
+  })
 }

@@ -28,6 +28,7 @@ export class Watcher {
 
   _initEvent(): void {
     const canvas = this._canvas;
+    canvas.addEventListener('mousemove', this._listenHover.bind(this), true);
     canvas.addEventListener('mousedown', this._listenMoveStart.bind(this), true);
     canvas.addEventListener('mousemove', this._listenMove.bind(this), true);
     canvas.addEventListener('mouseup', this._listenMoveEnd.bind(this), true);
@@ -37,14 +38,17 @@ export class Watcher {
     canvas.addEventListener('touchstart', this._listenMoveStart.bind(this), true);
     canvas.addEventListener('touchmove', this._listenMove.bind(this), true);
     canvas.addEventListener('touchend', this._listenMoveEnd.bind(this), true);
+  }
 
-    // const mouseupEvent = new MouseEvent('mouseup');
-    // document.querySelector('body')?.addEventListener('mousemove', (e) => {
-    //   // @ts-ignore
-    //   if (e && e.path && e.path[0] !== canvas) {
-    //     canvas.dispatchEvent(mouseupEvent);
-    //   }
-    // }, false)
+  _listenHover(e: MouseEvent|TouchEvent): void {
+    e.preventDefault();
+    const p = this._getPosition(e);
+    if (this._isVaildPoint(p)) {
+      if (this._event.has('hover')) {
+        this._event.trigger('hover', p);
+      }
+    }
+    this._isMoving = true;
   }
 
   _listenMoveStart(e: MouseEvent|TouchEvent): void {

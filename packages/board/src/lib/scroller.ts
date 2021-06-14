@@ -2,26 +2,44 @@ import {
   TypePoint,
   TypeScreenPosition
 } from '@idraw/types';
+import util from '@idraw/util';
 
 type TypeOptions = {
   width: number,
   height: number,
-  devicePixelRatio: number
+  devicePixelRatio: number,
+  scrollConfig?: TypeScrollConfig,
 };
 
-const scrollLineWidth = 16;
+type TypePrivateOptions = TypeOptions & {
+  width: number,
+  height: number,
+  devicePixelRatio: number,
+  scrollConfig: TypeScrollConfig,
+}
+
+
+const defaultScrollConfig = {
+  lineWidth: 12,
+  color: '#a0a0a0'
+}
+
+export type TypeScrollConfig = {
+  color: string,
+  lineWidth: number
+}
 
 export class Scroller {
 
   private _displayCtx: CanvasRenderingContext2D;
-  private _opts: TypeOptions;
+  private _opts: TypePrivateOptions;
 
   constructor(
     ctx: CanvasRenderingContext2D,
     opts: TypeOptions
   ) {
     this._displayCtx = ctx;
-    this._opts = opts;
+    this._opts = this._getOpts(opts);
   }
 
   draw(position: TypeScreenPosition) {
@@ -72,13 +90,13 @@ export class Scroller {
   }
 
   isPointAtScrollY(p: TypePoint): boolean {
-    const { width, height } = this._opts;
+    const { width, height, scrollConfig } = this._opts;
     const ctx = this._displayCtx;
     ctx.beginPath();
     ctx.rect(
-      this._doSize(width - scrollLineWidth), 
+      this._doSize(width - scrollConfig.lineWidth), 
       0, 
-      this._doSize(scrollLineWidth), 
+      this._doSize(scrollConfig.lineWidth), 
       this._doSize(height)
     );
     ctx.closePath();
@@ -89,14 +107,14 @@ export class Scroller {
   }
 
   isPointAtScrollX(p: TypePoint): boolean {
-    const { width, height } = this._opts;
+    const { width, height, scrollConfig } = this._opts;
     const ctx = this._displayCtx;
     ctx.beginPath();
     ctx.rect(
       0, 
-      this._doSize(height - scrollLineWidth), 
-      this._doSize(width - scrollLineWidth), 
-      this._doSize(scrollLineWidth)
+      this._doSize(height - scrollConfig.lineWidth), 
+      this._doSize(width - scrollConfig.lineWidth), 
+      this._doSize(scrollConfig.lineWidth)
     );
     ctx.closePath();
     if (ctx.isPointInPath(this._doSize(p.x), this._doSize(p.y))) {
@@ -107,9 +125,9 @@ export class Scroller {
 
   
   calc(position: TypeScreenPosition) {
-    const { width, height } = this._opts;
-    const sliderMinSize = 50;
-    const lineSize = scrollLineWidth;
+    const { width, height, scrollConfig } = this._opts;
+    const sliderMinSize = scrollConfig.lineWidth * 2.5;
+    const lineSize = scrollConfig.lineWidth;
     let xSize = 0;
     let ySize = 0;
     if (position.left <= 0 && position.right <= 0) {
@@ -142,15 +160,30 @@ export class Scroller {
       ySize,
       translateY,
       translateX,
-      color: '#a0a0a0'
+      color: this._opts.scrollConfig.color
     };
     return scrollWrapper;
   }
 
-
-
   private _doSize(num: number) {
     return num * this._opts.devicePixelRatio;
+  }
+
+ 
+  private _getOpts(opts: TypeOptions): TypePrivateOptions {
+    const options =  { ...{ scrollConfig: defaultScrollConfig }, ...opts};
+    if (!options.scrollConfig) {
+      options.scrollConfig = defaultScrollConfig;
+    }
+    if (!(options.scrollConfig.lineWidth > 0)) {
+      options.scrollConfig.lineWidth = defaultScrollConfig.lineWidth;
+    }
+    options.scrollConfig.lineWidth = Math.max(options.scrollConfig.lineWidth, defaultScrollConfig.lineWidth);
+
+    if (util.color.isColorStr(options.scrollConfig.color) !== true) {
+      options.scrollConfig.color = options.scrollConfig.color;
+    }
+    return options;
   }
 }
 
