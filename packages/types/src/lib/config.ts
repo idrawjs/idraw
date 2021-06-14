@@ -4,6 +4,11 @@ type TypeConfig = {
     dotSize?: number,
     lineWidth?: number,
     lineDash?: number[],
+  },
+  scrollWrapper?: {
+    use?: boolean,
+    color?: string,
+    lineWidth?: number,
   }
 }
 
@@ -13,7 +18,7 @@ type TypeConfigStrict = TypeConfig & {
     dotSize: number,
     lineWidth: number,
     lineDash: number[],
-  }
+  },
 }
 
 export {

@@ -66,7 +66,15 @@ class Core {
     this[_data] = { elements: [] };
     this[_opts] = opts;
     this[_config] = mergeConfig(config || {});
-    this[_board] = new Board(mount, this[_opts]);
+
+    this[_board] = new Board(mount, {
+      ...this[_opts],
+      canScroll: config?.scrollWrapper?.use,
+      scrollConfig: {
+        color: config?.scrollWrapper?.color || '#a0a0a0',
+        lineWidth: config?.scrollWrapper?.lineWidth || 12,
+      }
+    });
     this[_renderer] = new Renderer(this[_board]); 
     this[_element] = new Element(this[_board].getContext());
     this[_helper] = new Helper(this[_board], this[_config]);

@@ -2,6 +2,7 @@ import {
   TypePoint,
   TypeScreenPosition
 } from '@idraw/types';
+import util from '@idraw/util';
 
 type TypeOptions = {
   width: number,
@@ -172,10 +173,16 @@ export class Scroller {
   private _getOpts(opts: TypeOptions): TypePrivateOptions {
     const options =  { ...{ scrollConfig: defaultScrollConfig }, ...opts};
     if (!options.scrollConfig) {
-      options.scrollConfig = {...{}, ...defaultScrollConfig}
+      options.scrollConfig = defaultScrollConfig;
     }
-
+    if (!(options.scrollConfig.lineWidth > 0)) {
+      options.scrollConfig.lineWidth = defaultScrollConfig.lineWidth;
+    }
     options.scrollConfig.lineWidth = Math.max(options.scrollConfig.lineWidth, defaultScrollConfig.lineWidth);
+
+    if (util.color.isColorStr(options.scrollConfig.color) !== true) {
+      options.scrollConfig.color = options.scrollConfig.color;
+    }
     return options;
   }
 }
