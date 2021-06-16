@@ -1,14 +1,17 @@
 // import { TypePaintData } from './paint';
 
-type TypeElement<T extends keyof TypeElemDesc> = {
-  name?: string;
-  uuid: string;
-  type: T;
+type TypeElementAttrs = {
   x: number;
   y: number;
   w: number;
   h: number;
-  angle?: number;
+  angle: number;
+}
+
+type TypeElement<T extends keyof TypeElemDesc> = TypeElementAttrs & {
+  name?: string;
+  uuid: string;
+  type: T;
   desc: TypeElemDesc[T];
 }
 
@@ -21,14 +24,14 @@ type TypeElemBoxDesc = {
 type TypeElemDesc = {
   text: TypeElemDescText,
   rect: TypeElemDescRect,
-  circle: TypeElemDescCircle,
+  // circle: TypeElemDescCircle,
   image: TypeElemDescImage,
   svg: TypeElemDescSVG,
   // paint: TypeElemDescPaint,
 }
 
 type TypeElemDescRect = {
-  color: string;
+  color?: string;
 } & TypeElemBoxDesc
 
 type TypeElemDescText = {
@@ -41,11 +44,11 @@ type TypeElemDescText = {
   textAlign?: 'center' | 'left' | 'right';
 } & TypeElemBoxDesc
 
-type TypeElemDescCircle = {
-  r: number;
-  x: number;
-  y: number;
-}
+// type TypeElemDescCircle = {
+//   r: number;
+//   x: number;
+//   y: number;
+// }
 
 type TypeElemDescImage = {
   src: string;
@@ -58,9 +61,10 @@ type TypeElemDescSVG = {
 // type TypeElemDescPaint = TypePaintData
 
 export {
+  TypeElementAttrs,
   TypeElemDescText,
   TypeElemDescRect,
-  TypeElemDescCircle,
+  // TypeElemDescCircle,
   TypeElemDescImage,
   TypeElemDescSVG,
   TypeElemDesc,

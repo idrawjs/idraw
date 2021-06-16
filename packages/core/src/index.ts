@@ -13,6 +13,8 @@ import { Helper } from './lib/helper';
 import { mergeConfig } from './lib/config';
 import { CoreEvent, TypeCoreEventArgMap } from './lib/core-event';
 import { parseData } from './lib/parse';
+import is from './lib/is';
+import check from './lib/check';
 
 const { time } = util;
 const { deepClone } = util.data;
@@ -57,6 +59,9 @@ class Core {
   private [_selectedUUID]: string | null = null;
   private [_prevPoint]: TypePoint | null = null;
   private [_selectedDotDirection]: TypeHelperWrapperDotDirection | null = null;
+
+  static is: any = is;
+  static check: any = check;
 
   constructor(mount: HTMLDivElement, opts: TypeCoreOptions, config?: TypeConfig) {
     this[_data] = { elements: [] };
