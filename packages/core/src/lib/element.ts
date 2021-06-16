@@ -9,6 +9,7 @@ import {
 import util from '@idraw/util';
 import { rotateElement } from './transform';
 import { calcRadian, calcElementCenter, parseRadianToAngle } from './calculate';
+import { limitAngle, limitNum } from './value';
 
 const { createUUID } = util.uuid;
 
@@ -167,9 +168,9 @@ export class Element {
     }
 
     return {
-      width: elem.w,
-      height: elem.h,
-      angle: elem.angle || 0,
+      width: limitNum(elem.w),
+      height: limitNum(elem.h),
+      angle: limitAngle(elem.angle || 0),
     }
   }
 

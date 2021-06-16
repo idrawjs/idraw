@@ -2,7 +2,7 @@ import {
   TypeData, TypePoint, TypeBoardSizeOptions,
   TypeHelperWrapperDotDirection,
   TypeConfig, TypeConfigStrict,
-  TypeElement, TypeElemDesc,
+  TypeElement, TypeElemDesc, TypeContext,
   TypeCoreOptions,  TypeScreenContext,
 }  from '@idraw/types';
 import Board from '@idraw/board';
@@ -213,6 +213,10 @@ class Core {
 
   off<T extends keyof TypeCoreEventArgMap >(key: T, callback: (p: TypeCoreEventArgMap[T]) => void) {
     this[_coreEvent].off(key, callback);
+  }
+
+  __getBoardContext(): TypeContext {
+    return this[_board].getContext();
   }
 
   __getDisplayContext(): CanvasRenderingContext2D {

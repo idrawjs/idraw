@@ -1,6 +1,6 @@
 # @idraw/core
 
-* [] Reset board's size
+* [x] Reset board's size
 * [] Keep two decimals
 * [] Limit element's angle between -360~360 deg
 * [] Check if the element and elements' attribute of desc is supported
