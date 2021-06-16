@@ -23,18 +23,50 @@
 
     <script src="./../../dist/index.global.js"></script>
     <script type="module">
-      import data from './../features/lib/data/rect.js';
+      import { getData } from './data.js';
       const { Core } = window.iDraw;
+      const data = getData();
       const core = new Core(
         document.querySelector('#mount'), {
           width: 600,
           height: 400,
-          contextWidth: 600,
-          contextHeight: 400,
-          devicePixelRatio: 4
+          contextWidth: 1000,
+          contextHeight: 900,
+          devicePixelRatio: 4,
+        }, {
+          scrollWrapper: {
+            use: true,
+          }
         });
       core.initData(data);
+      core.addElement({
+        name: 'text-001',
+        x: 790,
+        y: 790,
+        w: 200,
+        h: 100,
+        type: 'text',
+        desc: {
+          fontSize: 20,
+          color: '#333333',
+          text: '生活就像海洋，只有意志坚强的人，才能到达彼岸。',
+          fontFamily: '',
+          borderRadius: 20,
+          borderWidth: 2,
+          borderColor: '#bd0b64',
+        }
+      })
+      core.scale(1);
       core.draw();
+
+      core.resetSize({
+        width: 300,
+        height: 200,
+        contextWidth: 990,
+        contextHeight: 890,
+        devicePixelRatio: 3,
+      });
+      core.scale(0.5);
     </script>
   </body>
 </html>

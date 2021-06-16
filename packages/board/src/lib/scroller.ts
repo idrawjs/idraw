@@ -1,6 +1,7 @@
 import {
   TypePoint,
-  TypeScreenPosition
+  TypeScreenPosition,
+  TypeBoardScrollConfig,
 } from '@idraw/types';
 import util from '@idraw/util';
 
@@ -8,14 +9,14 @@ type TypeOptions = {
   width: number,
   height: number,
   devicePixelRatio: number,
-  scrollConfig?: TypeScrollConfig,
+  scrollConfig?: TypeBoardScrollConfig,
 };
 
 type TypePrivateOptions = TypeOptions & {
   width: number,
   height: number,
   devicePixelRatio: number,
-  scrollConfig: TypeScrollConfig,
+  scrollConfig: TypeBoardScrollConfig,
 }
 
 
@@ -24,10 +25,6 @@ const defaultScrollConfig = {
   color: '#a0a0a0'
 }
 
-export type TypeScrollConfig = {
-  color: string,
-  lineWidth: number
-}
 
 export class Scroller {
 
@@ -87,6 +84,10 @@ export class Scroller {
 
     ctx.globalAlpha = 1;
     
+  }
+
+  resetSize(opts: { width: number, height: number, devicePixelRatio: number }) {
+    this._opts = {...this._opts, ...opts};
   }
 
   isPointAtScrollY(p: TypePoint): boolean {

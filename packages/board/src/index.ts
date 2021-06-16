@@ -1,43 +1,19 @@
-import { TypeScreenPosition, TypeScreenSize, TypeScreenContext, TypePoint } from '@idraw/types';
+import { TypeScreenPosition, TypeScreenSize, TypeScreenContext, TypePoint,  TypeBoardOptions, TypeBoardSizeOptions, } from '@idraw/types';
 import util from '@idraw/util';
 import { Watcher } from './lib/watcher';
 import { setStyle } from './lib/style';
 import Context from './lib/context';
 import { TypeBoardEventArgMap } from './lib/event';
-import { Scroller, TypeScrollConfig } from './lib/scroller';
+import { Scroller } from './lib/scroller';
+import {
+  _canvas, _displayCanvas, _mount, _opts, _hasRendered, _ctx, _displayCtx,
+  _originCtx, _watcher, _render, _calcScreen, _parsePrivateOptions, _scroller,
+  _initEvent, _calcScreenScroll, _doScrollX, _doScrollY, _doMoveScroll, _resetContext,
+} from './names';
 
 const { throttle } = util.time;
 
-const _canvas = Symbol('_canvas');
-const _displayCanvas = Symbol('_displayCanvas');
-const _mount = Symbol('_mount');
-const _opts = Symbol('_opts');
-const _hasRendered = Symbol('_hasRendered');
-const _ctx = Symbol('_ctx');
-const _displayCtx = Symbol('_displayCtx');
-const _originCtx = Symbol('_originCtx');
-const _watcher = Symbol('_watcher');
-const _render = Symbol('_render');
-const _calcScreen = Symbol('_calcScreen');
-const _parsePrivateOptions = Symbol('_parsePrivateOptions');
-const _scroller = Symbol('_scroller');
-const _initEvent = Symbol('_initEvent');
-const _calcScreenScroll = Symbol('_calcScreenScroll');
-const _doScrollX = Symbol('_doScrollX');
-const _doScrollY = Symbol('_doScrollY');
-const _doMoveScroll = Symbol('_doMoveScroll');
-
-type Options = {
-  width: number;
-  height: number;
-  contextWidth: number;
-  contextHeight: number;
-  devicePixelRatio?: number;
-  canScroll?: boolean;
-  scrollConfig?: TypeScrollConfig
-}
-
-type PrivateOptions = Options & {
+type PrivateOptions = TypeBoardOptions & {
   devicePixelRatio: number
 }
 
@@ -56,7 +32,7 @@ class Board {
   private [_watcher]: Watcher;
   private [_scroller]: Scroller;
 
-  constructor(mount: HTMLDivElement, opts: Options) {
+  constructor(mount: HTMLDivElement, opts: TypeBoardOptions) {
     this[_mount] = mount;
     this[_canvas] = document.createElement('canvas');
     this[_displayCanvas] = document.createElement('canvas');
@@ -167,10 +143,28 @@ class Board {
     this[_displayCanvas].style.cursor = 'auto';
   }
 
+  resetSize(opts: TypeBoardSizeOptions) {
+    this[_opts] = { ...this[_opts], ...opts };
+    this[_resetContext]();
+    this[_ctx].resetSize(opts)
+    this[_scroller].resetSize({
+      width: this[_opts].width,
+      height: this[_opts].height,
+      devicePixelRatio: this[_opts].devicePixelRatio
+    });
+    this.draw();
+  }
+
   private [_render]() {
     if (this[_hasRendered] === true) {
       return;
     }
+    this[_resetContext]();
+    this[_initEvent]();
+    this[_hasRendered] = true;
+  }
+
+  private [_resetContext] () {
     const { width, height, contextWidth, contextHeight, devicePixelRatio } = this[_opts];
     this[_canvas].width = contextWidth * devicePixelRatio;
     this[_canvas].height = contextHeight * devicePixelRatio;
@@ -182,22 +176,16 @@ class Board {
       width: `${width}px`,
       height: `${height}px`,
     });
-    this[_initEvent]();
-    this[_hasRendered] = true;
   }
   
-  private [_parsePrivateOptions](opts: Options): PrivateOptions {
+  private [_parsePrivateOptions](opts: TypeBoardOptions): PrivateOptions {
     const defaultOpts = {
       devicePixelRatio: 1,
     };
     return { ...defaultOpts, ...opts };
   }
  
-  private [_calcScreen](): {
-    size: TypeScreenSize,
-    position: TypeScreenPosition,
-    deviceSize: TypeScreenSize,
-  } {
+  private [_calcScreen](): { size: TypeScreenSize, position: TypeScreenPosition, deviceSize: TypeScreenSize, } {
     const scaleRatio = this[_ctx].getTransform().scale;
     const { 
       width, height, contextWidth, contextHeight,
@@ -307,12 +295,7 @@ class Board {
     }
   }
 
-  private [_calcScreenScroll](
-    start: number,
-    end: number,
-    sliderSize: number,
-    limitLen: number, 
-    moveDistance: number
+  private [_calcScreenScroll]( start: number, end: number, sliderSize: number, limitLen: number, moveDistance: number
   ): number {
     let scrollDistance = start;
     let scrollLen = limitLen - sliderSize;

@@ -1,13 +1,9 @@
 import {
-  TypeData,
-  TypePoint,
+  TypeData, TypePoint, TypeBoardSizeOptions,
   TypeHelperWrapperDotDirection,
-  TypeConfig,
-  TypeConfigStrict,
-  TypeElement,
-  TypeElemDesc,
-  TypeCoreOptions,
-  TypeScreenContext,
+  TypeConfig, TypeConfigStrict,
+  TypeElement, TypeElemDesc,
+  TypeCoreOptions,  TypeScreenContext,
 }  from '@idraw/types';
 import Board from '@idraw/board';
 import util from '@idraw/util';
@@ -95,6 +91,12 @@ class Core {
       scrollY: transfrom.scrollY,
     });
     this[_renderer].render(this[_data], this[_helper].getConfig());
+  }
+
+  resetSize(opts: TypeBoardSizeOptions) {
+    this[_opts] = { ...this[_opts], ...opts };
+    this[_board].resetSize(opts);
+    this.draw();
   }
 
   selectElement(index: number, opts?: { useMode?: boolean }): void {
