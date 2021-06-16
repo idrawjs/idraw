@@ -1,3 +1,4 @@
+
 type TypeCoreOptions = {
   width: number;
   height: number;

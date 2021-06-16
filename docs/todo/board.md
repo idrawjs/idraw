@@ -1,3 +1,3 @@
 # @idraw/board
 
-* [] Reset board's size
+* [x] Reset board's size
