@@ -1,4 +1,4 @@
-import { TypeContext } from '@idraw/types';
+import { TypeContext, TypeBoardSizeOptions } from '@idraw/types';
 
 type Options = {
   width: number;
@@ -37,6 +37,10 @@ class Context implements TypeContext {
       scrollX: 0,
       scrollY: 0,
     };
+  }
+
+  resetSize(opts: TypeBoardSizeOptions) {
+    this._opts = {...this._opts, ...opts}
   }
 
   calcDeviceNum(num: number): number {
