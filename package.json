@@ -11,6 +11,7 @@
     "init": "lerna bootstrap --npm-client=cnpm",
     "clear": "rm -rf ./packages/*/dist/ & rm -rf ./packages/*/node_modules/",
     "jest": "jest --config jest.config.js",
+    "cover": "jest --config jest.cover.js",
     "beforetest": "lerna bootstrap --no-ci && npm run build",
     "test": "npm run e2e && npm run jest",
     "serve": "http-server ./",
