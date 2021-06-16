@@ -1,9 +1,7 @@
 
-import { TypeElementAttrs} from '@idraw/types';
-import util from '@idraw/util';
+import { TypeElementAttrs } from '@idraw/types';
 import is from './is';
 
-const { isColorStr } = util.color;
 
 function attrs(
   attrs: TypeElementAttrs
@@ -22,10 +20,10 @@ function rectDesc(
   desc: any
 ): boolean {
   const { borderColor, borderRadius, borderWidth, color } = desc;
-  if (typeof borderColor === 'string' && !isColorStr(color)) {
+  if (typeof borderColor === 'string' && !is.color(color)) {
     return false;
   }
-  if (typeof borderColor === 'string' && !isColorStr(borderColor)) {
+  if (typeof borderColor === 'string' && !is.color(borderColor)) {
     return false;
   }
   if (typeof borderRadius === 'number' && !is.number(borderRadius)) {
@@ -41,5 +39,6 @@ const check = {
   attrs,
   rectDesc,
 }
+ 
 
 export default check;

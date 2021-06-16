@@ -60,8 +60,8 @@ class Core {
   private [_prevPoint]: TypePoint | null = null;
   private [_selectedDotDirection]: TypeHelperWrapperDotDirection | null = null;
 
-  static is = is;
-  static check = check;
+  static is: any = is;
+  static check: any = check;
 
   constructor(mount: HTMLDivElement, opts: TypeCoreOptions, config?: TypeConfig) {
     this[_data] = { elements: [] };

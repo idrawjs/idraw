@@ -24,7 +24,7 @@ type TypeElemBoxDesc = {
 type TypeElemDesc = {
   text: TypeElemDescText,
   rect: TypeElemDescRect,
-  circle: TypeElemDescCircle,
+  // circle: TypeElemDescCircle,
   image: TypeElemDescImage,
   svg: TypeElemDescSVG,
   // paint: TypeElemDescPaint,
@@ -44,11 +44,11 @@ type TypeElemDescText = {
   textAlign?: 'center' | 'left' | 'right';
 } & TypeElemBoxDesc
 
-type TypeElemDescCircle = {
-  r: number;
-  x: number;
-  y: number;
-}
+// type TypeElemDescCircle = {
+//   r: number;
+//   x: number;
+//   y: number;
+// }
 
 type TypeElemDescImage = {
   src: string;
@@ -64,7 +64,7 @@ export {
   TypeElementAttrs,
   TypeElemDescText,
   TypeElemDescRect,
-  TypeElemDescCircle,
+  // TypeElemDescCircle,
   TypeElemDescImage,
   TypeElemDescSVG,
   TypeElemDesc,
