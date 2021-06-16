@@ -3,8 +3,8 @@ import {
   TypePoint,
   TypeData,
   TypeHelperWrapperDotDirection,
-  // TypeElement,
-  // TypeElemDesc,
+  TypeElement,
+  TypeElemDesc,
 } from '@idraw/types';
 import util from '@idraw/util';
 import { rotateElement } from './transform';
@@ -74,6 +74,7 @@ export class Element {
     const moveY = point.y - prevPoint.y;
     data.elements[index].x += (moveX / scale);
     data.elements[index].y += (moveY / scale);
+    this.limitElementAttrs(data.elements[index]);
   }
 
   transformElement(
@@ -167,6 +168,8 @@ export class Element {
       }
     }
 
+    this.limitElementAttrs(elem);
+
     return {
       width: limitNum(elem.w),
       height: limitNum(elem.h),
@@ -183,6 +186,14 @@ export class Element {
       }
     }
     return idx;
+  }
+
+  limitElementAttrs(elem: TypeElement<keyof TypeElemDesc>) {
+    elem.x = limitNum(elem.x);
+    elem.y = limitNum(elem.y);
+    elem.w = limitNum(elem.w);
+    elem.h = limitNum(elem.h);
+    elem.angle = limitAngle(elem.angle || 0);
   }
   
 }
