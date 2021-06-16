@@ -1,14 +1,17 @@
 // import { TypePaintData } from './paint';
 
-type TypeElement<T extends keyof TypeElemDesc> = {
-  name?: string;
-  uuid: string;
-  type: T;
+type TypeElementAttrs = {
   x: number;
   y: number;
   w: number;
   h: number;
-  angle?: number;
+  angle: number;
+}
+
+type TypeElement<T extends keyof TypeElemDesc> = TypeElementAttrs & {
+  name?: string;
+  uuid: string;
+  type: T;
   desc: TypeElemDesc[T];
 }
 
@@ -28,7 +31,7 @@ type TypeElemDesc = {
 }
 
 type TypeElemDescRect = {
-  color: string;
+  color?: string;
 } & TypeElemBoxDesc
 
 type TypeElemDescText = {
@@ -58,6 +61,7 @@ type TypeElemDescSVG = {
 // type TypeElemDescPaint = TypePaintData
 
 export {
+  TypeElementAttrs,
   TypeElemDescText,
   TypeElemDescRect,
   TypeElemDescCircle,
