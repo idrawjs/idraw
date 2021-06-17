@@ -14,13 +14,13 @@ function renderElemens(core) {
   const data = core.getData();
   const elems = data.elements;
   const items = [];
-  for (let i = elems.length - 1; i >= 0; i --) {
+  for (let i = 0; i < elems.length; i ++) {
     const ele = elems[i];
     items.push(`
     <div class="elem-item">
       <span class="elem-item-name" data-elem-name="${ele.uuid || ''}">${ele.name || 'Unnamed'}</span>
-      <span class="elem-item-btn ${i === elems.length - 1 ? 'btn-hidden' : ''}" data-elem-btn-up="${ele.uuid || ''}">Up</span>
-      <span class="elem-item-btn ${i === 0 ? 'btn-hidden' : ''} " data-elem-btn-down="${ele.uuid || ''}">Down</span>
+      <span class="elem-item-btn ${i === 0 ? 'btn-hidden' : ''}" data-elem-btn-up="${ele.uuid || ''}">Up</span>
+      <span class="elem-item-btn ${i === elems.length - 1 ? 'btn-hidden' : ''}" data-elem-btn-down="${ele.uuid || ''}">Down</span>
     </div>
     `);
   }
