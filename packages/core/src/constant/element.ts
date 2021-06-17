@@ -1,6 +1,10 @@
-export const elementTypes = {
-  'text': true,
-  'rect': true,
-  'image': true,
-  'svg': true,
+
+const elementTypes = {
+  'text': {}, // TODO
+  'rect': {}, // TODO
+  'image': {}, // TODO
+  'svg': {}, // TODO
 }
+
+export const elementNames = Object.keys(elementTypes);
+

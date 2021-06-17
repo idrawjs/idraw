@@ -1,5 +1,5 @@
 import { TypeData, TypeElement, TypeElemDesc } from '@idraw/types';
-import { elementTypes } from './../constant/element';
+import { elementNames } from './../constant/element';
 
 export function parseData(data: any): TypeData {
   const result: TypeData = {
@@ -24,7 +24,7 @@ function isElement(
   if (!(isNumber(elem.x) && isNumber(elem.y) && isNumber(elem.w) && isNumber(elem.h))) {
     return false;
   }
-  if (!(typeof elem.type === 'string' && Object.keys(elementTypes).includes(elem.type))) {
+  if (!(typeof elem.type === 'string' && elementNames.includes(elem.type))) {
     return false;
   }
   return true;
