@@ -74,7 +74,6 @@ function fontFamily(value: any) {
   return typeof value === 'string' && value.length > 0;
 }
 
-
 const is = {
   x, y, w, h, angle, number,
   borderWidth, borderRadius, color,

@@ -32,7 +32,10 @@ export function drawContext(
   if (typeof data.bgColor === 'string' && isColorStr(data.bgColor)) {
     drawBgColor(ctx, data.bgColor);
   }
-  for (let i = 0; i < data.elements.length; i++) {
+  if (!(data.elements.length > 0)) {
+    return;
+  }
+  for (let i = data.elements.length - 1; i >= 0; i--) {
     const elem = data.elements[i];
     switch (elem.type) {
       case 'rect': {

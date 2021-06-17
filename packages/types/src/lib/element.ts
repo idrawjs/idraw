@@ -39,7 +39,7 @@ type TypeElemDescText = {
   color: string;
   fontSize: number;
   lineHeight?: number;
-  fontWeight?: string;
+  // fontWeight?: string;
   fontFamily?: string;
   textAlign?: 'center' | 'left' | 'right';
 } & TypeElemBoxDesc

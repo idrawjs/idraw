@@ -124,7 +124,7 @@ class Core {
     }
   }
 
-  moveUpElement(uuid: string): void {
+  moveDownElement(uuid: string): void {
     const index = this[_helper].getElementIndexByUUID(uuid);
     if (typeof index === 'number' && index >= 0 && index < this[_data].elements.length - 1) {
       const temp = this[_data].elements[index];
@@ -135,7 +135,7 @@ class Core {
     this.draw();
   }
 
-  moveDownElement(uuid: string): void {
+  moveUpElement(uuid: string): void {
     const index = this[_helper].getElementIndexByUUID(uuid);
     if (typeof index === 'number' && index > 0 && index < this[_data].elements.length) {
       const temp = this[_data].elements[index];
@@ -198,7 +198,7 @@ class Core {
   addElement(elem: TypeElement<keyof TypeElemDesc>) {
     const _elem = deepClone(elem);
     _elem.uuid = createUUID();
-    this[_data].elements.push(_elem);
+    this[_data].elements.unshift(_elem);
     this._emitChangeData();
     this.draw();
   }
