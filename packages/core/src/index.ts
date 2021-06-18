@@ -43,6 +43,15 @@ const _prevPoint = Symbol('_prevPoint');
 const _selectedDotDirection = Symbol('_selectedDotDirection');
 const _coreEvent = Symbol('_coreEvent');
 const _mapper = Symbol('_mapper');
+const _initEvent = Symbol('_initEvent');
+const _handlePoint = Symbol('_handlePoint');
+const _handleMoveStart = Symbol('_handleMoveStart');
+const _handleMove = Symbol('_handleMove');
+const _handleMoveEnd = Symbol('_handleMoveEnd');
+const _dragElement = Symbol('_dragElement');
+const _transfromElement = Symbol('_transfromElement');
+const _emitChangeScreen = Symbol('_emitChangeScreen');
+const _emitChangeData = Symbol('_emitChangeData');
 
 class Core {
 
@@ -83,7 +92,7 @@ class Core {
     this[_element] = new Element(this[_board].getContext());
     this[_helper] = new Helper(this[_board], this[_config]);
     this[_mapper] = new Mapper(this[_board]);
-    this._initEvent();
+    this[_initEvent]();
     this[_hasInited] = true;
   }
 
@@ -135,7 +144,7 @@ class Core {
       this[_data].elements[index] = this[_data].elements[index + 1];
       this[_data].elements[index + 1] = temp;
     }
-    this._emitChangeData();
+    this[_emitChangeData]();
     this.draw();
   }
 
@@ -146,25 +155,25 @@ class Core {
       this[_data].elements[index] = this[_data].elements[index - 1];
       this[_data].elements[index - 1] = temp;
     }
-    this._emitChangeData();
+    this[_emitChangeData]();
     this.draw();
   }
 
   scale(ratio: number): TypeScreenContext {
     const screen = this[_board].scale(ratio);
-    this._emitChangeScreen();
+    this[_emitChangeScreen]();
     return screen;
   }
 
   scrollX(x: number): TypeScreenContext {
     const screen = this[_board].scrollX(x);
-    this._emitChangeScreen();
+    this[_emitChangeScreen]();
     return screen;
   }
 
   scrollY(y: number): TypeScreenContext {
     const screen = this[_board].scrollY(y);
-    this._emitChangeScreen();
+    this[_emitChangeScreen]();
     return screen;
   }
 
@@ -177,7 +186,7 @@ class Core {
       return;
     }
     this.setData(data);
-    this._emitChangeData();
+    this[_emitChangeData]();
     this[_hasInitedData] = true;
   }
 
@@ -195,7 +204,7 @@ class Core {
         break;
       }
     }
-    this._emitChangeData();
+    this[_emitChangeData]();
     this.draw();
   }
 
@@ -203,7 +212,7 @@ class Core {
     const _elem = deepClone(elem);
     _elem.uuid = createUUID();
     this[_data].elements.unshift(_elem);
-    this._emitChangeData();
+    this[_emitChangeData]();
     this.draw();
   }
 
@@ -211,7 +220,7 @@ class Core {
     const index = this[_element].getElementIndex(this[_data], uuid);
     if (index >= 0) {
       this[_data].elements.splice(index, 1);
-      this._emitChangeData();
+      this[_emitChangeData]();
       this.draw();
     }
   }
@@ -236,17 +245,17 @@ class Core {
     return this[_board].getOriginContext()
   }
 
-  private _initEvent(): void {
+  private [_initEvent](): void {
     if (this[_hasInited] === true) {
       return;
     }
-    this[_board].on('point', this._handlePoint.bind(this));
-    this[_board].on('moveStart', this._handleMoveStart.bind(this));
-    this[_board].on('move', time.throttle(this._handleMove.bind(this), 16));
-    this[_board].on('moveEnd', this._handleMoveEnd.bind(this));
+    this[_board].on('point', this[_handlePoint].bind(this));
+    this[_board].on('moveStart', this[_handleMoveStart].bind(this));
+    this[_board].on('move', time.throttle(this[_handleMove].bind(this), 16));
+    this[_board].on('moveEnd', this[_handleMoveEnd].bind(this));
   }
 
-  private _handlePoint(point: TypePoint): void {
+  private [_handlePoint](point: TypePoint): void {
     if (!this[_mapper].isEffectivePoint(point)) {
       return;
     }
@@ -264,13 +273,13 @@ class Core {
           'screenSelectElement', 
           { index, uuid, element: deepClone(this[_data].elements?.[index])}
         );
-        this._emitChangeScreen();
+        this[_emitChangeScreen]();
       }
     }
     this.draw();
   }
 
-  private _handleMoveStart(point: TypePoint): void {
+  private [_handleMoveStart](point: TypePoint): void {
     this[_prevPoint] = point;
     const uuid = this[_selectedUUID];
     if (typeof uuid === 'string' && this[_coreEvent].has('screenMoveElementStart')) {
@@ -283,19 +292,19 @@ class Core {
     }
   }
 
-  private _handleMove(point: TypePoint): void {
+  private [_handleMove](point: TypePoint): void {
     if (typeof this[_selectedUUID] === 'string') {
       if (this[_mode] === Mode.SELECT_ELEMENT) {
-        this._dragElement(this[_selectedUUID] as string, point, this[_prevPoint]);
+        this[_dragElement](this[_selectedUUID] as string, point, this[_prevPoint]);
         this.draw();
       } else if (this[_mode] === Mode.SELECT_ELEMENT_WRAPPER_DOT && this[_selectedDotDirection]) {
-        this._transfromElement(this[_selectedUUID] as string, point, this[_prevPoint], this[_selectedDotDirection] as TypeHelperWrapperDotDirection);
+        this[_transfromElement](this[_selectedUUID] as string, point, this[_prevPoint], this[_selectedDotDirection] as TypeHelperWrapperDotDirection);
       }
     }
     this[_prevPoint] = point;
   }
 
-  private _handleMoveEnd(point: TypePoint): void {
+  private [_handleMoveEnd](point: TypePoint): void {
     const uuid = this[_selectedUUID];
     if (typeof uuid === 'string') {
       const index = this[_element].getElementIndex(this[_data], uuid);
@@ -318,14 +327,14 @@ class Core {
             angle: elem.angle || 0
           });
         }
-        this._emitChangeData();
+        this[_emitChangeData]();
       }
     }
     this[_selectedUUID] = null;
     this[_prevPoint] = null;
   }
 
-  private _dragElement(uuid: string, point: TypePoint, prevPoint: TypePoint|null): void {
+  private [_dragElement](uuid: string, point: TypePoint, prevPoint: TypePoint|null): void {
     if (!prevPoint) {
       return;
     }
@@ -333,7 +342,7 @@ class Core {
     this.draw();
   }
 
-  private _transfromElement(
+  private [_transfromElement](
     uuid: string, point: TypePoint, prevPoint: TypePoint|null, direction: TypeHelperWrapperDotDirection
   ): null | {
     width: number,
@@ -348,7 +357,7 @@ class Core {
     return result;
   }
 
-  private _emitChangeScreen() {
+  private [_emitChangeScreen]() {
     if (this[_coreEvent].has('changeScreen')) {
       this[_coreEvent].trigger('changeScreen', {
         ...this[_board].getTransform(),
@@ -359,7 +368,7 @@ class Core {
     }
   }
 
-  private _emitChangeData() {
+  private [_emitChangeData]() {
     if (this[_coreEvent].has('changeData')) {
       this[_coreEvent].trigger('changeData', deepClone(this[_data]));
     }
