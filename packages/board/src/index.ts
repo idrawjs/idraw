@@ -155,6 +155,10 @@ class Board {
     this.draw();
   }
 
+  getScrollLineWidth(): number {
+    return this[_scroller].getLineWidth();
+  }
+
   private [_render]() {
     if (this[_hasRendered] === true) {
       return;

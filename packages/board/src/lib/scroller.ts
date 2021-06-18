@@ -19,12 +19,10 @@ type TypePrivateOptions = TypeOptions & {
   scrollConfig: TypeBoardScrollConfig,
 }
 
-
 const defaultScrollConfig = {
   lineWidth: 12,
   color: '#a0a0a0'
 }
-
 
 export class Scroller {
 
@@ -122,6 +120,11 @@ export class Scroller {
       return true;
     } 
     return false;
+  }
+
+  getLineWidth(): number {
+    const lineWidth = this._opts.scrollConfig.lineWidth;
+    return lineWidth;
   }
 
   
