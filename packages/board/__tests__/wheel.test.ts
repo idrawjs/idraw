@@ -52,6 +52,10 @@ describe('@idraw/board', () => {
     // @ts-ignore;
     const displayCalls = displayCtx.__getDrawCalls();
     expect(displayCalls).toMatchSnapshot();
+    
+
+    const scrollLineWidth = board.getScrollLineWidth();
+    expect(scrollLineWidth).toStrictEqual(opts.scrollConfig.lineWidth)
   });
 });
 

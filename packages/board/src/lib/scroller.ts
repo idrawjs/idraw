@@ -123,7 +123,7 @@ export class Scroller {
   }
 
   getLineWidth(): number {
-    const lineWidth = this._opts.scrollConfig.lineWidth;
+    let lineWidth = this._opts.scrollConfig.lineWidth;
     return lineWidth;
   }
 
