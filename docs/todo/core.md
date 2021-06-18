@@ -1,10 +1,14 @@
 # @idraw/core
 
+* [x] Can't controll element at scroll-area
+* [] Disable controll element
+* [] static check/is type declare
+* [] Force update image/svg image when element change
 * [x] Reset board's size
-* [] Keep two decimals
-* [] Limit element's angle between -360~360 deg
-* [] Check if the element and elements' attribute of desc is supported
-* [] Suport elements'desc and attribute check method
+* [] Keep all num two decimals
+* [x] Limit element's angle between -360~360 deg
+* [x] Check if the element and elements' attribute of desc is supported
+* [x] Suport elements'desc and attribute check method
 * [x] Scale canvas
 * [x] Scroll canvas
 * [x] Render by requestAnimateFrame

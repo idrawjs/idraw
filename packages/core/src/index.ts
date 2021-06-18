@@ -10,6 +10,7 @@ import util from '@idraw/util';
 import { Renderer } from './lib/renderer';
 import { Element } from './lib/element';
 import { Helper } from './lib/helper';
+import { Mapper } from './lib/mapper';
 import { mergeConfig } from './lib/config';
 import { CoreEvent, TypeCoreEventArgMap } from './lib/core-event';
 import { parseData } from './lib/parse';
@@ -41,6 +42,7 @@ const _selectedUUID = Symbol('_selectedUUID');
 const _prevPoint = Symbol('_prevPoint');
 const _selectedDotDirection = Symbol('_selectedDotDirection');
 const _coreEvent = Symbol('_coreEvent');
+const _mapper = Symbol('_mapper');
 
 class Core {
 
@@ -51,6 +53,7 @@ class Core {
   private [_renderer]: Renderer;
   private [_element]: Element;
   private [_helper]: Helper;
+  private [_mapper]: Mapper;
   private [_hasInited] = false; 
   private [_hasInitedData] = false; 
   private [_mode]: Mode = Mode.NULL;
@@ -79,6 +82,7 @@ class Core {
     this[_renderer] = new Renderer(this[_board]); 
     this[_element] = new Element(this[_board].getContext());
     this[_helper] = new Helper(this[_board], this[_config]);
+    this[_mapper] = new Mapper(this[_board]);
     this._initEvent();
     this[_hasInited] = true;
   }
@@ -243,7 +247,9 @@ class Core {
   }
 
   private _handlePoint(point: TypePoint): void {
-
+    if (!this[_mapper].isEffectivePoint(point)) {
+      return;
+    }
     const [uuid, direction] = this[_helper].isPointInElementWrapperDot(point);
     
     if (uuid && direction) {
