@@ -12,8 +12,8 @@ import { Mapper } from './lib/mapper';
 import { mergeConfig } from './lib/config';
 import { CoreEvent, TypeCoreEventArgMap } from './lib/core-event';
 import { parseData } from './lib/parse';
-import is from './lib/is';
-import check from './lib/check';
+import is, { TypeIs } from './lib/is';
+import check, { TypeCheck } from './lib/check';
 import {
   _board, _data, _opts, _config, _renderer, _element, _helper, _hasInited,
   _hasInitedData, _mode, _selectedUUID, _prevPoint, _selectedDotDirection, 
@@ -52,8 +52,8 @@ class Core {
   private [_selectedDotDirection]: TypeHelperWrapperDotDirection | null = null;
   private [_onlyRender]: boolean = false;
 
-  static is: any = is;
-  static check: any = check;
+  static is: TypeIs = is;
+  static check: TypeCheck = check;
 
   constructor(mount: HTMLDivElement, opts: TypeCoreOptions, config?: TypeConfig) {
     this[_data] = { elements: [] };

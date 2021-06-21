@@ -1,8 +1,8 @@
 # @idraw/core
 
 * [x] Can't controll element at scroll-area
-* [] Disable controll element
-* [] static check/is type declare
+* [x] Disable controll element
+* [x] static check/is type declare
 * [x] Force update image/svg image when element change
 * [x] Reset board's size
 * [] Keep all num two decimals
