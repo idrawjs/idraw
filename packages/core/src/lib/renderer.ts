@@ -50,7 +50,7 @@ export class Renderer {
   private _drawFrame() {
     requestAnimationFrame(() => {
       const ctx = this._board.getContext();
-      console.log('------ render frame ------', this._loader.isComplete())
+      // console.log('------ render frame ------', this._loader.isComplete())
       
       let item: QueueItem | undefined = this._queue[0];
       let isLastFrame = false;
