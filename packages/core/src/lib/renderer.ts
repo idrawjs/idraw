@@ -26,12 +26,11 @@ export class Renderer {
       board: board,
       maxParallelNum: 6
     });
-    // TODO
     this._loader.on('load', (res) => {
-      // console.log('load: ', res);
+      this._drawFrame();
     });
     this._loader.on('error', (res) => {
-      // console.log('error: ', res);
+      console.log('Loader Error: ', res);
     });
     this._loader.on('complete', (res) => {
       // console.log('complete: ', res);
@@ -44,14 +43,14 @@ export class Renderer {
     if (this._status !== DrawStatus.DRAWING) {
       this._status = DrawStatus.DRAWING;
       this._drawFrame();
-      this._loader.load(data);
     }
+    this._loader.load(data);
   }
 
   private _drawFrame() {
     requestAnimationFrame(() => {
       const ctx = this._board.getContext();
-      // console.log('------ render frame ------', this._loader.isComplete())
+      console.log('------ render frame ------', this._loader.isComplete())
       
       let item: QueueItem | undefined = this._queue[0];
       let isLastFrame = false;

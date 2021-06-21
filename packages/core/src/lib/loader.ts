@@ -20,22 +20,34 @@ export default class Loader {
 
   private _opts: Options;
   private _event: LoaderEvent;
-  private _loadData: TypeLoadData = {};
   private _patternMap: {[uuid: string]: CanvasPattern} = {}
-  private _uuidQueue: string[] = [];
-  private _status: LoaderStatus = LoaderStatus.FREE
+  private _currentLoadData: TypeLoadData = {};
+  private _currentUUIDQueue: string[] = [];
+  private _storageLoadData: TypeLoadData = {};
+  private _status: LoaderStatus = LoaderStatus.FREE;
+
+  private _waitingLoadQueue: Array<{
+    uuidQueue: string[],
+    loadData: TypeLoadData,
+  }> = [];
 
   constructor(opts: Options) {
     this._opts = opts;
     this._event = new LoaderEvent();
+    this._waitingLoadQueue = [];
   }
 
   load(data: TypeData): void {
     const [uuidQueue, loadData] = this._resetLoadData(data);
-    this._uuidQueue = uuidQueue;
-    this._loadData = loadData;
-    if (this._status === LoaderStatus.FREE) {
+    if (this._status === LoaderStatus.FREE || this._status === LoaderStatus.COMPLETE) {
+      this._currentUUIDQueue = uuidQueue;
+      this._currentLoadData = loadData;
       this._loadTask();
+    } else if (this._status === LoaderStatus.LOADING && uuidQueue.length > 0) {
+      this._waitingLoadQueue.push({
+        uuidQueue,
+        loadData,
+      })
     }
   }
 
@@ -58,8 +70,8 @@ export default class Loader {
   }
 
   getContent(uuid: string): null | HTMLImageElement | HTMLCanvasElement {
-    if (this._loadData[uuid]?.status === 'loaded') {
-      return this._loadData[uuid].content;
+    if (this._storageLoadData[uuid]?.status === 'loaded') {
+      return this._storageLoadData[uuid].content;
     }
     return null;
   }
@@ -75,7 +87,7 @@ export default class Loader {
         return this._patternMap[elem.uuid];
       }
     }
-    const item = this._loadData[elem.uuid];
+    const item = this._currentLoadData[elem.uuid];
     if (item?.status === 'loaded') {
       const board = this._opts.board;
       const tempCanvas = board.createCanvas();
@@ -93,27 +105,29 @@ export default class Loader {
   }
 
   private _resetLoadData(data: TypeData): [string[], TypeLoadData] {
-    const loadData: TypeLoadData = this._loadData;
+    const loadData: TypeLoadData = {};
     const uuidQueue: string[] = [];
+
+    const storageLoadData = this._storageLoadData;
 
     // add new load-data
     for (let i = data.elements.length - 1; i >= 0; i --) {
       const elem = data.elements[i];
       if (['image', 'svg',].includes(elem.type)) {
-        if (!loadData[elem.uuid]) {
+        if (!storageLoadData[elem.uuid]) {
           loadData[elem.uuid] = this._createEmptyLoadItem(elem);
           uuidQueue.push(elem.uuid);
         } else {
           if (elem.type === 'image') {
             const _ele = elem as TypeElement<'image'>;
-            if (_ele.desc.src !== loadData[elem.uuid].source) {
-              loadData[elem.uuid].status = 'null';
+            if (_ele.desc.src !== storageLoadData[elem.uuid].source) {
+              loadData[elem.uuid] = this._createEmptyLoadItem(elem);
               uuidQueue.push(elem.uuid);
             }
           } else if (elem.type === 'svg') {
             const _ele = elem as TypeElement<'svg'>;
-            if (_ele.desc.svg !== loadData[elem.uuid].source) {
-              loadData[elem.uuid].status = 'null';
+            if (_ele.desc.svg !== storageLoadData[elem.uuid].source) {
+              loadData[elem.uuid] = this._createEmptyLoadItem(elem);
               uuidQueue.push(elem.uuid);
             }
           } 
@@ -121,13 +135,14 @@ export default class Loader {
       }
     }
 
-    // clear unuse load-data
-    const uuids = Object.keys(loadData);
-    data.elements.forEach((elem) => {
-      if (uuids.includes(elem.uuid) !== true) {
-        delete loadData[elem.uuid];
-      }
-    });
+    // // clear unuse load-data
+    // const uuids = Object.keys(currentLoadData);
+    // data.elements.forEach((elem) => {
+    //   if (uuids.includes(elem.uuid) !== true) {
+    //     delete loadData[elem.uuid];
+    //   }
+    // });
+
     return [uuidQueue, loadData];
   }
 
@@ -156,14 +171,23 @@ export default class Loader {
       return;
     }
 
-    if (this._uuidQueue.length === 0) {
-      this._status = LoaderStatus.COMPLETE;
-      this._event.trigger('complete', undefined);
-      return;
+    if (this._currentUUIDQueue.length === 0) {
+      if (this._waitingLoadQueue.length === 0) {
+        this._status = LoaderStatus.COMPLETE;
+        this._event.trigger('complete', undefined);
+        return;
+      } else {
+        const waitingItem = this._waitingLoadQueue.shift();
+        if (waitingItem) {
+          const { uuidQueue, loadData } = waitingItem;
+          this._currentLoadData = loadData;
+          this._currentUUIDQueue = uuidQueue;
+        }
+      }
     }
 
     const { maxParallelNum } = this._opts;
-    const uuids = this._uuidQueue.splice(0, maxParallelNum);
+    const uuids = this._currentUUIDQueue.splice(0, maxParallelNum);
     const uuidMap: {[uuid: string]: number} = {};
 
     uuids.forEach((url, i) => {
@@ -186,39 +210,57 @@ export default class Loader {
         }
         loadUUIDList.push(uuid);
 
-        this._loadElementSource(this._loadData[uuid]).then((image) => {
+        this._loadElementSource(this._currentLoadData[uuid]).then((image) => {
           loadUUIDList.splice(loadUUIDList.indexOf(uuid), 1);
           const status = _loadAction();
-          this._loadData[uuid].status = 'loaded';
-          this._loadData[uuid].content = image;
+
+          this._storageLoadData[uuid] = {
+            type: this._currentLoadData[uuid].type,
+            status: 'loaded',
+            content: image,
+            source: this._currentLoadData[uuid].source,
+            elemW: this._currentLoadData[uuid].elemW,
+            elemH: this._currentLoadData[uuid].elemH,
+          }
+
           if (loadUUIDList.length === 0 && uuids.length === 0 && status === true) {
             this._status = LoaderStatus.FREE;
             this._loadTask();
           }
           this._event.trigger('load', {
-            type: this._loadData[uuid].type,
-            status: this._loadData[uuid].status,
-            content: this._loadData[uuid].content,
-            source: this._loadData[uuid].source,
-            elemW: this._loadData[uuid].elemW,
-            elemH: this._loadData[uuid].elemH,
+            type: this._storageLoadData[uuid].type,
+            status: this._storageLoadData[uuid].status,
+            content: this._storageLoadData[uuid].content,
+            source: this._storageLoadData[uuid].source,
+            elemW: this._storageLoadData[uuid].elemW,
+            elemH: this._storageLoadData[uuid].elemH,
           });
         }).catch((err) => {
+
           loadUUIDList.splice(loadUUIDList.indexOf(uuid), 1);
           const status = _loadAction();
-          this._loadData[uuid].status = 'fail';
-            this._loadData[uuid].error = err;
+        
+          this._storageLoadData[uuid] = {
+            type: this._currentLoadData[uuid].type,
+            status: 'fail',
+            content: null,
+            error: err,
+            source: this._currentLoadData[uuid].source,
+            elemW: this._currentLoadData[uuid].elemW,
+            elemH: this._currentLoadData[uuid].elemH,
+          }
+
           if (loadUUIDList.length === 0 && uuids.length === 0 && status === true) {
             this._status = LoaderStatus.FREE;
             this._loadTask();
           } 
           this._event.trigger('error', {
-            type: this._loadData[uuid].type,
-            status: this._loadData[uuid].status,
-            content: this._loadData[uuid].content,
-            source: this._loadData[uuid].source,
-            elemW: this._loadData[uuid].elemW,
-            elemH: this._loadData[uuid].elemH,
+            type: this._storageLoadData[uuid].type,
+            status: this._storageLoadData[uuid].status,
+            content: this._storageLoadData[uuid].content,
+            source: this._storageLoadData[uuid].source,
+            elemW: this._storageLoadData[uuid].elemW,
+            elemH: this._storageLoadData[uuid].elemH,
           })
         })
  
@@ -231,10 +273,10 @@ export default class Loader {
   private async _loadElementSource(
     params: TypeLoadData[string]
   ): Promise<HTMLImageElement> {
-    if (params.type === 'image') {
+    if (params && params.type === 'image') {
       const image = await loadImage(params.source);
       return image;
-    } else if (params.type === 'svg') {
+    } else if (params && params.type === 'svg') {
       const image = await loadSVG(
         params.source, {
           width: params.elemW, height: params.elemH
