@@ -3,7 +3,7 @@
 * [x] Can't controll element at scroll-area
 * [] Disable controll element
 * [] static check/is type declare
-* [] Force update image/svg image when element change
+* [x] Force update image/svg image when element change
 * [x] Reset board's size
 * [] Keep all num two decimals
 * [x] Limit element's angle between -360~360 deg

@@ -6,6 +6,7 @@ type TypeCoreOptions = {
   contextWidth: number;
   contextHeight: number;
   canScroll?: boolean;
+  onlyRender?: boolean;
 }
 
 export {

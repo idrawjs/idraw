@@ -1,9 +1,7 @@
 import {
   TypeData, TypePoint, TypeBoardSizeOptions,
-  TypeHelperWrapperDotDirection,
-  TypeConfig, TypeConfigStrict,
-  TypeElement, TypeElemDesc, TypeContext,
-  TypeCoreOptions,  TypeScreenContext,
+  TypeHelperWrapperDotDirection, TypeConfig, TypeConfigStrict,
+  TypeElement, TypeElemDesc, TypeContext, TypeCoreOptions,  TypeScreenContext,
 }  from '@idraw/types';
 import Board from '@idraw/board';
 import util from '@idraw/util';
@@ -16,6 +14,13 @@ import { CoreEvent, TypeCoreEventArgMap } from './lib/core-event';
 import { parseData } from './lib/parse';
 import is from './lib/is';
 import check from './lib/check';
+import {
+  _board, _data, _opts, _config, _renderer, _element, _helper, _hasInited,
+  _hasInitedData, _mode, _selectedUUID, _prevPoint, _selectedDotDirection, 
+  _coreEvent, _mapper, _initEvent, _handlePoint, _handleMoveStart, _handleMove,
+  _handleMoveEnd, _dragElement, _transfromElement, _emitChangeScreen, _emitChangeData,
+  _onlyRender,
+} from './names';
 
 const { time } = util;
 const { deepClone } = util.data;
@@ -27,31 +32,6 @@ enum Mode {
   SELECT_ELEMENT_WRAPPER_DOT = 'select-element-wrapper-dot',
   PAINTING = 'painting',
 }
-
-const _board = Symbol('_board');
-const _data = Symbol('_data');
-const _opts = Symbol('_opts');
-const _config = Symbol('_config');
-const _renderer = Symbol('_renderer');
-const _element = Symbol('_element');
-const _helper = Symbol('_helper');
-const _hasInited = Symbol('_hasInited');
-const _hasInitedData = Symbol('_hasInitedData');
-const _mode = Symbol('_mode');
-const _selectedUUID = Symbol('_selectedUUID');
-const _prevPoint = Symbol('_prevPoint');
-const _selectedDotDirection = Symbol('_selectedDotDirection');
-const _coreEvent = Symbol('_coreEvent');
-const _mapper = Symbol('_mapper');
-const _initEvent = Symbol('_initEvent');
-const _handlePoint = Symbol('_handlePoint');
-const _handleMoveStart = Symbol('_handleMoveStart');
-const _handleMove = Symbol('_handleMove');
-const _handleMoveEnd = Symbol('_handleMoveEnd');
-const _dragElement = Symbol('_dragElement');
-const _transfromElement = Symbol('_transfromElement');
-const _emitChangeScreen = Symbol('_emitChangeScreen');
-const _emitChangeData = Symbol('_emitChangeData');
 
 class Core {
 
@@ -67,10 +47,10 @@ class Core {
   private [_hasInitedData] = false; 
   private [_mode]: Mode = Mode.NULL;
   private [_coreEvent]: CoreEvent = new CoreEvent();
-
   private [_selectedUUID]: string | null = null;
   private [_prevPoint]: TypePoint | null = null;
   private [_selectedDotDirection]: TypeHelperWrapperDotDirection | null = null;
+  private [_onlyRender]: boolean = false;
 
   static is: any = is;
   static check: any = check;
@@ -78,6 +58,7 @@ class Core {
   constructor(mount: HTMLDivElement, opts: TypeCoreOptions, config?: TypeConfig) {
     this[_data] = { elements: [] };
     this[_opts] = opts;
+    this[_onlyRender] = opts.onlyRender === true;
     this[_config] = mergeConfig(config || {});
 
     this[_board] = new Board(mount, {
@@ -118,6 +99,7 @@ class Core {
   }
 
   selectElement(index: number, opts?: { useMode?: boolean }): void {
+    if (this[_onlyRender] === true) return;
     if (this[_data].elements[index]) {
       const uuid = this[_data].elements[index].uuid;
       if (opts?.useMode === true) {
@@ -131,6 +113,7 @@ class Core {
   }
 
   selectElementByUUID(uuid: string, opts?: { useMode?: boolean }): void {
+    if (this[_onlyRender] === true) return;
     const index = this[_helper].getElementIndexByUUID(uuid);
     if (typeof index === 'number' && index >= 0) {
       this.selectElement(index, opts);
@@ -138,6 +121,7 @@ class Core {
   }
 
   moveDownElement(uuid: string): void {
+    if (this[_onlyRender] === true) return;
     const index = this[_helper].getElementIndexByUUID(uuid);
     if (typeof index === 'number' && index >= 0 && index < this[_data].elements.length - 1) {
       const temp = this[_data].elements[index];
@@ -149,6 +133,7 @@ class Core {
   }
 
   moveUpElement(uuid: string): void {
+    if (this[_onlyRender] === true) return;
     const index = this[_helper].getElementIndexByUUID(uuid);
     if (typeof index === 'number' && index > 0 && index < this[_data].elements.length) {
       const temp = this[_data].elements[index];
@@ -196,6 +181,7 @@ class Core {
   }
 
   updateElement(elem: TypeElement<keyof TypeElemDesc>) {
+    if (this[_onlyRender] === true) return;
     const _elem  = deepClone(elem) as TypeElement<keyof TypeElemDesc>;
     const data = this[_data];
     for (let i = 0; i < data.elements.length; i++) {
@@ -209,6 +195,7 @@ class Core {
   }
 
   addElement(elem: TypeElement<keyof TypeElemDesc>) {
+    if (this[_onlyRender] === true) return;
     const _elem = deepClone(elem);
     _elem.uuid = createUUID();
     this[_data].elements.unshift(_elem);
@@ -217,6 +204,7 @@ class Core {
   }
 
   deleteElement(uuid: string) {
+    if (this[_onlyRender] === true) return;
     const index = this[_element].getElementIndex(this[_data], uuid);
     if (index >= 0) {
       this[_data].elements.splice(index, 1);
@@ -246,6 +234,9 @@ class Core {
   }
 
   private [_initEvent](): void {
+    if (this[_onlyRender] === true) {
+      return;
+    }
     if (this[_hasInited] === true) {
       return;
     }
