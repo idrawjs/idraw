@@ -103,6 +103,17 @@ const check = {
   svgDesc,
   textDesc,
 }
- 
+
+type TypeCheck = {
+  attrs: (value: any) => boolean,
+  rectDesc: (value: any) => boolean,
+  imageDesc: (value: any) => boolean,
+  svgDesc: (value: any) => boolean,
+  textDesc: (value: any) => boolean,
+}
+
+export {
+  TypeCheck
+}
 
 export default check;

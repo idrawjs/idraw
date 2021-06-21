@@ -131,7 +131,10 @@ class Board {
     this[_watcher].off(name, callback);
   }
 
-  getScreenInfo() {
+  getScreenInfo(): {
+    size: TypeScreenSize, position: TypeScreenPosition, deviceSize: TypeScreenSize,
+    width: number, height: number, devicePixelRatio: number
+  } {
     return this[_calcScreen]();
   }
 
@@ -153,6 +156,14 @@ class Board {
       devicePixelRatio: this[_opts].devicePixelRatio
     });
     this.draw();
+  }
+
+  getScrollLineWidth(): number {
+    let lineWidth = 0;
+    if (this[_opts].canScroll === true) {
+      lineWidth = this[_scroller].getLineWidth();
+    }
+    return lineWidth;
   }
 
   private [_render]() {
@@ -185,7 +196,10 @@ class Board {
     return { ...defaultOpts, ...opts };
   }
  
-  private [_calcScreen](): { size: TypeScreenSize, position: TypeScreenPosition, deviceSize: TypeScreenSize, } {
+  private [_calcScreen](): {
+    size: TypeScreenSize, position: TypeScreenPosition, deviceSize: TypeScreenSize,
+    width: number, height: number, devicePixelRatio: number
+  } {
     const scaleRatio = this[_ctx].getTransform().scale;
     const { 
       width, height, contextWidth, contextHeight,
@@ -254,7 +268,12 @@ class Board {
     };
 
     return {
-      size, position, deviceSize
+      size,
+      position,
+      deviceSize,
+      width: this[_opts].width,
+      height: this[_opts].height,
+      devicePixelRatio: this[_opts].devicePixelRatio,
     };
   }
 
