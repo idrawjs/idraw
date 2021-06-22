@@ -25,8 +25,12 @@ type TypeBoardOptions = TypeBoardSizeOptions & {
   scrollConfig?: TypeBoardScrollConfig
 }
 
+type TypePointCursor = 'auto' | 'move' | 'n-resize' | 'e-resize' | 's-resize' | 'w-resize'
+| 'ne-resize' | 'nw-resize' | 'se-resize' | 'sw-resize' | 'grab';
+
 export {
   TypePoint,
+  TypePointCursor,
   TypeBoardSizeOptions,
   TypeBoardOptions,
   TypeBoardScrollConfig,
