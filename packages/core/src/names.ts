@@ -18,16 +18,18 @@ const _handlePoint = Symbol('_handlePoint');
 const _handleMoveStart = Symbol('_handleMoveStart');
 const _handleMove = Symbol('_handleMove');
 const _handleMoveEnd = Symbol('_handleMoveEnd');
+const _handleHover = Symbol('_handleHover');
 const _dragElement = Symbol('_dragElement');
 const _transfromElement = Symbol('_transfromElement');
 const _emitChangeScreen = Symbol('_emitChangeScreen');
 const _emitChangeData = Symbol('_emitChangeData');
-const _onlyRender = Symbol('onlyRender');
+const _onlyRender = Symbol('_onlyRender');
+const _cursorStatus = Symbol('_cursorStatus');
 
 export {
   _board, _data, _opts, _config, _renderer, _element, _helper, _hasInited,
   _hasInitedData, _mode, _selectedUUID, _prevPoint, _selectedDotDirection, 
   _coreEvent, _mapper, _initEvent, _handlePoint, _handleMoveStart, _handleMove,
-  _handleMoveEnd, _dragElement, _transfromElement, _emitChangeScreen, _emitChangeData,
-  _onlyRender,
+  _handleMoveEnd, _handleHover, _dragElement, _transfromElement, _emitChangeScreen,
+  _emitChangeData, _onlyRender, _cursorStatus,
 }

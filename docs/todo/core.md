@@ -1,11 +1,13 @@
 # @idraw/core
 
+* [] Area select
+* [] Keep all num two decimals
+* [x] Cursor style
 * [x] Can't controll element at scroll-area
 * [x] Disable controll element
 * [x] static check/is type declare
 * [x] Force update image/svg image when element change
 * [x] Reset board's size
-* [] Keep all num two decimals
 * [x] Limit element's angle between -360~360 deg
 * [x] Check if the element and elements' attribute of desc is supported
 * [x] Suport elements'desc and attribute check method

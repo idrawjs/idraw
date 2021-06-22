@@ -18,8 +18,8 @@ import {
   _board, _data, _opts, _config, _renderer, _element, _helper, _hasInited,
   _hasInitedData, _mode, _selectedUUID, _prevPoint, _selectedDotDirection, 
   _coreEvent, _mapper, _initEvent, _handlePoint, _handleMoveStart, _handleMove,
-  _handleMoveEnd, _dragElement, _transfromElement, _emitChangeScreen, _emitChangeData,
-  _onlyRender,
+  _handleMoveEnd, _handleHover, _dragElement, _transfromElement, _emitChangeScreen,
+  _emitChangeData, _onlyRender, _cursorStatus,
 } from './names';
 
 const { time } = util;
@@ -30,7 +30,11 @@ enum Mode {
   NULL = 'null',
   SELECT_ELEMENT = 'select-element',
   SELECT_ELEMENT_WRAPPER_DOT = 'select-element-wrapper-dot',
-  PAINTING = 'painting',
+}
+
+enum CursorStatus {
+  DRAGGING = 'dragging',
+  NULL = 'null'
 }
 
 class Core {
@@ -51,6 +55,7 @@ class Core {
   private [_prevPoint]: TypePoint | null = null;
   private [_selectedDotDirection]: TypeHelperWrapperDotDirection | null = null;
   private [_onlyRender]: boolean = false;
+  private [_cursorStatus]: CursorStatus = CursorStatus.NULL;
 
   static is: TypeIs = is;
   static check: TypeCheck = check;
@@ -72,7 +77,11 @@ class Core {
     this[_renderer] = new Renderer(this[_board]); 
     this[_element] = new Element(this[_board].getContext());
     this[_helper] = new Helper(this[_board], this[_config]);
-    this[_mapper] = new Mapper(this[_board]);
+    this[_mapper] = new Mapper({
+      board: this[_board],
+      helper: this[_helper],
+      element: this[_element]
+    });
     this[_initEvent]();
     this[_hasInited] = true;
   }
@@ -244,6 +253,7 @@ class Core {
     this[_board].on('moveStart', this[_handleMoveStart].bind(this));
     this[_board].on('move', time.throttle(this[_handleMove].bind(this), 16));
     this[_board].on('moveEnd', this[_handleMoveEnd].bind(this));
+    this[_board].on('hover', time.throttle(this[_handleHover].bind(this), 32));
   }
 
   private [_handlePoint](point: TypePoint): void {
@@ -284,12 +294,15 @@ class Core {
   }
 
   private [_handleMove](point: TypePoint): void {
+    
     if (typeof this[_selectedUUID] === 'string') {
       if (this[_mode] === Mode.SELECT_ELEMENT) {
         this[_dragElement](this[_selectedUUID] as string, point, this[_prevPoint]);
         this.draw();
+        this[_cursorStatus] = CursorStatus.DRAGGING;
       } else if (this[_mode] === Mode.SELECT_ELEMENT_WRAPPER_DOT && this[_selectedDotDirection]) {
         this[_transfromElement](this[_selectedUUID] as string, point, this[_prevPoint], this[_selectedDotDirection] as TypeHelperWrapperDotDirection);
+        this[_cursorStatus] = CursorStatus.DRAGGING;
       }
     }
     this[_prevPoint] = point;
@@ -323,6 +336,14 @@ class Core {
     }
     this[_selectedUUID] = null;
     this[_prevPoint] = null;
+    this[_cursorStatus] = CursorStatus.NULL;
+  }
+
+  private [_handleHover](point: TypePoint): void {
+    if (this[_cursorStatus] === CursorStatus.NULL) {
+      const cursor = this[_mapper].judgePointCursor(point, this[_data]);
+      this[_board].setCursor(cursor);
+    }
   }
 
   private [_dragElement](uuid: string, point: TypePoint, prevPoint: TypePoint|null): void {

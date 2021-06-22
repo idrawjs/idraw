@@ -1,4 +1,6 @@
-import { TypeScreenPosition, TypeScreenSize, TypeScreenContext, TypePoint,  TypeBoardOptions, TypeBoardSizeOptions, } from '@idraw/types';
+import { 
+  TypeScreenPosition, TypeScreenSize, TypeScreenContext, TypePoint, TypePointCursor,
+  TypeBoardOptions, TypeBoardSizeOptions, } from '@idraw/types';
 import util from '@idraw/util';
 import { Watcher } from './lib/watcher';
 import { setStyle } from './lib/style';
@@ -16,9 +18,6 @@ const { throttle } = util.time;
 type PrivateOptions = TypeBoardOptions & {
   devicePixelRatio: number
 }
-
-type TypeCursor = 'auto' | 'move' | 'n-resize' | 'e-resize' | 's-resize' | 'w-resize'
-| 'ne-resize' | 'nw-resize' | 'se-resize' | 'sw-resize' | 'grab';
 
 class Board {
   private [_canvas]: HTMLCanvasElement;
@@ -138,7 +137,7 @@ class Board {
     return this[_calcScreen]();
   }
 
-  setCursor(cursor: TypeCursor) {
+  setCursor(cursor: TypePointCursor) {
     this[_displayCanvas].style.cursor = cursor;
   }
 
