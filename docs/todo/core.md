@@ -1,6 +1,7 @@
 # @idraw/core
 
 * [] Area select
+* [] Hover element style
 * [] Keep all num two decimals
 * [x] Cursor style
 * [x] Can't controll element at scroll-area

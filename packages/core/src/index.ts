@@ -203,13 +203,14 @@ class Core {
     this.draw();
   }
 
-  addElement(elem: TypeElement<keyof TypeElemDesc>) {
-    if (this[_onlyRender] === true) return;
+  addElement(elem: TypeElement<keyof TypeElemDesc>): string | null {
+    if (this[_onlyRender] === true) return null;
     const _elem = deepClone(elem);
     _elem.uuid = createUUID();
     this[_data].elements.unshift(_elem);
     this[_emitChangeData]();
     this.draw();
+    return _elem.uuid;
   }
 
   deleteElement(uuid: string) {
