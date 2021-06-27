@@ -102,14 +102,18 @@ export class Watcher {
     let x = 0;
     let y = 0;
 
-    if (e instanceof TouchEvent) {
+    // @ts-ignore
+    if (e && e.touches && e.touches.length > 0) {
+      // @ts-ignore
       const touch: Touch = e.touches[0];
       if (touch) {
         x = touch.clientX;
         y = touch.clientY;
       }
     } else {
+      // @ts-ignore
       x = e.clientX;
+      // @ts-ignore
       y = e.clientY;
     }
 

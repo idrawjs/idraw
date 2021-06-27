@@ -209,6 +209,10 @@ class Context implements TypeContext {
     this._ctx.textBaseline = baseline;
   }
 
+  setGlobalAlpha(alpha: number): void {
+    this._ctx.globalAlpha = alpha;
+  }
+
   private _doSize(num: number) {
     return this._opts.devicePixelRatio * num;
   }
@@ -224,6 +228,7 @@ class Context implements TypeContext {
     const _y = (y - scrollY) / scale;
     return this._doSize(_y);
   }
+  
 
 }
 

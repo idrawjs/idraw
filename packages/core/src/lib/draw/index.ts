@@ -14,6 +14,7 @@ import { drawSVG } from './svg';
 import { drawText } from './text';
 import {
   drawElementWrapper,
+  drawAreaWrapper,
   // drawDisplayContextScrollWrapper,
 } from './wrapper';
 
@@ -32,6 +33,9 @@ export function drawContext(
   if (typeof data.bgColor === 'string' && isColorStr(data.bgColor)) {
     drawBgColor(ctx, data.bgColor);
   }
+
+  drawAreaWrapper(ctx, helperConfig);
+
   if (!(data.elements.length > 0)) {
     return;
   }

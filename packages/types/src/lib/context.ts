@@ -45,7 +45,8 @@ interface TypeContext {
   
   drawImage(image: CanvasImageSource, dx: number, dy: number, dw: number, dh: number): void;
   drawImage(image: CanvasImageSource, sx: number, sy: number, sw: number, sh: number, dx: number, dy: number, dw: number, dh: number): void;
-  createPattern(image: CanvasImageSource, repetition: string | null): CanvasPattern | null
+  createPattern(image: CanvasImageSource, repetition: string | null): CanvasPattern | null;
+  setGlobalAlpha(alpha: number): void;
 }
 
 export {

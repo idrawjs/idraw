@@ -1,0 +1,94 @@
+<html>
+  <head>
+    <style></style>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <style>
+      html,body { margin: 0; padding: 0; }
+      #mount canvas {
+        margin-top: 40px;
+        margin-left: 50px;
+        border: 1px solid #aaaaaa40;
+        /* border-right: 1px solid #aaaaaa40;
+        border-bottom: 1px solid #aaaaaa40; */
+        background-image:
+        linear-gradient(#aaaaaa40 1px, transparent 0),
+        linear-gradient(90deg, #aaaaaa40 1px, transparent 0),
+        linear-gradient(#aaa 1px, transparent 0),
+        linear-gradient(90deg, #aaa 1px, transparent 0);
+        background-size: 10px 10px, 10px 10px, 50px 50px, 50px 50px;
+      }
+    </style>
+  </head>
+  <body>
+
+    <div id="mount"></div>
+
+    <script src="./../../dist/index.global.js"></script>
+    <script>
+      const { Board } = window.iDraw; 
+      const mount = document.querySelector('#mount');
+      const opts = {
+        width: 600,
+        height: 400,
+        contextWidth: 1000,
+        contextHeight: 900,
+        devicePixelRatio: 4,
+        canScroll: true,
+        scrollConfig: {
+          color: '#666666',
+          lineWidth: 16
+        }
+      }
+      const board = new Board(mount, opts);
+      // board.on('wheelX', (deltaX) => {
+      //   console.log('deltaX =', deltaX);
+      // })
+      // board.on('wheelY', (deltaY) => {
+      //   console.log('deltaY =', deltaY);
+      // })
+
+      const ctx = board.getContext();
+
+      // ctx.setFillStyle('#ffffff');
+      // ctx.fillRect(0, 0, opts.contextWidth, opts.contextHeight);
+
+      ctx.setFillStyle('#f0f0f0');
+      ctx.fillRect(10, 10, 200, 120);
+
+      ctx.setFillStyle('#cccccc');
+      ctx.fillRect(80, 80, 200, 120);
+
+      ctx.setFillStyle('#c0c0c0');
+      ctx.fillRect(160, 160, 200, 120);
+
+      ctx.setFillStyle('#e0e0e0');
+      ctx.fillRect(260, 260, 200, 100);
+
+      ctx.setFillStyle('#e0e0e0');
+      ctx.fillRect(500 - 10, 500 - 10, 200, 100);
+
+      ctx.setFillStyle('#c0c0c0');
+      ctx.fillRect(600, 600, 200, 100);
+
+      ctx.setFillStyle('#cccccc');
+      ctx.fillRect(790, 790, 200, 100);
+
+      ctx.setFillStyle('#000');
+      ctx.fillRect(390, 340, 20, 20);
+
+      // board.scale(1.5);
+      board.scrollX(-100);
+      board.scrollY(-150);
+      // board.scale(1);
+
+      // const result = board.scale(1);
+      const result = board.scale(1);
+      console.log('result =', result);
+      board.draw();
+
+      console.log('scrollLineWidth = ', board.getScrollLineWidth())
+
+    </script>
+
+  </body>
+</html>

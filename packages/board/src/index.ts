@@ -7,10 +7,12 @@ import { setStyle } from './lib/style';
 import Context from './lib/context';
 import { TypeBoardEventArgMap } from './lib/event';
 import { Scroller } from './lib/scroller';
+import { Screen } from './lib/screen';
 import {
   _canvas, _displayCanvas, _mount, _opts, _hasRendered, _ctx, _displayCtx,
-  _originCtx, _watcher, _render, _calcScreen, _parsePrivateOptions, _scroller,
-  _initEvent, _calcScreenScroll, _doScrollX, _doScrollY, _doMoveScroll, _resetContext,
+  _originCtx, _watcher, _render, _parsePrivateOptions, _scroller,
+  _initEvent, _doScrollX, _doScrollY, _doMoveScroll, _resetContext,
+  _screen,
 } from './names';
 
 const { throttle } = util.time;
@@ -30,6 +32,7 @@ class Board {
   private [_originCtx]: CanvasRenderingContext2D;
   private [_watcher]: Watcher;
   private [_scroller]: Scroller;
+  private [_screen]: Screen;
 
   constructor(mount: HTMLDivElement, opts: TypeBoardOptions) {
     this[_mount] = mount;
@@ -40,6 +43,7 @@ class Board {
     this[_originCtx] = this[_canvas].getContext('2d') as CanvasRenderingContext2D;
     this[_displayCtx] = this[_displayCanvas].getContext('2d') as CanvasRenderingContext2D;
     this[_ctx] = new Context(this[_originCtx], this[_opts]);
+    this[_screen] = new Screen(this[_ctx], this[_opts]);
     this[_watcher] = new Watcher(this[_displayCanvas]);
     this[_scroller] = new Scroller(
       this[_displayCtx], {
@@ -82,7 +86,7 @@ class Board {
     if (scaleRatio > 0) {
       this[_ctx].setTransform({ scale: scaleRatio });
     }
-    const { position, size } = this[_calcScreen]();
+    const { position, size } = this[_screen].calcScreen();
     return { position, size};
   }
 
@@ -90,7 +94,7 @@ class Board {
     if (x >= 0 || x < 0) {
       this[_ctx].setTransform({ scrollX: x });
     }
-    const { position, size } = this[_calcScreen]();
+    const { position, size } = this[_screen].calcScreen();
     return { position, size};
   }
 
@@ -98,7 +102,7 @@ class Board {
     if (y >= 0 || y < 0) {
       this[_ctx].setTransform({ scrollY: y });
     }
-    const { position, size } = this[_calcScreen]();
+    const { position, size } = this[_screen].calcScreen();
     return { position, size};
   }
 
@@ -108,7 +112,7 @@ class Board {
 
   draw(): TypeScreenContext {
     this.clear();
-    const { position, deviceSize, size } = this[_calcScreen]();
+    const { position, deviceSize, size } = this[_screen].calcScreen();
     this[_displayCtx].drawImage(
       this[_canvas], deviceSize.x, deviceSize.y, deviceSize.w, deviceSize.h
     );
@@ -134,7 +138,7 @@ class Board {
     size: TypeScreenSize, position: TypeScreenPosition, deviceSize: TypeScreenSize,
     width: number, height: number, devicePixelRatio: number
   } {
-    return this[_calcScreen]();
+    return this[_screen].calcScreen();
   }
 
   setCursor(cursor: TypePointCursor) {
@@ -148,7 +152,8 @@ class Board {
   resetSize(opts: TypeBoardSizeOptions) {
     this[_opts] = { ...this[_opts], ...opts };
     this[_resetContext]();
-    this[_ctx].resetSize(opts)
+    this[_ctx].resetSize(opts);
+    this[_screen].resetSize(opts);
     this[_scroller].resetSize({
       width: this[_opts].width,
       height: this[_opts].height,
@@ -194,87 +199,6 @@ class Board {
     };
     return { ...defaultOpts, ...opts };
   }
- 
-  private [_calcScreen](): {
-    size: TypeScreenSize, position: TypeScreenPosition, deviceSize: TypeScreenSize,
-    width: number, height: number, devicePixelRatio: number
-  } {
-    const scaleRatio = this[_ctx].getTransform().scale;
-    const { 
-      width, height, contextWidth, contextHeight,
-      devicePixelRatio: pxRatio,
-    } = this[_opts];
-
-    // init scroll
-    if (contextWidth * scaleRatio <= width) {
-      // make context center
-      this[_ctx].setTransform({
-        scrollX: (width - contextWidth * scaleRatio) / 2,
-      })
-    }
-
-    if (contextHeight * scaleRatio <= height) {
-      // make context center
-      this[_ctx].setTransform({
-        scrollY: (height - contextHeight * scaleRatio) / 2,
-      })
-    }
-
-    if (contextWidth * scaleRatio >= width && this[_ctx].getTransform().scrollX > 0) {
-      this[_ctx].setTransform({
-        scrollX: 0,
-      })
-    }
-    if (contextHeight * scaleRatio >= height && this[_ctx].getTransform().scrollY > 0) {
-      this[_ctx].setTransform({
-        scrollY: 0,
-      })
-    }
-
-    const { scrollX: _scrollX, scrollY: _scrollY } = this[_ctx].getTransform();
-
-    // reset scroll
-    if (_scrollX < 0 && Math.abs(_scrollX) > Math.abs(contextWidth * scaleRatio - width)) {
-      this[_ctx].setTransform({
-        scrollX: 0 - Math.abs(contextWidth * scaleRatio - width)
-      })
-    }
-    if (_scrollY < 0 && Math.abs(_scrollY) > Math.abs(contextHeight * scaleRatio - height)) {
-      this[_ctx].setTransform({
-        scrollY: 0 - Math.abs(contextHeight * scaleRatio - height)
-      })
-    }
-
-    // result size
-    const { scrollX, scrollY } = this[_ctx].getTransform();
-    const size = {
-      x: scrollX * scaleRatio,
-      y: scrollY * scaleRatio,
-      w: contextWidth * scaleRatio,
-      h: contextHeight * scaleRatio,
-    };
-    const deviceSize = {
-      x: scrollX * pxRatio,
-      y: scrollY * pxRatio,
-      w: contextWidth * pxRatio * scaleRatio,
-      h: contextHeight * pxRatio * scaleRatio,
-    };
-    const position = {
-      top: scrollY,
-      bottom: height - (contextHeight * scaleRatio + scrollY),
-      left: scrollX,
-      right: width - (contextWidth * scaleRatio + scrollX),
-    };
-
-    return {
-      size,
-      position,
-      deviceSize,
-      width: this[_opts].width,
-      height: this[_opts].height,
-      devicePixelRatio: this[_opts].devicePixelRatio,
-    };
-  }
 
   private [_initEvent]() {
     if (this[_hasRendered] === true) {
@@ -313,30 +237,15 @@ class Board {
     }
   }
 
-  private [_calcScreenScroll]( start: number, end: number, sliderSize: number, limitLen: number, moveDistance: number
-  ): number {
-    let scrollDistance = start;
-    let scrollLen = limitLen - sliderSize;
-    if (start <= 0 && end <= 0) {
-      scrollLen = Math.abs(start) + Math.abs(end);
-    }
-    let unit = 1;
-    if (scrollLen > 0) {
-      unit = scrollLen / (limitLen - sliderSize);
-    }
-    scrollDistance = 0 - unit * moveDistance; 
-    return scrollDistance;
-  }
-
   private [_doScrollX](dx: number, prevScrollX?: number) {
     const { width } = this[_opts];
     let scrollX = prevScrollX;
     if (!(typeof scrollX === 'number' && (scrollX > 0 || scrollX <= 0))) {
       scrollX = this[_ctx].getTransform().scrollX
     }
-    const { position } = this[_calcScreen]();
+    const { position } = this[_screen].calcScreen();
     const { xSize } = this[_scroller].calc(position);
-    const moveX = this[_calcScreenScroll](position.left, position.right, xSize, width, dx);
+    const moveX = this[_screen].calcScreenScroll(position.left, position.right, xSize, width, dx);
     this.scrollX(scrollX + moveX);
     this.draw();
   }
@@ -347,9 +256,9 @@ class Board {
     if (!(typeof scrollY === 'number' && (scrollY > 0 || scrollY <= 0))) {
       scrollY = this[_ctx].getTransform().scrollY
     }
-    const { position } = this[_calcScreen]();
+    const { position } = this[_screen].calcScreen();
     const { ySize } = this[_scroller].calc(position);
-    const moveY = this[_calcScreenScroll](position.top, position.bottom, ySize, height, dy);
+    const moveY = this[_screen].calcScreenScroll(position.top, position.bottom, ySize, height, dy);
     this.scrollY(scrollY + moveY);
     this.draw();
   }
@@ -358,7 +267,7 @@ class Board {
     if (!scrollType) {
       return;
     }
-    const { position } = this[_calcScreen]();
+    const { position } = this[_screen].calcScreen();
     const { xSize, ySize } = this[_scroller].calc(position);
     if (scrollType === 'x') {
       this[_doScrollX](point.x - xSize / 2, 0);
