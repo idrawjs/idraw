@@ -1,9 +1,9 @@
 # @idraw/core
 
-* [] FireFox's Compatibility Question (And Safair Browser) 
+* [x] FireFox's Compatibility Question (And Safair Browser) 
 * [] Area select
 * [] Listen keyboard action
-* [] Hover element style
+* [x] Hover element style
 * [] Keep all num two decimals
 * [] Get center point at screen
 * [x] Cursor style
