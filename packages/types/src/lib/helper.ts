@@ -5,6 +5,16 @@ import { TypePoint } from './board';
 
 type TypeHelperConfig = {
   elementIndexMap: {[key: string]: number},
+  selectedAreaWrapper?: {
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+    startPoint: TypePoint;
+    endPoint: TypePoint;
+    lineWidth: number;
+    color: string;
+  };
   selectedElementWrapper?: {
     uuid: string;
     dotSize: number;
@@ -19,10 +29,6 @@ type TypeHelperConfig = {
       left: TypePoint,
       rotate: TypePoint,
     },
-    // limit: {
-    //   minWidth: number;
-    //   minHeight: number;
-    // },
     lineDash: number[];
     lineWidth: number;
     color: string;
@@ -38,6 +44,7 @@ type TypeHelperConfig = {
     color: string,
   }
 }
+
 
 type TypeHelperUpdateOpts = {
   width: number;

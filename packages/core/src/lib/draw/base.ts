@@ -11,6 +11,7 @@ const { istype, color } = util;
 export function clearContext(ctx: TypeContext) {
   ctx.setFillStyle('rgb(0 0 0 / 0%)');
   ctx.setStrokeStyle('rgb(0 0 0 / 0%)');
+  ctx.setLineDash([]);
 }
 
 export function drawBgColor(ctx: TypeContext, color: string) {

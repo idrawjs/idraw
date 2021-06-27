@@ -17,12 +17,17 @@ import { rotateContext, } from './transform';
 
 const { deepClone } = util.data;
 
+const areaLineWidth = 2;
+const areaColor = '#2ab6f1';
+
 export class Helper implements TypeHelper {
 
   private _helperConfig: TypeHelperConfig;
   private _coreConfig: TypeConfigStrict;
   private _ctx: TypeContext;
   private _board: Board;
+  private _areaStart: TypePoint = { x: 0, y: 0};
+  private _areaEnd: TypePoint = { x: 0, y: 0};
 
   constructor(board: Board, config: TypeConfigStrict) {
     this._board = board;
@@ -87,6 +92,37 @@ export class Helper implements TypeHelper {
       }
     });
     return [uuid, direction];
+  }
+
+  startSelectArea(p: TypePoint) {
+    this._areaStart = p;
+  }
+
+  changeSelectArea(p: TypePoint) {
+    this._areaEnd = p;
+    this._calcSelectedArea();
+  }
+
+  clearSelectedArea() {
+    this._areaStart = {x: 0, y: 0};
+    this._areaStart = {x: 0, y: 0};
+    this._calcSelectedArea();
+  }
+
+  private _calcSelectedArea() {
+    const start = this._areaStart;
+    const end = this._areaEnd;
+
+    this._helperConfig.selectedAreaWrapper = {
+      x: Math.min(start.x, end.x),
+      y: Math.min(start.y, end.y),
+      w: Math.abs(end.x - start.x),
+      h: Math.abs(end.y - start.y),
+      startPoint: {x: start.x, y: start.y},
+      endPoint: {x: end.x, y: end.y},
+      lineWidth: areaLineWidth,
+      color: areaColor,
+    }
   }
 
   private _updateElementIndex(data: TypeData) {

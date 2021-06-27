@@ -57,14 +57,25 @@ export function drawElementWrapper(ctx: TypeContext, config: TypeHelperConfig) {
 }
 
 
-// export function drawDisplayContextScrollWrapper(displayCtx: TypeContext, config: TypeHelperConfig) {
-//   // console.log('config?.displayContextScrollWrapper = ', config?.displayContextScrollWrapper);
-//   // if (!config?.displayContextScrollWrapper) {
-//   //   return;
-//   // }
-
-//   // draw scroll x-line
-
-//   // draw scroll y-line
-
-// }
+export function drawAreaWrapper(ctx: TypeContext, config: TypeHelperConfig) {
+  if (!config?.selectedAreaWrapper) {
+    return;
+  }
+  const wrapper = config.selectedAreaWrapper;
+  if (wrapper && wrapper.w > 0 && wrapper.h > 0) {
+    clearContext(ctx);
+    // draw wrapper's box
+    ctx.beginPath();
+    ctx.setLineDash([]);
+    ctx.setLineWidth(wrapper.lineWidth);
+    ctx.setStrokeStyle(wrapper.color);
+    ctx.moveTo(wrapper.x, wrapper.y);
+    ctx.lineTo(wrapper.x + wrapper.w, wrapper.y);
+    ctx.lineTo(wrapper.x + wrapper.w, wrapper.y + wrapper.h);
+    ctx.lineTo(wrapper.x, wrapper.y + wrapper.h);
+    ctx.lineTo(wrapper.x, wrapper.y);
+    ctx.stroke();
+    ctx.closePath();
+  }
+  
+}
