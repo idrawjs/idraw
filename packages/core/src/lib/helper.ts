@@ -96,6 +96,7 @@ export class Helper implements TypeHelper {
 
   startSelectArea(p: TypePoint) {
     this._areaStart = p;
+    this._areaEnd = p;
   }
 
   changeSelectArea(p: TypePoint) {
@@ -105,7 +106,7 @@ export class Helper implements TypeHelper {
 
   clearSelectedArea() {
     this._areaStart = {x: 0, y: 0};
-    this._areaStart = {x: 0, y: 0};
+    this._areaEnd = {x: 0, y: 0};
     this._calcSelectedArea();
   }
 
