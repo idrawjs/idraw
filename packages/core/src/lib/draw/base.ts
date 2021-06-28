@@ -12,6 +12,7 @@ export function clearContext(ctx: TypeContext) {
   ctx.setFillStyle('rgb(0 0 0 / 0%)');
   ctx.setStrokeStyle('rgb(0 0 0 / 0%)');
   ctx.setLineDash([]);
+  ctx.setGlobalAlpha(1);
 }
 
 export function drawBgColor(ctx: TypeContext, color: string) {

@@ -64,7 +64,11 @@ export function drawAreaWrapper(ctx: TypeContext, config: TypeHelperConfig) {
   const wrapper = config.selectedAreaWrapper;
   if (wrapper && wrapper.w > 0 && wrapper.h > 0) {
     clearContext(ctx);
-    // draw wrapper's box
+    ctx.setGlobalAlpha(0.3);
+    ctx.setFillStyle(wrapper.color);
+    ctx.fillRect(wrapper.x, wrapper.y, wrapper.w, wrapper.h);
+
+    clearContext(ctx);
     ctx.beginPath();
     ctx.setLineDash([]);
     ctx.setLineWidth(wrapper.lineWidth);
