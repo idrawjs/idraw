@@ -357,6 +357,9 @@ class Core {
   }
 
   private [_handleHover](point: TypePoint): void {
+    if (this[_mode] === Mode.SELECT_AREA) {
+      this[_board].resetCursor();
+    }
     if (this[_cursorStatus] === CursorStatus.NULL) {
       const cursor = this[_mapper].judgePointCursor(point, this[_data]);
       this[_board].setCursor(cursor);

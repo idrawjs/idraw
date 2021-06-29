@@ -17,8 +17,9 @@ import { rotateContext, } from './transform';
 
 const { deepClone } = util.data;
 
-const areaLineWidth = 2;
+const areaLineWidth = 1.5;
 const areaColor = '#2ab6f1';
+const areaLineDash = [4, 3];
 
 export class Helper implements TypeHelper {
 
@@ -114,14 +115,20 @@ export class Helper implements TypeHelper {
     const start = this._areaStart;
     const end = this._areaEnd;
 
+    const transform = this._ctx.getTransform();
+    const { scale = 1, scrollX = 0, scrollY = 0 } = transform;
+
     this._helperConfig.selectedAreaWrapper = {
-      x: Math.min(start.x, end.x),
-      y: Math.min(start.y, end.y),
-      w: Math.abs(end.x - start.x),
-      h: Math.abs(end.y - start.y),
+      x: (Math.min(start.x, end.x) - scrollX) / scale,
+      y: (Math.min(start.y, end.y) - scrollY) / scale,
+      w: Math.abs(end.x - start.x) / scale,
+      h: Math.abs(end.y - start.y) / scale,
       startPoint: {x: start.x, y: start.y},
       endPoint: {x: end.x, y: end.y},
-      lineWidth: areaLineWidth,
+      lineWidth: areaLineWidth / scale,
+      lineDash: areaLineDash.map((num) => {
+        return num / scale
+      }),
       color: areaColor,
     }
   }

@@ -70,7 +70,7 @@ export function drawAreaWrapper(ctx: TypeContext, config: TypeHelperConfig) {
 
     clearContext(ctx);
     ctx.beginPath();
-    ctx.setLineDash([]);
+    ctx.setLineDash(wrapper.lineDash);
     ctx.setLineWidth(wrapper.lineWidth);
     ctx.setStrokeStyle(wrapper.color);
     ctx.moveTo(wrapper.x, wrapper.y);

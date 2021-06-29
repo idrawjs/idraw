@@ -34,8 +34,6 @@ export function drawContext(
     drawBgColor(ctx, data.bgColor);
   }
 
-  drawAreaWrapper(ctx, helperConfig);
-
   if (!(data.elements.length > 0)) {
     return;
   }
@@ -64,7 +62,8 @@ export function drawContext(
       }
     }
   }
+  
   drawElementWrapper(ctx, helperConfig);
-  // drawDisplayContextScrollWrapper(ctx, helperConfig)
+  drawAreaWrapper(ctx, helperConfig);
 }
 

@@ -13,6 +13,7 @@ type TypeHelperConfig = {
     startPoint: TypePoint;
     endPoint: TypePoint;
     lineWidth: number;
+    lineDash: number[];
     color: string;
   };
   selectedElementWrapper?: {
