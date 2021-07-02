@@ -111,6 +111,33 @@ export class Helper implements TypeHelper {
     this._calcSelectedArea();
   }
 
+  calcSelectedElements(data: TypeData) {
+    const start = this._areaStart;
+    const end = this._areaEnd;
+    const x = Math.min(start.x, end.x);
+    const y = Math.min(start.y, end.y);
+    const w = Math.abs(end.x - start.x);
+    const h = Math.abs(end.y - start.y);
+    const uuids: string[] = [];
+    const ctx = this._ctx;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + w, y);
+    ctx.lineTo(x + w, y + h);
+    ctx.lineTo(x, y + h);
+    ctx.lineTo(x, y);
+    // ctx.rect(x, y, w, h);
+    ctx.closePath();
+    data.elements.forEach((elem) => {
+      const centerX = elem.x + elem.w / 2;
+      const centerY = elem.y + elem.h / 2;
+      if (ctx.isPointInPath(centerX, centerY)) {
+        uuids.push(elem.uuid);
+      }
+    });
+    return uuids;
+  }
+
   private _calcSelectedArea() {
     const start = this._areaStart;
     const end = this._areaEnd;

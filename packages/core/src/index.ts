@@ -348,6 +348,9 @@ class Core {
         this[_emitChangeData]();
       }
     } else if (this[_mode] === Mode.SELECT_AREA) {
+      // TODO 
+      const uuids = this[_helper].calcSelectedElements(this[_data]);
+      console.log('selected area elements = ', uuids);
       this[_helper].clearSelectedArea();
     }
     this[_selectedUUID] = null;
