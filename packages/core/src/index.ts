@@ -16,10 +16,10 @@ import is, { TypeIs } from './lib/is';
 import check, { TypeCheck } from './lib/check';
 import {
   _board, _data, _opts, _config, _renderer, _element, _helper, _hasInited,
-  _hasInitedData, _mode, _selectedUUID, _prevPoint, _selectedDotDirection, 
-  _coreEvent, _mapper, _initEvent, _handlePoint, _handleMoveStart, _handleMove,
-  _handleMoveEnd, _handleHover, _dragElement, _transfromElement, _emitChangeScreen,
-  _emitChangeData, _onlyRender, _cursorStatus,
+  _hasInitedData, _mode, _selectedUUID, _selectedUUIDList, _prevPoint, 
+  _selectedDotDirection, _coreEvent, _mapper, _initEvent, _handlePoint,
+  _handleMoveStart, _handleMove, _handleMoveEnd, _handleHover, _dragElement,
+  _transfromElement, _emitChangeScreen, _emitChangeData, _onlyRender, _cursorStatus,
 } from './names';
 
 const { time } = util;
@@ -53,6 +53,7 @@ class Core {
   private [_mode]: Mode = Mode.NULL;
   private [_coreEvent]: CoreEvent = new CoreEvent();
   private [_selectedUUID]: string | null = null;
+  private [_selectedUUIDList]: string[] = [];
   private [_prevPoint]: TypePoint | null = null;
   private [_selectedDotDirection]: TypeHelperWrapperDotDirection | null = null;
   private [_onlyRender]: boolean = false;
@@ -94,6 +95,7 @@ class Core {
       height: this[_opts].height,
       canScroll: this[_opts].canScroll === true,
       selectedUUID: this[_selectedUUID],
+      selectedUUIDList: this[_selectedUUIDList],
       devicePixelRatio: this[_opts].devicePixelRatio,
       scale: transfrom.scale,
       scrollX: transfrom.scrollX,
@@ -118,6 +120,7 @@ class Core {
         this[_mode] = Mode.NULL;
       }
       this[_selectedUUID] = uuid;
+      this[_selectedUUIDList] = [];
       this.draw();
     }
   }
@@ -283,6 +286,7 @@ class Core {
         }
       } else {
         // Controll Area
+        this[_selectedUUIDList] = [];
         this[_mode] = Mode.SELECT_AREA;
       }
     }
@@ -348,10 +352,13 @@ class Core {
         this[_emitChangeData]();
       }
     } else if (this[_mode] === Mode.SELECT_AREA) {
-      // TODO 
       const uuids = this[_helper].calcSelectedElements(this[_data]);
-      console.log('selected area elements = ', uuids);
+      if (uuids.length > 0) {
+        this[_selectedUUIDList] = uuids;
+        this[_selectedUUID] = null;
+      }
       this[_helper].clearSelectedArea();
+      this.draw();
     }
     this[_selectedUUID] = null;
     this[_prevPoint] = null;

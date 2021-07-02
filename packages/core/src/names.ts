@@ -9,6 +9,7 @@ const _hasInited = Symbol('_hasInited');
 const _hasInitedData = Symbol('_hasInitedData');
 const _mode = Symbol('_mode');
 const _selectedUUID = Symbol('_selectedUUID');
+const _selectedUUIDList = Symbol('_selectedUUIDList');
 const _prevPoint = Symbol('_prevPoint');
 const _selectedDotDirection = Symbol('_selectedDotDirection');
 const _coreEvent = Symbol('_coreEvent');
@@ -28,8 +29,8 @@ const _cursorStatus = Symbol('_cursorStatus');
 
 export {
   _board, _data, _opts, _config, _renderer, _element, _helper, _hasInited,
-  _hasInitedData, _mode, _selectedUUID, _prevPoint, _selectedDotDirection, 
-  _coreEvent, _mapper, _initEvent, _handlePoint, _handleMoveStart, _handleMove,
-  _handleMoveEnd, _handleHover, _dragElement, _transfromElement, _emitChangeScreen,
-  _emitChangeData, _onlyRender, _cursorStatus,
+  _hasInitedData, _mode, _selectedUUID, _selectedUUIDList, _prevPoint, 
+  _selectedDotDirection, _coreEvent, _mapper, _initEvent, _handlePoint,
+  _handleMoveStart, _handleMove, _handleMoveEnd, _handleHover, _dragElement,
+  _transfromElement, _emitChangeScreen, _emitChangeData, _onlyRender, _cursorStatus,
 }

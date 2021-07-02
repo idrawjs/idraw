@@ -45,6 +45,7 @@ export class Helper implements TypeHelper {
   ): void {
     this._updateElementIndex(data);
     this._updateSelectedElementWrapper(data, opts);
+    this._updateSelectedElementListWrapper(data, opts);
     this._updateDisplayContextScrollWrapper(data, opts);
   }
 
@@ -284,5 +285,9 @@ export class Helper implements TypeHelper {
       color: '#e0e0e0'
     };
     
+  }
+
+  private _updateSelectedElementListWrapper(data: TypeData, opts: TypeHelperUpdateOpts) {
+    console.log('_updateSelectedElementListWrapper = ', opts.selectedUUIDList);
   }
 }

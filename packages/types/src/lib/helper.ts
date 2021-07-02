@@ -51,6 +51,7 @@ type TypeHelperUpdateOpts = {
   width: number;
   height: number;
   selectedUUID?: string | null;
+  selectedUUIDList?: string[];
   devicePixelRatio: number;
   scale: number;
   canScroll: boolean;
