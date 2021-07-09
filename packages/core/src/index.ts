@@ -18,7 +18,7 @@ import {
   _board, _data, _opts, _config, _renderer, _element, _helper, _hasInited,
   _hasInitedData, _mode, _selectedUUID, _selectedUUIDList, _prevPoint, 
   _selectedDotDirection, _coreEvent, _mapper, _initEvent, _handlePoint,
-  _handleMoveStart, _handleMove, _handleMoveEnd, _handleHover, _dragElement,
+  _handleMoveStart, _handleMove, _handleMoveEnd, _handleHover, _dragElements,
   _transfromElement, _emitChangeScreen, _emitChangeData, _onlyRender, _cursorStatus,
 } from './names';
 
@@ -29,6 +29,7 @@ const { createUUID } = util.uuid;
 enum Mode {
   NULL = 'null',
   SELECT_ELEMENT = 'select-element',
+  SELECT_ELEMENT_LIST = 'select-element-list',
   SELECT_ELEMENT_WRAPPER_DOT = 'select-element-wrapper-dot',
   SELECT_AREA = 'select-area',
 }
@@ -265,31 +266,36 @@ class Core {
     if (!this[_mapper].isEffectivePoint(point)) {
       return;
     }
-    const [uuid, direction] = this[_helper].isPointInElementWrapperDot(point);
-    
-    if (uuid && direction) {
-      // Controll Element-Wrapper
-      this[_mode] = Mode.SELECT_ELEMENT_WRAPPER_DOT;
-      this[_selectedDotDirection] = direction;
-      this[_selectedUUID] = uuid;
+    if (this[_helper].isPointInElementList(point, this[_data])) {
+      // Coontroll Element-List
+      this[_mode] = Mode.SELECT_ELEMENT_LIST;
     } else {
-      const [index, uuid] = this[_element].isPointInElement(point, this[_data]);
-      if (index >= 0) {
-        // Controll Element
-        this.selectElement(index, { useMode: true });
-        if (typeof uuid === 'string' && this[_coreEvent].has('screenSelectElement')) {
-          this[_coreEvent].trigger(
-            'screenSelectElement', 
-            { index, uuid, element: deepClone(this[_data].elements?.[index])}
-          );
-          this[_emitChangeScreen]();
-        }
+      const [uuid, direction] = this[_helper].isPointInElementWrapperDot(point);
+      if (uuid && direction) {
+        // Controll Element-Wrapper
+        this[_mode] = Mode.SELECT_ELEMENT_WRAPPER_DOT;
+        this[_selectedDotDirection] = direction;
+        this[_selectedUUID] = uuid;
       } else {
-        // Controll Area
-        this[_selectedUUIDList] = [];
-        this[_mode] = Mode.SELECT_AREA;
+        const [index, uuid] = this[_element].isPointInElement(point, this[_data]);
+        if (index >= 0) {
+          // Controll Element
+          this.selectElement(index, { useMode: true });
+          if (typeof uuid === 'string' && this[_coreEvent].has('screenSelectElement')) {
+            this[_coreEvent].trigger(
+              'screenSelectElement', 
+              { index, uuid, element: deepClone(this[_data].elements?.[index])}
+            );
+            this[_emitChangeScreen]();
+          }
+        } else {
+          // Controll Area
+          this[_selectedUUIDList] = [];
+          this[_mode] = Mode.SELECT_AREA;
+        }
       }
     }
+    
     this.draw();
   }
 
@@ -297,7 +303,9 @@ class Core {
     this[_prevPoint] = point;
     const uuid = this[_selectedUUID];
 
-    if (typeof uuid === 'string' && this[_coreEvent].has('screenMoveElementStart')) {
+    if (this[_mode] === Mode.SELECT_ELEMENT_LIST) {
+      // TODO
+    } else if (typeof uuid === 'string' && this[_coreEvent].has('screenMoveElementStart')) {
       this[_coreEvent].trigger('screenMoveElementStart', {
         index: this[_element].getElementIndex(this[_data], uuid),
         uuid,
@@ -310,9 +318,13 @@ class Core {
   }
 
   private [_handleMove](point: TypePoint): void {
-    if (typeof this[_selectedUUID] === 'string') {
+    if (this[_mode] === Mode.SELECT_ELEMENT_LIST) {
+      this[_dragElements](this[_selectedUUIDList], point, this[_prevPoint]);
+      this.draw();
+      this[_cursorStatus] = CursorStatus.DRAGGING;
+    } else if (typeof this[_selectedUUID] === 'string') {
       if (this[_mode] === Mode.SELECT_ELEMENT) {
-        this[_dragElement](this[_selectedUUID] as string, point, this[_prevPoint]);
+        this[_dragElements]([this[_selectedUUID] as string], point, this[_prevPoint]);
         this.draw();
         this[_cursorStatus] = CursorStatus.DRAGGING;
       } else if (this[_mode] === Mode.SELECT_ELEMENT_WRAPPER_DOT && this[_selectedDotDirection]) {
@@ -356,6 +368,8 @@ class Core {
       if (uuids.length > 0) {
         this[_selectedUUIDList] = uuids;
         this[_selectedUUID] = null;
+      } else {
+        this[_mode] = Mode.NULL;
       }
       this[_helper].clearSelectedArea();
       this.draw();
@@ -375,11 +389,13 @@ class Core {
     }
   }
 
-  private [_dragElement](uuid: string, point: TypePoint, prevPoint: TypePoint|null): void {
+  private [_dragElements](uuids: string[], point: TypePoint, prevPoint: TypePoint|null): void {
     if (!prevPoint) {
       return;
     }
-    this[_element].dragElement(this[_data], uuid, point, prevPoint, this[_board].getContext().getTransform().scale);
+    uuids.forEach((uuid) => {
+      this[_element].dragElement(this[_data], uuid, point, prevPoint, this[_board].getContext().getTransform().scale);
+    })
     this.draw();
   }
 

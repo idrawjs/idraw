@@ -7,7 +7,7 @@ import {
 import Board from '@idraw/board';
 import util from '@idraw/util';
 import { parseAngleToRadian, calcElementCenter } from './calculate';
-import { rotateContext, } from './transform';
+import { rotateContext, rotateElement } from './transform';
 
 const { deepClone } = util.data;
 
@@ -88,6 +88,48 @@ export class Helper implements TypeHelper {
       }
     });
     return [uuid, direction];
+  }
+
+  isPointInElementList(p: TypePoint, data: TypeData): boolean {
+    const ctx = this._ctx;
+    let idx = -1;
+    let uuid = null;
+    const wrapperList = this._helperConfig?.selectedElementListWrappers || [];
+    for (let i = 0; i < wrapperList.length; i++) {
+      const wrapper = wrapperList[i];
+      const elemIdx = this._helperConfig.elementIndexMap[wrapper.uuid];
+      const ele = data.elements[elemIdx];
+      if (!ele) continue;
+      let bw = 0;
+      // @ts-ignore
+      if (ele.desc?.borderWidth > 0) {
+        // @ts-ignore
+        bw = ele.desc.borderWidth;
+      }
+      rotateElement(ctx, ele, () => {
+        ctx.beginPath();
+        ctx.moveTo(ele.x - bw, ele.y - bw);
+        ctx.lineTo(ele.x + ele.w + bw, ele.y - bw);
+        ctx.lineTo(ele.x + ele.w + bw, ele.y + ele.h + bw);
+        ctx.lineTo(ele.x - bw, ele.y + ele.h + bw);
+        ctx.lineTo(ele.x, ele.y);
+
+        ctx.rect(ele.x, ele.y, ele.w, ele.h);
+        ctx.closePath();
+        if (ctx.isPointInPath(p.x, p.y)) {
+          idx = i;
+          uuid = ele.uuid;
+        }
+      });
+      if (idx >= 0) {
+        break;
+      }
+    }
+    if (uuid && idx >= 0) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   startSelectArea(p: TypePoint) {
