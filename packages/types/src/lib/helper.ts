@@ -3,7 +3,7 @@ import { TypePoint } from './board';
 
 // type test = {[uuid string]: TypeElement}
 
-type SelectedElementWrapper = {
+type TypeHeplerSelectedElementWrapper = {
   uuid: string;
   dotSize: number;
   dots: {
@@ -37,8 +37,8 @@ type TypeHelperConfig = {
     lineDash: number[];
     color: string;
   };
-  selectedElementWrapper?: SelectedElementWrapper,
-  selectedElementListWrappers?: Array<SelectedElementWrapper>;
+  selectedElementWrapper?: TypeHeplerSelectedElementWrapper,
+  selectedElementListWrappers?: Array<TypeHeplerSelectedElementWrapper>;
   displayContextScrollWrapper?: {
     lineSize: number,
     xSize: number,
@@ -80,4 +80,5 @@ export {
   TypeHelperConfig,
   TypeHelperUpdateOpts,
   TypeHelperWrapperDotDirection,
+  TypeHeplerSelectedElementWrapper,
 };

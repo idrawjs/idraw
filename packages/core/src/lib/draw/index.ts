@@ -13,8 +13,7 @@ import { drawImage } from './image';
 import { drawSVG } from './svg';
 import { drawText } from './text';
 import {
-  drawElementWrapper,
-  drawAreaWrapper,
+  drawElementWrapper, drawAreaWrapper, drawElementListWrappers,
   // drawDisplayContextScrollWrapper,
 } from './wrapper';
 
@@ -65,5 +64,6 @@ export function drawContext(
   
   drawElementWrapper(ctx, helperConfig);
   drawAreaWrapper(ctx, helperConfig);
+  drawElementListWrappers(ctx, helperConfig);
 }
 

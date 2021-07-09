@@ -1,14 +1,8 @@
 import {
-  TypeData,
-  TypeHelper,
-  TypeHelperConfig,
-  TypeHelperUpdateOpts,
-  TypeHelperWrapperDotDirection,
-  TypeElement,
-  TypeElemDesc,
-  TypeContext,
-  TypePoint,
-  TypeConfigStrict,
+  TypeData, TypeHelper, TypeHelperConfig, TypeHelperUpdateOpts,
+  TypeHelperWrapperDotDirection, TypeElement,
+  TypeElemDesc, TypeContext, TypePoint, TypeConfigStrict,
+  TypeHeplerSelectedElementWrapper,
 } from '@idraw/types';
 import Board from '@idraw/board';
 import util from '@idraw/util';
@@ -177,15 +171,25 @@ export class Helper implements TypeHelper {
     const index: number = this._helperConfig.elementIndexMap[uuid];
     const elem = data.elements[index];
     const wrapper = this._createSelectedElementWrapper(elem, opts);
-    return wrapper;
+    this._helperConfig.selectedElementWrapper = wrapper;
   }
 
   private _updateSelectedElementListWrapper(data: TypeData, opts: TypeHelperUpdateOpts) {
-    console.log('_updateSelectedElementListWrapper = ', opts.selectedUUIDList);
-    // const wrapperList = [];
+    const { selectedUUIDList } = opts;
+    const wrapperList: TypeHeplerSelectedElementWrapper[] = [];
+    data.elements.forEach((elem) => {
+      if (selectedUUIDList?.includes(elem.uuid)) {
+        const wrapper = this._createSelectedElementWrapper(elem, opts);
+        wrapperList.push(wrapper);
+      }
+    });
+    this._helperConfig.selectedElementListWrappers = wrapperList;
   }
 
-  private _createSelectedElementWrapper(elem: TypeElement<keyof TypeElemDesc>, opts: TypeHelperUpdateOpts) {
+  private _createSelectedElementWrapper(
+    elem: TypeElement<keyof TypeElemDesc>,
+    opts: TypeHelperUpdateOpts
+  ): TypeHeplerSelectedElementWrapper {
     const { scale } = opts;
     const dotSize = this._coreConfig.elementWrapper.dotSize / scale;
     const lineWidth = this._coreConfig.elementWrapper.lineWidth / scale;
@@ -194,7 +198,7 @@ export class Helper implements TypeHelper {
     // @ts-ignore
     const bw = elem.desc?.borderWidth || 0;  
     
-    const wrapper: TypeHelperConfig['selectedElementWrapper'] = {
+    const wrapper: TypeHeplerSelectedElementWrapper = {
       uuid: elem.uuid,
       dotSize: dotSize,
       dots: {
@@ -245,7 +249,7 @@ export class Helper implements TypeHelper {
       wrapper.translate = calcElementCenter(elem);
     }
 
-    this._helperConfig.selectedElementWrapper = wrapper;
+    return wrapper;
   }
 
   private _updateDisplayContextScrollWrapper(data: TypeData, opts: TypeHelperUpdateOpts) {

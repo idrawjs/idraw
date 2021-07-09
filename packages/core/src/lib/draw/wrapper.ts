@@ -56,7 +56,6 @@ export function drawElementWrapper(ctx: TypeContext, config: TypeHelperConfig) {
   });
 }
 
-
 export function drawAreaWrapper(ctx: TypeContext, config: TypeHelperConfig) {
   if (!config?.selectedAreaWrapper) {
     return;
@@ -81,5 +80,31 @@ export function drawAreaWrapper(ctx: TypeContext, config: TypeHelperConfig) {
     ctx.stroke();
     ctx.closePath();
   }
+  
+}
+
+export function drawElementListWrappers(ctx: TypeContext, config: TypeHelperConfig) {
+  if (!Array.isArray(config?.selectedElementListWrappers)) {
+    return;
+  }
+  const wrapperList = config.selectedElementListWrappers;
+
+  wrapperList?.forEach((wrapper) => {
+    clearContext(ctx);
+    rotateContext(ctx, wrapper.translate, wrapper.radian || 0, () => {
+      ctx.beginPath();
+      ctx.setLineDash(wrapper.lineDash);
+      ctx.setLineWidth(wrapper.lineWidth);
+      ctx.setStrokeStyle(wrapper.color);
+      ctx.moveTo(wrapper.dots.topLeft.x, wrapper.dots.topLeft.y);
+      ctx.lineTo(wrapper.dots.topRight.x, wrapper.dots.topRight.y);
+      ctx.lineTo(wrapper.dots.bottomRight.x, wrapper.dots.bottomRight.y);
+      ctx.lineTo(wrapper.dots.bottomLeft.x, wrapper.dots.bottomLeft.y);
+      ctx.lineTo(wrapper.dots.topLeft.x, wrapper.dots.topLeft.y - wrapper.lineWidth / 2);
+      ctx.stroke();
+      ctx.closePath();
+    });
+  })
+
   
 }
