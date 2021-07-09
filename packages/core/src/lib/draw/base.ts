@@ -9,8 +9,10 @@ import { rotateElement } from './../transform';
 const { istype, color } = util;
 
 export function clearContext(ctx: TypeContext) {
-  ctx.setFillStyle('rgb(0 0 0 / 0%)');
-  ctx.setStrokeStyle('rgb(0 0 0 / 0%)');
+  // ctx.setFillStyle('rgb(0 0 0 / 100%)');
+  // ctx.setStrokeStyle('rgb(0 0 0 / 100%)');
+  ctx.setFillStyle('#000000');
+  ctx.setStrokeStyle('#000000');
   ctx.setLineDash([]);
   ctx.setGlobalAlpha(1);
 }

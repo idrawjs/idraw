@@ -52,6 +52,27 @@ export function drawElementWrapper(ctx: TypeContext, config: TypeHelperConfig) {
         ctx.fill();
         ctx.closePath();
       });
+    } else {
+      // draw wrapper's lock dots,
+      clearContext(ctx);
+      ctx.setFillStyle(wrapper.color);
+      [
+        wrapper.dots.topLeft, wrapper.dots.top, wrapper.dots.topRight, wrapper.dots.right,
+        wrapper.dots.bottomRight, wrapper.dots.bottom, wrapper.dots.bottomLeft, wrapper.dots.left,
+      ].forEach((dot) => {
+
+        ctx.beginPath();
+        ctx.moveTo(dot.x - wrapper.dotSize / 2, dot.y - wrapper.dotSize / 2);
+        ctx.lineTo(dot.x + wrapper.dotSize / 2, dot.y + wrapper.dotSize / 2);
+        ctx.stroke();
+        ctx.closePath();
+
+        ctx.beginPath();
+        ctx.moveTo(dot.x + wrapper.dotSize / 2, dot.y - wrapper.dotSize / 2);
+        ctx.lineTo(dot.x - wrapper.dotSize / 2, dot.y + wrapper.dotSize / 2);
+        ctx.stroke();
+        ctx.closePath();
+      });
     }
   });
 }
@@ -115,6 +136,30 @@ export function drawElementListWrappers(ctx: TypeContext, config: TypeHelperConf
       ctx.lineTo(wrapper.dots.topLeft.x, wrapper.dots.topLeft.y - wrapper.lineWidth / 2);
       ctx.stroke();
       ctx.closePath();
+
+      if (wrapper.lock === true) {
+        // draw wrapper's lock dots,
+        clearContext(ctx);
+        ctx.setFillStyle(wrapper.color);
+        [
+          wrapper.dots.topLeft, wrapper.dots.top, wrapper.dots.topRight, wrapper.dots.right,
+          wrapper.dots.bottomRight, wrapper.dots.bottom, wrapper.dots.bottomLeft, wrapper.dots.left,
+        ].forEach((dot) => {
+
+          ctx.beginPath();
+          ctx.moveTo(dot.x - wrapper.dotSize / 2, dot.y - wrapper.dotSize / 2);
+          ctx.lineTo(dot.x + wrapper.dotSize / 2, dot.y + wrapper.dotSize / 2);
+          ctx.stroke();
+          ctx.closePath();
+
+          ctx.beginPath();
+          ctx.moveTo(dot.x + wrapper.dotSize / 2, dot.y - wrapper.dotSize / 2);
+          ctx.lineTo(dot.x - wrapper.dotSize / 2, dot.y + wrapper.dotSize / 2);
+          ctx.stroke();
+          ctx.closePath();
+        });
+      }
+
     });
   });
 }
