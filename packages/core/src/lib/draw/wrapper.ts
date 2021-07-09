@@ -92,6 +92,18 @@ export function drawElementListWrappers(ctx: TypeContext, config: TypeHelperConf
   wrapperList?.forEach((wrapper) => {
     clearContext(ctx);
     rotateContext(ctx, wrapper.translate, wrapper.radian || 0, () => {
+      
+      clearContext(ctx);
+      ctx.setGlobalAlpha(0.05);
+      ctx.setFillStyle(wrapper.color);
+      ctx.fillRect(
+        wrapper.dots.topLeft.x,
+        wrapper.dots.topLeft.y,
+        wrapper.dots.bottomRight.x - wrapper.dots.topLeft.x,
+        wrapper.dots.bottomRight.y - wrapper.dots.topLeft.y,
+      );
+
+      clearContext(ctx);
       ctx.beginPath();
       ctx.setLineDash(wrapper.lineDash);
       ctx.setLineWidth(wrapper.lineWidth);
@@ -105,6 +117,5 @@ export function drawElementListWrappers(ctx: TypeContext, config: TypeHelperConf
       ctx.closePath();
     });
   })
-
-  
 }
+

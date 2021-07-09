@@ -14,7 +14,6 @@ import { drawSVG } from './svg';
 import { drawText } from './text';
 import {
   drawElementWrapper, drawAreaWrapper, drawElementListWrappers,
-  // drawDisplayContextScrollWrapper,
 } from './wrapper';
 
 const { isColorStr } = util.color;

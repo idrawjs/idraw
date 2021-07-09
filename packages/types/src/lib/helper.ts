@@ -24,19 +24,21 @@ type TypeHeplerSelectedElementWrapper = {
   translate?: TypePoint;
 }
 
+type TypeHeplerSelectedAreaWrapper = {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  startPoint: TypePoint;
+  endPoint: TypePoint;
+  lineWidth: number;
+  lineDash: number[];
+  color: string;
+}
+
 type TypeHelperConfig = {
   elementIndexMap: {[key: string]: number},
-  selectedAreaWrapper?: {
-    x: number;
-    y: number;
-    w: number;
-    h: number;
-    startPoint: TypePoint;
-    endPoint: TypePoint;
-    lineWidth: number;
-    lineDash: number[];
-    color: string;
-  };
+  selectedAreaWrapper?: TypeHeplerSelectedAreaWrapper;
   selectedElementWrapper?: TypeHeplerSelectedElementWrapper,
   selectedElementListWrappers?: Array<TypeHeplerSelectedElementWrapper>;
   displayContextScrollWrapper?: {
@@ -81,4 +83,5 @@ export {
   TypeHelperUpdateOpts,
   TypeHelperWrapperDotDirection,
   TypeHeplerSelectedElementWrapper,
+  TypeHeplerSelectedAreaWrapper,
 };

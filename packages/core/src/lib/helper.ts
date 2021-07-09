@@ -2,7 +2,7 @@ import {
   TypeData, TypeHelper, TypeHelperConfig, TypeHelperUpdateOpts,
   TypeHelperWrapperDotDirection, TypeElement,
   TypeElemDesc, TypeContext, TypePoint, TypeConfigStrict,
-  TypeHeplerSelectedElementWrapper,
+  TypeHeplerSelectedElementWrapper
 } from '@idraw/types';
 import Board from '@idraw/board';
 import util from '@idraw/util';
@@ -177,7 +177,7 @@ export class Helper implements TypeHelper {
   private _updateSelectedElementListWrapper(data: TypeData, opts: TypeHelperUpdateOpts) {
     const { selectedUUIDList } = opts;
     const wrapperList: TypeHeplerSelectedElementWrapper[] = [];
-    data.elements.forEach((elem) => {
+    data.elements.forEach((elem, i) => {
       if (selectedUUIDList?.includes(elem.uuid)) {
         const wrapper = this._createSelectedElementWrapper(elem, opts);
         wrapperList.push(wrapper);
@@ -298,7 +298,6 @@ export class Helper implements TypeHelper {
       translateX,
       color: '#e0e0e0'
     };
-    
   }
 
   
