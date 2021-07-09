@@ -174,7 +174,7 @@ export class Element {
       width: limitNum(elem.w),
       height: limitNum(elem.h),
       angle: limitAngle(elem.angle || 0),
-    }
+    };
   }
 
   getElementIndex(data: TypeData, uuid: string): number {

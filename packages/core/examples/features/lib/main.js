@@ -11,7 +11,7 @@ const defaultConf = {
   scale: 1,
   scrollX: 0,
   scrollY: 0,
-}
+};
 const core = new Core(mount, {
   width: 600,
   height: 400,

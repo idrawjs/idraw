@@ -191,10 +191,10 @@ export class Helper implements TypeHelper {
       endPoint: {x: end.x, y: end.y},
       lineWidth: areaLineWidth / scale,
       lineDash: areaLineDash.map((num) => {
-        return num / scale
+        return num / scale;
       }),
       color: areaColor,
-    }
+    };
   }
 
   private _updateElementIndex(data: TypeData) {

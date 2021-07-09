@@ -11,4 +11,4 @@ type TypeCoreOptions = {
 
 export {
   TypeCoreOptions
-}
+};

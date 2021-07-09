@@ -116,6 +116,6 @@ export function drawElementListWrappers(ctx: TypeContext, config: TypeHelperConf
       ctx.stroke();
       ctx.closePath();
     });
-  })
+  });
 }
 

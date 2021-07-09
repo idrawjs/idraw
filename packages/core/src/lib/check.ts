@@ -102,7 +102,7 @@ const check = {
   imageDesc,
   svgDesc,
   textDesc,
-}
+};
 
 type TypeCheck = {
   attrs: (value: any) => boolean,
@@ -114,6 +114,6 @@ type TypeCheck = {
 
 export {
   TypeCheck
-}
+};
 
 export default check;

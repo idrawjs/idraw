@@ -32,5 +32,5 @@ function isElement(
 
 
 function isNumber(num: any) {
-  return (num >= 0 || num < 0)
+  return (num >= 0 || num < 0);
 }

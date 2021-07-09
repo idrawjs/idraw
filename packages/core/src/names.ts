@@ -33,4 +33,4 @@ export {
   _selectedDotDirection, _coreEvent, _mapper, _initEvent, _handlePoint,
   _handleMoveStart, _handleMove, _handleMoveEnd, _handleHover, _dragElements,
   _transfromElement, _emitChangeScreen, _emitChangeData, _onlyRender, _cursorStatus,
-}
+};

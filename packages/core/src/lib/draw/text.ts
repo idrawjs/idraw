@@ -70,7 +70,7 @@ export function drawText(
     lines.forEach((line, i) => {
       let _x = elem.x;
       if (desc.textAlign === 'center') {
-        _x = elem.x + (elem.w - line.width) / 2
+        _x = elem.x + (elem.w - line.width) / 2;
       } else if (desc.textAlign === 'right') {
         _x = elem.x + (elem.w - line.width);
       }

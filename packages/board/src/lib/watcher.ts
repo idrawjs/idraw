@@ -32,7 +32,7 @@ export class Watcher {
     canvas.addEventListener('mousedown', this._listenMoveStart.bind(this), true);
     canvas.addEventListener('mousemove', this._listenMove.bind(this), true);
     canvas.addEventListener('mouseup', this._listenMoveEnd.bind(this), true);
-    canvas.addEventListener('mouseleave', this._listenMoveEnd.bind(this), true)
+    canvas.addEventListener('mouseleave', this._listenMoveEnd.bind(this), true);
     canvas.addEventListener('wheel', this._listenWheel.bind(this), true);
 
     canvas.addEventListener('touchstart', this._listenMoveStart.bind(this), true);

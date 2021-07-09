@@ -13,7 +13,7 @@ type Options = {
 
 
 const _opts = Symbol('_opts');
-const _ctx = Symbol('_ctx')
+const _ctx = Symbol('_ctx');
 
 export class Screen {
   private [_opts]: Options;
@@ -25,13 +25,13 @@ export class Screen {
   }
 
   resetSize(opts: TypeBoardSizeOptions) {
-    this[_opts] = {...this[_opts], ...opts}
+    this[_opts] = {...this[_opts], ...opts};
   }
 
   calcScreen(): {
     size: TypeScreenSize, position: TypeScreenPosition, deviceSize: TypeScreenSize,
     width: number, height: number, devicePixelRatio: number
-  } {
+    } {
     const scaleRatio = this[_ctx].getTransform().scale;
     const { 
       width, height, contextWidth, contextHeight,
@@ -43,25 +43,25 @@ export class Screen {
       // make context center
       this[_ctx].setTransform({
         scrollX: (width - contextWidth * scaleRatio) / 2,
-      })
+      });
     }
 
     if (contextHeight * scaleRatio <= height) {
       // make context center
       this[_ctx].setTransform({
         scrollY: (height - contextHeight * scaleRatio) / 2,
-      })
+      });
     }
 
     if (contextWidth * scaleRatio >= width && this[_ctx].getTransform().scrollX > 0) {
       this[_ctx].setTransform({
         scrollX: 0,
-      })
+      });
     }
     if (contextHeight * scaleRatio >= height && this[_ctx].getTransform().scrollY > 0) {
       this[_ctx].setTransform({
         scrollY: 0,
-      })
+      });
     }
 
     const { scrollX: _scrollX, scrollY: _scrollY } = this[_ctx].getTransform();
@@ -70,12 +70,12 @@ export class Screen {
     if (_scrollX < 0 && Math.abs(_scrollX) > Math.abs(contextWidth * scaleRatio - width)) {
       this[_ctx].setTransform({
         scrollX: 0 - Math.abs(contextWidth * scaleRatio - width)
-      })
+      });
     }
     if (_scrollY < 0 && Math.abs(_scrollY) > Math.abs(contextHeight * scaleRatio - height)) {
       this[_ctx].setTransform({
         scrollY: 0 - Math.abs(contextHeight * scaleRatio - height)
-      })
+      });
     }
 
     // result size
@@ -110,7 +110,7 @@ export class Screen {
   }
 
   calcScreenScroll( start: number, end: number, sliderSize: number, limitLen: number, moveDistance: number
-    ): number {
+  ): number {
     let scrollDistance = start;
     let scrollLen = limitLen - sliderSize;
     if (start <= 0 && end <= 0) {

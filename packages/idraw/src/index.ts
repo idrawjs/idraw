@@ -85,15 +85,15 @@ class IDraw extends Core {
     if (this[_doRecords].length >= this[_opts].maxRecords) {
       this[_doRecords].shift();
     }
-    this[_doRecords].push({ data, time: Date.now() })
+    this[_doRecords].push({ data, time: Date.now() });
     this[_unDoRecords] = [];
   }
 
   private _createOpts(opts: Options): PrivateOptions {
     const defaultOpts = {
       maxRecords: 10,
-    }
-    return { ...defaultOpts, ...opts }
+    };
+    return { ...defaultOpts, ...opts };
   }
 }
 

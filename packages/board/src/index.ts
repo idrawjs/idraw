@@ -51,7 +51,7 @@ class Board {
         height: opts.height,
         devicePixelRatio: opts.devicePixelRatio || 1,
         scrollConfig: opts.scrollConfig,
-      })
+      });
     this[_render]();
   }
 
@@ -137,7 +137,7 @@ class Board {
   getScreenInfo(): {
     size: TypeScreenSize, position: TypeScreenPosition, deviceSize: TypeScreenSize,
     width: number, height: number, devicePixelRatio: number
-  } {
+    } {
     return this[_screen].calcScreen();
   }
 
@@ -224,13 +224,13 @@ class Board {
 
       this.on('move', throttle((p: TypePoint) => {
         if (scrollType) {
-          this[_doMoveScroll](scrollType, p)
+          this[_doMoveScroll](scrollType, p);
         }
       }, 16));
 
       this.on('moveEnd', throttle((p: TypePoint) => {
         if (scrollType) {
-          this[_doMoveScroll](scrollType, p)
+          this[_doMoveScroll](scrollType, p);
         }
         scrollType = null;
       }, 16));
@@ -241,7 +241,7 @@ class Board {
     const { width } = this[_opts];
     let scrollX = prevScrollX;
     if (!(typeof scrollX === 'number' && (scrollX > 0 || scrollX <= 0))) {
-      scrollX = this[_ctx].getTransform().scrollX
+      scrollX = this[_ctx].getTransform().scrollX;
     }
     const { position } = this[_screen].calcScreen();
     const { xSize } = this[_scroller].calc(position);
@@ -254,7 +254,7 @@ class Board {
     const { height } = this[_opts];
     let scrollY = prevScrollY;
     if (!(typeof scrollY === 'number' && (scrollY > 0 || scrollY <= 0))) {
-      scrollY = this[_ctx].getTransform().scrollY
+      scrollY = this[_ctx].getTransform().scrollY;
     }
     const { position } = this[_screen].calcScreen();
     const { ySize } = this[_scroller].calc(position);

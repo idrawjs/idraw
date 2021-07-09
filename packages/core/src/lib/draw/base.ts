@@ -61,8 +61,8 @@ export function drawBoxBorder(
     if (!(elem.desc.borderWidth && elem.desc.borderWidth > 0)) {
       return;
     }
-    let bw = elem.desc.borderWidth;
-    let borderColor: string = '#000000';
+    const bw = elem.desc.borderWidth;
+    let borderColor = '#000000';
     if (color.isColorStr(elem.desc.borderColor) === true) {
       borderColor = elem.desc.borderColor as string;
     }
@@ -74,11 +74,11 @@ export function drawBoxBorder(
     let r: number = elem.desc.borderRadius || 0;
     r = Math.min(r, w / 2, h / 2);
     if (r < w / 2 && r < h / 2) {
-      r = r + bw / 2
+      r = r + bw / 2;
     }
     ctx.beginPath();
     ctx.setLineWidth(bw);
-    ctx.setStrokeStyle(borderColor)
+    ctx.setStrokeStyle(borderColor);
     ctx.moveTo(x + r, y);
     ctx.arcTo(x + w, y, x + w, y + h, r);
     ctx.arcTo(x + w, y + h, x, y + h, r);
@@ -86,5 +86,5 @@ export function drawBoxBorder(
     ctx.arcTo(x, y, x + w, y, r);
     ctx.closePath();  
     ctx.stroke(); 
-  })
+  });
 } 

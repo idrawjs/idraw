@@ -4,7 +4,7 @@ const elementTypes = {
   'rect': {}, // TODO
   'image': {}, // TODO
   'svg': {}, // TODO
-}
+};
 
 export const elementNames = Object.keys(elementTypes);
 
