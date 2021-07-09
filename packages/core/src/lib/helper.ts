@@ -169,14 +169,24 @@ export class Helper implements TypeHelper {
   }
 
   private _updateSelectedElementWrapper(data: TypeData, opts: TypeHelperUpdateOpts) {
-    const { selectedUUID: uuid, scale } = opts;
+    const { selectedUUID: uuid } = opts;
     if (!(typeof uuid === 'string' && this._helperConfig.elementIndexMap[uuid] >= 0)) {
       delete this._helperConfig.selectedElementWrapper;
       return;
     }
     const index: number = this._helperConfig.elementIndexMap[uuid];
     const elem = data.elements[index];
+    const wrapper = this._createSelectedElementWrapper(elem, opts);
+    return wrapper;
+  }
 
+  private _updateSelectedElementListWrapper(data: TypeData, opts: TypeHelperUpdateOpts) {
+    console.log('_updateSelectedElementListWrapper = ', opts.selectedUUIDList);
+    // const wrapperList = [];
+  }
+
+  private _createSelectedElementWrapper(elem: TypeElement<keyof TypeElemDesc>, opts: TypeHelperUpdateOpts) {
+    const { scale } = opts;
     const dotSize = this._coreConfig.elementWrapper.dotSize / scale;
     const lineWidth = this._coreConfig.elementWrapper.lineWidth / scale;
     const lineDash = this._coreConfig.elementWrapper.lineDash.map(n => (n / scale));
@@ -185,7 +195,7 @@ export class Helper implements TypeHelper {
     const bw = elem.desc?.borderWidth || 0;  
     
     const wrapper: TypeHelperConfig['selectedElementWrapper'] = {
-      uuid,
+      uuid: elem.uuid,
       dotSize: dotSize,
       dots: {
         topLeft: {
@@ -287,7 +297,5 @@ export class Helper implements TypeHelper {
     
   }
 
-  private _updateSelectedElementListWrapper(data: TypeData, opts: TypeHelperUpdateOpts) {
-    console.log('_updateSelectedElementListWrapper = ', opts.selectedUUIDList);
-  }
+  
 }
