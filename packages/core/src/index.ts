@@ -288,6 +288,7 @@ class Core {
             );
             this[_emitChangeScreen]();
           }
+          this[_mode] = Mode.SELECT_ELEMENT;
         } else {
           // Controll Area
           this[_selectedUUIDList] = [];
@@ -305,13 +306,15 @@ class Core {
 
     if (this[_mode] === Mode.SELECT_ELEMENT_LIST) {
       // TODO
-    } else if (typeof uuid === 'string' && this[_coreEvent].has('screenMoveElementStart')) {
-      this[_coreEvent].trigger('screenMoveElementStart', {
-        index: this[_element].getElementIndex(this[_data], uuid),
-        uuid,
-        x: point.x,
-        y: point.y
-      });
+    } else if (this[_mode] === Mode.SELECT_ELEMENT) {
+      if (typeof uuid === 'string' && this[_coreEvent].has('screenMoveElementStart')) {
+        this[_coreEvent].trigger('screenMoveElementStart', {
+          index: this[_element].getElementIndex(this[_data], uuid),
+          uuid,
+          x: point.x,
+          y: point.y
+        });
+      } 
     } else if (this[_mode] === Mode.SELECT_AREA) {
       this[_helper].startSelectArea(point);
     }
