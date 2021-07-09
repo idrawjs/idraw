@@ -12,6 +12,7 @@ type TypeElement<T extends keyof TypeElemDesc> = TypeElementAttrs & {
   name?: string;
   uuid: string;
   type: T;
+  lock?: boolean;
   desc: TypeElemDesc[T];
 }
 

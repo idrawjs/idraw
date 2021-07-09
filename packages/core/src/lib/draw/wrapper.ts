@@ -24,35 +24,35 @@ export function drawElementWrapper(ctx: TypeContext, config: TypeHelperConfig) {
     ctx.lineTo(wrapper.dots.topLeft.x, wrapper.dots.topLeft.y - wrapper.lineWidth / 2);
     ctx.stroke();
     ctx.closePath();
-
-
-    // draw wrapper's rotate line
-    ctx.beginPath();
-    ctx.moveTo(wrapper.dots.top.x, wrapper.dots.top.y);
-    ctx.lineTo(wrapper.dots.rotate.x, wrapper.dots.rotate.y + wrapper.dotSize);
-    ctx.stroke();
-    ctx.closePath();
-
-    // draw wrapper's rotate
-    ctx.beginPath();
-    ctx.setLineDash([]);
-    ctx.setLineWidth(wrapper.dotSize / 2);
-    ctx.arc(wrapper.dots.rotate.x, wrapper.dots.rotate.y, wrapper.dotSize * 0.8, Math.PI / 6, Math.PI * 2);
-    ctx.stroke();
-    ctx.closePath();
-
-    // draw wrapper's dots
-    ctx.setFillStyle(wrapper.color);
-    [
-      wrapper.dots.topLeft, wrapper.dots.top, wrapper.dots.topRight, wrapper.dots.right,
-      wrapper.dots.bottomRight, wrapper.dots.bottom, wrapper.dots.bottomLeft, wrapper.dots.left,
-    ].forEach((dot) => {
+    
+    if (wrapper.lock !== true) {
+      // draw wrapper's rotate line
       ctx.beginPath();
-      ctx.arc(dot.x, dot.y, wrapper.dotSize, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.moveTo(wrapper.dots.top.x, wrapper.dots.top.y);
+      ctx.lineTo(wrapper.dots.rotate.x, wrapper.dots.rotate.y + wrapper.dotSize);
+      ctx.stroke();
       ctx.closePath();
-    });
 
+      // draw wrapper's rotate
+      ctx.beginPath();
+      ctx.setLineDash([]);
+      ctx.setLineWidth(wrapper.dotSize / 2);
+      ctx.arc(wrapper.dots.rotate.x, wrapper.dots.rotate.y, wrapper.dotSize * 0.8, Math.PI / 6, Math.PI * 2);
+      ctx.stroke();
+      ctx.closePath();
+
+      // draw wrapper's dots
+      ctx.setFillStyle(wrapper.color);
+      [
+        wrapper.dots.topLeft, wrapper.dots.top, wrapper.dots.topRight, wrapper.dots.right,
+        wrapper.dots.bottomRight, wrapper.dots.bottom, wrapper.dots.bottomLeft, wrapper.dots.left,
+      ].forEach((dot) => {
+        ctx.beginPath();
+        ctx.arc(dot.x, dot.y, wrapper.dotSize, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.closePath();
+      });
+    }
   });
 }
 

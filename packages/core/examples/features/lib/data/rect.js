@@ -8,7 +8,6 @@ const data = {
       w: 200,
       h: 100,
       type: "rect",
-      lock: true,
       desc: {
         color: "#f0f0f0",
         borderRadius: 20,
@@ -24,6 +23,7 @@ const data = {
       h: 120,
       // angle: 30,
       type: "rect",
+      lock: true,
       desc: {
         color: "#cccccc",
         borderRadius: 60,

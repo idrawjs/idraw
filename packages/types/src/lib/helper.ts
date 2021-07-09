@@ -6,6 +6,7 @@ import { TypePoint } from './board';
 type TypeHeplerSelectedElementWrapper = {
   uuid: string;
   dotSize: number;
+  lock: boolean;
   dots: {
     topLeft: TypePoint,
     top: TypePoint,

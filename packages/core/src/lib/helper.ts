@@ -233,9 +233,11 @@ export class Helper implements TypeHelper {
     opts: TypeHelperUpdateOpts
   ): TypeHeplerSelectedElementWrapper {
     const { scale } = opts;
-    const dotSize = this._coreConfig.elementWrapper.dotSize / scale;
-    const lineWidth = this._coreConfig.elementWrapper.lineWidth / scale;
-    const lineDash = this._coreConfig.elementWrapper.lineDash.map(n => (n / scale));
+    const elemWrapper = this._coreConfig.elementWrapper;
+    const dotSize = elemWrapper.dotSize / scale;
+    const lineWidth = elemWrapper.lineWidth / scale;
+    const lineDash = elemWrapper.lineDash.map(n => (n / scale));
+
     const rotateLimit = 12;
     // @ts-ignore
     const bw = elem.desc?.borderWidth || 0;  
@@ -243,6 +245,7 @@ export class Helper implements TypeHelper {
     const wrapper: TypeHeplerSelectedElementWrapper = {
       uuid: elem.uuid,
       dotSize: dotSize,
+      lock: elem.lock === true,
       dots: {
         topLeft: {
           x: elem.x - dotSize - bw,
@@ -283,7 +286,7 @@ export class Helper implements TypeHelper {
       },
       lineWidth: lineWidth,
       lineDash: lineDash,
-      color: '#2ab6f1',
+      color: elem.lock === true ? elemWrapper.lockColor : elemWrapper.color,
     };
 
     if (typeof elem.angle === 'number' && (elem.angle > 0 || elem.angle < 0)) {

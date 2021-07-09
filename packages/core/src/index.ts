@@ -385,7 +385,12 @@ class Core {
       return;
     }
     uuids.forEach((uuid) => {
-      this[_element].dragElement(this[_data], uuid, point, prevPoint, this[_board].getContext().getTransform().scale);
+      const idx = this[_helper].getElementIndexByUUID(uuid);
+      if (idx === null) return;
+      const elem = this[_data].elements[idx];
+      if (elem.lock !== true) {
+        this[_element].dragElement(this[_data], uuid, point, prevPoint, this[_board].getContext().getTransform().scale);
+      }
     });
     this.draw();
   }
