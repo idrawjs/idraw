@@ -29,4 +29,4 @@ export {
   TypeScreenPosition,
   TypeScreenSize,
   TypeScreenContext,
-}
+};

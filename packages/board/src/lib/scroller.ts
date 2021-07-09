@@ -22,7 +22,7 @@ type TypePrivateOptions = TypeOptions & {
 const defaultScrollConfig = {
   lineWidth: 12,
   color: '#a0a0a0'
-}
+};
 
 export class Scroller {
 
@@ -123,7 +123,7 @@ export class Scroller {
   }
 
   getLineWidth(): number {
-    let lineWidth = this._opts.scrollConfig.lineWidth;
+    const lineWidth = this._opts.scrollConfig.lineWidth;
     return lineWidth;
   }
 
@@ -202,7 +202,7 @@ function drawBox(
   r = Math.min(r, w / 2, h / 2);
   if (w < r * 2 || h < r * 2) {
     r = 0;
-  };
+  }
   ctx.beginPath();
   ctx.moveTo(x + r, y);
   ctx.arcTo(x + w, y, x + w, y + h, r);

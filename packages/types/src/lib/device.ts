@@ -7,4 +7,4 @@ type TypeDeviceSize = {
 
 export {
   TypeDeviceSize,
-}
+};

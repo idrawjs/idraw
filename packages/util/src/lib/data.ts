@@ -2,7 +2,7 @@
 export function deepClone(target: any): any {
   function _clone(t: any) {
     const type = is(t);
-    if (['Null', 'Number', 'String', 'Undefined'].indexOf(type) >= 0) {
+    if (['Null', 'Number', 'String', 'Boolean', 'Undefined'].indexOf(type) >= 0) {
       return t;
     } else if (type === 'Array') {
       const arr: any[] = [];

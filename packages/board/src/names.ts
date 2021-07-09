@@ -22,4 +22,4 @@ export {
   _originCtx, _watcher, _render, _parsePrivateOptions, _scroller,
   _initEvent, _doScrollX, _doScrollY, _doMoveScroll, _resetContext,
   _screen,
-}
+};

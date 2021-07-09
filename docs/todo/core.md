@@ -1,11 +1,13 @@
 # @idraw/core
 
-* [x] FireFox's Compatibility Question (And Safair Browser) 
+* [] Support gradient color
 * [] Area select
+* [] Move elements that in selected-area
 * [] Listen keyboard action
-* [x] Hover element style
 * [] Keep all num two decimals
-* [] Get center point at screen
+* [] Lock Element
+* [x] FireFox's Compatibility Question (And Safair Browser) 
+* [x] Hover element style
 * [x] Cursor style
 * [x] Can't controll element at scroll-area
 * [x] Disable controll element

@@ -13,9 +13,7 @@ import { drawImage } from './image';
 import { drawSVG } from './svg';
 import { drawText } from './text';
 import {
-  drawElementWrapper,
-  drawAreaWrapper,
-  // drawDisplayContextScrollWrapper,
+  drawElementWrapper, drawAreaWrapper, drawElementListWrappers,
 } from './wrapper';
 
 const { isColorStr } = util.color;
@@ -33,8 +31,6 @@ export function drawContext(
   if (typeof data.bgColor === 'string' && isColorStr(data.bgColor)) {
     drawBgColor(ctx, data.bgColor);
   }
-
-  drawAreaWrapper(ctx, helperConfig);
 
   if (!(data.elements.length > 0)) {
     return;
@@ -64,7 +60,9 @@ export function drawContext(
       }
     }
   }
+  
   drawElementWrapper(ctx, helperConfig);
-  // drawDisplayContextScrollWrapper(ctx, helperConfig)
+  drawAreaWrapper(ctx, helperConfig);
+  drawElementListWrappers(ctx, helperConfig);
 }
 

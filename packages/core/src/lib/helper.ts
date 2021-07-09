@@ -1,24 +1,19 @@
 import {
-  TypeData,
-  TypeHelper,
-  TypeHelperConfig,
-  TypeHelperUpdateOpts,
-  TypeHelperWrapperDotDirection,
-  TypeElement,
-  TypeElemDesc,
-  TypeContext,
-  TypePoint,
-  TypeConfigStrict,
+  TypeData, TypeHelper, TypeHelperConfig, TypeHelperUpdateOpts,
+  TypeHelperWrapperDotDirection, TypeElement,
+  TypeElemDesc, TypeContext, TypePoint, TypeConfigStrict,
+  TypeHeplerSelectedElementWrapper
 } from '@idraw/types';
 import Board from '@idraw/board';
 import util from '@idraw/util';
 import { parseAngleToRadian, calcElementCenter } from './calculate';
-import { rotateContext, } from './transform';
+import { rotateContext, rotateElement } from './transform';
 
 const { deepClone } = util.data;
 
-const areaLineWidth = 2;
+const areaLineWidth = 1.5;
 const areaColor = '#2ab6f1';
+const areaLineDash = [4, 3];
 
 export class Helper implements TypeHelper {
 
@@ -44,6 +39,7 @@ export class Helper implements TypeHelper {
   ): void {
     this._updateElementIndex(data);
     this._updateSelectedElementWrapper(data, opts);
+    this._updateSelectedElementListWrapper(data, opts);
     this._updateDisplayContextScrollWrapper(data, opts);
   }
 
@@ -94,8 +90,51 @@ export class Helper implements TypeHelper {
     return [uuid, direction];
   }
 
+  isPointInElementList(p: TypePoint, data: TypeData): boolean {
+    const ctx = this._ctx;
+    let idx = -1;
+    let uuid = null;
+    const wrapperList = this._helperConfig?.selectedElementListWrappers || [];
+    for (let i = 0; i < wrapperList.length; i++) {
+      const wrapper = wrapperList[i];
+      const elemIdx = this._helperConfig.elementIndexMap[wrapper.uuid];
+      const ele = data.elements[elemIdx];
+      if (!ele) continue;
+      let bw = 0;
+      // @ts-ignore
+      if (ele.desc?.borderWidth > 0) {
+        // @ts-ignore
+        bw = ele.desc.borderWidth;
+      }
+      rotateElement(ctx, ele, () => {
+        ctx.beginPath();
+        ctx.moveTo(ele.x - bw, ele.y - bw);
+        ctx.lineTo(ele.x + ele.w + bw, ele.y - bw);
+        ctx.lineTo(ele.x + ele.w + bw, ele.y + ele.h + bw);
+        ctx.lineTo(ele.x - bw, ele.y + ele.h + bw);
+        ctx.lineTo(ele.x, ele.y);
+
+        ctx.rect(ele.x, ele.y, ele.w, ele.h);
+        ctx.closePath();
+        if (ctx.isPointInPath(p.x, p.y)) {
+          idx = i;
+          uuid = ele.uuid;
+        }
+      });
+      if (idx >= 0) {
+        break;
+      }
+    }
+    if (uuid && idx >= 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   startSelectArea(p: TypePoint) {
     this._areaStart = p;
+    this._areaEnd = p;
   }
 
   changeSelectArea(p: TypePoint) {
@@ -105,24 +144,57 @@ export class Helper implements TypeHelper {
 
   clearSelectedArea() {
     this._areaStart = {x: 0, y: 0};
-    this._areaStart = {x: 0, y: 0};
+    this._areaEnd = {x: 0, y: 0};
     this._calcSelectedArea();
+  }
+
+  calcSelectedElements(data: TypeData) {
+    const start = this._areaStart;
+    const end = this._areaEnd;
+    const x = Math.min(start.x, end.x);
+    const y = Math.min(start.y, end.y);
+    const w = Math.abs(end.x - start.x);
+    const h = Math.abs(end.y - start.y);
+    const uuids: string[] = [];
+    const ctx = this._ctx;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + w, y);
+    ctx.lineTo(x + w, y + h);
+    ctx.lineTo(x, y + h);
+    ctx.lineTo(x, y);
+    // ctx.rect(x, y, w, h);
+    ctx.closePath();
+    data.elements.forEach((elem) => {
+      const centerX = elem.x + elem.w / 2;
+      const centerY = elem.y + elem.h / 2;
+      if (ctx.isPointInPath(centerX, centerY)) {
+        uuids.push(elem.uuid);
+      }
+    });
+    return uuids;
   }
 
   private _calcSelectedArea() {
     const start = this._areaStart;
     const end = this._areaEnd;
 
+    const transform = this._ctx.getTransform();
+    const { scale = 1, scrollX = 0, scrollY = 0 } = transform;
+
     this._helperConfig.selectedAreaWrapper = {
-      x: Math.min(start.x, end.x),
-      y: Math.min(start.y, end.y),
-      w: Math.abs(end.x - start.x),
-      h: Math.abs(end.y - start.y),
+      x: (Math.min(start.x, end.x) - scrollX) / scale,
+      y: (Math.min(start.y, end.y) - scrollY) / scale,
+      w: Math.abs(end.x - start.x) / scale,
+      h: Math.abs(end.y - start.y) / scale,
       startPoint: {x: start.x, y: start.y},
       endPoint: {x: end.x, y: end.y},
-      lineWidth: areaLineWidth,
+      lineWidth: areaLineWidth / scale,
+      lineDash: areaLineDash.map((num) => {
+        return num / scale;
+      }),
       color: areaColor,
-    }
+    };
   }
 
   private _updateElementIndex(data: TypeData) {
@@ -133,24 +205,47 @@ export class Helper implements TypeHelper {
   }
 
   private _updateSelectedElementWrapper(data: TypeData, opts: TypeHelperUpdateOpts) {
-    const { selectedUUID: uuid, scale } = opts;
+    const { selectedUUID: uuid } = opts;
     if (!(typeof uuid === 'string' && this._helperConfig.elementIndexMap[uuid] >= 0)) {
       delete this._helperConfig.selectedElementWrapper;
       return;
     }
     const index: number = this._helperConfig.elementIndexMap[uuid];
     const elem = data.elements[index];
+    const wrapper = this._createSelectedElementWrapper(elem, opts);
+    this._helperConfig.selectedElementWrapper = wrapper;
+  }
 
-    const dotSize = this._coreConfig.elementWrapper.dotSize / scale;
-    const lineWidth = this._coreConfig.elementWrapper.lineWidth / scale;
-    const lineDash = this._coreConfig.elementWrapper.lineDash.map(n => (n / scale));
+  private _updateSelectedElementListWrapper(data: TypeData, opts: TypeHelperUpdateOpts) {
+    const { selectedUUIDList } = opts;
+    const wrapperList: TypeHeplerSelectedElementWrapper[] = [];
+    data.elements.forEach((elem, i) => {
+      if (selectedUUIDList?.includes(elem.uuid)) {
+        const wrapper = this._createSelectedElementWrapper(elem, opts);
+        wrapperList.push(wrapper);
+      }
+    });
+    this._helperConfig.selectedElementListWrappers = wrapperList;
+  }
+
+  private _createSelectedElementWrapper(
+    elem: TypeElement<keyof TypeElemDesc>,
+    opts: TypeHelperUpdateOpts
+  ): TypeHeplerSelectedElementWrapper {
+    const { scale } = opts;
+    const elemWrapper = this._coreConfig.elementWrapper;
+    const dotSize = elemWrapper.dotSize / scale;
+    const lineWidth = elemWrapper.lineWidth / scale;
+    const lineDash = elemWrapper.lineDash.map(n => (n / scale));
+
     const rotateLimit = 12;
     // @ts-ignore
     const bw = elem.desc?.borderWidth || 0;  
     
-    const wrapper: TypeHelperConfig['selectedElementWrapper'] = {
-      uuid,
+    const wrapper: TypeHeplerSelectedElementWrapper = {
+      uuid: elem.uuid,
       dotSize: dotSize,
+      lock: elem.lock === true,
       dots: {
         topLeft: {
           x: elem.x - dotSize - bw,
@@ -191,7 +286,7 @@ export class Helper implements TypeHelper {
       },
       lineWidth: lineWidth,
       lineDash: lineDash,
-      color: '#2ab6f1',
+      color: elem.lock === true ? elemWrapper.lockColor : elemWrapper.color,
     };
 
     if (typeof elem.angle === 'number' && (elem.angle > 0 || elem.angle < 0)) {
@@ -199,7 +294,7 @@ export class Helper implements TypeHelper {
       wrapper.translate = calcElementCenter(elem);
     }
 
-    this._helperConfig.selectedElementWrapper = wrapper;
+    return wrapper;
   }
 
   private _updateDisplayContextScrollWrapper(data: TypeData, opts: TypeHelperUpdateOpts) {
@@ -248,6 +343,7 @@ export class Helper implements TypeHelper {
       translateX,
       color: '#e0e0e0'
     };
-    
   }
+
+  
 }

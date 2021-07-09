@@ -40,11 +40,11 @@ export function loadSVG(svg: string, opts?: { width: number, height: number }): 
       const base64: string = event?.target?.result as string;
       image.onload = function() {
         resolve(image);
-      }
+      };
       image.src = base64;
     };
     reader.onerror = function(err) {
       reject(err);
     };
-  })
+  });
 }

@@ -5,7 +5,7 @@ const { isColorStr } = util.color;
 
 
 function number(value: any) {
-  return (typeof value === 'number' && (value > 0 || value <= 0))
+  return (typeof value === 'number' && (value > 0 || value <= 0));
 }
 
 function x(value: any) {
@@ -17,15 +17,15 @@ function y(value: any) {
 }
 
 function w(value: any) {
-  return (typeof value === 'number' && value >= 0)
+  return (typeof value === 'number' && value >= 0);
 }
 
 function h(value: any) {
-  return (typeof value === 'number' && value >= 0)
+  return (typeof value === 'number' && value >= 0);
 }
 
 function angle(value: any) {
-  return (typeof value === 'number' && value >= -360 && value <= 360)
+  return (typeof value === 'number' && value >= -360 && value <= 360);
 }
 
 function borderWidth(value: any) {
@@ -41,15 +41,15 @@ function color(value: any) {
 }
 
 function imageURL(value: any) {
-  return (typeof value === 'string' && /^(http:\/\/|https:\/\/|\.\/|\/)/.test(`${value}`))
+  return (typeof value === 'string' && /^(http:\/\/|https:\/\/|\.\/|\/)/.test(`${value}`));
 }
 
 function imageBase64(value: any) {
-  return (typeof value === 'string' && /^(data:image\/)/.test(`${value}`))
+  return (typeof value === 'string' && /^(data:image\/)/.test(`${value}`));
 }
 
 function imageSrc(value: any) {
-  return (imageBase64(value) || imageURL(value))
+  return (imageBase64(value) || imageURL(value));
 }
 
 function svg(value: any) {
@@ -81,7 +81,7 @@ const is: TypeIs = {
   borderWidth, borderRadius, color,
   imageSrc, imageURL, imageBase64, svg,
   text, fontSize, lineHeight, textAlign, fontFamily,
-}
+};
 
 type TypeIs = {
   x: (value: any) => boolean,
@@ -109,4 +109,4 @@ export default is;
 
 export {
   TypeIs,
-}
+};

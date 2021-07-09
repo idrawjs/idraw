@@ -40,7 +40,7 @@ class Context implements TypeContext {
   }
 
   resetSize(opts: TypeBoardSizeOptions) {
-    this._opts = {...this._opts, ...opts}
+    this._opts = {...this._opts, ...opts};
   }
 
   calcDeviceNum(num: number): number {
@@ -175,7 +175,7 @@ class Context implements TypeContext {
   }
 
   createPattern(image: CanvasImageSource, repetition: string | null): CanvasPattern | null {
-    return this._ctx.createPattern(image, repetition)
+    return this._ctx.createPattern(image, repetition);
   }
 
   measureText(text: string): TextMetrics {

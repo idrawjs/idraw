@@ -34,7 +34,7 @@ export class Renderer {
     });
     this._loader.on('complete', (res) => {
       // console.log('complete: ', res);
-    })
+    });
   }
 
   render(data: TypeData, helper: TypeHelperConfig): void {
@@ -77,7 +77,7 @@ export class Renderer {
       } else {
         this._status = DrawStatus.FREE;
       }
-    })
+    });
   }
 
   private _retainQueueOneItem() {

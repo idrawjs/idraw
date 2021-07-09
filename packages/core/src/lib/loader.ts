@@ -47,7 +47,7 @@ export default class Loader {
       this._waitingLoadQueue.push({
         uuidQueue,
         loadData,
-      })
+      });
     }
   }
 
@@ -148,7 +148,7 @@ export default class Loader {
 
   private _createEmptyLoadItem(elem: TypeElement<keyof TypeElemDesc>): TypeLoadData[string] {
     let source = '';
-    let type: TypeLoadData[string]['type'] = elem.type as TypeLoadData[string]['type'];
+    const type: TypeLoadData[string]['type'] = elem.type as TypeLoadData[string]['type'];
     if (elem.type === 'image') {
       const _elem = elem as TypeElement<'image'>;
       source = _elem.desc.src || '';
@@ -163,7 +163,7 @@ export default class Loader {
       source,
       elemW: elem.w,
       elemH: elem.h,
-    }
+    };
   }
 
   private _loadTask() {
@@ -206,7 +206,7 @@ export default class Loader {
       for (let i = loadUUIDList.length; i < maxParallelNum; i++) {
         const uuid = uuids.shift();
         if (uuid === undefined) {
-          break
+          break;
         }
         loadUUIDList.push(uuid);
 
@@ -221,7 +221,7 @@ export default class Loader {
             source: this._currentLoadData[uuid].source,
             elemW: this._currentLoadData[uuid].elemW,
             elemH: this._currentLoadData[uuid].elemH,
-          }
+          };
 
           if (loadUUIDList.length === 0 && uuids.length === 0 && status === true) {
             this._status = LoaderStatus.FREE;
@@ -248,7 +248,7 @@ export default class Loader {
             source: this._currentLoadData[uuid].source,
             elemW: this._currentLoadData[uuid].elemW,
             elemH: this._currentLoadData[uuid].elemH,
-          }
+          };
 
           if (loadUUIDList.length === 0 && uuids.length === 0 && status === true) {
             this._status = LoaderStatus.FREE;
@@ -261,12 +261,12 @@ export default class Loader {
             source: this._storageLoadData[uuid].source,
             elemW: this._storageLoadData[uuid].elemW,
             elemH: this._storageLoadData[uuid].elemH,
-          })
-        })
+          });
+        });
  
       }
       return false;
-    }
+    };
     _loadAction();
   }
 
@@ -284,7 +284,7 @@ export default class Loader {
       );
       return image;
     }
-    throw Error('Element\'s source is not support!')
+    throw Error('Element\'s source is not support!');
   }
 }
 

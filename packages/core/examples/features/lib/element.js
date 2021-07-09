@@ -21,6 +21,7 @@ function renderElemens(core) {
       <span class="elem-item-name" data-elem-name="${ele.uuid || ''}">${ele.name || 'Unnamed'}</span>
       <span class="elem-item-btn ${i === 0 ? 'btn-hidden' : ''}" data-elem-btn-up="${ele.uuid || ''}">Up</span>
       <span class="elem-item-btn ${i === elems.length - 1 ? 'btn-hidden' : ''}" data-elem-btn-down="${ele.uuid || ''}">Down</span>
+      <span class="elem-item-btn" data-elem-btn-lock="${ele.uuid || ''}">Lock</span>
     </div>
     `);
   }
