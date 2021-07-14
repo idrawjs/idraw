@@ -1,13 +1,13 @@
-import opts from './lib/opts.js';
-import { drawData } from './lib/draw.js';
-import { doScale } from './lib/scale.js';
-import { doScroll } from './lib/scroll.js';
-import { initEvent } from './lib/event.js';
-import { doCursor } from './lib/action.js';
+import opts from "./lib/opts.js";
+import { drawData } from "./lib/draw.js";
+import { doScale } from "./lib/scale.js";
+import { doScroll } from "./lib/scroll.js";
+import { initEvent } from "./lib/event.js";
+import { doCursor } from "./lib/action.js";
 
-const { Board } = window.iDraw; 
+const { Board } = window.iDraw;
 
-const mount = document.querySelector('#mount');
+const mount = document.querySelector("#mount");
 const board = new Board(mount, opts);
 
 // const conf = {
@@ -20,15 +20,18 @@ const conf = {
   scale: 2,
   scrollX: -200,
   scrollY: -100,
-}
+};
 
 drawData(board);
 
 initEvent(board);
 doScale(board, conf.scale);
 doScroll(board, conf);
-doCursor(board)
+doCursor(board);
 
+console.log('pointScreenToContext = ', board.pointScreenToContext({ x: 400, y: 300 }));
+
+console.log('pointContextToScreen = ', board.pointContextToScreen({ x: 300, y: 200 }));
 
 // board.scale(2);
 // board.draw();
