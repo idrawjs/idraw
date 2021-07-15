@@ -1,6 +1,6 @@
 # idraw
 
-* BUG: Undo/Redo need trigger "changeData" event
+* [] BUG: Undo/Redo need trigger "changeData" event
 * Export
   * [] Export image
   * [] Source file

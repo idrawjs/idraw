@@ -8,7 +8,7 @@ const data = getData();
 const mount = document.querySelector('#mount');
 
 const defaultConf = {
-  scale: 1,
+  scale: 0.5,
   scrollX: 0,
   scrollY: 0,
 };

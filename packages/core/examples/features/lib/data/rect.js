@@ -1,5 +1,5 @@
 const data = {
-  // bgColor: '#ffffff',
+  bgColor: '#f0f0f0',
   elements: [
     {
       name: "rect-001",
@@ -56,7 +56,7 @@ const data = {
       desc: {
         color: "#e0e0e0",
         borderRadius: 20,
-        borderWidth: 10,
+        borderWidth: 2,
         borderColor: "#bd0b64",
       },
     },

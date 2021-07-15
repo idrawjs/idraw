@@ -149,14 +149,20 @@ export class Helper implements TypeHelper {
   }
 
   calcSelectedElements(data: TypeData) {
+    const transform = this._ctx.getTransform();
+    const { scale = 1, scrollX = 0, scrollY = 0 } = transform;
     const start = this._areaStart;
     const end = this._areaEnd;
-    const x = Math.min(start.x, end.x);
-    const y = Math.min(start.y, end.y);
-    const w = Math.abs(end.x - start.x);
-    const h = Math.abs(end.y - start.y);
+    const x = (Math.min(start.x, end.x) - scrollX) / scale;
+    const y = (Math.min(start.y, end.y) - scrollY) / scale;
+    const w = Math.abs(end.x - start.x) / scale;
+    const h = Math.abs(end.y - start.y) / scale;
     const uuids: string[] = [];
     const ctx = this._ctx;
+
+    console.log({x, y, w, h}, start, end);
+    console.log(this._board.getTransform());
+
     ctx.beginPath();
     ctx.moveTo(x, y);
     ctx.lineTo(x + w, y);
@@ -168,7 +174,7 @@ export class Helper implements TypeHelper {
     data.elements.forEach((elem) => {
       const centerX = elem.x + elem.w / 2;
       const centerY = elem.y + elem.h / 2;
-      if (ctx.isPointInPath(centerX, centerY)) {
+      if (ctx.isPointInPathWithoutScroll(centerX, centerY)) {
         uuids.push(elem.uuid);
       }
     });
