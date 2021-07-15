@@ -172,13 +172,15 @@ class Core {
     if (this[_hasInitedData] === true) {
       return;
     }
-    this.setData(data);
-    this[_emitChangeData]();
+    this.setData(data, { triggerChangeEvent: true });
     this[_hasInitedData] = true;
   }
 
-  setData(data: any | TypeData): void {
+  setData(data: any | TypeData, opts?: { triggerChangeEvent: boolean }): void {
     this[_data] = this[_element].initData(deepClone(parseData(data)));
+    if (opts && opts.triggerChangeEvent === true) {
+      this[_emitChangeData]();
+    }
     this.draw();
   }
 
@@ -222,6 +224,14 @@ class Core {
 
   off<T extends keyof TypeCoreEventArgMap >(key: T, callback: (p: TypeCoreEventArgMap[T]) => void) {
     this[_coreEvent].off(key, callback);
+  }
+
+  pointScreenToContext(p: TypePoint) {
+    return this[_board].pointScreenToContext(p);
+  }
+
+  pointContextToScreen(p: TypePoint) {
+    return this[_board].pointContextToScreen(p);
   }
 
   __getBoardContext(): TypeContext {

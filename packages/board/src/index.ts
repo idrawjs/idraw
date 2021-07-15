@@ -170,6 +170,24 @@ class Board {
     return lineWidth;
   }
 
+  pointScreenToContext(screenPoint: TypePoint): TypePoint {
+    const { scrollX, scrollY, scale } = this.getTransform();
+    const ctxPoint = {
+      x: (screenPoint.x - scrollX) / scale,
+      y: (screenPoint.y - scrollY) / scale,
+    };
+    return ctxPoint;
+  }
+
+  pointContextToScreen(ctxPoint: TypePoint): TypePoint {
+    const { scrollX, scrollY, scale } = this.getTransform();
+    const screenPoint = {
+      x: ctxPoint.x * scale + scrollX,
+      y: ctxPoint.y * scale + scrollY,
+    };
+    return screenPoint;
+  }
+
   private [_render]() {
     if (this[_hasRendered] === true) {
       return;

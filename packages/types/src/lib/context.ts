@@ -33,6 +33,7 @@ interface TypeContext {
   setLineWidth(w: number): void;
   setLineDash(nums: number[]): void;
   isPointInPath(x: number, y: number): boolean;
+  isPointInPathWithoutScroll(x: number, y: number): boolean;
   setStrokeStyle(color: string): void;
   stroke(): void;
   translate(x: number, y: number): void;

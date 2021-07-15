@@ -69,14 +69,23 @@ describe("idraw", () => {
     await delay(10);
 
     const undo1 = idraw.undo();
-    expect(undo1).toBe(2);
+    expect(undo1.doRecordCount).toBe(2);
+    expect(undo1.data?.elements?.length).toBe(4);
+    
+
     const undo2 = idraw.undo();
-    expect(undo2).toBe(1);
+    expect(undo2.doRecordCount).toBe(1);
+    expect(undo2.data?.elements?.length).toBe(4);
+
     const redo1 = idraw.redo();
-    expect(redo1).toBe(1);
+    expect(redo1.undoRecordCount).toBe(1);
+    expect(redo1.data?.elements?.length).toBe(4);
+
     idraw.moveDownElement('image-003');
+
     const redo2 = idraw.redo();
-    expect(redo2).toBe(0);
+    expect(redo2.undoRecordCount).toBe(0);
+    expect(redo2.data).toBe(null);
 
     requestAnimationFrameMock.triggerNextAnimationFrame();
   

@@ -139,6 +139,10 @@ class Context implements TypeContext {
     return this._ctx.isPointInPath(this._doX(x), this._doY(y));
   }
 
+  isPointInPathWithoutScroll(x: number, y: number) {
+    return this._ctx.isPointInPath(this._doSize(x), this._doSize(y));
+  }
+
   setStrokeStyle(color: string) {
     this._ctx.strokeStyle = color;
   }

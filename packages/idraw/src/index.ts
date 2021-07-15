@@ -43,9 +43,15 @@ class IDraw extends Core {
     this[_initEvent]();
   }
 
-  undo() {
+  undo(): {
+    doRecordCount: number,
+    data: TypeData | null,
+  } {
     if (!(this[_doRecords].length > 1)) {
-      return this[_doRecords].length;
+      return {
+        doRecordCount: this[_doRecords].length,
+        data: null,
+      };
     }
     const popRecord = this[_doRecords].pop();
     if (popRecord) {
@@ -56,19 +62,31 @@ class IDraw extends Core {
       this.setData(record.data);
       this.draw();
     }
-    return this[_doRecords].length;
+    return {
+      doRecordCount: this[_doRecords].length,
+      data: record?.data || null,
+    };
   }
 
-  redo() {
+  redo(): {
+    undoRecordCount: number,
+    data: TypeData | null,
+  } {
     if (!(this[_unDoRecords].length > 0)) {
-      return this[_unDoRecords].length;
+      return {
+        undoRecordCount: this[_unDoRecords].length,
+        data: null,
+      };
     }
     const record = this[_unDoRecords].pop();
     if (record?.data) {
       this.setData(record.data);
       this.draw();
     }
-    return this[_unDoRecords].length;
+    return {
+      undoRecordCount: this[_unDoRecords].length,
+      data: record?.data || null,
+    };
   }
 
   private [_initEvent]() {

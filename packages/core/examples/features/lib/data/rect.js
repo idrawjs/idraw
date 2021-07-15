@@ -1,5 +1,5 @@
 const data = {
-  // bgColor: '#ffffff',
+  // bgColor: '#f0f0f0',
   elements: [
     {
       name: "rect-001",
