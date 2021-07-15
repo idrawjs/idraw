@@ -65,7 +65,7 @@ describe('Screenshot testing', function() {
       assert.ok(rateList.length > 0);
       rateList.forEach((data) => {
         // console.log(`${data.path}]diff-rate: ${data.rate}`, );
-        assert.ok(data.rate < 0.005);
+        assert.ok(data.rate < 0.04);
       });
 
       done();
