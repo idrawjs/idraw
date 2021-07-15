@@ -1,6 +1,6 @@
-import Board from '../src';
+import IDraw from '../../src';
 
-describe('@idraw/board', () => {
+describe('@idraw/core', () => {
 
   document.body.innerHTML = `
     <div id="mount"></div>
@@ -19,22 +19,22 @@ describe('@idraw/board', () => {
     scrollY: -100,
   };
   const mount = document.querySelector('#mount') as HTMLDivElement;
-  const board = new Board(mount, opts);
+  const idraw = new IDraw(mount, opts);
 
-  board.scale(transform.scale);
-  board.scrollX(transform.scrollX);
-  board.scrollY(transform.scrollY);
-  board.draw();
+  idraw.scale(transform.scale);
+  idraw.scrollX(transform.scrollX);
+  idraw.scrollY(transform.scrollY);
+  idraw.draw();
 
   const p1 = {x: 400, y: 300};
   const p2 = {x: 300, y: 200};
 
   test('pointScreenToContext', async () => {
-    expect(board.pointScreenToContext(p1)).toStrictEqual(p2);
+    expect(idraw.pointScreenToContext(p1)).toStrictEqual(p2);
   });
 
   test('pointContextToScreen', async () => {
-    expect(board.pointContextToScreen(p2)).toStrictEqual(p1);
+    expect(idraw.pointContextToScreen(p2)).toStrictEqual(p1);
   });
 
 });

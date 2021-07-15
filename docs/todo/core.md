@@ -1,10 +1,10 @@
 # @idraw/core
 
-* [] BUG: Select area calculate elements error
 * [] Support gradient color
-* [] Move elements that in selected-area
 * [] Listen keyboard action
 * [] Keep all num two decimals
+* [x] BUG: Select area calculate elements error
+* [x] Move elements that in selected-area
 * [x] Area select
 * [x] Lock Element
 * [x] FireFox's Compatibility Question (And Safair Browser) 

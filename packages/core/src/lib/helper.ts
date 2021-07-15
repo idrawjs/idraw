@@ -21,8 +21,8 @@ export class Helper implements TypeHelper {
   private _coreConfig: TypeConfigStrict;
   private _ctx: TypeContext;
   private _board: Board;
-  private _areaStart: TypePoint = { x: 0, y: 0};
-  private _areaEnd: TypePoint = { x: 0, y: 0};
+  private _areaStart: TypePoint = { x: 0, y: 0 };
+  private _areaEnd: TypePoint = { x: 0, y: 0 };
 
   constructor(board: Board, config: TypeConfigStrict) {
     this._board = board;

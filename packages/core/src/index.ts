@@ -224,6 +224,14 @@ class Core {
     this[_coreEvent].off(key, callback);
   }
 
+  pointScreenToContext(p: TypePoint) {
+    return this[_board].pointScreenToContext(p);
+  }
+
+  pointContextToScreen(p: TypePoint) {
+    return this[_board].pointContextToScreen(p);
+  }
+
   __getBoardContext(): TypeContext {
     return this[_board].getContext();
   }
