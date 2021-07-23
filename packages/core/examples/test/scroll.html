@@ -33,7 +33,11 @@
           contextWidth: 1000,
           contextHeight: 900,
           devicePixelRatio: 4,
-          canScroll: true
+        }, {
+          scrollWrapper: {
+            use: true,
+            lineWidth: 20,
+          }
         });
       core.initData(data);
       const result = core.scale(1);

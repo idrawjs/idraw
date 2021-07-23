@@ -10,6 +10,7 @@ const { createScreenshot } = require('../scripts/util/screen');
 
 const snapshotDir = path.join(__dirname, 'snapshot');
 const diffDir = path.join(__dirname, 'diff');
+const testResultDir = path.join(__dirname, 'test-result');
 const { PNG } = pngjs;
 
 async function diff() {
@@ -34,6 +35,7 @@ async function diff() {
       const failedPixel = pixelmatch(expected.data, actual.data, diffBuf.data, actual.width, actual.height);
       const failRate = failedPixel / (width * height);
       if (failRate > 0) {
+        (await jimp.read(actual)).scale(1).quality(100).write(parsePicPath(path.join(testResultDir, p.path)));
         (await jimp.read(diffBuf)).scale(1).quality(100).write(parsePicPath(path.join(diffDir, p.path)));
       }
       diffRateList.push({

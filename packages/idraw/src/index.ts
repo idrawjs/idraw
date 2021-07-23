@@ -37,7 +37,8 @@ class IDraw extends Core {
       height: opts.height,
       contextWidth: opts.contextWidth,
       contextHeight: opts.contextHeight,
-      devicePixelRatio: opts.devicePixelRatio
+      devicePixelRatio: opts.devicePixelRatio,
+      onlyRender: opts.onlyRender
     }, config || {});
     this[_opts] = this._createOpts(opts);
     this[_initEvent]();

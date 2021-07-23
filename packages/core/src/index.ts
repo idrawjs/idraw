@@ -82,7 +82,7 @@ class Core {
     this[_helper].updateConfig(this[_data], {
       width: this[_opts].width,
       height: this[_opts].height,
-      canScroll: this[_opts].canScroll === true,
+      canScroll: this[_config]?.scrollWrapper?.use === true,
       selectedUUID: this[_selectedUUID],
       selectedUUIDList: this[_selectedUUIDList],
       devicePixelRatio: this[_opts].devicePixelRatio,

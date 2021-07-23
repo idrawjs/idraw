@@ -1,5 +1,6 @@
 # @idraw/core
 
+* [] Options default data
 * [] Support gradient color
 * [] Listen keyboard action
 * [] Keep all num two decimals

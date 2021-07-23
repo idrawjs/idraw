@@ -5,7 +5,6 @@ type TypeCoreOptions = {
   devicePixelRatio: number;
   contextWidth: number;
   contextHeight: number;
-  canScroll?: boolean;
   onlyRender?: boolean;
 }
 
