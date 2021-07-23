@@ -1,22 +1,9 @@
 import Core from '@idraw/core';
 import {
-  TypeData,
-  TypeCoreOptions,
-  TypeConfig,
+  TypeData, TypeConfig,
 } from '@idraw/types';
-
-type Options = {
-  maxRecords?: number;
-} & TypeCoreOptions;
-
-type PrivateOptions = {
-  maxRecords: number;
-} & Options;
-
-type Record = {
-  data: TypeData;
-  time: number;
-}
+import { Options, Record, PrivateOptions } from './types';
+import { defaultOptions } from './config';
 
 const _opts = Symbol('_opts');
 const _doRecords = Symbol('_doRecords');
@@ -33,12 +20,12 @@ class IDraw extends Core {
 
   constructor(mount: HTMLDivElement, opts: Options, config?: TypeConfig) {
     super(mount, {
-      width: opts.width,
-      height: opts.height,
-      contextWidth: opts.contextWidth,
-      contextHeight: opts.contextHeight,
-      devicePixelRatio: opts.devicePixelRatio,
-      onlyRender: opts.onlyRender
+      width: opts.width || defaultOptions.width,
+      height: opts.height || defaultOptions.height,
+      contextWidth: opts.contextWidth || defaultOptions.contextWidth,
+      contextHeight: opts.contextHeight || defaultOptions.contextHeight,
+      devicePixelRatio: opts.devicePixelRatio || defaultOptions.devicePixelRatio,
+      onlyRender: opts.onlyRender || defaultOptions.onlyRender,
     }, config || {});
     this[_opts] = this._createOpts(opts);
     this[_initEvent]();
@@ -109,10 +96,7 @@ class IDraw extends Core {
   }
 
   private _createOpts(opts: Options): PrivateOptions {
-    const defaultOpts = {
-      maxRecords: 10,
-    };
-    return { ...defaultOpts, ...opts };
+    return { ...defaultOptions, ...opts };
   }
 }
 

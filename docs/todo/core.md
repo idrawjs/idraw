@@ -1,7 +1,7 @@
 # @idraw/core
 
-* [] License text in JS result
-* [] Options default data
+* [x] License text in JS result
+* [x] Options default data
 * [] Support gradient color
 * [] Listen keyboard action
 * [] Keep all num two decimals
