@@ -1,5 +1,6 @@
 # @idraw/core
 
+* [] License text in JS result
 * [] Options default data
 * [] Support gradient color
 * [] Listen keyboard action

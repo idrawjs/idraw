@@ -1,9 +1,12 @@
 const path = require('path');
 const typescript = require('rollup-plugin-typescript2');
+const { terser } = require('rollup-plugin-terser');
+const cleanup = require('rollup-plugin-cleanup');
 const { nodeResolve } = require('@rollup/plugin-node-resolve');
 const { getTargetPackage } = require('./config');
 const dtsPlugin = require('./util/dts-plugin');
 const stylePlugin = require('./util/style-plugin');
+// const cleanPlugin = require('./util/clean-plugin');
 
 const resolveFile = function(names = []) {
   return path.join(__dirname, '..', 'packages', ...names)
@@ -58,8 +61,31 @@ function createConfigItem(params) {
       exports
     }, 
     plugins: [
-      ...[stylePlugin(), nodeResolve(), typescript()],
+      ...[
+        stylePlugin(),
+        nodeResolve(),
+        typescript({
+          tsconfig: path.resolve(__dirname, '..', 'tsconfig.json'),
+          tsconfigOverride: {}
+        }),
+      ],
       ...plugins,
+      ...[
+        // cleanPlugin({
+        //   sourcemap: process.env.NODE_ENV === 'development',
+        // }),
+        // terser({
+        //   output: {
+        //     beautify: true,
+        //     // comments: false,
+        //     // indent_level: 2,
+        //     // quote_style: 3,
+        //   }
+        // })
+        cleanup({
+          comments: 'none',
+        }),
+      ]
     ],
   };
 }
