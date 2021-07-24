@@ -1,10 +1,12 @@
 # @idraw/core
 
-* [x] License text in JS result
-* [x] Options default data
+* [] Change idraw.selectElementByUUID to idraw.selectElementByIndex
+* [] Change idraw.selectElement use uuid arg
 * [] Support gradient color
 * [] Listen keyboard action
 * [] Keep all num two decimals
+* [x] License text in JS result
+* [x] Options default data
 * [x] BUG: Select area calculate elements error
 * [x] Move elements that in selected-area
 * [x] Area select
