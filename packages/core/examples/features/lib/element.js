@@ -37,7 +37,7 @@ function listenElements(core) {
     const el = e.path[0];
     if (el.hasAttribute('data-elem-name')) {
       const uuid = el.getAttribute('data-elem-name');
-      core.selectElementByUUID(uuid);
+      core.selectElement(uuid);
     } else if (el.hasAttribute('data-elem-btn-up')) {
       const uuid = el.getAttribute('data-elem-btn-up');
       core.moveUpElement(uuid);

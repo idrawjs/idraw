@@ -36,7 +36,7 @@ function listenElements(idraw) {
     const el = e.path[0];
     if (el.hasAttribute('data-elem-name')) {
       const uuid = el.getAttribute('data-elem-name');
-      idraw.selectElementByUUID(uuid);
+      idraw.selectElement(uuid);
     } else if (el.hasAttribute('data-elem-btn-up')) {
       const uuid = el.getAttribute('data-elem-btn-up');
       idraw.moveUpElement(uuid);
