@@ -37,8 +37,7 @@
           contextHeight: 400,
           devicePixelRatio: 4
         });
-      core.initData(data);
-      core.draw();
+      core.setData(data);
 
       data.elements[0].desc.src = `./../images/phone.png?v=${Date.now()}`;
       core.updateElement(data.elements[0]);

@@ -25,8 +25,7 @@ describe("@idraw/core", () => {
     const mount = document.querySelector('#mount') as HTMLDivElement;
     const core = new Core(mount, opts);
     const data = getData();
-    core.initData(data);
-    core.draw();
+    core.setData(data);
 
     requestAnimationFrameMock.triggerNextAnimationFrame();
   

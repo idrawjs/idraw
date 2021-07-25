@@ -16,7 +16,7 @@ import is, { TypeIs } from './lib/is';
 import check, { TypeCheck } from './lib/check';
 import {
   _board, _data, _opts, _config, _renderer, _element, _helper, _hasInited,
-  _hasInitedData, _mode, _selectedUUID, _selectedUUIDList, _prevPoint, 
+  _mode, _selectedUUID, _selectedUUIDList, _prevPoint, _draw,
   _selectedDotDirection, _coreEvent, _mapper, _initEvent, _handlePoint,
   _handleMoveStart, _handleMove, _handleMoveEnd, _handleHover, _dragElements,
   _transfromElement, _emitChangeScreen, _emitChangeData, _onlyRender, _cursorStatus,
@@ -38,7 +38,6 @@ class Core {
   private [_helper]: Helper;
   private [_mapper]: Mapper;
   private [_hasInited] = false; 
-  private [_hasInitedData] = false; 
   private [_mode]: Mode = Mode.NULL;
   private [_coreEvent]: CoreEvent = new CoreEvent();
   private [_selectedUUID]: string | null = null;
@@ -77,7 +76,7 @@ class Core {
     this[_hasInited] = true;
   }
 
-  draw(): void {
+  [_draw](): void {
     const transfrom = this[_board].getTransform();
     this[_helper].updateConfig(this[_data], {
       width: this[_opts].width,
@@ -96,7 +95,7 @@ class Core {
   resetSize(opts: TypeBoardSizeOptions) {
     this[_opts] = { ...this[_opts], ...opts };
     this[_board].resetSize(opts);
-    this.draw();
+    this[_draw]();
   }
 
   selectElementByIndex(index: number, opts?: { useMode?: boolean }): void {
@@ -110,7 +109,7 @@ class Core {
       }
       this[_selectedUUID] = uuid;
       this[_selectedUUIDList] = [];
-      this.draw();
+      this[_draw]();
     }
   }
 
@@ -131,7 +130,7 @@ class Core {
       this[_data].elements[index + 1] = temp;
     }
     this[_emitChangeData]();
-    this.draw();
+    this[_draw]();
   }
 
   moveUpElement(uuid: string): void {
@@ -143,23 +142,26 @@ class Core {
       this[_data].elements[index - 1] = temp;
     }
     this[_emitChangeData]();
-    this.draw();
+    this[_draw]();
   }
 
   scale(ratio: number): TypeScreenContext {
     const screen = this[_board].scale(ratio);
+    this[_draw]();
     this[_emitChangeScreen]();
     return screen;
   }
 
   scrollX(x: number): TypeScreenContext {
     const screen = this[_board].scrollX(x);
+    this[_draw]();
     this[_emitChangeScreen]();
     return screen;
   }
 
   scrollY(y: number): TypeScreenContext {
     const screen = this[_board].scrollY(y);
+    this[_draw]();
     this[_emitChangeScreen]();
     return screen;
   }
@@ -168,20 +170,12 @@ class Core {
     return deepClone(this[_data]);
   }
 
-  initData(data: any | TypeData): void {
-    if (this[_hasInitedData] === true) {
-      return;
-    }
-    this.setData(data, { triggerChangeEvent: true });
-    this[_hasInitedData] = true;
-  }
-
   setData(data: any | TypeData, opts?: { triggerChangeEvent: boolean }): void {
     this[_data] = this[_element].initData(deepClone(parseData(data)));
     if (opts && opts.triggerChangeEvent === true) {
       this[_emitChangeData]();
     }
-    this.draw();
+    this[_draw]();
   }
 
   updateElement(elem: TypeElement<keyof TypeElemDesc>) {
@@ -195,7 +189,7 @@ class Core {
       }
     }
     this[_emitChangeData]();
-    this.draw();
+    this[_draw]();
   }
 
   addElement(elem: TypeElement<keyof TypeElemDesc>): string | null {
@@ -204,7 +198,7 @@ class Core {
     _elem.uuid = createUUID();
     this[_data].elements.unshift(_elem);
     this[_emitChangeData]();
-    this.draw();
+    this[_draw]();
     return _elem.uuid;
   }
 
@@ -214,7 +208,7 @@ class Core {
     if (index >= 0) {
       this[_data].elements.splice(index, 1);
       this[_emitChangeData]();
-      this.draw();
+      this[_draw]();
     }
   }
 
@@ -295,7 +289,7 @@ class Core {
       }
     }
     
-    this.draw();
+    this[_draw]();
   }
 
   private [_handleMoveStart](point: TypePoint): void {
@@ -321,12 +315,12 @@ class Core {
   private [_handleMove](point: TypePoint): void {
     if (this[_mode] === Mode.SELECT_ELEMENT_LIST) {
       this[_dragElements](this[_selectedUUIDList], point, this[_prevPoint]);
-      this.draw();
+      this[_draw]();
       this[_cursorStatus] = CursorStatus.DRAGGING;
     } else if (typeof this[_selectedUUID] === 'string') {
       if (this[_mode] === Mode.SELECT_ELEMENT) {
         this[_dragElements]([this[_selectedUUID] as string], point, this[_prevPoint]);
-        this.draw();
+        this[_draw]();
         this[_cursorStatus] = CursorStatus.DRAGGING;
       } else if (this[_mode] === Mode.SELECT_ELEMENT_WRAPPER_DOT && this[_selectedDotDirection]) {
         this[_transfromElement](this[_selectedUUID] as string, point, this[_prevPoint], this[_selectedDotDirection] as TypeHelperWrapperDotDirection);
@@ -334,7 +328,7 @@ class Core {
       }
     } else if (this[_mode] === Mode.SELECT_AREA) {
       this[_helper].changeSelectArea(point);
-      this.draw();
+      this[_draw]();
     }
     this[_prevPoint] = point;
   }
@@ -373,7 +367,7 @@ class Core {
         this[_mode] = Mode.NULL;
       }
       this[_helper].clearSelectedArea();
-      this.draw();
+      this[_draw]();
     }
     this[_selectedUUID] = null;
     this[_prevPoint] = null;
@@ -402,7 +396,7 @@ class Core {
         this[_element].dragElement(this[_data], uuid, point, prevPoint, this[_board].getContext().getTransform().scale);
       }
     });
-    this.draw();
+    this[_draw]();
   }
 
   private [_transfromElement](
@@ -416,7 +410,7 @@ class Core {
       return null;
     }
     const result = this[_element].transformElement(this[_data], uuid, point, prevPoint, this[_board].getContext().getTransform().scale, direction);
-    this.draw();
+    this[_draw]();
     return result;
   }
 

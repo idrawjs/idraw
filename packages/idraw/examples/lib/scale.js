@@ -8,14 +8,12 @@ export function doScale(idraw, scale) {
     input.value = scale;
     const screen = idraw.scale(scale);
     console.log('scale: screen = ', screen);
-    idraw.draw();
   }
   input.addEventListener('change', () => {
     const val = input.value * 1;
     if (val > 0) {
       const screen = idraw.scale(val);
       console.log('scale: screen = ', screen);
-      idraw.draw();
     }
   });
   hasInited = true;

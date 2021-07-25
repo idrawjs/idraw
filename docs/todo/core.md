@@ -1,10 +1,19 @@
 # @idraw/core
 
-* [] Change idraw.selectElementByUUID to idraw.selectElementByIndex
-* [] Change idraw.selectElement use uuid arg
+* [x] make idraw.draw() private
+* [x] remove idraw.initData()
+* Support Element's render
+  * Circle
+    * [] Render content
+  * Text
+    * [] Desc backgroundColor
+  * HTML
+    * [] Render content
 * [] Support gradient color
 * [] Listen keyboard action
 * [] Keep all num two decimals
+* [x] Change idraw.selectElementByUUID to idraw.selectElementByIndex
+* [x] Change idraw.selectElement use uuid arg
 * [x] License text in JS result
 * [x] Options default data
 * [x] BUG: Select area calculate elements error
@@ -39,8 +48,6 @@
     * [x] Font color
   * Rect
     * [x] Rect content
-  * Circle
-    * [] Rect content
   * Image
     * [x] Image content
   * [x] SVG

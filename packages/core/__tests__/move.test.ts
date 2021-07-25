@@ -32,8 +32,7 @@ describe("@idraw/core", () => {
     const mount = document.querySelector('#mount') as HTMLDivElement;
     const idraw = new IDraw(mount, opts);
     const data = getData();
-    idraw.initData(data);
-    idraw.draw();
+    idraw.setData(data);
     idraw.moveUpElement('image-003'); 
 
     requestAnimationFrameMock.triggerNextAnimationFrame();
@@ -63,8 +62,7 @@ describe("@idraw/core", () => {
     const mount = document.querySelector('#mount') as HTMLDivElement;
     const idraw = new IDraw(mount, opts);
     const data = getData();
-    idraw.initData(data);
-    idraw.draw(); 
+    idraw.setData(data);
     idraw.moveDownElement('image-003'); 
 
     requestAnimationFrameMock.triggerNextAnimationFrame();

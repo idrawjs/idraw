@@ -32,8 +32,7 @@ describe("idraw", () => {
     const mount = document.querySelector('#mount') as HTMLDivElement;
     const idraw = new IDraw(mount, opts);
     const data = getData();
-    idraw.initData(data);
-    idraw.draw();
+    idraw.setData(data, { triggerChangeEvent: true });
 
     requestAnimationFrameMock.triggerNextAnimationFrame();
   
@@ -62,8 +61,7 @@ describe("idraw", () => {
     const mount = document.querySelector('#mount') as HTMLDivElement;
     const idraw = new IDraw(mount, opts);
     const data = getData();
-    idraw.initData(data);
-    idraw.draw(); 
+    idraw.setData(data, { triggerChangeEvent: true });
     idraw.moveDownElement('svg-004');
     idraw.moveDownElement('image-003');
     await delay(10);

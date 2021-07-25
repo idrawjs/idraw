@@ -38,13 +38,11 @@
           devicePixelRatio: 4,
           onlyRender: true,
         });
-      core.initData(data);
-      core.draw();
+      core.setData(data);
 
       setTimeout(() => {
         data.elements[0].desc.src = `./../images/phone.png?v=${Date.now()}`;
         core.updateElement(data.elements[0]);
-        core.draw();
         console.log('update ok!');
       }, 2000);
     </script>
