@@ -1,8 +1,7 @@
 # @idraw/core
 
-* [] make idraw.draw() private
-* [] remove idraw.initData()
-* [] make idraw.pointScreenToContext() and idraw.pointContextToScreen() private
+* [x] make idraw.draw() private
+* [x] remove idraw.initData()
 * Support Element's render
   * Circle
     * [] Render content

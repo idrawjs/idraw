@@ -10,13 +10,11 @@ export function doScroll(idraw, conf = {}) {
     inputX.value = conf.scrollX;
     const screen = idraw.scrollX(conf.scrollX);
     console.log('scale: scrollX = ', screen);
-    idraw.draw();
   }
 
   if (conf.scrollY >= 0) {
     inputY.value = conf.scrollY;
     idraw.scrollY(conf.scrollY);
-    idraw.draw();
   }
 
   inputX.addEventListener('change', () => {
@@ -24,7 +22,6 @@ export function doScroll(idraw, conf = {}) {
     if (val >= 0) {
       const screen = idraw.scrollX(val);
       console.log('scale: scrollX = ', screen);
-      idraw.draw();
     }
   });
   inputY.addEventListener('change', () => {
@@ -32,7 +29,6 @@ export function doScroll(idraw, conf = {}) {
     if (val >= 0) {
       const screen = idraw.scrollY(val);
       console.log('scale: scrollY = ', screen);
-      idraw.draw();
     }
   });
   hasInited = true;

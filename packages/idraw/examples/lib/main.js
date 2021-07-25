@@ -44,8 +44,9 @@ idraw.on('screenChangeElement', (data) => {
 });
 
 
-idraw.initData(data);
-idraw.draw();
+idraw.setData(data, {
+  triggerChangeEvent: true,
+});
 
 doAction(idraw);
 doScale(idraw, defaultConf.scale);

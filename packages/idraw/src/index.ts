@@ -48,7 +48,6 @@ class IDraw extends Core {
     const record = this[_doRecords][this[_doRecords].length - 1];
     if (record?.data) {
       this.setData(record.data);
-      this.draw();
     }
     return {
       doRecordCount: this[_doRecords].length,
@@ -69,7 +68,6 @@ class IDraw extends Core {
     const record = this[_unDoRecords].pop();
     if (record?.data) {
       this.setData(record.data);
-      this.draw();
     }
     return {
       undoRecordCount: this[_unDoRecords].length,

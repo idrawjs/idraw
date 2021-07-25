@@ -7,13 +7,12 @@ export function doScale(core, scale) {
   if (scale > 0) {
     input.value = scale;
     core.scale(scale);
-    core.draw();
   }
   input.addEventListener('change', () => {
     const val = input.value * 1;
+    console.log('scale ===', val);
     if (val > 0) {
       core.scale(val);
-      core.draw();
     }
   });
   hasInited = true;

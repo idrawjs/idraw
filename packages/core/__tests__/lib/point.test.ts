@@ -24,7 +24,6 @@ describe('@idraw/core', () => {
   idraw.scale(transform.scale);
   idraw.scrollX(transform.scrollX);
   idraw.scrollY(transform.scrollY);
-  idraw.draw();
 
   const p1 = {x: 400, y: 300};
   const p2 = {x: 300, y: 200};

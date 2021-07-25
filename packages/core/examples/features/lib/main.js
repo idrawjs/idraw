@@ -50,7 +50,6 @@ core.on('screenChangeElement', (data) => {
 
 
 core.setData(data);
-core.draw();
 
 doScale(core, defaultConf.scale);
 doScroll(core, defaultConf);
