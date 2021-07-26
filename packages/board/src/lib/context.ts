@@ -198,9 +198,9 @@ class Context implements TypeContext {
     }
   }
 
-  setFont(opts: { fontSize: number, fontFamily?: string, fontWeight?: string }): void {
+  setFont(opts: { fontSize: number, fontFamily?: string, fontWeight?: 'bold' }): void {
     const strList: string[] = [];
-    if (opts.fontWeight) {
+    if (opts.fontWeight === 'bold') {
       strList.push(`${opts.fontWeight}`);
     }
     strList.push(`${this._doSize(opts.fontSize || 12)}px`);

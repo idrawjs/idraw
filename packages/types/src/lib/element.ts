@@ -40,7 +40,7 @@ type TypeElemDescText = {
   color: string;
   fontSize: number;
   lineHeight?: number;
-  // fontWeight?: string;
+  fontWeight?: 'bold' | '';
   fontFamily?: string;
   textAlign?: 'center' | 'left' | 'right';
   bgColor: string;

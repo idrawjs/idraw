@@ -29,6 +29,7 @@ export function drawText(
     ctx.setFillStyle(elem.desc.color);
     ctx.setTextBaseline('top');
     ctx.setFont({
+      fontWeight: desc.fontWeight,
       fontSize: desc.fontSize,
       fontFamily: desc.fontFamily
     });
