@@ -25,7 +25,7 @@ type TypeElemBoxDesc = {
 type TypeElemDesc = {
   text: TypeElemDescText,
   rect: TypeElemDescRect,
-  // circle: TypeElemDescCircle,
+  circle: TypeElemDescCircle,
   image: TypeElemDescImage,
   svg: TypeElemDescSVG,
   // paint: TypeElemDescPaint,
@@ -46,11 +46,9 @@ type TypeElemDescText = {
   bgColor: string;
 } & TypeElemBoxDesc
 
-// type TypeElemDescCircle = {
-//   r: number;
-//   x: number;
-//   y: number;
-// }
+type TypeElemDescCircle = {
+  color: string;
+} & TypeElemBoxDesc
 
 type TypeElemDescImage = {
   src: string;

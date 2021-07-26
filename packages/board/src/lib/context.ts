@@ -217,6 +217,18 @@ class Context implements TypeContext {
     this._ctx.globalAlpha = alpha;
   }
 
+  save() {
+    this._ctx.save();
+  }
+  
+  restore() {
+    this._ctx.restore();
+  }
+
+  scale(ratioX: number, ratioY: number) {
+    this._ctx.scale(ratioX, ratioY);
+  }
+
   private _doSize(num: number) {
     return this._opts.devicePixelRatio * num;
   }

@@ -2,49 +2,57 @@ const data = {
   // bgColor: '#ffffff',
   elements: [
     {
-      name: "rect-001",
+      name: "circle-001",
       x: 10,
       y: 10,
-      w: 200,
+      w: 100,
       h: 100,
       type: "circle",
       desc: {
         color: "#f0f0f0",
+        borderWidth: 2,
+        borderColor: '#999999'
       },
     },
     {
-      name: "rect-002",
-      x: 80,
+      name: "circle-002",
+      x: 100,
       y: 80,
       w: 200,
-      h: 120,
-      // angle: 30,
-      type: "rect",
+      h: 100,
+      angle: 30,
+      type: "circle",
       desc: {
-        color: "#cccccc",
+        color: "#f0f0f0",
+        borderWidth: 2,
+        borderColor: '#666666'
       },
     },
     {
-      name: "rect-003",
-      x: 160,
-      y: 160,
-      w: 200,
-      h: 20,
-      type: "rect",
-      angle: 80,
-      desc: {
-        color: "#c0c0c0",
-      },
-    },
-    {
-      name: "rect-004",
-      x: 400 - 10,
-      y: 300 - 10,
+      name: "circle-003",
+      x: 200,
+      y: 200,
       w: 200,
       h: 100,
-      type: "rect",
+      type: "circle",
+      angle: 0,
       desc: {
-        color: "#e0e0e0",
+        color: "#f0f0f0",
+        borderWidth: 2,
+        borderColor: '#666666'
+      },
+    },
+    {
+      name: "circle-004",
+      x: 220,
+      y: 80,
+      w: 300,
+      h: 300,
+      type: "circle",
+      desc: {
+        color: "#f0f0f0",
+        borderWidth: 10,
+        borderColor: '#666666'
       },
     },
   ],

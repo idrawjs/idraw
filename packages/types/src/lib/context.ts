@@ -43,7 +43,9 @@ interface TypeContext {
   fillText(text: string, x: number, y: number, maxWidth?: number | undefined): void;
   setFont(opts: { fontSize: number, fontFamily?: string, fontWeight?: string }): void
   setTextBaseline(baseline: CanvasTextBaseline): void;
-  
+  save(): void;
+  restore(): void;
+  scale(ratioX: number, ratioY: number): void;
   drawImage(image: CanvasImageSource, dx: number, dy: number, dw: number, dh: number): void;
   drawImage(image: CanvasImageSource, sx: number, sy: number, sw: number, sh: number, dx: number, dy: number, dw: number, dh: number): void;
   createPattern(image: CanvasImageSource, repetition: string | null): CanvasPattern | null;

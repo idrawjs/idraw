@@ -160,9 +160,6 @@ export class Helper implements TypeHelper {
     const uuids: string[] = [];
     const ctx = this._ctx;
 
-    console.log({x, y, w, h}, start, end);
-    console.log(this._board.getTransform());
-
     ctx.beginPath();
     ctx.moveTo(x, y);
     ctx.lineTo(x + w, y);
