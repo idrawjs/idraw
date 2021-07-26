@@ -4,7 +4,7 @@ import { toColorHexStr, toColorHexNum, isColorStr } from './lib/color';
 import { createUUID } from './lib/uuid';
 import { deepClone } from './lib/data';
 import istype from './lib/istype';
-import { loadImage, loadSVG } from './lib/loader';
+import { loadImage, loadSVG, loadHTML } from './lib/loader';
 
 export default {
   time: {
@@ -15,6 +15,7 @@ export default {
   loader: {
     loadImage,
     loadSVG,
+    loadHTML,
   },
   file: {
     downloadImageFromCanvas,

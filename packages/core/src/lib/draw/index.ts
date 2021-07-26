@@ -11,7 +11,9 @@ import { clearContext, drawBgColor } from './base';
 import { drawRect } from './rect';
 import { drawImage } from './image';
 import { drawSVG } from './svg';
+import { drawHTML } from './html';
 import { drawText } from './text';
+import { drawCircle } from './circle';
 import {
   drawElementWrapper, drawAreaWrapper, drawElementListWrappers,
 } from './wrapper';
@@ -52,6 +54,14 @@ export function drawContext(
       }
       case 'svg': {
         drawSVG(ctx, elem as TypeElement<'svg'>, loader);
+        break;
+      }
+      case 'html': {
+        drawHTML(ctx, elem as TypeElement<'html'>, loader);
+        break;
+      }
+      case 'circle': {
+        drawCircle(ctx, elem as TypeElement<'circle'>);
         break;
       }
       default: {

@@ -198,9 +198,9 @@ class Context implements TypeContext {
     }
   }
 
-  setFont(opts: { fontSize: number, fontFamily?: string, fontWeight?: string }): void {
+  setFont(opts: { fontSize: number, fontFamily?: string, fontWeight?: 'bold' }): void {
     const strList: string[] = [];
-    if (opts.fontWeight) {
+    if (opts.fontWeight === 'bold') {
       strList.push(`${opts.fontWeight}`);
     }
     strList.push(`${this._doSize(opts.fontSize || 12)}px`);
@@ -215,6 +215,18 @@ class Context implements TypeContext {
 
   setGlobalAlpha(alpha: number): void {
     this._ctx.globalAlpha = alpha;
+  }
+
+  save() {
+    this._ctx.save();
+  }
+  
+  restore() {
+    this._ctx.restore();
+  }
+
+  scale(ratioX: number, ratioY: number) {
+    this._ctx.scale(ratioX, ratioY);
   }
 
   private _doSize(num: number) {

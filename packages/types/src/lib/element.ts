@@ -25,9 +25,10 @@ type TypeElemBoxDesc = {
 type TypeElemDesc = {
   text: TypeElemDescText,
   rect: TypeElemDescRect,
-  // circle: TypeElemDescCircle,
+  circle: TypeElemDescCircle,
   image: TypeElemDescImage,
   svg: TypeElemDescSVG,
+  html: TypeElemDescHTML,
   // paint: TypeElemDescPaint,
 }
 
@@ -40,16 +41,15 @@ type TypeElemDescText = {
   color: string;
   fontSize: number;
   lineHeight?: number;
-  // fontWeight?: string;
+  fontWeight?: 'bold' | '';
   fontFamily?: string;
   textAlign?: 'center' | 'left' | 'right';
+  bgColor: string;
 } & TypeElemBoxDesc
 
-// type TypeElemDescCircle = {
-//   r: number;
-//   x: number;
-//   y: number;
-// }
+type TypeElemDescCircle = {
+  color: string;
+} & TypeElemBoxDesc
 
 type TypeElemDescImage = {
   src: string;
@@ -57,6 +57,10 @@ type TypeElemDescImage = {
 
 type TypeElemDescSVG = {
   svg: string;
+}
+
+type TypeElemDescHTML = {
+  html: string;
 }
 
 // type TypeElemDescPaint = TypePaintData

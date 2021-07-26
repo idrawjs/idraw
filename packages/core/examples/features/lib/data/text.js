@@ -12,10 +12,12 @@ const data = {
         fontSize: 20,
         color: "#333333",
         text: "生活就像海洋，只有意志坚强的人，才能到达彼岸。",
-        fontFamily: "",
+        fontFamily: '',
+        fontWeight: 'bold',
         borderRadius: 20,
         borderWidth: 2,
         borderColor: "#bd0b64",
+        bgColor: '#f0f0f0',
       },
     },
     {
@@ -32,7 +34,7 @@ const data = {
         color: "#666666",
         borderRadius: 60,
         borderWidth: 10,
-        borderColor: "#bd0b64",
+        borderColor: "#bd0b64"
       },
     },
     {
@@ -51,6 +53,7 @@ const data = {
         borderRadius: 20,
         borderWidth: 2,
         borderColor: "#bd0b64",
+        bgColor: '#f0f0f0',
       },
     },
     {
@@ -69,6 +72,7 @@ const data = {
         borderRadius: 20,
         borderWidth: 2,
         borderColor: "#bd0b64",
+        bgColor: '#f0f0f0',
       },
     },
   ],

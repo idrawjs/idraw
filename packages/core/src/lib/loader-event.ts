@@ -2,7 +2,7 @@
 
 export type TypeLoadData = {
   [uuid: string]: {
-    type: 'image' | 'svg',
+    type: 'image' | 'svg' | 'html',
     status: 'null' | 'loaded' | 'fail',
     content: null | HTMLImageElement | HTMLCanvasElement,
     elemW: number;
