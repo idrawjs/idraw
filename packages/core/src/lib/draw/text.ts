@@ -5,7 +5,7 @@ import {
   TypeHelperConfig,
 } from '@idraw/types';
 import Loader from '../loader';
-import { clearContext, drawBoxBorder } from './base';
+import { clearContext, drawBox } from './base';
 import { rotateElement } from './../transform';
 
 export function drawText(
@@ -15,7 +15,7 @@ export function drawText(
   helperConfig: TypeHelperConfig
 ) {
   clearContext(ctx);
-  drawBoxBorder(ctx, elem);
+  drawBox(ctx, elem, elem.desc.bgColor);
   rotateElement(ctx, elem, () => {
 
     const desc: TypeElemDescText = {

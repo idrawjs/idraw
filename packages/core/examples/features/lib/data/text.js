@@ -16,6 +16,7 @@ const data = {
         borderRadius: 20,
         borderWidth: 2,
         borderColor: "#bd0b64",
+        bgColor: '#f0f0f0',
       },
     },
     {
@@ -33,6 +34,7 @@ const data = {
         borderRadius: 60,
         borderWidth: 10,
         borderColor: "#bd0b64",
+        bgColor: '#f0f0f0',
       },
     },
     {
@@ -51,6 +53,7 @@ const data = {
         borderRadius: 20,
         borderWidth: 2,
         borderColor: "#bd0b64",
+        bgColor: '#f0f0f0',
       },
     },
     {
@@ -69,6 +72,7 @@ const data = {
         borderRadius: 20,
         borderWidth: 2,
         borderColor: "#bd0b64",
+        bgColor: '#f0f0f0',
       },
     },
   ],
