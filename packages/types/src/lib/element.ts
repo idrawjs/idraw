@@ -28,6 +28,7 @@ type TypeElemDesc = {
   circle: TypeElemDescCircle,
   image: TypeElemDescImage,
   svg: TypeElemDescSVG,
+  html: TypeElemDescHTML,
   // paint: TypeElemDescPaint,
 }
 
@@ -56,6 +57,10 @@ type TypeElemDescImage = {
 
 type TypeElemDescSVG = {
   svg: string;
+}
+
+type TypeElemDescHTML = {
+  html: string;
 }
 
 // type TypeElemDescPaint = TypePaintData

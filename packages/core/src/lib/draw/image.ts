@@ -1,16 +1,14 @@
 import {
   TypeContext,
   TypeElement,
-  TypeElemDesc,
-  // TypePoint,
 } from '@idraw/types';
 import { rotateElement } from '../transform';
 import Loader from '../loader';
  
 
-export function drawImage<T extends keyof TypeElemDesc>(
+export function drawImage (
   ctx: TypeContext,
-  elem: TypeElement<T>,
+  elem: TypeElement<'image'>,
   loader: Loader,
 ) {
   // const desc = elem.desc as TypeElemDesc['rect'];

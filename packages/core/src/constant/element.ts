@@ -5,6 +5,7 @@ const elementTypes = {
   'image': {}, // TODO
   'svg': {}, // TODO
   'circle': {}, // TODO
+  'html': {}, // TODO
 };
 
 export const elementNames = Object.keys(elementTypes);

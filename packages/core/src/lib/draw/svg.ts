@@ -1,15 +1,14 @@
 import {
   TypeContext, 
   TypeElement,
-  TypeElemDesc,
 } from '@idraw/types';
 import { rotateElement } from '../transform';
 import Loader from '../loader';
  
 
-export function drawSVG<T extends keyof TypeElemDesc>(
+export function drawSVG (
   ctx: TypeContext,
-  elem: TypeElement<T>,
+  elem: TypeElement<'svg'>,
   loader: Loader,
 ) {
   // const desc = elem.desc as TypeElemDesc['rect'];

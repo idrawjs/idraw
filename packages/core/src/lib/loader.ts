@@ -2,8 +2,9 @@ import { TypeData, TypeElement, TypeElemDesc } from '@idraw/types';
 import Board from '@idraw/board';
 import util from '@idraw/util';
 import { LoaderEvent, TypeLoadData, TypeLoaderEventArgMap } from './loader-event';
+import { filterScript } from './../util/filter';
 
-const { loadImage, loadSVG } = util.loader;
+const { loadImage, loadSVG, loadHTML } = util.loader;
 
 type Options = {
   board: Board;
@@ -113,7 +114,7 @@ export default class Loader {
     // add new load-data
     for (let i = data.elements.length - 1; i >= 0; i --) {
       const elem = data.elements[i];
-      if (['image', 'svg',].includes(elem.type)) {
+      if (['image', 'svg', 'html', ].includes(elem.type)) {
         if (!storageLoadData[elem.uuid]) {
           loadData[elem.uuid] = this._createEmptyLoadItem(elem);
           uuidQueue.push(elem.uuid);
@@ -127,6 +128,12 @@ export default class Loader {
           } else if (elem.type === 'svg') {
             const _ele = elem as TypeElement<'svg'>;
             if (_ele.desc.svg !== storageLoadData[elem.uuid].source) {
+              loadData[elem.uuid] = this._createEmptyLoadItem(elem);
+              uuidQueue.push(elem.uuid);
+            }
+          } else if (elem.type === 'html') {
+            const _ele = elem as TypeElement<'html'>;
+            if (filterScript(_ele.desc.html) !== storageLoadData[elem.uuid].source) {
               loadData[elem.uuid] = this._createEmptyLoadItem(elem);
               uuidQueue.push(elem.uuid);
             }
@@ -148,6 +155,7 @@ export default class Loader {
 
   private _createEmptyLoadItem(elem: TypeElement<keyof TypeElemDesc>): TypeLoadData[string] {
     let source = '';
+
     const type: TypeLoadData[string]['type'] = elem.type as TypeLoadData[string]['type'];
     if (elem.type === 'image') {
       const _elem = elem as TypeElement<'image'>;
@@ -155,6 +163,9 @@ export default class Loader {
     } else if (elem.type === 'svg') {
       const _elem = elem as TypeElement<'svg'>;
       source = _elem.desc.svg || '';
+    } else if (elem.type === 'html') {
+      const _elem = elem as TypeElement<'html'>;
+      source = filterScript(_elem.desc.html || '');
     }
     return {
       type: type,
@@ -278,6 +289,11 @@ export default class Loader {
       return image;
     } else if (params && params.type === 'svg') {
       const image = await loadSVG(
+        params.source
+      );
+      return image;
+    } else if (params && params.type === 'html') {
+      const image = await loadHTML(
         params.source, {
           width: params.elemW, height: params.elemH
         }
