@@ -15,7 +15,7 @@ export function drawText(
   helperConfig: TypeHelperConfig
 ) {
   clearContext(ctx);
-  drawBox(ctx, elem, elem.desc.bgColor);
+  drawBox(ctx, elem, elem.desc.bgColor || 'transparent');
   rotateElement(ctx, elem, () => {
 
     const desc: TypeElemDescText = {
