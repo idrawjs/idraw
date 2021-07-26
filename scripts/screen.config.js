@@ -13,6 +13,7 @@ const pageList = [
   { path: 'core/examples/test/text.html', w: 600, h: 400, delay: 500 },
   { path: 'core/examples/test/svg.html', w: 600, h: 400, delay: 500 },
   { path: 'core/examples/test/image.html', w: 600, h: 400, delay: 500 },
+  { path: 'core/examples/test/circle.html', w: 600, h: 400, delay: 500 },
   { path: 'core/examples/test/scale-001.html', w: 600, h: 400, delay: 500 },
   { path: 'core/examples/test/scale-002.html', w: 600, h: 400, delay: 500 },
   { path: 'core/examples/test/scale-003.html', w: 600, h: 400, delay: 500 },
