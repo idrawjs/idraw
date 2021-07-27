@@ -56,6 +56,19 @@ function svg(value: any) {
   return (typeof value === 'string' && /^(<svg[\s]{1,}|<svg>)/i.test(`${value}`.trim()) && /<\/[\s]{0,}svg>$/i.test(`${value}`.trim()));
 }
 
+function html(value: any) {
+  let result = false;
+  if (typeof value === 'string') {
+    let div: null | HTMLDivElement = document.createElement('div');
+    div.innerHTML = value;
+    if (div.children.length > 0) {
+      result = true;
+    }
+    div = null;
+  }
+  return result;
+}
+
 function text(value: any) {
   return typeof value === 'string';
 }
@@ -79,7 +92,7 @@ function fontFamily(value: any) {
 const is: TypeIs = {
   x, y, w, h, angle, number,
   borderWidth, borderRadius, color,
-  imageSrc, imageURL, imageBase64, svg,
+  imageSrc, imageURL, imageBase64, svg, html,
   text, fontSize, lineHeight, textAlign, fontFamily,
 };
 
@@ -97,6 +110,7 @@ type TypeIs = {
   imageURL: (value: any) => boolean,
   imageBase64: (value: any) => boolean,
   svg: (value: any) => boolean,
+  html: (value: any) => boolean,
   text: (value: any) => boolean,
   fontSize: (value: any) => boolean,
   lineHeight: (value: any) => boolean,

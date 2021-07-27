@@ -106,6 +106,21 @@ describe("@idraw/core static is", () => {
     expect(Core.is.svg('dafafsfsaffafa')).toStrictEqual(false);
   });
 
+  test('Core.is.html', () => {
+    expect(Core.is.html(`
+     <div>Hello World</div>
+      `)).toStrictEqual(true);
+      expect(Core.is.html(`
+      <style>
+        .box { display: block }
+      </style>
+      <div class="box">Hello World</div>
+      `)).toStrictEqual(true);
+    expect(Core.is.html('./xxxxx/xxx')).toStrictEqual(false);
+    expect(Core.is.html('/xxxxx/xxx')).toStrictEqual(false);
+    expect(Core.is.html('dafafsfsaffafa')).toStrictEqual(false);
+  });
+
   test('Core.is.text', () => {
     expect(Core.is.text('abcdefg123456')).toStrictEqual(true);
     expect(Core.is.text('')).toStrictEqual(true);
