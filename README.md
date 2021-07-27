@@ -9,7 +9,7 @@
   <a>
 
   <a href="https://www.npmjs.com/package/idraw">
-    <img src="https://img.shields.io/npm/v/vue.svg?sanitize=idraw" alt="Version">
+    <img src="https://img.shields.io/npm/v/idraw.svg?sanitize=idraw" alt="Version">
   </a>
   <a href="https://www.npmjs.com/package/idraw">
     <img src="https://img.shields.io/npm/l/idraw.svg?sanitize=true" alt="License">
