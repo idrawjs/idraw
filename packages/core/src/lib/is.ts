@@ -56,6 +56,19 @@ function svg(value: any) {
   return (typeof value === 'string' && /^(<svg[\s]{1,}|<svg>)/i.test(`${value}`.trim()) && /<\/[\s]{0,}svg>$/i.test(`${value}`.trim()));
 }
 
+function html(value: any) {
+  let result = false;
+  if (typeof value === 'string') {
+    let div: null | HTMLDivElement = document.createElement('div');
+    div.innerHTML = value;
+    if (div.children.length > 0) {
+      result = true;
+    }
+    div = null;
+  }
+  return result;
+}
+
 function text(value: any) {
   return typeof value === 'string';
 }
@@ -76,11 +89,15 @@ function fontFamily(value: any) {
   return typeof value === 'string' && value.length > 0;
 }
 
+function fontWeight(value: any) {
+  return ['bold'].includes(value);
+}
+
 const is: TypeIs = {
   x, y, w, h, angle, number,
   borderWidth, borderRadius, color,
-  imageSrc, imageURL, imageBase64, svg,
-  text, fontSize, lineHeight, textAlign, fontFamily,
+  imageSrc, imageURL, imageBase64, svg, html,
+  text, fontSize, lineHeight, textAlign, fontFamily, fontWeight,
 };
 
 type TypeIs = {
@@ -97,8 +114,10 @@ type TypeIs = {
   imageURL: (value: any) => boolean,
   imageBase64: (value: any) => boolean,
   svg: (value: any) => boolean,
+  html: (value: any) => boolean,
   text: (value: any) => boolean,
   fontSize: (value: any) => boolean,
+  fontWeight: (value: any) => boolean,
   lineHeight: (value: any) => boolean,
   textAlign: (value: any) => boolean,
   fontFamily: (value: any) => boolean,

@@ -1,17 +1,19 @@
 # @idraw/core
 
+* [] Config usage in all code
+* [] is/check add circle and html
+* [] Support gradient color
+* [] Listen keyboard action
+* [] Keep all num two decimals
 * [x] make idraw.draw() private
 * [x] remove idraw.initData()
 * Support Element's render
   * Circle
-    * [] Render content
+    * [x] Render content
   * Text
-    * [] Desc backgroundColor
+    * [x] Desc backgroundColor
   * HTML
-    * [] Render content
-* [] Support gradient color
-* [] Listen keyboard action
-* [] Keep all num two decimals
+    * [x] Render content
 * [x] Change idraw.selectElementByUUID to idraw.selectElementByIndex
 * [x] Change idraw.selectElement use uuid arg
 * [x] License text in JS result

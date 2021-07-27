@@ -45,6 +45,22 @@ function rectDesc(
   return true;
 }
 
+function circleDesc(
+  desc: any
+): boolean {
+  const { color, borderColor, borderWidth } = desc;
+  if (desc.hasOwnProperty('color') && !is.color(color)) {
+    return false;
+  }
+  if (desc.hasOwnProperty('borderColor') && !is.color(borderColor)) {
+    return false;
+  }
+  if (desc.hasOwnProperty('borderWidth') && !is.number(borderWidth)) {
+    return false;
+  }
+  return true;
+}
+
 
 function imageDesc(
   desc: any
@@ -66,11 +82,22 @@ function svgDesc(
   return true;
 }
 
+function htmlDesc(
+  desc: any
+): boolean {
+  const { html } = desc;
+  if (!is.html(html)) {
+    return false;
+  }
+  return true;
+}
+
 function textDesc(
   desc: any
 ): boolean {
   const {
     text, color, fontSize, lineHeight, fontFamily, textAlign,
+    fontWeight, bgColor,
   } = desc;
   if (!is.text(text)){
     return false;
@@ -79,6 +106,12 @@ function textDesc(
     return false;
   }
   if (!is.fontSize(fontSize)){
+    return false;
+  }
+  if (desc.hasOwnProperty('bgColor') && !is.color(bgColor)){
+    return false;
+  }
+  if (desc.hasOwnProperty('fontWeight') && !is.fontWeight(fontWeight)){
     return false;
   }
   if (desc.hasOwnProperty('lineHeight') && !is.lineHeight(lineHeight)){
@@ -98,17 +131,21 @@ function textDesc(
 
 const check = {
   attrs,
+  textDesc,
   rectDesc,
+  circleDesc,
   imageDesc,
   svgDesc,
-  textDesc,
+  htmlDesc,
 };
 
 type TypeCheck = {
   attrs: (value: any) => boolean,
   rectDesc: (value: any) => boolean,
+  circleDesc: (value: any) => boolean,
   imageDesc: (value: any) => boolean,
   svgDesc: (value: any) => boolean,
+  htmlDesc: (value: any) => boolean,
   textDesc: (value: any) => boolean,
 }
 
