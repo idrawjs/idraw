@@ -153,4 +153,10 @@ describe("@idraw/core static is", () => {
     expect(Core.is.fontFamily('')).toStrictEqual(false);
   });
 
+  test('Core.is.fontWeight', () => {
+    expect(Core.is.fontWeight('bold')).toStrictEqual(true);
+    expect(Core.is.fontWeight('xxxxxxx')).toStrictEqual(false);
+    expect(Core.is.fontWeight('')).toStrictEqual(false);
+  });
+
 })

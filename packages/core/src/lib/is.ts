@@ -89,11 +89,15 @@ function fontFamily(value: any) {
   return typeof value === 'string' && value.length > 0;
 }
 
+function fontWeight(value: any) {
+  return ['bold'].includes(value);
+}
+
 const is: TypeIs = {
   x, y, w, h, angle, number,
   borderWidth, borderRadius, color,
   imageSrc, imageURL, imageBase64, svg, html,
-  text, fontSize, lineHeight, textAlign, fontFamily,
+  text, fontSize, lineHeight, textAlign, fontFamily, fontWeight,
 };
 
 type TypeIs = {
@@ -113,6 +117,7 @@ type TypeIs = {
   html: (value: any) => boolean,
   text: (value: any) => boolean,
   fontSize: (value: any) => boolean,
+  fontWeight: (value: any) => boolean,
   lineHeight: (value: any) => boolean,
   textAlign: (value: any) => boolean,
   fontFamily: (value: any) => boolean,

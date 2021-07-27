@@ -71,6 +71,7 @@ function textDesc(
 ): boolean {
   const {
     text, color, fontSize, lineHeight, fontFamily, textAlign,
+    fontWeight, bgColor,
   } = desc;
   if (!is.text(text)){
     return false;
@@ -79,6 +80,12 @@ function textDesc(
     return false;
   }
   if (!is.fontSize(fontSize)){
+    return false;
+  }
+  if (desc.hasOwnProperty('bgColor') && !is.color(bgColor)){
+    return false;
+  }
+  if (desc.hasOwnProperty('fontWeight') && !is.fontWeight(fontWeight)){
     return false;
   }
   if (desc.hasOwnProperty('lineHeight') && !is.lineHeight(lineHeight)){

@@ -113,8 +113,10 @@ describe("@idraw/core static check", () => {
     expect(Core.check.textDesc({
       text: 'abcdefg',
       color: '#af1234',
+      bgColor: '#f0f0f0',
       fontSize: 12,
       lineHeight: 12,
+      fontWeight: 'bold',
       fontFamily: 'abc',
       textAlign: 'center',
       borderRadius: 12,
