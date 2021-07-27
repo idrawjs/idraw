@@ -82,6 +82,16 @@ function svgDesc(
   return true;
 }
 
+function htmlDesc(
+  desc: any
+): boolean {
+  const { html } = desc;
+  if (!is.html(html)) {
+    return false;
+  }
+  return true;
+}
+
 function textDesc(
   desc: any
 ): boolean {
@@ -121,11 +131,12 @@ function textDesc(
 
 const check = {
   attrs,
+  textDesc,
   rectDesc,
   circleDesc,
   imageDesc,
   svgDesc,
-  textDesc,
+  htmlDesc,
 };
 
 type TypeCheck = {
@@ -134,6 +145,7 @@ type TypeCheck = {
   circleDesc: (value: any) => boolean,
   imageDesc: (value: any) => boolean,
   svgDesc: (value: any) => boolean,
+  htmlDesc: (value: any) => boolean,
   textDesc: (value: any) => boolean,
 }
 

@@ -133,6 +133,31 @@ describe("@idraw/core static check", () => {
   });
 
 
+  test('Core.check.htmlDesc', () => {
+    expect(Core.check.htmlDesc({
+      html: `
+      <style>
+        .box { display: block }
+      </style>
+      <div class="box">Hello World</div>
+      `,
+    })).toStrictEqual(true);
+
+    expect(Core.check.htmlDesc({
+      html: `
+      abcdefg
+      <div class="box">Hello World</div>
+      `,
+    })).toStrictEqual(true);
+
+    expect(Core.check.htmlDesc({
+      html: 'Hello World',
+    })).toStrictEqual(false);
+
+    expect(Core.check.htmlDesc({})).toStrictEqual(false);
+  });
+
+
   test('Core.check.textDesc', () => {
     expect(Core.check.textDesc({
       text: 'abcdefg',
