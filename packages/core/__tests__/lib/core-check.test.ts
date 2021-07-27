@@ -55,6 +55,30 @@ describe("@idraw/core static check", () => {
   });
 
 
+  test('Core.check.circleDesc', () => {
+
+    expect(Core.check.circleDesc({
+      color: '#ffffff',
+    })).toStrictEqual(true);
+
+    expect(Core.check.circleDesc({
+      color: 123,
+    })).toStrictEqual(false);
+
+    expect(Core.check.circleDesc({
+      borderWidth: 10,
+      borderColor: '#123abf',
+      color: '#ffffff',
+    })).toStrictEqual(true);
+
+    expect(Core.check.circleDesc({
+      borderWidth: 10,
+      borderColor: '#123af',
+    })).toStrictEqual(false);
+ 
+  });
+
+
   test('Core.check.imageDesc', () => {
 
     expect(Core.check.imageDesc({

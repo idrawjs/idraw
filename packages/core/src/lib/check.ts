@@ -45,6 +45,22 @@ function rectDesc(
   return true;
 }
 
+function circleDesc(
+  desc: any
+): boolean {
+  const { color, borderColor, borderWidth } = desc;
+  if (desc.hasOwnProperty('color') && !is.color(color)) {
+    return false;
+  }
+  if (desc.hasOwnProperty('borderColor') && !is.color(borderColor)) {
+    return false;
+  }
+  if (desc.hasOwnProperty('borderWidth') && !is.number(borderWidth)) {
+    return false;
+  }
+  return true;
+}
+
 
 function imageDesc(
   desc: any
@@ -106,6 +122,7 @@ function textDesc(
 const check = {
   attrs,
   rectDesc,
+  circleDesc,
   imageDesc,
   svgDesc,
   textDesc,
@@ -114,6 +131,7 @@ const check = {
 type TypeCheck = {
   attrs: (value: any) => boolean,
   rectDesc: (value: any) => boolean,
+  circleDesc: (value: any) => boolean,
   imageDesc: (value: any) => boolean,
   svgDesc: (value: any) => boolean,
   textDesc: (value: any) => boolean,
