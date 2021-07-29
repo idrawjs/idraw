@@ -8,7 +8,7 @@ const data = getData();
 const mount = document.querySelector('#mount');
 
 const defaultConf = {
-  scale: 0.5,
+  scale: 1.5,
   scrollX: 0,
   scrollY: 0,
 };
@@ -21,8 +21,16 @@ const core = new Core(mount, {
 }, {
   scrollWrapper: {
     use: true,
-    lineWidth: 20,
-  }
+    lineWidth: 16,
+    color: '#9c27b0',
+  },
+  elementWrapper: {
+    lockColor: '#009688',
+    color: '#e91e63',
+    dotSize: 8,
+    lineWidth: 1,
+    lineDash: [12, 12],
+  },
 });
 
 
