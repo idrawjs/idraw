@@ -55,7 +55,7 @@ export function drawElementWrapper(ctx: TypeContext, config: TypeHelperConfig) {
     } else {
       // draw wrapper's lock dots,
       clearContext(ctx);
-      ctx.setFillStyle(wrapper.color);
+      ctx.setStrokeStyle(wrapper.color);
       [
         wrapper.dots.topLeft, wrapper.dots.top, wrapper.dots.topRight, wrapper.dots.right,
         wrapper.dots.bottomRight, wrapper.dots.bottom, wrapper.dots.bottomLeft, wrapper.dots.left,
@@ -140,12 +140,12 @@ export function drawElementListWrappers(ctx: TypeContext, config: TypeHelperConf
       if (wrapper.lock === true) {
         // draw wrapper's lock dots,
         clearContext(ctx);
-        ctx.setFillStyle(wrapper.color);
+        // ctx.setFillStyle(wrapper.color);
+        ctx.setStrokeStyle(wrapper.color);
         [
           wrapper.dots.topLeft, wrapper.dots.top, wrapper.dots.topRight, wrapper.dots.right,
           wrapper.dots.bottomRight, wrapper.dots.bottom, wrapper.dots.bottomLeft, wrapper.dots.left,
         ].forEach((dot) => {
-
           ctx.beginPath();
           ctx.moveTo(dot.x - wrapper.dotSize / 2, dot.y - wrapper.dotSize / 2);
           ctx.lineTo(dot.x + wrapper.dotSize / 2, dot.y + wrapper.dotSize / 2);

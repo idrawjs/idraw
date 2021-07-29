@@ -11,10 +11,6 @@ import { rotateContext, rotateElement } from './transform';
 
 const { deepClone } = util.data;
 
-const areaLineWidth = 1.5;
-const areaColor = '#2ab6f1';
-const areaLineDash = [4, 3];
-
 export class Helper implements TypeHelper {
 
   private _helperConfig: TypeHelperConfig;
@@ -40,7 +36,6 @@ export class Helper implements TypeHelper {
     this._updateElementIndex(data);
     this._updateSelectedElementWrapper(data, opts);
     this._updateSelectedElementListWrapper(data, opts);
-    this._updateDisplayContextScrollWrapper(data, opts);
   }
 
   getConfig(): TypeHelperConfig {
@@ -184,7 +179,11 @@ export class Helper implements TypeHelper {
 
     const transform = this._ctx.getTransform();
     const { scale = 1, scrollX = 0, scrollY = 0 } = transform;
+    const elemWrapper = this._coreConfig.elementWrapper;
+    const lineWidth = elemWrapper.lineWidth / scale;
+    const lineDash = elemWrapper.lineDash.map(n => (n / scale));
 
+    
     this._helperConfig.selectedAreaWrapper = {
       x: (Math.min(start.x, end.x) - scrollX) / scale,
       y: (Math.min(start.y, end.y) - scrollY) / scale,
@@ -192,11 +191,9 @@ export class Helper implements TypeHelper {
       h: Math.abs(end.y - start.y) / scale,
       startPoint: {x: start.x, y: start.y},
       endPoint: {x: end.x, y: end.y},
-      lineWidth: areaLineWidth / scale,
-      lineDash: areaLineDash.map((num) => {
-        return num / scale;
-      }),
-      color: areaColor,
+      lineWidth: lineWidth,
+      lineDash: lineDash,
+      color: elemWrapper.color,
     };
   }
 
@@ -299,54 +296,5 @@ export class Helper implements TypeHelper {
 
     return wrapper;
   }
-
-  private _updateDisplayContextScrollWrapper(data: TypeData, opts: TypeHelperUpdateOpts) {
-    if (opts.canScroll !== true) {
-      return;
-    }
-    const { width, height } = opts;
-    const sliderMinSize = 50;
-    const lineSize = 16;
-    const { position } = this._board.getScreenInfo();
-    let xSize = 0;
-    let ySize = 0;
-    if (position.left <= 0 || position.right <= 0) {
-      xSize = Math.max(
-        sliderMinSize, width - (
-          Math.abs(position.left < 0 ? position.left : 0) + Math.abs(position.right < 0 ? position.right : 0)
-        )
-      );
-      if (xSize >= width) xSize = 0;
-    }
-    if (position.top <= 0 || position.bottom <= 0) {
-      ySize = Math.max(
-        sliderMinSize, height - (
-          Math.abs(position.top < 0 ? position.top : 0) + Math.abs(position.bottom < 0 ? position.bottom : 0)
-        )
-      );
-      if (ySize >= height) ySize = 0;
-    }
-
-    let translateX = 0;
-    if (xSize > 0) {
-      translateX = width * Math.abs(position.left) / (Math.abs(position.left) + Math.abs(position.right));
-      translateX = Math.min(Math.max(0, translateX - xSize / 2), width - xSize);
-    }
-
-    let translateY = 0;
-    if (ySize > 0) {
-      translateY = height * Math.abs(position.top) / (Math.abs(position.top) + Math.abs(position.bottom));
-      translateY = Math.min(Math.max(0, translateY - ySize / 2), height - ySize);
-    }
-    this._helperConfig.displayContextScrollWrapper = {
-      lineSize,
-      xSize,
-      ySize,
-      translateY,
-      translateX,
-      color: '#e0e0e0'
-    };
-  }
-
   
 }

@@ -42,14 +42,6 @@ type TypeHelperConfig = {
   selectedAreaWrapper?: TypeHeplerSelectedAreaWrapper;
   selectedElementWrapper?: TypeHeplerSelectedElementWrapper,
   selectedElementListWrappers?: Array<TypeHeplerSelectedElementWrapper>;
-  displayContextScrollWrapper?: {
-    lineSize: number,
-    xSize: number,
-    ySize: number,
-    translateY: number,
-    translateX: number,
-    color: string,
-  }
 }
 
 
