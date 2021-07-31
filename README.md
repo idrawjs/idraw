@@ -21,5 +21,5 @@
 
 <hr/>
 
-- Documents `// TODO`
+- [Documents](https://idrawjs.github.io/docs/en/) | [中文文档](https://idrawjs.github.io/docs/zh/)   (`//TODO`)
 - [Playground](https://idrawjs.github.io/playground/)
