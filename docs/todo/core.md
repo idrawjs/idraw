@@ -1,10 +1,11 @@
 # @idraw/core
 
-* [] Config usage in all code
-* [] is/check add circle and html
+* [] Element default data
 * [] Support gradient color
 * [] Listen keyboard action
 * [] Keep all num two decimals
+* [x] Config usage in all code
+* [x] is/check add circle and html
 * [x] make idraw.draw() private
 * [x] remove idraw.initData()
 * Support Element's render
