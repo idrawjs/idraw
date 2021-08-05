@@ -24,7 +24,7 @@
     <script src="./../../dist/index.global.js"></script>
     <script type="module">
       import { getData } from './data.js';
-      const { Core } = window.iDraw;
+      const Core = window.iDrawCore;
       const data = getData();
       const core = new Core(
         document.querySelector('#mount'), {

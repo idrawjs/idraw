@@ -1,19 +1,19 @@
 const packages = [
   {
     dirName: 'util',
-    globalName: 'iDraw.util',
+    globalName: 'iDrawUtil',
   },
   {
     dirName: 'board',
-    globalName: 'iDraw.Board',
+    globalName: 'iDrawBoard',
   },
   {
     dirName: 'core',
-    globalName: 'iDraw.Core',
+    globalName: 'iDrawCore',
   },
   {
     dirName: 'idraw',
-    globalName: 'iDraw.IDraw',
+    globalName: 'iDraw',
   },
 ];
 
