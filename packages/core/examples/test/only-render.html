@@ -25,7 +25,8 @@
     <script src="./../../../util/dist/index.global.js"></script>
     <script type="module">
       import data from './../features/lib/data/image.js';
-      const { Core, util } = window.iDraw;
+      const Core = window.iDrawCore;
+      const uitl = window.iDrawUtil;
       data.elements.forEach((elem, i) => {
         elem.uuid = `aaaaaaaa-aaaa-aaaa-aaaa-aa000000000${i}`;
       });

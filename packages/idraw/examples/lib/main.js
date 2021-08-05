@@ -4,7 +4,7 @@ import { doScroll } from './scroll.js';
 import { doElemens } from './element.js';
 import { doAction } from './action.js'
 
-const { IDraw } = window.iDraw;
+const iDraw = window.iDraw;
 const mount = document.querySelector('#mount');
 
 const defaultConf = {
@@ -12,7 +12,7 @@ const defaultConf = {
   scrollX: 0,
   scrollY: 0,
 }
-const idraw = new IDraw(mount, {
+const idraw = new iDraw(mount, {
   width: 600,
   height: 400,
   contextWidth: 600,

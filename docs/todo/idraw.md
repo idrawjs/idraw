@@ -1,6 +1,7 @@
 # idraw
 
-* [] BUG: Undo/Redo need trigger "changeData" event
+* [] BUG: iDraw.js can't render image on Mobile browser
+* [x] BUG: Undo/Redo need trigger "changeData" event
 * Export
   * [] Export image
   * [] Source file
