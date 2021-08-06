@@ -29,11 +29,13 @@ const data = {
       name: "html-001",
       x: 200,
       y: 120,
-      w: 150,
-      h: 100,
+      w: 240,
+      h: 240,
       type: "html",
       angle: 0,
       desc: {
+        width: 120,
+        height: 80,
         html: `
         <style>
         .btn-box {
