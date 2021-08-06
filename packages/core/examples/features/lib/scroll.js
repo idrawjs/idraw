@@ -1,31 +1,31 @@
-const inputX = document.querySelector('#scrollX');
-const inputY = document.querySelector('#scrollY');
+const inputX = document.querySelector('#scrollLeft');
+const inputY = document.querySelector('#scrollTop');
 let hasInited = false;
 
 export function doScroll(core, conf = {}) {
   if (hasInited === true) return;
   if (!(inputY && inputX)) return;
   
-  if (conf.scrollX >= 0) {
-    inputX.value = conf.scrollX;
-    core.scrollX(conf.scrollX);
+  if (conf.scrollLeft >= 0) {
+    inputX.value = conf.scrollLeft;
+    core.scrollLeft(conf.scrollLeft);
   }
 
-  if (conf.scrollY >= 0) {
-    inputY.value = conf.scrollY;
-    core.scrollY(conf.scrollY);
+  if (conf.scrollTop >= 0) {
+    inputY.value = conf.scrollTop;
+    core.scrollTop(conf.scrollTop);
   }
 
   inputX.addEventListener('change', () => {
     const val = inputX.value * 1;
     if (val >= 0 || val < 0) {
-      core.scrollX(val);
+      core.scrollLeft(val);
     }
   });
   inputY.addEventListener('change', () => {
     const val = inputY.value * 1;
     if (val >= 0 || val < 0) {
-      core.scrollY(val);
+      core.scrollTop(val);
     }
   });
   hasInited = true;

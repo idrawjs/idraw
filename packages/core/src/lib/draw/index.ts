@@ -28,7 +28,7 @@ export function drawContext(
 ): void {
   clearContext(ctx);
   const size = ctx.getSize();
-  ctx.clearRect(0, 0, size.width, size.height);
+  ctx.clearRect(0, 0, size.contextWidth, size.contextHeight);
 
   if (typeof data.bgColor === 'string' && isColorStr(data.bgColor)) {
     drawBgColor(ctx, data.bgColor);

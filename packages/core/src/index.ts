@@ -154,15 +154,15 @@ class Core {
     return screen;
   }
 
-  scrollX(x: number): TypeScreenContext {
-    const screen = this[_board].scrollX(x);
+  scrollLeft(left: number): TypeScreenContext {
+    const screen = this[_board].scrollX(0 - left);
     this[_draw]();
     this[_emitChangeScreen]();
     return screen;
   }
 
-  scrollY(y: number): TypeScreenContext {
-    const screen = this[_board].scrollY(y);
+  scrollTop(top: number): TypeScreenContext {
+    const screen = this[_board].scrollY(0 - top);
     this[_draw]();
     this[_emitChangeScreen]();
     return screen;

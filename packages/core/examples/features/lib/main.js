@@ -9,8 +9,8 @@ const mount = document.querySelector('#mount');
 
 const defaultConf = {
   scale: 1.5,
-  scrollX: 0,
-  scrollY: 0,
+  scrollLeft: 100,
+  scrollTop: 50,
 };
 const core = new Core(mount, {
   width: 600,
