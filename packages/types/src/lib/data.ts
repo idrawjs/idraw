@@ -5,9 +5,11 @@ type TypeDataBase = {
   bgColor?: string;
 }
 
-type TypeData = TypeDataBase & {
+type TypeData = {
   elements: TypeElement<keyof TypeElemDesc>[];
+  bgColor?: string;
 }
+
 
 export {
   TypeData,
