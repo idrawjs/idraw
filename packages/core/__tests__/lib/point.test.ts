@@ -15,15 +15,15 @@ describe('@idraw/core', () => {
   };
   const transform = {
     scale: 2,
-    scrollX: -200,
-    scrollY: -100,
+    scrollLeft: 200,
+    scrollTop: 100,
   };
   const mount = document.querySelector('#mount') as HTMLDivElement;
   const idraw = new IDraw(mount, opts);
 
   idraw.scale(transform.scale);
-  idraw.scrollX(transform.scrollX);
-  idraw.scrollY(transform.scrollY);
+  idraw.scrollLeft(transform.scrollLeft);
+  idraw.scrollTop(transform.scrollTop);
 
   const p1 = {x: 400, y: 300};
   const p2 = {x: 300, y: 200};
