@@ -10,7 +10,7 @@ type TypeElementAttrs = {
 
 type TypeElement<T extends keyof TypeElemDesc> = TypeElementAttrs & {
   name?: string;
-  uuid: string;
+  uuid?: string;
   type: T;
   lock?: boolean;
   desc: TypeElemDesc[T];
@@ -23,12 +23,12 @@ type TypeElemBoxDesc = {
 }
 
 type TypeElemDesc = {
-  text: TypeElemDescText,
-  rect: TypeElemDescRect,
-  circle: TypeElemDescCircle,
-  image: TypeElemDescImage,
-  svg: TypeElemDescSVG,
-  html: TypeElemDescHTML,
+  'text': TypeElemDescText,
+  'rect': TypeElemDescRect,
+  'circle': TypeElemDescCircle,
+  'image': TypeElemDescImage,
+  'svg': TypeElemDescSVG,
+  'html': TypeElemDescHTML,
   // paint: TypeElemDescPaint,
 }
 
