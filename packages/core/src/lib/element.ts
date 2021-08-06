@@ -33,7 +33,7 @@ export class Element {
     const ctx = this._ctx;
     let idx = -1;
     let uuid = null;
-    for (let i = 0; i < data.elements.length; i++) {
+    for (let i = data.elements.length - 1; i >= 0; i--) {
       const ele = data.elements[i];
       let bw = 0;
       // @ts-ignore

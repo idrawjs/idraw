@@ -8,15 +8,15 @@ type TypeElementAttrs = {
   angle: number;
 }
 
-type TypeElementBase <T extends keyof TypeElemDesc> = TypeElementAttrs & {
+type TypeElementBase <T extends keyof TypeElemDesc | TypeElemType> = TypeElementAttrs & {
   name?: string;
   uuid?: string;
-  type: T;
+  type: T | TypeElemType;
   lock?: boolean;
   desc: TypeElemDesc[T];
 }
 
-type TypeElement<T extends keyof TypeElemDesc> = TypeElementBase<T> & {
+type TypeElement<T extends keyof TypeElemDesc | TypeElemType> = TypeElementBase<T> & {
   uuid: string;
 }
 
@@ -35,6 +35,17 @@ type TypeElemDesc = {
   'html': TypeElemDescHTML,
   // paint: TypeElemDescPaint,
 }
+
+// enum TypeElemType {
+//   text = 'text',
+//   rect = 'rect',
+//   circle = 'circle',
+//   image = 'image',
+//   svg = 'svg',
+//   html = 'html',
+// }
+
+type TypeElemType = 'text' | 'rect' | 'circle' | 'image' | 'svg' | 'html';
 
 type TypeElemDescRect = {
   color?: string;
@@ -77,6 +88,7 @@ export {
   TypeElemDescImage,
   TypeElemDescSVG,
   TypeElemDesc,
+  TypeElemType,
   TypeElement,
   TypeElementBase,
 };
