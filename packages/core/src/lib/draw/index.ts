@@ -37,7 +37,7 @@ export function drawContext(
   if (!(data.elements.length > 0)) {
     return;
   }
-  for (let i = data.elements.length - 1; i >= 0; i--) {
+  for (let i = 0; i < data.elements.length; i++) {
     const elem = data.elements[i];
     switch (elem.type) {
       case 'rect': {

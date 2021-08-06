@@ -107,8 +107,10 @@ class Core {
       } else {
         this[_mode] = Mode.NULL;
       }
-      this[_selectedUUID] = uuid;
-      this[_selectedUUIDList] = [];
+      if (typeof uuid === 'string') {
+        this[_selectedUUID] = uuid;
+        this[_selectedUUIDList] = [];
+      }
       this[_draw]();
     }
   }
@@ -121,7 +123,7 @@ class Core {
     }
   }
 
-  moveDownElement(uuid: string): void {
+  moveUpElement(uuid: string): void {
     if (this[_onlyRender] === true) return;
     const index = this[_helper].getElementIndexByUUID(uuid);
     if (typeof index === 'number' && index >= 0 && index < this[_data].elements.length - 1) {
@@ -133,7 +135,7 @@ class Core {
     this[_draw]();
   }
 
-  moveUpElement(uuid: string): void {
+  moveDownElement(uuid: string): void {
     if (this[_onlyRender] === true) return;
     const index = this[_helper].getElementIndexByUUID(uuid);
     if (typeof index === 'number' && index > 0 && index < this[_data].elements.length) {
