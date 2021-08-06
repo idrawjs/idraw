@@ -1,7 +1,8 @@
 # @idraw/core
 
-* [] BUG: Type error about keyof TypeElemDesc
-* [] BUG: Type error about TypeElement'uuid
+* [] add type of TypeElemDesc-key
+* [x] BUG: Type error about keyof TypeElemDesc
+* [x] BUG: Type error about TypeElement'uuid
 * [] Element default data
 * [] Support gradient color
 * [] Listen keyboard action
