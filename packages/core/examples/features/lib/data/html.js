@@ -70,8 +70,8 @@ const data = {
         }
         </style>
         <div>
-          <div class="btn-box">
-            <button class="btn">
+          <div class="btn-box" style="margin-top: 0;">
+            <button class="btn" >
               <span>Button</span>
             </button>
           </div>
