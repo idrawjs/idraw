@@ -1,6 +1,6 @@
 import {
   TypeData, TypePoint, TypeBoardSizeOptions,
-  TypeHelperWrapperDotDirection, TypeConfig, TypeConfigStrict,
+  TypeHelperWrapperDotDirection, TypeConfig, TypeConfigStrict, TypeElementBase,
   TypeElement, TypeElemDesc, TypeContext, TypeCoreOptions,  TypeScreenContext,
 }  from '@idraw/types';
 import Board from '@idraw/board';
@@ -194,7 +194,7 @@ class Core {
     this[_draw]();
   }
 
-  addElement(elem: TypeElement<keyof TypeElemDesc>): string | null {
+  addElement(elem: TypeElementBase<keyof TypeElemDesc>): string | null {
     if (this[_onlyRender] === true) return null;
     const _elem = deepClone(elem);
     _elem.uuid = createUUID();

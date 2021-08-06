@@ -1,10 +1,15 @@
-import { TypeElemDesc, TypeElement } from './element';
+import { TypeElemDesc, TypeElement, TypeElementBase } from './element';
 
-type TypeData = {
-  elements: TypeElement<keyof TypeElemDesc>[];
+type TypeDataBase = {
+  elements: TypeElementBase<keyof TypeElemDesc>[];
   bgColor?: string;
 }
 
+type TypeData = TypeDataBase & {
+  elements: TypeElement<keyof TypeElemDesc>[];
+}
+
 export {
-  TypeData
+  TypeData,
+  TypeDataBase,
 };

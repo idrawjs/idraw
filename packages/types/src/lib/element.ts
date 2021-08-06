@@ -8,12 +8,16 @@ type TypeElementAttrs = {
   angle: number;
 }
 
-type TypeElement<T extends keyof TypeElemDesc> = TypeElementAttrs & {
+type TypeElementBase <T extends keyof TypeElemDesc> = TypeElementAttrs & {
   name?: string;
   uuid?: string;
   type: T;
   lock?: boolean;
   desc: TypeElemDesc[T];
+}
+
+type TypeElement<T extends keyof TypeElemDesc> = TypeElementBase<T> & {
+  uuid: string;
 }
 
 type TypeElemBoxDesc = {
@@ -74,4 +78,5 @@ export {
   TypeElemDescSVG,
   TypeElemDesc,
   TypeElement,
+  TypeElementBase,
 };
