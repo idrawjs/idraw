@@ -29,11 +29,13 @@ const data = {
       name: "html-001",
       x: 200,
       y: 120,
-      w: 150,
-      h: 100,
+      w: 240,
+      h: 240,
       type: "html",
       angle: 0,
       desc: {
+        width: 120,
+        height: 80,
         html: `
         <style>
         .btn-box {
@@ -68,8 +70,8 @@ const data = {
         }
         </style>
         <div>
-          <div class="btn-box">
-            <button class="btn">
+          <div class="btn-box" style="margin-top: 0;">
+            <button class="btn" >
               <span>Button</span>
             </button>
           </div>

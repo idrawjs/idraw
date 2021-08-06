@@ -76,6 +76,8 @@ type TypeElemDescSVG = {
 
 type TypeElemDescHTML = {
   html: string;
+  width: number;
+  height: number;
 }
 
 // type TypeElemDescPaint = TypePaintData

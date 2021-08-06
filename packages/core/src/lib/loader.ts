@@ -113,7 +113,7 @@ export default class Loader {
 
     // add new load-data
     for (let i = data.elements.length - 1; i >= 0; i --) {
-      const elem = data.elements[i];
+      const elem = data.elements[i] as TypeElement<'image' | 'svg' | 'html'>;
       if (['image', 'svg', 'html', ].includes(elem.type)) {
         if (!storageLoadData[elem.uuid]) {
           loadData[elem.uuid] = this._createEmptyLoadItem(elem);
@@ -153,10 +153,12 @@ export default class Loader {
     return [uuidQueue, loadData];
   }
 
-  private _createEmptyLoadItem(elem: TypeElement<keyof TypeElemDesc>): TypeLoadData[string] {
+  private _createEmptyLoadItem(elem: TypeElement<'image' | 'svg' | 'html'>): TypeLoadData[string] {
     let source = '';
 
     const type: TypeLoadData[string]['type'] = elem.type as TypeLoadData[string]['type'];
+    let elemW: number = elem.w;
+    let elemH: number = elem.h;
     if (elem.type === 'image') {
       const _elem = elem as TypeElement<'image'>;
       source = _elem.desc.src || '';
@@ -166,14 +168,16 @@ export default class Loader {
     } else if (elem.type === 'html') {
       const _elem = elem as TypeElement<'html'>;
       source = filterScript(_elem.desc.html || '');
+      elemW = _elem.desc.width || elem.w;
+      elemH = _elem.desc.height || elem.h;
     }
     return {
       type: type,
       status: 'null',
       content: null,
       source,
-      elemW: elem.w,
-      elemH: elem.h,
+      elemW,
+      elemH,
     };
   }
 
