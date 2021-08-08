@@ -46,6 +46,9 @@ core.on('changeScreen', (data) => {
 core.on('screenSelectElement', (data) => {
   console.log('screenSelectElement: ', data);
 });
+// core.on('screenHoverElement', (data) => {
+//   console.log('screenHoverElement: ', data);
+// });
 core.on('screenMoveElementStart', (data) => {
   console.log('screenMoveElementStart: ', data);
 });

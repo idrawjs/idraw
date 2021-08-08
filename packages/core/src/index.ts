@@ -14,9 +14,10 @@ import { CoreEvent, TypeCoreEventArgMap } from './lib/core-event';
 import { parseData } from './lib/parse';
 import is, { TypeIs } from './lib/is';
 import check, { TypeCheck } from './lib/check';
+import { TempData } from './lib/temp';
 import {
   _board, _data, _opts, _config, _renderer, _element, _helper, _hasInited,
-  _mode, _selectedUUID, _selectedUUIDList, _prevPoint, _draw,
+  _mode, _tempData, _prevPoint, _draw,
   _selectedDotDirection, _coreEvent, _mapper, _initEvent, _handlePoint,
   _handleMoveStart, _handleMove, _handleMoveEnd, _handleHover, _dragElements,
   _transfromElement, _emitChangeScreen, _emitChangeData, _onlyRender, _cursorStatus,
@@ -40,8 +41,7 @@ class Core {
   private [_hasInited] = false; 
   private [_mode]: Mode = Mode.NULL;
   private [_coreEvent]: CoreEvent = new CoreEvent();
-  private [_selectedUUID]: string | null = null;
-  private [_selectedUUIDList]: string[] = [];
+  private [_tempData]: TempData;
   private [_prevPoint]: TypePoint | null = null;
   private [_selectedDotDirection]: TypeHelperWrapperDotDirection | null = null;
   private [_onlyRender] = false;
@@ -55,7 +55,7 @@ class Core {
     this[_opts] = opts;
     this[_onlyRender] = opts.onlyRender === true;
     this[_config] = mergeConfig(config || {});
-
+    this[_tempData] = new TempData();
     this[_board] = new Board(mount, {
       ...this[_opts],
       canScroll: config?.scrollWrapper?.use,
@@ -82,8 +82,8 @@ class Core {
       width: this[_opts].width,
       height: this[_opts].height,
       canScroll: this[_config]?.scrollWrapper?.use === true,
-      selectedUUID: this[_selectedUUID],
-      selectedUUIDList: this[_selectedUUIDList],
+      selectedUUID: this[_tempData].get('selectedUUID'),
+      selectedUUIDList: this[_tempData].get('selectedUUIDList'),
       devicePixelRatio: this[_opts].devicePixelRatio,
       scale: transfrom.scale,
       scrollX: transfrom.scrollX,
@@ -108,8 +108,8 @@ class Core {
         this[_mode] = Mode.NULL;
       }
       if (typeof uuid === 'string') {
-        this[_selectedUUID] = uuid;
-        this[_selectedUUIDList] = [];
+        this[_tempData].set('selectedUUID', uuid);
+        this[_tempData].set('selectedUUIDList', []);
       }
       this[_draw]();
     }
@@ -243,17 +243,18 @@ class Core {
   }
 
   private [_initEvent](): void {
-    if (this[_onlyRender] === true) {
+    if (this[_hasInited] === true) {
       return;
     }
-    if (this[_hasInited] === true) {
+
+    this[_board].on('hover', time.throttle(this[_handleHover].bind(this), 32));
+    if (this[_onlyRender] === true) {
       return;
     }
     this[_board].on('point', this[_handlePoint].bind(this));
     this[_board].on('moveStart', this[_handleMoveStart].bind(this));
     this[_board].on('move', time.throttle(this[_handleMove].bind(this), 16));
     this[_board].on('moveEnd', this[_handleMoveEnd].bind(this));
-    this[_board].on('hover', time.throttle(this[_handleHover].bind(this), 32));
   }
 
   private [_handlePoint](point: TypePoint): void {
@@ -269,7 +270,7 @@ class Core {
         // Controll Element-Wrapper
         this[_mode] = Mode.SELECT_ELEMENT_WRAPPER_DOT;
         this[_selectedDotDirection] = direction;
-        this[_selectedUUID] = uuid;
+        this[_tempData].set('selectedUUID', uuid);
       } else {
         const [index, uuid] = this[_element].isPointInElement(point, this[_data]);
         if (index >= 0) {
@@ -285,7 +286,7 @@ class Core {
           this[_mode] = Mode.SELECT_ELEMENT;
         } else {
           // Controll Area
-          this[_selectedUUIDList] = [];
+          this[_tempData].set('selectedUUIDList', []);
           this[_mode] = Mode.SELECT_AREA;
         }
       }
@@ -296,7 +297,7 @@ class Core {
 
   private [_handleMoveStart](point: TypePoint): void {
     this[_prevPoint] = point;
-    const uuid = this[_selectedUUID];
+    const uuid = this[_tempData].get('selectedUUID');
 
     if (this[_mode] === Mode.SELECT_ELEMENT_LIST) {
       // TODO
@@ -316,16 +317,16 @@ class Core {
 
   private [_handleMove](point: TypePoint): void {
     if (this[_mode] === Mode.SELECT_ELEMENT_LIST) {
-      this[_dragElements](this[_selectedUUIDList], point, this[_prevPoint]);
+      this[_dragElements](this[_tempData].get('selectedUUIDList'), point, this[_prevPoint]);
       this[_draw]();
       this[_cursorStatus] = CursorStatus.DRAGGING;
-    } else if (typeof this[_selectedUUID] === 'string') {
+    } else if (typeof this[_tempData].get('selectedUUID') === 'string') {
       if (this[_mode] === Mode.SELECT_ELEMENT) {
-        this[_dragElements]([this[_selectedUUID] as string], point, this[_prevPoint]);
+        this[_dragElements]([this[_tempData].get('selectedUUID') as string], point, this[_prevPoint]);
         this[_draw]();
         this[_cursorStatus] = CursorStatus.DRAGGING;
       } else if (this[_mode] === Mode.SELECT_ELEMENT_WRAPPER_DOT && this[_selectedDotDirection]) {
-        this[_transfromElement](this[_selectedUUID] as string, point, this[_prevPoint], this[_selectedDotDirection] as TypeHelperWrapperDotDirection);
+        this[_transfromElement](this[_tempData].get('selectedUUID') as string, point, this[_prevPoint], this[_selectedDotDirection] as TypeHelperWrapperDotDirection);
         this[_cursorStatus] = CursorStatus.DRAGGING;
       }
     } else if (this[_mode] === Mode.SELECT_AREA) {
@@ -336,7 +337,7 @@ class Core {
   }
 
   private [_handleMoveEnd](point: TypePoint): void {
-    const uuid = this[_selectedUUID];
+    const uuid = this[_tempData].get('selectedUUID');
     if (typeof uuid === 'string') {
       const index = this[_element].getElementIndex(this[_data], uuid);
       const elem = this[_data].elements[index];
@@ -363,15 +364,15 @@ class Core {
     } else if (this[_mode] === Mode.SELECT_AREA) {
       const uuids = this[_helper].calcSelectedElements(this[_data]);
       if (uuids.length > 0) {
-        this[_selectedUUIDList] = uuids;
-        this[_selectedUUID] = null;
+        this[_tempData].set('selectedUUIDList', uuids);
+        this[_tempData].set('selectedUUID', null);
       } else {
         this[_mode] = Mode.NULL;
       }
       this[_helper].clearSelectedArea();
       this[_draw]();
     }
-    this[_selectedUUID] = null;
+    this[_tempData].set('selectedUUID', null);
     this[_prevPoint] = null;
     this[_cursorStatus] = CursorStatus.NULL;
     this[_mode] = Mode.NULL;
@@ -381,8 +382,17 @@ class Core {
     if (this[_mode] === Mode.SELECT_AREA) {
       this[_board].resetCursor();
     } else if (this[_cursorStatus] === CursorStatus.NULL) {
-      const cursor = this[_mapper].judgePointCursor(point, this[_data]);
+      const { cursor, elementUUID } = this[_mapper].judgePointCursor(point, this[_data]);
       this[_board].setCursor(cursor);
+      if (elementUUID) {
+        const index: number | null = this[_helper].getElementIndexByUUID(elementUUID);
+        if (index !== null && index >= 0) {
+          const elem = this[_data].elements[index];
+          if (elem) {
+            this[_coreEvent].trigger('mouseOverElement', { index, uuid: elem.uuid, element: elem, })
+          }
+        }
+      }
     }
   }
 
@@ -421,7 +431,7 @@ class Core {
       this[_coreEvent].trigger('changeScreen', {
         ...this[_board].getTransform(),
         ...{
-          selectedElementUUID: this[_selectedUUID]
+          selectedElementUUID: this[_tempData].get('selectedUUID')
         }
       });
     }
