@@ -7,12 +7,14 @@ import {
 } from '@idraw/types';
 
 export type TypeCoreEventSelectBaseArg = {
-  index: number;
-  uuid: string;
+  index: number | null;
+  uuid: string | null;
 }
 
 export type TypeCoreEventArgMap  = {
   'error': any;
+  'mouseOverElement': TypeCoreEventSelectBaseArg & { element: TypeElement<keyof TypeElemDesc> }
+  'mouseLeaveElement': TypeCoreEventSelectBaseArg;
   'screenSelectElement': TypeCoreEventSelectBaseArg & { element: TypeElement<keyof TypeElemDesc> }
   'screenMoveElementStart': TypeCoreEventSelectBaseArg & TypePoint,
   'screenMoveElementEnd': TypeCoreEventSelectBaseArg & TypePoint,

@@ -254,29 +254,35 @@ export default class Loader {
 
           loadUUIDList.splice(loadUUIDList.indexOf(uuid), 1);
           const status = _loadAction();
-        
-          this._storageLoadData[uuid] = {
-            type: this._currentLoadData[uuid].type,
-            status: 'fail',
-            content: null,
-            error: err,
-            source: this._currentLoadData[uuid].source,
-            elemW: this._currentLoadData[uuid].elemW,
-            elemH: this._currentLoadData[uuid].elemH,
-          };
+
+          if (this._currentLoadData[uuid]) {
+            this._storageLoadData[uuid] = {
+              type: this._currentLoadData[uuid]?.type,
+              status: 'fail',
+              content: null,
+              error: err,
+              source: this._currentLoadData[uuid]?.source,
+              elemW: this._currentLoadData[uuid]?.elemW,
+              elemH: this._currentLoadData[uuid]?.elemH,
+            };
+          }
 
           if (loadUUIDList.length === 0 && uuids.length === 0 && status === true) {
             this._status = LoaderStatus.FREE;
             this._loadTask();
           } 
-          this._event.trigger('error', {
-            type: this._storageLoadData[uuid].type,
-            status: this._storageLoadData[uuid].status,
-            content: this._storageLoadData[uuid].content,
-            source: this._storageLoadData[uuid].source,
-            elemW: this._storageLoadData[uuid].elemW,
-            elemH: this._storageLoadData[uuid].elemH,
-          });
+          
+          if (this._currentLoadData[uuid]) {
+            this._event.trigger('error', {
+              type: this._storageLoadData[uuid]?.type,
+              status: this._storageLoadData[uuid]?.status,
+              content: this._storageLoadData[uuid]?.content,
+              source: this._storageLoadData[uuid]?.source,
+              elemW: this._storageLoadData[uuid]?.elemW,
+              elemH: this._storageLoadData[uuid]?.elemH,
+            });
+          }
+          
         });
  
       }

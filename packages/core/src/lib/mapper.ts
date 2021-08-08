@@ -37,10 +37,14 @@ export class Mapper {
     return false;
   }
 
-  judgePointCursor(p: TypePoint, data: TypeData): TypePointCursor {
+  judgePointCursor(p: TypePoint, data: TypeData): {
+    cursor: TypePointCursor,
+    elementUUID: string | null,
+  } {
     let cursor: TypePointCursor = 'auto';
+    let elementUUID: string | null = null;
     if (!this.isEffectivePoint(p)) {
-      return cursor;
+      return { cursor, elementUUID};
     }
     const [uuid, direction] = this[_helper].isPointInElementWrapperDot(p);
     if (uuid && direction) {
@@ -85,13 +89,22 @@ export class Mapper {
           break;
         }
       }
+      if (uuid) {
+        elementUUID = uuid;
+      }
     } else {
-      const [index] = this[_element].isPointInElement(p, data);
+      const [index, uuid] = this[_element].isPointInElement(p, data);
       if (index >= 0) {
         cursor = 'move';
       }
+      if (uuid) {
+        elementUUID = uuid;
+      }
     }
-    return cursor;
+    return {
+      cursor,
+      elementUUID,
+    };
   }
 
 }

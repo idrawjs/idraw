@@ -18,6 +18,7 @@ const core = new Core(mount, {
   contextWidth: 600,
   contextHeight: 400,
   devicePixelRatio: 4,
+  onlyRender: true,
 }, {
   scrollWrapper: {
     use: true,
@@ -46,6 +47,13 @@ core.on('changeScreen', (data) => {
 core.on('screenSelectElement', (data) => {
   console.log('screenSelectElement: ', data);
 });
+core.on('mouseOverElement', (data) => {
+  console.log('mouseOverElement: ', data);
+});
+core.on('mouseLeaveElement', (data) => {
+  console.log('mouseLeaveElement: ', data);
+});
+
 core.on('screenMoveElementStart', (data) => {
   console.log('screenMoveElementStart: ', data);
 });
