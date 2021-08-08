@@ -1,8 +1,8 @@
 type TypeScreenData = {
   scale: number;
-  scrollY: number;
-  scrollX: number;
-  selectedElementUUID: string | null;
+  scrollLeft: number;
+  scrollTop: number;
+  // selectedElementUUID: string | null;
 }
 
 type TypeScreenPosition = {

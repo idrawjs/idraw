@@ -20,12 +20,14 @@ export function doScroll(core, conf = {}) {
     const val = inputX.value * 1;
     if (val >= 0 || val < 0) {
       core.scrollLeft(val);
+      console.log(core.getScreenTransform());
     }
   });
   inputY.addEventListener('change', () => {
     const val = inputY.value * 1;
     if (val >= 0 || val < 0) {
       core.scrollTop(val);
+      console.log(core.getScreenTransform());
     }
   });
   hasInited = true;

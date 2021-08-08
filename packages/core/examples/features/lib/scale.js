@@ -10,9 +10,9 @@ export function doScale(core, scale) {
   }
   input.addEventListener('change', () => {
     const val = input.value * 1;
-    console.log('scale ===', val);
     if (val > 0) {
       core.scale(val);
+      console.log(core.getScreenTransform());
     }
   });
   hasInited = true;

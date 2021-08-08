@@ -1,7 +1,7 @@
 import {
   TypeData, TypePoint, TypeBoardSizeOptions,
   TypeHelperWrapperDotDirection, TypeConfig, TypeConfigStrict, TypeElementBase,
-  TypeElement, TypeElemDesc, TypeContext, TypeCoreOptions,  TypeScreenContext,
+  TypeElement, TypeElemDesc, TypeContext, TypeCoreOptions,  TypeScreenContext, TypeScreenData,
 }  from '@idraw/types';
 import Board from '@idraw/board';
 import util from '@idraw/util';
@@ -166,6 +166,15 @@ class Core {
     this[_draw]();
     this[_emitChangeScreen]();
     return screen;
+  }
+
+  getScreenTransform(): TypeScreenData {
+    const transform = this[_board].getTransform();
+    return {
+      scale: transform.scale,
+      scrollTop: Math.max(0, 0 - transform.scrollY),
+      scrollLeft: Math.max(0, 0 - transform.scrollX),
+    }
   }
 
   getData(): TypeData {
@@ -439,10 +448,10 @@ class Core {
   private [_emitChangeScreen]() {
     if (this[_coreEvent].has('changeScreen')) {
       this[_coreEvent].trigger('changeScreen', {
-        ...this[_board].getTransform(),
-        ...{
-          selectedElementUUID: this[_tempData].get('selectedUUID')
-        }
+        ...this.getScreenTransform(),
+        // ...{
+        //   selectedElementUUID: this[_tempData].get('selectedUUID')
+        // }
       });
     }
   }
