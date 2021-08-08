@@ -18,6 +18,7 @@ const core = new Core(mount, {
   contextWidth: 600,
   contextHeight: 400,
   devicePixelRatio: 4,
+  onlyRender: true,
 }, {
   scrollWrapper: {
     use: true,

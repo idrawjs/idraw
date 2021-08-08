@@ -382,10 +382,10 @@ class Core {
     let isMouseOverElement: boolean = false;
     
     if (this[_mode] === Mode.SELECT_AREA) {
-      this[_board].resetCursor();
+      if (this[_onlyRender] !== true) this[_board].resetCursor();
     } else if (this[_cursorStatus] === CursorStatus.NULL) {
       const { cursor, elementUUID } = this[_mapper].judgePointCursor(point, this[_data]);
-      this[_board].setCursor(cursor);
+      if (this[_onlyRender] !== true) this[_board].setCursor(cursor);
       if (elementUUID) {
         const index: number | null = this[_helper].getElementIndexByUUID(elementUUID);
         if (index !== null && index >= 0) {
