@@ -379,6 +379,8 @@ class Core {
   }
 
   private [_handleHover](point: TypePoint): void {
+    let isMouseOverElement: boolean = false;
+    
     if (this[_mode] === Mode.SELECT_AREA) {
       this[_board].resetCursor();
     } else if (this[_cursorStatus] === CursorStatus.NULL) {
@@ -389,10 +391,18 @@ class Core {
         if (index !== null && index >= 0) {
           const elem = this[_data].elements[index];
           if (elem) {
-            this[_coreEvent].trigger('mouseOverElement', { index, uuid: elem.uuid, element: elem, })
+            this[_coreEvent].trigger('mouseOverElement', { index, uuid: elem.uuid, element: elem, });
+            this[_tempData].set('hoverUUID', elem.uuid);
+            isMouseOverElement = true;
           }
         }
       }
+    }
+    if (isMouseOverElement !== true && this[_tempData].get('hoverUUID') !== null) {
+      const uuid = this[_tempData].get('hoverUUID');
+      const index: number | null = this[_helper].getElementIndexByUUID(uuid || '');
+      this[_coreEvent].trigger('mouseLeaveElement', { uuid, index })
+      this[_tempData].set('hoverUUID', null); 
     }
   }
 
