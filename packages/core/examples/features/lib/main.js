@@ -47,6 +47,9 @@ core.on('changeScreen', (data) => {
 core.on('screenSelectElement', (data) => {
   console.log('screenSelectElement: ', data);
 });
+core.on('screenClickElement', (data) => {
+  console.log('screenClickElement: ', data);
+})
 core.on('mouseOverElement', (data) => {
   console.log('mouseOverElement: ', data);
 });
