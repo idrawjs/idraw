@@ -394,7 +394,11 @@ class Core {
       this[_helper].clearSelectedArea();
       this[_draw]();
     }
-    this[_tempData].set('selectedUUID', null);
+    
+    if (this[_mode] !== Mode.SELECT_ELEMENT) {
+      this[_tempData].set('selectedUUID', null);
+    }
+
     this[_prevPoint] = null;
     this[_cursorStatus] = CursorStatus.NULL;
     this[_mode] = Mode.NULL;
