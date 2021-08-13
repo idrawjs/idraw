@@ -18,7 +18,7 @@ import { TempData } from './lib/temp';
 import {
   _board, _data, _opts, _config, _renderer, _element, _helper, _hasInited,
   _mode, _tempData, _prevPoint, _draw,
-  _selectedDotDirection, _coreEvent, _mapper, _initEvent, _handlePoint,
+  _selectedDotDirection, _coreEvent, _mapper, _initEvent, _handlePoint, _handleClick,
   _handleMoveStart, _handleMove, _handleMoveEnd, _handleHover, _dragElements,
   _transfromElement, _emitChangeScreen, _emitChangeData, _onlyRender, _cursorStatus,
 } from './names';
@@ -257,6 +257,8 @@ class Core {
     }
 
     this[_board].on('hover', time.throttle(this[_handleHover].bind(this), 32));
+
+    this[_board].on('point', time.throttle(this[_handleClick].bind(this), 16));
     if (this[_onlyRender] === true) {
       return;
     }
@@ -264,6 +266,17 @@ class Core {
     this[_board].on('moveStart', this[_handleMoveStart].bind(this));
     this[_board].on('move', time.throttle(this[_handleMove].bind(this), 16));
     this[_board].on('moveEnd', this[_handleMoveEnd].bind(this));
+  }
+
+  private [_handleClick](point: TypePoint): void {
+    const [index, uuid] = this[_element].isPointInElement(point, this[_data]);
+    if (index >= 0 && uuid) {
+      this[_coreEvent].trigger(
+        'screenClickElement', 
+        { index, uuid, element: deepClone(this[_data].elements?.[index])}
+      );
+    }
+    this[_draw]();
   }
 
   private [_handlePoint](point: TypePoint): void {
@@ -381,7 +394,11 @@ class Core {
       this[_helper].clearSelectedArea();
       this[_draw]();
     }
-    this[_tempData].set('selectedUUID', null);
+    
+    if (this[_mode] !== Mode.SELECT_ELEMENT) {
+      this[_tempData].set('selectedUUID', null);
+    }
+
     this[_prevPoint] = null;
     this[_cursorStatus] = CursorStatus.NULL;
     this[_mode] = Mode.NULL;
@@ -399,8 +416,18 @@ class Core {
         const index: number | null = this[_helper].getElementIndexByUUID(elementUUID);
         if (index !== null && index >= 0) {
           const elem = this[_data].elements[index];
+          if (this[_tempData].get('hoverUUID') !== elem.uuid) {
+            const preIndex = this[_helper].getElementIndexByUUID(this[_tempData].get('hoverUUID') || '');
+            if (preIndex !== null && this[_data].elements[preIndex]) {
+              this[_coreEvent].trigger('mouseLeaveElement', {
+                uuid: this[_tempData].get('hoverUUID'),
+                index: preIndex,
+                element: this[_data].elements[preIndex]
+              });
+            }
+          }
           if (elem) {
-            this[_coreEvent].trigger('mouseOverElement', { index, uuid: elem.uuid, element: elem, });
+            this[_coreEvent].trigger('mouseOverElement', { uuid: elem.uuid, index,  element: elem, });
             this[_tempData].set('hoverUUID', elem.uuid);
             isMouseOverElement = true;
           }
@@ -410,7 +437,7 @@ class Core {
     if (isMouseOverElement !== true && this[_tempData].get('hoverUUID') !== null) {
       const uuid = this[_tempData].get('hoverUUID');
       const index: number | null = this[_helper].getElementIndexByUUID(uuid || '');
-      this[_coreEvent].trigger('mouseLeaveElement', { uuid, index })
+      if (index !== null) this[_coreEvent].trigger('mouseLeaveElement', { uuid, index, element: this[_data].elements[index] })
       this[_tempData].set('hoverUUID', null); 
     }
   }

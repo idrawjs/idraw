@@ -18,7 +18,7 @@ const core = new Core(mount, {
   contextWidth: 600,
   contextHeight: 400,
   devicePixelRatio: 4,
-  onlyRender: true,
+  // onlyRender: true,
 }, {
   scrollWrapper: {
     use: true,
@@ -35,35 +35,7 @@ const core = new Core(mount, {
 });
 
 
-core.on('error', (data) => {
-  console.log('error: ', data);
-});
-core.on('changeData', (data) => {
-  console.log('changeData: ', data);
-});
-core.on('changeScreen', (data) => {
-  console.log('changeScreen: ', data);
-});
-core.on('screenSelectElement', (data) => {
-  console.log('screenSelectElement: ', data);
-});
-core.on('mouseOverElement', (data) => {
-  console.log('mouseOverElement: ', data);
-});
-core.on('mouseLeaveElement', (data) => {
-  console.log('mouseLeaveElement: ', data);
-});
-
-core.on('screenMoveElementStart', (data) => {
-  console.log('screenMoveElementStart: ', data);
-});
-core.on('screenMoveElementEnd', (data) => {
-  console.log('screenMoveElementEnd: ', data);
-});
-core.on('screenChangeElement', (data) => {
-  console.log('screenChangeElement: ', data);
-});
-
+// initEvent();
 
 core.setData(data);
 
@@ -71,3 +43,39 @@ doScale(core, defaultConf.scale);
 doScroll(core, defaultConf);
 doElemens(core);
 
+
+
+function initEvent() {
+  core.on('error', (data) => {
+    console.log('error: ', data);
+  });
+  core.on('changeData', (data) => {
+    console.log('changeData: ', data);
+  });
+  core.on('changeScreen', (data) => {
+    console.log('changeScreen: ', data);
+  });
+  core.on('screenSelectElement', (data) => {
+    console.log('screenSelectElement: ', data);
+  });
+  core.on('screenClickElement', (data) => {
+    console.log('screenClickElement: ', data);
+  })
+  core.on('mouseOverElement', (data) => {
+    console.log('mouseOverElement: ', data);
+  });
+  core.on('mouseLeaveElement', (data) => {
+    console.log('mouseLeaveElement: ', data);
+  });
+  
+  core.on('screenMoveElementStart', (data) => {
+    console.log('screenMoveElementStart: ', data);
+  });
+  core.on('screenMoveElementEnd', (data) => {
+    console.log('screenMoveElementEnd: ', data);
+  });
+  core.on('screenChangeElement', (data) => {
+    console.log('screenChangeElement: ', data);
+  });
+  
+}
