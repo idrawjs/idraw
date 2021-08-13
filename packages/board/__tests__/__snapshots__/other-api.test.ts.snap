@@ -1,0 +1,129 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`@idraw/board getTransform 1`] = `
+Array [
+  Object {
+    "props": Object {
+      "height": 1600,
+      "width": 2400,
+      "x": 0,
+      "y": 0,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "clearRect",
+  },
+  Object {
+    "props": Object {
+      "height": 1600,
+      "width": 2400,
+      "x": 0,
+      "y": 0,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "clearRect",
+  },
+  Object {
+    "props": Object {
+      "dHeight": 1600,
+      "dWidth": 2400,
+      "dx": -2400,
+      "dy": -1600,
+      "img": <canvas
+        height="1600"
+        width="2400"
+      />,
+      "sHeight": 1600,
+      "sWidth": 2400,
+      "sx": 0,
+      "sy": 0,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "drawImage",
+  },
+]
+`;
+
+exports[`@idraw/board getTransform 2`] = `
+Array [
+  Object {
+    "props": Object {
+      "height": 1600,
+      "width": 2400,
+      "x": 0,
+      "y": 0,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "clearRect",
+  },
+  Object {
+    "props": Object {
+      "height": 1600,
+      "width": 2400,
+      "x": 0,
+      "y": 0,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "clearRect",
+  },
+  Object {
+    "props": Object {
+      "dHeight": 1600,
+      "dWidth": 2400,
+      "dx": -2400,
+      "dy": -1600,
+      "img": <canvas
+        height="1600"
+        width="2400"
+      />,
+      "sHeight": 1600,
+      "sWidth": 2400,
+      "sx": 0,
+      "sy": 0,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "drawImage",
+  },
+]
+`;
