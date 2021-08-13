@@ -1,4 +1,4 @@
-import { TypeData, TypeElement, TypeElemDesc } from '@idraw/types';
+import { TypeData, TypeElement } from '@idraw/types';
 import Board from '@idraw/board';
 import util from '@idraw/util';
 import { LoaderEvent, TypeLoadData, TypeLoaderEventArgMap } from './loader-event';
@@ -21,7 +21,7 @@ export default class Loader {
 
   private _opts: Options;
   private _event: LoaderEvent;
-  private _patternMap: {[uuid: string]: CanvasPattern} = {}
+  // private _patternMap: {[uuid: string]: CanvasPattern} = {}
   private _currentLoadData: TypeLoadData = {};
   private _currentUUIDQueue: string[] = [];
   private _storageLoadData: TypeLoadData = {};
@@ -77,33 +77,33 @@ export default class Loader {
     return null;
   }
 
-  getPattern(
-    elem: TypeElement<keyof TypeElemDesc>,
-    opts?: {
-      forceUpdate: boolean
-    }
-  ): null | CanvasPattern {
-    if (this._patternMap[elem.uuid] ) {
-      if (!(opts && opts.forceUpdate === true)) {
-        return this._patternMap[elem.uuid];
-      }
-    }
-    const item = this._currentLoadData[elem.uuid];
-    if (item?.status === 'loaded') {
-      const board = this._opts.board;
-      const tempCanvas = board.createCanvas();
-      const tempCtx = board.createContext(tempCanvas);
-      const image = this.getContent(elem.uuid);
-      tempCtx.drawImage(image, elem.x, elem.y, elem.w, elem.h);
+  // getPattern(
+  //   elem: TypeElement<keyof TypeElemDesc>,
+  //   opts?: {
+  //     forceUpdate: boolean
+  //   }
+  // ): null | CanvasPattern {
+  //   if (this._patternMap[elem.uuid] ) {
+  //     if (!(opts && opts.forceUpdate === true)) {
+  //       return this._patternMap[elem.uuid];
+  //     }
+  //   }
+  //   const item = this._currentLoadData[elem.uuid];
+  //   if (item?.status === 'loaded') {
+  //     const board = this._opts.board;
+  //     const tempCanvas = board.createCanvas();
+  //     const tempCtx = board.createContext(tempCanvas);
+  //     const image = this.getContent(elem.uuid);
+  //     tempCtx.drawImage(image, elem.x, elem.y, elem.w, elem.h);
     
-      const canvas = board.createCanvas();
-      const ctx = board.createContext(canvas);
-      const pattern = ctx.createPattern(tempCanvas, 'no-repeat');
-      if (pattern) this._patternMap[elem.uuid] = pattern;
-      return pattern;
-    }
-    return null;
-  }
+  //     const canvas = board.createCanvas();
+  //     const ctx = board.createContext(canvas);
+  //     const pattern = ctx.createPattern(tempCanvas, 'no-repeat');
+  //     if (pattern) this._patternMap[elem.uuid] = pattern;
+  //     return pattern;
+  //   }
+  //   return null;
+  // }
 
   private _resetLoadData(data: TypeData): [string[], TypeLoadData] {
     const loadData: TypeLoadData = {};

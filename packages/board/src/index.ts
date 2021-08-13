@@ -67,20 +67,20 @@ class Board {
     return this[_ctx];
   }
 
-  createContext(canvas: HTMLCanvasElement) {
-    const opts = this[_opts];
-    canvas.width = opts.contextWidth * opts.devicePixelRatio;
-    canvas.height = opts.contextHeight * opts.devicePixelRatio;
-    return new Context(canvas.getContext('2d') as CanvasRenderingContext2D, this[_opts]);
-  }
+  // createContext(canvas: HTMLCanvasElement) {
+  //   const opts = this[_opts];
+  //   canvas.width = opts.contextWidth * opts.devicePixelRatio;
+  //   canvas.height = opts.contextHeight * opts.devicePixelRatio;
+  //   return new Context(canvas.getContext('2d') as CanvasRenderingContext2D, this[_opts]);
+  // }
 
-  createCanvas() {
-    const opts = this[_opts];
-    const canvas = document.createElement('canvas');
-    canvas.width = opts.contextWidth * opts.devicePixelRatio;
-    canvas.height = opts.contextHeight * opts.devicePixelRatio;
-    return canvas;
-  }
+  // createCanvas() {
+  //   const opts = this[_opts];
+  //   const canvas = document.createElement('canvas');
+  //   canvas.width = opts.contextWidth * opts.devicePixelRatio;
+  //   canvas.height = opts.contextHeight * opts.devicePixelRatio;
+  //   return canvas;
+  // }
 
   scale(scaleRatio: number): TypeScreenContext {
     if (scaleRatio > 0) {
