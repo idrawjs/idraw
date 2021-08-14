@@ -17,26 +17,47 @@
       .list {
         width: 910px;
         overflow: hidden;
-        border-top: 1px solid #aaaaaa;
-        border-left: 1px solid #aaaaaa;
+        border-top: 1px solid #f0f0f0;
+        border-left: 1px solid #f0f0f0;
       }
       .box {
         width: 300;
-        height: 200;
+        min-height: 220;
         float: left;
-        border-right: 1px solid #aaaaaa;
-        border-bottom: 1px solid #aaaaaa;
+        border-right: 1px solid #f0f0f0;
+        border-bottom: 1px solid #f0f0f0;
+        padding: 10px 0;
+      }
+      .box .title {
+        text-align: center;
+        font-size: 14px;
+        color: #000;
+        display: inline-block;
+        height: 20px;
+        line-height: 20px;
+        width: 100%;
+        font-family: monospace;
       }
     </style>
   </head>
   <body>
 
     <div class="list">
-      <div class="box" id="mount-1"></div>
-      <div class="box" id="mount-2"></div>
-      <div class="box" id="mount-3"></div>
-      <div class="box" id="mount-4"></div>
-      <div class="box" id="mount-5"></div>
+      <div class="box" id="mount-1">
+        <div class="title">Scale 0.5 to 1</div>
+      </div>
+      <div class="box" id="mount-2">
+        <div class="title">Scale 2 and Scroll</div>
+      </div>
+      <div class="box" id="mount-3">
+        <div class="title">Scale 2 to 1 and Scroll</div>
+      </div>
+      <div class="box" id="mount-4">
+        <div class="title">Scale 0.5 and Scroll</div>
+      </div>
+      <div class="box" id="mount-5">
+        <div class="title">Scale 0.5 and Console result</div>
+      </div>
     </div>
 
     <script src="./../../dist/index.global.js"></script>
