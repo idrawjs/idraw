@@ -1,4 +1,5 @@
-function mouseDown(x,y){
+function mouseDown(opts){
+  const { x,y } = opts;
   const event = new MouseEvent('mousedown', {
     screenX: x,
     screenY: y,
@@ -9,7 +10,35 @@ function mouseDown(x,y){
   elem.dispatchEvent(event);
 }
 
-function mouseUp(x,y){
+
+function mouseMove(opts){
+  const { x,y } = opts;
+  const event = new MouseEvent('mousemove', {
+    screenX: x,
+    screenY: y,
+    clientX: x,
+    clientY: y,
+  });
+  const elem = document.elementFromPoint(x,y);
+  elem.dispatchEvent(event);
+}
+
+
+// function mouseOver(opts){
+//   const { x,y } = opts;
+//   const event = new MouseEvent('mouseover', {
+//     screenX: x,
+//     screenY: y,
+//     clientX: x,
+//     clientY: y,
+//   });
+//   const elem = document.elementFromPoint(x,y);
+//   elem.dispatchEvent(event);
+// }
+
+
+function mouseUp(opts){
+  const { x,y } = opts;
   const event = new MouseEvent('mouseup', {
     screenX: x,
     screenY: y,
@@ -47,6 +76,8 @@ function wheelY(y, opts = { clientX: 0, clientY: 0 }){
 export default {
   mouseDown,
   mouseUp,
+  mouseMove,
+  // mouseOver,
   wheelX,
   wheelY,
 }

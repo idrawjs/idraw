@@ -2,7 +2,7 @@ const pageList = [
   { path: 'board/examples/test/main.html', w: 620, h: 270, delay: 500 },
   { path: 'board/examples/test/scale.html', w: 930, h: 540, delay: 500 },
   { path: 'board/examples/test/scroll.html', w: 620, h: 270, delay: 500 },
-  // { path: 'board/examples/test/event.html', w: 400, h: 300, delay: 500 },
+  { path: 'board/examples/test/event.html', w: 620, h: 270, delay: 500 },
   { path: 'core/examples/test/rect.html', w: 600, h: 400, delay: 500 },
   { path: 'core/examples/test/circle.html', w: 600, h: 400, delay: 500 },
   { path: 'core/examples/test/text.html', w: 600, h: 400, delay: 500 },

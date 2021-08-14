@@ -22,7 +22,7 @@
       }
       .box {
         width: 300;
-        min-height: 200;
+        min-height: 220;
         float: left;
         border-right: 1px solid #f0f0f0;
         border-bottom: 1px solid #f0f0f0;
@@ -43,8 +43,12 @@
   <body>
 
     <div class="list">
-      <div class="box" id="mount-1"></div>
-      <div class="box" id="mount-2"></div>
+      <div class="box" id="mount-1">
+        <div class="title">Scroll by scrollX/scrollY</div>
+      </div>
+      <div class="box" id="mount-2">
+        <div class="title">Scroll by WheelEvent</div>
+      </div>
     </div>
 
     <script src="./../../dist/index.global.js"></script>

@@ -22,7 +22,7 @@
       }
       .box {
         width: 300;
-        height: 200;
+        min-height: 220;
         float: left;
         border-right: 1px solid #aaaaaa;
         border-bottom: 1px solid #aaaaaa;
@@ -37,31 +37,44 @@
         width: 100%;
         font-family: monospace;
       }
+      .box .text {
+        text-align: center;
+        font-size: 14px;
+        font-weight: bolder;
+        color: #000;
+        display: inline-block;
+        height: 16px;
+        line-height: 16px;
+        width: 100%;
+        font-family: monospace;
+      }
     </style>
   </head>
   <body>
 
     <div class="list">
       <div class="box" id="mount-1">
-        <div class="title"></div>
+        <div class="title">Event: View</div>
       </div>
-      <div class="box" id="mount-2"></div>
+      <div class="box" id="mount-2">
+        <div class="title">Event: Result</div>
+      </div>
     </div>
 
     <script src="./../../dist/index.global.js"></script>
     <script>
       var opts = {
-          width: 300,
-          height: 200,
-          contextWidth: 500,
-          contextHeight: 450,
-          devicePixelRatio: 4,
-          canScroll: true,
-          scrollConfig: {
-            color: '#666666',
-            lineWidth: 8
-          }
+        width: 300,
+        height: 200,
+        contextWidth: 500,
+        contextHeight: 450,
+        devicePixelRatio: 4,
+        canScroll: true,
+        scrollConfig: {
+          color: '#666666',
+          lineWidth: 8
         }
+      }
       function drawBoard(board) {
         const ctx = board.getContext();
 
@@ -93,54 +106,91 @@
         ctx.fillRect(250 - 5, 225 - 5, 10, 10);
       }
     </script>
-    <script>
-      (function() {
-        const Board = window.iDrawBoard; 
-        const mount = document.querySelector('#mount-1');
-        const board = new Board(mount, opts);
-        // board.on('wheelX', (deltaX) => {
-        //   console.log('deltaX =', deltaX);
-        // })
-        // board.on('wheelY', (deltaY) => {
-        //   console.log('deltaY =', deltaY);
-        // })
-
-        drawBoard(board)
-
-        // board.scale(1.5);
-        board.scrollX(-100);
-        board.scrollY(-125);
-        // board.scale(1);
-
-        // const result = board.scale(1);
-        const result = board.scale(1);
-        console.log('result =', result);
-        board.draw();
-
-        console.log('scrollLineWidth = ', board.getScrollLineWidth())
-      })()
-
-    </script>
 
     <script type="module">
       import event from './../../../../scripts/browser/event.js';
       (function() {
         const Board = window.iDrawBoard; 
-        const mount = document.querySelector('#mount-2');
-        const board = new Board(mount, opts);
+        const mount1 = document.querySelector('#mount-1');
+        const mount2 = document.querySelector('#mount-2');
+        const board = new Board(mount1, opts);
+
+        function renderText(text) {
+          const div = document.createElement('div');
+          div.innerText = text;
+          div.classList.add('text');
+          mount2.appendChild(div);
+        }
+
+        const handleHover = (e) => {
+          renderText(`hover: x=${e.x}, y=${e.y}`);
+        }
+        const handlePoint = (e) => {
+          renderText(`point: x=${e.x}, y=${e.y}`);
+        }
+        const handleMove = (e) => {
+          renderText(`move: x=${e.x}, y=${e.y}`);
+        }
+        const handleMoveStart = (e) => {
+          renderText(`moveStart: x=${e.x}, y=${e.y}`);
+        }
+        const handleMoveEnd = (e) => {
+          renderText(`moveEnd: x=${e.x}, y=${e.y}`);
+        }
+        const handleWheelX = (moveX) => {
+          renderText(`wheelX: moveX=${moveX}`);
+        }
+        const handleWheelY = (moveY) => {
+          renderText(`wheelY: moveY=${moveY}`);
+        }
+
+        board.on('hover', handleHover);
+        board.on('point', handlePoint);
+        board.on('move', handleMove);
+        board.on('moveStart', handleMoveStart);
+        board.on('moveEnd', handleMoveEnd);
+        board.on('wheelX', handleWheelX);
+        board.on('wheelY', handleWheelY);
+
         drawBoard(board)
         board.draw();
 
-        setTimeout(() => {
+        function triggerEvent(clientX, clientY) {
+          event.mouseMove({
+            x: clientX,
+            y: clientY,
+          });
+          event.mouseDown({
+            x: clientX,
+            y: clientY,
+          });
+          event.mouseUp({
+            x: clientX,
+            y: clientY,
+          });
           event.wheelX(100, {
-            clientX: 350,
-            clientY: 100,
+            clientX: clientX,
+            clientY: clientY,
           });
           event.wheelY(125, {
-            clientX: 350,
-            clientY: 100,
+            clientX: clientX,
+            clientY: clientY,
           });
-        }, 500);
+        }
+
+        setTimeout(() => {
+          triggerEvent(120, 100);
+          setTimeout(() => {
+            board.off('hover', handleHover);
+            board.off('point', handlePoint);
+            board.off('move', handleMove);
+            board.off('moveStart', handleMoveStart);
+            board.off('moveEnd', handleMoveEnd);
+            board.off('wheelX', handleWheelX);
+            board.off('wheelY', handleWheelY);
+            triggerEvent(100, 80)
+          }, 100);
+        }, 100);
       })()
 
     </script>
