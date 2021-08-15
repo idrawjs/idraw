@@ -69,7 +69,7 @@
           dotSize: 4,
         },
       };
-      var elemText = {
+      var elemText1 = {
         name: "text-001",
         x: 20,
         y: 40,
@@ -87,13 +87,31 @@
           bgColor: '#c6e0f5',
         },
       };
+      var elemText2 = {
+        name: "text-002",
+        x: 20,
+        y: 40,
+        w: 200,
+        h: 60,
+        type: "text",
+        desc: {
+          fontSize: 16,
+          color: "#333333",
+          text: "生活就像海洋，只有意志坚强的人，才能到达彼岸。",
+          fontFamily: 'monospace',
+          borderRadius: 10,
+          borderWidth: 3,
+          borderColor: "#2196f3",
+          bgColor: '#c6e0f5',
+        },
+      };
     </script>
     <script type="module">
     import event from './../../../../scripts/browser/event.js';
       (function() {
         const mount = document.querySelector('#mount-1');
         const core = new Core(mount, opts, config);
-        core.addElement(elemText);
+        core.addElement(elemText1);
         setTimeout(() => {
           event.mouseDown({ x: 100, y: 100 })
         }, 20);
@@ -103,12 +121,42 @@
       import event from './../../../../scripts/browser/event.js';
       (function() {
         const mount = document.querySelector('#mount-2');
-        const core = new Core(mount, Object.assign(opts, {
+        const core = new Core(mount, Object.assign({}, opts, {
           onlyRender: true,
         }), config);
-        core.addElement(elemText);
+        core.addElement(elemText1);
         setTimeout(() => {
           event.mouseDown({ x: 400, y: 100 })
+        }, 20);
+      })();
+    </script>
+    <script type="module">
+      import event from './../../../../scripts/browser/event.js';
+      (function() {
+        const mount = document.querySelector('#mount-3');
+        const core = new Core(
+          mount,
+          Object.assign({}, opts, {
+            contextWidth: 700,
+            contextHeight: 500,
+          }),
+          {
+            scrollWrapper: {
+              use: true,
+              lineWidth: 4,
+              color: '#3f51b5',
+            },
+            elementWrapper: {
+              color: '#e91e63',
+              dotSize: 4,
+              lineWidth: 1,
+              lineDash: [12, 12],
+            },
+          }
+        );
+        core.addElement(elemText2);
+        setTimeout(() => {
+          event.mouseDown({ x: 700, y: 100 })
         }, 20);
       })();
     </script>
