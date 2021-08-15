@@ -207,7 +207,7 @@ class Core {
     if (this[_onlyRender] === true) return null;
     const _elem = deepClone(elem);
     _elem.uuid = createUUID();
-    this[_data].elements.unshift(_elem);
+    this[_data].elements.push(_elem);
     this[_emitChangeData]();
     this[_draw]();
     return _elem.uuid;
