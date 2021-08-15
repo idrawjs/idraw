@@ -124,7 +124,7 @@ class Core {
   }
 
   moveUpElement(uuid: string): void {
-    if (this[_onlyRender] === true) return;
+    // if (this[_onlyRender] === true) return;
     const index = this[_helper].getElementIndexByUUID(uuid);
     if (typeof index === 'number' && index >= 0 && index < this[_data].elements.length - 1) {
       const temp = this[_data].elements[index];
@@ -136,7 +136,7 @@ class Core {
   }
 
   moveDownElement(uuid: string): void {
-    if (this[_onlyRender] === true) return;
+    // if (this[_onlyRender] === true) return;
     const index = this[_helper].getElementIndexByUUID(uuid);
     if (typeof index === 'number' && index > 0 && index < this[_data].elements.length) {
       const temp = this[_data].elements[index];
@@ -190,7 +190,7 @@ class Core {
   }
 
   updateElement(elem: TypeElement<keyof TypeElemDesc>) {
-    if (this[_onlyRender] === true) return;
+    // if (this[_onlyRender] === true) return;
     const _elem  = deepClone(elem) as TypeElement<keyof TypeElemDesc>;
     const data = this[_data];
     for (let i = 0; i < data.elements.length; i++) {
@@ -204,7 +204,7 @@ class Core {
   }
 
   addElement(elem: TypeElementBase<keyof TypeElemDesc>): string | null {
-    if (this[_onlyRender] === true) return null;
+    // if (this[_onlyRender] === true) return null;
     const _elem = deepClone(elem);
     _elem.uuid = createUUID();
     this[_data].elements.push(_elem);
@@ -214,7 +214,7 @@ class Core {
   }
 
   deleteElement(uuid: string) {
-    if (this[_onlyRender] === true) return;
+    // if (this[_onlyRender] === true) return;
     const index = this[_element].getElementIndex(this[_data], uuid);
     if (index >= 0) {
       this[_data].elements.splice(index, 1);
