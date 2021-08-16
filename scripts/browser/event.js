@@ -23,18 +23,6 @@ function mouseMove(opts){
   elem.dispatchEvent(event);
 }
 
-function mouseLeave(opts){
-  const { x,y } = opts;
-  const event = new MouseEvent('mouseleave', {
-    screenX: x,
-    screenY: y,
-    clientX: x,
-    clientY: y,
-  });
-  const elem = document.elementFromPoint(x,y);
-  elem.dispatchEvent(event);
-}
-
 
 // function mouseOver(opts){
 //   const { x,y } = opts;
@@ -89,7 +77,7 @@ export default {
   mouseDown,
   mouseUp,
   mouseMove,
-  mouseLeave,
+  // mouseOver,
   wheelX,
   wheelY,
 }
