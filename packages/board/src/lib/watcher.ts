@@ -33,6 +33,7 @@ export class Watcher {
     canvas.addEventListener('mousemove', this._listenMove.bind(this), true);
     canvas.addEventListener('mouseup', this._listenMoveEnd.bind(this), true);
     canvas.addEventListener('mouseleave', this._listenMoveEnd.bind(this), true);
+    canvas.addEventListener('mouseleave', this._listenMoveLeave.bind(this), true);
     canvas.addEventListener('wheel', this._listenWheel.bind(this), true);
 
     canvas.addEventListener('touchstart', this._listenMoveStart.bind(this), true);
@@ -83,6 +84,15 @@ export class Watcher {
       if (this._isVaildPoint(p)) {
         this._event.trigger('moveEnd', p);
       }
+    }
+    this._isMoving = false;
+  }
+
+  _listenMoveLeave(e: MouseEvent|TouchEvent): void {
+    e.preventDefault();
+    if (this._event.has('leave')) {
+      const p = this._getPosition(e);
+      this._event.trigger('leave', p);
     }
     this._isMoving = false;
   }
