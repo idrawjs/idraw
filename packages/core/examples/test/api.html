@@ -43,14 +43,20 @@
   <body>
 
     <div class="list">
-      <div class="box" id="mount-1">
+      <div class="box" id="idraw-opts">
         <div class="title">Options Common</div>
       </div>
-      <div class="box" id="mount-2">
+      <div class="box" id="idraw-opts-onlyRender">
         <div class="title">Options onlyRender</div>
       </div>
-      <div class="box" id="mount-3">
+      <div class="box" id="idraw-config">
         <div class="title">Config</div>
+      </div>
+      <div class="box" id="idraw-api-setData">
+        <div class="title">idraw.setData</div>
+      </div>
+      <div class="box" id="idraw-api-resetSize">
+        <div class="title">idraw.resetSize</div>
       </div>
     </div>
 
@@ -107,9 +113,10 @@
       };
     </script>
     <script type="module">
-    import event from './../../../../scripts/browser/event.js';
+      // Options Common
+      import event from './../../../../scripts/browser/event.js';
       (function() {
-        const mount = document.querySelector('#mount-1');
+        const mount = document.querySelector('#idraw-opts');
         const core = new Core(mount, opts, config);
         core.addElement(elemText1);
         setTimeout(() => {
@@ -118,9 +125,10 @@
       })();
     </script>
     <script type="module">
+      // Options onlyRender
       import event from './../../../../scripts/browser/event.js';
       (function() {
-        const mount = document.querySelector('#mount-2');
+        const mount = document.querySelector('#idraw-opts-onlyRender');
         const core = new Core(mount, Object.assign({}, opts, {
           onlyRender: true,
         }), config);
@@ -131,11 +139,11 @@
       })();
     </script>
     <script type="module">
+      // Config
       import event from './../../../../scripts/browser/event.js';
       (function() {
-        const mount = document.querySelector('#mount-3');
-        const core = new Core(
-          mount,
+        const mount = document.querySelector('#idraw-config');
+        const core = new Core(mount,
           Object.assign({}, opts, {
             contextWidth: 700,
             contextHeight: 500,
@@ -158,6 +166,94 @@
         setTimeout(() => {
           event.mouseDown({ x: 700, y: 100 })
         }, 20);
+      })();
+    </script>
+
+    <script type="module">
+      // idraw-api-setData
+      import { getData } from './data.js';
+      import event from './../../../../scripts/browser/event.js';
+      (function() {
+        const mount = document.querySelector('#idraw-api-setData');
+        const data = getData();
+        const core = new Core(
+          mount,
+          Object.assign({}, opts, {
+            contextWidth: 700,
+            contextHeight: 500,
+          }),
+          {
+            scrollWrapper: {
+              use: true,
+            },
+          }
+        );
+        core.setData(data);
+        setTimeout(() => {
+          event.mouseDown({ x: 100, y: 400 })
+        }, 20);
+      })();
+    </script>
+
+    <script type="module">
+      // idraw-api-resetSize
+      import { getData } from './data.js';
+      import event from './../../../../scripts/browser/event.js';
+      (function() {
+        const mount = document.querySelector('#idraw-api-resetSize');
+        const data = getData();
+        const core = new Core(
+          mount,
+          Object.assign({}, opts, {
+            contextWidth: 700,
+            contextHeight: 500,
+          }),
+          {
+            scrollWrapper: {
+              use: true,
+            },
+          }
+        );
+        core.setData(data);
+        setTimeout(() => {
+          core.resetSize({
+            width: 280,
+            height: 160,
+            contextWidth: 600,
+            contextHeight: 500,
+          })
+        }, 20)
+      })();
+    </script>
+    
+    <script type="module">
+      // idraw-api-selectElement
+      import { getData } from './data.js';
+      import event from './../../../../scripts/browser/event.js';
+      (function() {
+        const mount = document.querySelector('#idraw-api-resetSize');
+        const data = getData();
+        const core = new Core(
+          mount,
+          Object.assign({}, opts, {
+            contextWidth: 700,
+            contextHeight: 500,
+          }),
+          {
+            scrollWrapper: {
+              use: true,
+            },
+          }
+        );
+        core.setData(data);
+        setTimeout(() => {
+          core.resetSize({
+            width: 280,
+            height: 160,
+            contextWidth: 600,
+            contextHeight: 500,
+          })
+        }, 20)
       })();
     </script>
 
