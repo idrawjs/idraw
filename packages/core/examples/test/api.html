@@ -22,7 +22,7 @@
       }
       .box {
         width: 300;
-        min-height: 220;
+        min-height: 242;
         float: left;
         border-right: 1px solid #f0f0f0;
         border-bottom: 1px solid #f0f0f0;
@@ -58,6 +58,39 @@
       <div class="box" id="idraw-api-resetSize">
         <div class="title">idraw.resetSize</div>
       </div>
+      <div class="box" id="idraw-api-selectElement">
+        <div class="title">idraw.selectElement</div>
+      </div>
+      <div class="box" id="idraw-api-selectElementByIndex">
+        <div class="title">idraw.selectElementByIndex</div>
+      </div>
+      <div class="box" id="idraw-api-updateElement">
+        <div class="title">idraw.updateElement</div>
+      </div>
+      <div class="box" id="idraw-api-addElement">
+        <div class="title">idraw.addElement</div>
+      </div>
+      <div class="box" id="idraw-api-deleteElement">
+        <div class="title">idraw.deleteElement</div>
+      </div>
+      <div class="box" id="idraw-api-moveUpElement">
+        <div class="title">idraw.moveUpElement</div>
+      </div>
+      <div class="box" id="idraw-api-moveDownElement">
+        <div class="title">idraw.moveDownElement</div>
+      </div>
+      <div class="box" id="idraw-api-scale">
+        <div class="title">idraw.scale</div>
+      </div>
+      <div class="box" id="idraw-api-scrollLeft">
+        <div class="title">idraw.scrollLeft</div>
+      </div>
+      <div class="box" id="idraw-api-scrollTop">
+        <div class="title">idraw.scrollTop</div>
+      </div>
+      <!-- <div class="box" id="idraw-api-on/off">
+        <div class="title">idraw.on/off</div>
+      </div> -->
     </div>
 
     <script src="./../../dist/index.global.js"></script>
@@ -145,8 +178,8 @@
         const mount = document.querySelector('#idraw-config');
         const core = new Core(mount,
           Object.assign({}, opts, {
-            contextWidth: 700,
-            contextHeight: 500,
+            contextWidth: 500,
+            contextHeight: 400,
           }),
           {
             scrollWrapper: {
@@ -179,8 +212,8 @@
         const core = new Core(
           mount,
           Object.assign({}, opts, {
-            contextWidth: 700,
-            contextHeight: 500,
+            contextWidth: 500,
+            contextHeight: 400,
           }),
           {
             scrollWrapper: {
@@ -205,8 +238,8 @@
         const core = new Core(
           mount,
           Object.assign({}, opts, {
-            contextWidth: 700,
-            contextHeight: 500,
+            contextWidth: 500,
+            contextHeight: 400,
           }),
           {
             scrollWrapper: {
@@ -220,7 +253,7 @@
             width: 280,
             height: 160,
             contextWidth: 600,
-            contextHeight: 500,
+            contextHeight: 400,
           })
         }, 20)
       })();
@@ -231,13 +264,13 @@
       import { getData } from './data.js';
       import event from './../../../../scripts/browser/event.js';
       (function() {
-        const mount = document.querySelector('#idraw-api-resetSize');
+        const mount = document.querySelector('#idraw-api-selectElement');
         const data = getData();
         const core = new Core(
           mount,
           Object.assign({}, opts, {
-            contextWidth: 700,
-            contextHeight: 500,
+            contextWidth: 500,
+            contextHeight: 400,
           }),
           {
             scrollWrapper: {
@@ -246,16 +279,239 @@
           }
         );
         core.setData(data);
-        setTimeout(() => {
-          core.resetSize({
-            width: 280,
-            height: 160,
-            contextWidth: 600,
-            contextHeight: 500,
-          })
-        }, 20)
+        core.selectElement(core.getData().elements[2].uuid);
       })();
     </script>
 
+    <script type="module">
+      // idraw-api-selectElementByIndex
+      import { getData } from './data.js';
+      import event from './../../../../scripts/browser/event.js';
+      (function() {
+        const mount = document.querySelector('#idraw-api-selectElementByIndex');
+        const data = getData();
+        const core = new Core(
+          mount,
+          Object.assign({}, opts, {
+            contextWidth: 500,
+            contextHeight: 400,
+          }),
+          {
+            scrollWrapper: {
+              use: true,
+            },
+          }
+        );
+        core.setData(data);
+        // core.selectElementByIndex(1);
+      })();
+    </script>
+
+    <script type="module">
+      // idraw-api-updateElement
+      import { getData } from './data.js';
+      import event from './../../../../scripts/browser/event.js';
+      (function() {
+        const mount = document.querySelector('#idraw-api-updateElement');
+        const data = getData();
+        const core = new Core(
+          mount,
+          Object.assign({}, opts, {
+            contextWidth: 500,
+            contextHeight: 400,
+          }),
+          {
+            scrollWrapper: {
+              use: true,
+            },
+          }
+        );
+        core.setData(data);
+        const elem = core.getData().elements[1];
+        elem.x = 60;
+        elem.y = 60;
+        core.updateElement(elem);
+      })();
+    </script>
+
+    <script type="module">
+      // idraw-api-addElement
+      import { getData } from './data.js';
+      import event from './../../../../scripts/browser/event.js';
+      (function() {
+        const mount = document.querySelector('#idraw-api-addElement');
+        const data = getData();
+        const core = new Core(
+          mount,
+          Object.assign({}, opts, {
+            contextWidth: 500,
+            contextHeight: 400,
+          }),
+          {
+            scrollWrapper: {
+              use: true,
+            },
+          }
+        );
+        core.setData(data);
+        core.addElement({
+          x: 160,
+          y: 120,
+          w: 100,
+          h: 60,
+          type: "rect",
+          desc: {
+            color: "#8bc34a",
+            borderWidth: 4,
+            borderRadius: 0,
+            borderColor: "#009688",
+          },
+        });
+      })();
+    </script>
+
+    <script type="module">
+      // idraw-api-deleteElement
+      import { getData } from './data.js';
+      import event from './../../../../scripts/browser/event.js';
+      (function() {
+        const mount = document.querySelector('#idraw-api-deleteElement');
+        const data = getData();
+        const core = new Core(
+          mount,
+          Object.assign({}, opts, {
+            contextWidth: 500,
+            contextHeight: 400,
+          }),
+          {
+            scrollWrapper: {
+              use: true,
+            },
+          }
+        );
+        core.setData(data);
+        core.deleteElement(core.getData().elements[2].uuid);
+      })();
+    </script>
+
+    <script type="module">
+      // idraw-api-moveUpElementidraw
+      import { getData } from './data.js';
+      import event from './../../../../scripts/browser/event.js';
+      (function() {
+        const mount = document.querySelector('#idraw-api-moveUpElement');
+        const data = getData();
+        const core = new Core(
+          mount,
+          Object.assign({}, opts, {
+            contextWidth: 500,
+            contextHeight: 400,
+          }),
+          {
+            scrollWrapper: {
+              use: true,
+            },
+          }
+        );
+        core.setData(data);
+        core.moveUpElement(core.getData().elements[0].uuid);
+      })();
+    </script>
+
+    <script type="module">
+      // idraw-api-moveDownElement
+      import { getData } from './data.js';
+      import event from './../../../../scripts/browser/event.js';
+      (function() {
+        const mount = document.querySelector('#idraw-api-moveDownElement');
+        const data = getData();
+        const core = new Core(
+          mount,
+          Object.assign({}, opts, {
+            contextWidth: 500,
+            contextHeight: 400,
+          }),
+          {
+            scrollWrapper: {
+              use: true,
+            },
+          }
+        );
+        core.setData(data);
+        core.moveDownElement(core.getData().elements[1].uuid);
+      })();
+    </script>
+
+    <script type="module">
+      // idraw-api-scale
+      import { getData } from './data.js';
+      import event from './../../../../scripts/browser/event.js';
+      (function() {
+        const mount = document.querySelector('#idraw-api-scale');
+        const data = getData();
+        const core = new Core(
+          mount,
+          Object.assign({}, opts, {
+            contextWidth: 500,
+            contextHeight: 400,
+          }),
+          {
+            scrollWrapper: {
+              use: true,
+            },
+          }
+        );
+        core.setData(data);
+        core.scale(2);
+      })();
+    </script>
+
+    <script type="module">
+      // idraw-api-scrollLeft
+      import { getData } from './data.js';
+      import event from './../../../../scripts/browser/event.js';
+      (function() {
+        const mount = document.querySelector('#idraw-api-scrollLeft');
+        const data = getData();
+        const core = new Core(
+          mount,
+          Object.assign({}, opts, {
+            contextWidth: 500,
+            contextHeight: 400,
+          }),
+          {
+            scrollWrapper: {
+              use: true,
+            },
+          }
+        );
+        core.setData(data);
+        core.scrollLeft(100);
+      })();
+    </script>
+
+    <script type="module">
+      // idraw-api-scrollTop
+      import { getData } from './data.js';
+      import event from './../../../../scripts/browser/event.js';
+      (function() {
+        const mount = document.querySelector('#idraw-api-scrollTop');
+        const data = getData();
+        const core = new Core(
+          mount,
+          Object.assign({}, opts, {
+            contextWidth: 500,
+            contextHeight: 400,
+          }),
+          {
+            scrollWrapper: {
+              use: true,
+            },
+          }
+        );
+        core.setData(data);
+        core.scrollTop(80);
+      })();
+    </script>
   </body>
 </html>
