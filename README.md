@@ -3,6 +3,9 @@
 <p align="center">iDraw.js is a simple JavaScript framework for Drawing on the web.</p>
 
 
+<p align="center"><a href="idraw.js.org">idraw.js.org</a></p>
+
+
 <p align="center">
   <a title="CI" href="https://github.com/idrawjs/idraw/actions/workflows/node.js.yml">
     <img src="https://github.com/idrawjs/idraw/actions/workflows/node.js.yml/badge.svg?branch=main" alt="CI">
@@ -21,5 +24,7 @@
 
 <hr/>
 
-- [Documents](https://idrawjs.github.io/docs/en/) | [中文文档](https://idrawjs.github.io/docs/zh/)   (`//TODO`)
-- [Playground](https://idrawjs.github.io/playground/)
+
+- [Documents](https://idrawjs.github.io/docs/en/) | [中文文档](https://idrawjs.github.io/docs/zh/) 
+- [Online Playground](https://idrawjs.github.io/playground/)
+- [Online Studio](https://idrawjs.github.io/studio/)
