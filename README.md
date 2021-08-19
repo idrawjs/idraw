@@ -3,7 +3,7 @@
 <p align="center">iDraw.js is a simple JavaScript framework for Drawing on the web.</p>
 
 
-<p align="center"><a href="idraw.js.org">idraw.js.org</a></p>
+<p align="center"><a href="https://idraw.js.org">idraw.js.org</a></p>
 
 
 <p align="center">
