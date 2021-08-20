@@ -1,7 +1,4 @@
 import data from './data.js';
-import { doScale } from './scale.js';
-import { doScroll } from './scroll.js';
-import { doElemens } from './element.js';
 import { doAction } from './action.js'
 
 const iDraw = window.iDraw;
@@ -49,7 +46,4 @@ idraw.setData(data, {
 });
 
 doAction(idraw);
-doScale(idraw, defaultConf.scale);
-doScroll(idraw, defaultConf);
-doElemens(idraw);
 
