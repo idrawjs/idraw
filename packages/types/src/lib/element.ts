@@ -13,6 +13,7 @@ type TypeElementBase <T extends keyof TypeElemDesc | TypeElemType> = TypeElement
   uuid?: string;
   type: T | TypeElemType;
   lock?: boolean;
+  invisible?: boolean;
   desc: TypeElemDesc[T];
 }
 

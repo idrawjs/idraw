@@ -416,7 +416,7 @@ class Core {
         const index: number | null = this[_helper].getElementIndexByUUID(elementUUID);
         if (index !== null && index >= 0) {
           const elem = this[_data].elements[index];
-          if (elem.lock === true) {
+          if (elem.lock === true || elem.invisible === true) {
             this[_board].resetCursor();
             return;
           }
@@ -454,7 +454,7 @@ class Core {
       const idx = this[_helper].getElementIndexByUUID(uuid);
       if (idx === null) return;
       const elem = this[_data].elements[idx];
-      if (elem.lock !== true) {
+      if (elem.lock !== true && elem.invisible !== true) {
         this[_element].dragElement(this[_data], uuid, point, prevPoint, this[_board].getContext().getTransform().scale);
       }
     });

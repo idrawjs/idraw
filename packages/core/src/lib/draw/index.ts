@@ -39,6 +39,9 @@ export function drawContext(
   }
   for (let i = 0; i < data.elements.length; i++) {
     const elem = data.elements[i];
+    if (elem.invisible === true) {
+      continue;
+    }
     switch (elem.type) {
       case 'rect': {
         drawRect(ctx, elem as TypeElement<'rect'>);
