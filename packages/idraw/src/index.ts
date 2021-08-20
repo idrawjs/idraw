@@ -75,6 +75,17 @@ class IDraw extends Core {
     };
   }
 
+
+  exportDataURL(
+    type: 'image/png' | 'image/jpeg',
+    quality?: number
+  ) {
+    const ctx = this.__getOriginContext();
+    const canvas = ctx.canvas;
+    const dataURL = canvas.toDataURL(type, quality);
+    return dataURL;
+  }
+
   private [_initEvent]() {
     if (this[_hasInited] === true) {
       return;

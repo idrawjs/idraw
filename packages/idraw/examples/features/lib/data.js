@@ -39,7 +39,7 @@ export default {
       h: 100,
       type: 'image',
       desc: {
-        src: './../../core/examples/images/computer.png',
+        src: './../../../core/examples/images/computer.png',
       }
     },
     {
