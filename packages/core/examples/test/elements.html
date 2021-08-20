@@ -61,6 +61,15 @@
       <div class="box" id="mount-6">
         <div class="title">HTML</div>
       </div>
+      <div class="box" id="mount-7">
+        <div class="title">Element: click selected</div>
+      </div>
+      <div class="box" id="mount-8">
+        <div class="title">Element: lock</div>
+      </div>
+      <div class="box" id="mount-9">
+        <div class="title">Element: invisible</div>
+      </div>
     </div>
 
     <script src="./../../dist/index.global.js"></script>
@@ -373,5 +382,126 @@
         });
       })();
     </script>
+
+    <script type="module">
+      import event from './../../../../scripts/browser/event.js';
+      (function() {
+        const mount = document.querySelector('#mount-7');
+        const core = new Core(mount, opts, config);
+        core.addElement({
+          name: "rect-001",
+          x: 20,
+          y: 20,
+          w: 200,
+          h: 60,
+          type: "rect",
+          desc: {
+            color: "#c6e0f5",
+            borderRadius: 8,
+            borderWidth: 2,
+            borderColor: "#2196f3",
+          },
+        })
+        core.addElement({
+          name: "rect-002",
+          x: 50,
+          y: 100,
+          w: 200,
+          h: 80,
+          type: "rect",
+          desc: {
+            color: "#c6e0f5",
+            borderRadius: 8,
+            borderWidth: 2,
+            borderColor: "#2196f3",
+          },
+        });
+        setTimeout(() => {
+          event.mouseDown({ x: 100, y: 560 })
+        }, 100);
+      })();
+    </script>
+
+    <script type="module">
+      import event from './../../../../scripts/browser/event.js';
+      (function() {
+        const mount = document.querySelector('#mount-8');
+        const core = new Core(mount, opts, config);
+        core.addElement({
+          name: "rect-001",
+          x: 20,
+          y: 20,
+          w: 200,
+          h: 60,
+          lock: true,
+          type: "rect",
+          desc: {
+            color: "#c6e0f5",
+            borderRadius: 8,
+            borderWidth: 2,
+            borderColor: "#2196f3",
+          },
+        })
+        core.addElement({
+          name: "rect-002",
+          x: 50,
+          y: 100,
+          w: 200,
+          h: 80,
+          type: "rect",
+          desc: {
+            color: "#c6e0f5",
+            borderRadius: 8,
+            borderWidth: 2,
+            borderColor: "#2196f3",
+          },
+        });
+        setTimeout(() => {
+          event.mouseDown({ x: 340, y: 560 })
+        }, 100);
+      })();
+    </script>
+
+    <script type="module">
+      import event from './../../../../scripts/browser/event.js';
+      (function() {
+        const mount = document.querySelector('#mount-9');
+        const core = new Core(mount, opts, config);
+        core.addElement({
+          name: "rect-001",
+          x: 20,
+          y: 20,
+          w: 200,
+          h: 60,
+          invisible: true,
+          type: "rect",
+          desc: {
+            color: "#c6e0f5",
+            borderRadius: 8,
+            borderWidth: 2,
+            borderColor: "#2196f3",
+          },
+        })
+        core.addElement({
+          name: "rect-002",
+          x: 50,
+          y: 100,
+          w: 200,
+          h: 80,
+          type: "rect",
+          desc: {
+            color: "#c6e0f5",
+            borderRadius: 8,
+            borderWidth: 2,
+            borderColor: "#2196f3",
+          },
+        });
+        setTimeout(() => {
+          event.mouseDown({ x: 340, y: 560 })
+        }, 100);
+      })();
+    </script>
+
+  
   </body>
 </html>

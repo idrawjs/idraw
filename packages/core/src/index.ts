@@ -295,7 +295,7 @@ class Core {
         this[_tempData].set('selectedUUID', uuid);
       } else {
         const [index, uuid] = this[_element].isPointInElement(point, this[_data]);
-        if (index >= 0) {
+        if (index >= 0 && this[_data].elements[index]?.invisible !== true) {
           // Controll Element
           this.selectElementByIndex(index, { useMode: true });
           if (typeof uuid === 'string' && this[_coreEvent].has('screenSelectElement')) {
