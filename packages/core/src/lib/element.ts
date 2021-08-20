@@ -93,6 +93,9 @@ export class Element {
     if (!data.elements[index]) {
       return null;
     }
+    if (data.elements[index].lock === true) {
+      return null;
+    }
     const moveX = (point.x - prevPoint.x) / scale;
     const moveY = (point.y - prevPoint.y) / scale;
     const elem = data.elements[index];

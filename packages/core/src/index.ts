@@ -416,6 +416,10 @@ class Core {
         const index: number | null = this[_helper].getElementIndexByUUID(elementUUID);
         if (index !== null && index >= 0) {
           const elem = this[_data].elements[index];
+          if (elem.lock === true) {
+            this[_board].resetCursor();
+            return;
+          }
           if (this[_tempData].get('hoverUUID') !== elem.uuid) {
             const preIndex = this[_helper].getElementIndexByUUID(this[_tempData].get('hoverUUID') || '');
             if (preIndex !== null && this[_data].elements[preIndex]) {
