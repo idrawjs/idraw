@@ -164,10 +164,12 @@ export class Helper implements TypeHelper {
     // ctx.rect(x, y, w, h);
     ctx.closePath();
     data.elements.forEach((elem) => {
-      const centerX = elem.x + elem.w / 2;
-      const centerY = elem.y + elem.h / 2;
-      if (ctx.isPointInPathWithoutScroll(centerX, centerY)) {
-        uuids.push(elem.uuid);
+      if (elem.invisible !== true) {
+        const centerX = elem.x + elem.w / 2;
+        const centerY = elem.y + elem.h / 2;
+        if (ctx.isPointInPathWithoutScroll(centerX, centerY)) {
+          uuids.push(elem.uuid);
+        }
       }
     });
     return uuids;
@@ -212,6 +214,9 @@ export class Helper implements TypeHelper {
     }
     const index: number = this._helperConfig.elementIndexMap[uuid];
     const elem = data.elements[index];
+    if (elem.invisible === true) {
+      return;
+    }
     const wrapper = this._createSelectedElementWrapper(elem, opts);
     this._helperConfig.selectedElementWrapper = wrapper;
   }

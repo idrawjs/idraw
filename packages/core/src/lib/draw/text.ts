@@ -33,35 +33,39 @@ export function drawText(
       fontSize: desc.fontSize,
       fontFamily: desc.fontFamily
     });
+    const descText = desc.text.replace(/\r\n/ig, '\n');
     const fontHeight = desc.lineHeight || desc.fontSize;
+    const descTextList = descText.split('\n');
     const lines: {text: string, width: number}[] = [];
-    let lineText = '';
-    let lineNum = 0;
-    for (let i = 0; i < desc.text.length; i++) {
-      
-      if (ctx.measureText(lineText + (desc.text[i] || '')).width < ctx.calcDeviceNum(elem.w)) {
-        lineText += (desc.text[i] || '');
-      } else {
-        lines.push({
-          text: lineText,
-          width: ctx.calcScreenNum(ctx.measureText(lineText).width),
-        });
-        lineText = (desc.text[i] || '');
-        lineNum ++;
-      }
-      if ((lineNum + 1) * fontHeight > elem.h) {
-        break;
-      }
-      if (lineText && desc.text.length - 1 === i) {
-        if ((lineNum + 1) * fontHeight < elem.h) {
+
+    descTextList.forEach((tempText) => {
+      let lineText = '';
+      let lineNum = 0;
+      for (let i = 0; i < tempText.length; i++) {
+        if (ctx.measureText(lineText + (tempText[i] || '')).width < ctx.calcDeviceNum(elem.w)) {
+          lineText += (tempText[i] || '');
+        } else {
           lines.push({
             text: lineText,
             width: ctx.calcScreenNum(ctx.measureText(lineText).width),
           });
+          lineText = (tempText[i] || '');
+          lineNum ++;
+        }
+        if ((lineNum + 1) * fontHeight > elem.h) {
           break;
         }
+        if (lineText && tempText.length - 1 === i) {
+          if ((lineNum + 1) * fontHeight < elem.h) {
+            lines.push({
+              text: lineText,
+              width: ctx.calcScreenNum(ctx.measureText(lineText).width),
+            });
+            break;
+          }
+        }
       }
-    }
+    });
 
     // draw text lines
     let _y = elem.y;
