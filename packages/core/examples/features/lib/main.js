@@ -8,9 +8,13 @@ const data = getData();
 const mount = document.querySelector('#mount');
 
 const defaultConf = {
-  scale: 1.5,
-  scrollLeft: 100,
-  scrollTop: 50,
+  // scale: 1.5,
+  // scrollLeft: 100,
+  // scrollTop: 50,
+
+  scale: 0,
+  scrollLeft: 0,
+  scrollTop: 0,
 };
 const core = new Core(mount, {
   width: 600,
