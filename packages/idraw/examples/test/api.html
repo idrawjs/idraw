@@ -44,7 +44,7 @@
 
     <div class="list">
       <div class="box" id="mount-1">
-        <div class="title">setData</div>
+        <div class="title">setData and scale(2)</div>
       </div>
       <div class="box" id="mount-2">
         <div class="title">exportDataURL('image/png')</div>
@@ -138,7 +138,7 @@
         const mount = document.querySelector('#mount-1');
         const idraw = new iDraw(mount, opts, config);
         idraw.setData(testData);
-
+        idraw.scale(2)
         setTimeout(() => {
           const pngSrc = idraw.exportDataURL('image/png');
           const mount2 = document.querySelector('#mount-2');

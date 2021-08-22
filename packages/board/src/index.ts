@@ -60,7 +60,7 @@ class Board {
   }
 
   getOriginContext(): CanvasRenderingContext2D {
-    return this[_displayCtx];
+    return this[_originCtx];
   }
 
   getContext(): Context {
