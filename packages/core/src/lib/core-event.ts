@@ -16,6 +16,7 @@ export type TypeCoreEventArgMap  = {
   'mouseOverElement': TypeCoreEventSelectBaseArg & { element: TypeElement<keyof TypeElemDesc> }
   'mouseLeaveElement': TypeCoreEventSelectBaseArg & { element: TypeElement<keyof TypeElemDesc> }
   'screenClickElement': TypeCoreEventSelectBaseArg & { element: TypeElement<keyof TypeElemDesc> }
+  'screenDoubleClickElement': TypeCoreEventSelectBaseArg & { element: TypeElement<keyof TypeElemDesc> }
   'screenSelectElement': TypeCoreEventSelectBaseArg & { element: TypeElement<keyof TypeElemDesc> }
   'screenMoveElementStart': TypeCoreEventSelectBaseArg & TypePoint,
   'screenMoveElementEnd': TypeCoreEventSelectBaseArg & TypePoint,

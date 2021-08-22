@@ -18,7 +18,8 @@ import { TempData } from './lib/temp';
 import {
   _board, _data, _opts, _config, _renderer, _element, _helper, _hasInited,
   _mode, _tempData, _prevPoint, _draw,
-  _selectedDotDirection, _coreEvent, _mapper, _initEvent, _handlePoint, _handleClick,
+  _selectedDotDirection, _coreEvent, _mapper, _initEvent,
+  _handlePoint, _handleClick, _handleDoubleClick,
   _handleMoveStart, _handleMove, _handleMoveEnd, _handleHover, _dragElements,
   _transfromElement, _emitChangeScreen, _emitChangeData, _onlyRender, _cursorStatus,
 } from './names';
@@ -257,8 +258,8 @@ class Core {
     }
 
     this[_board].on('hover', time.throttle(this[_handleHover].bind(this), 32));
-
     this[_board].on('point', time.throttle(this[_handleClick].bind(this), 16));
+    this[_board].on('doubleClick', this[_handleDoubleClick].bind(this));
     if (this[_onlyRender] === true) {
       return;
     }
@@ -266,6 +267,17 @@ class Core {
     this[_board].on('moveStart', this[_handleMoveStart].bind(this));
     this[_board].on('move', time.throttle(this[_handleMove].bind(this), 16));
     this[_board].on('moveEnd', this[_handleMoveEnd].bind(this));
+  }
+
+  private [_handleDoubleClick](point: TypePoint) {
+    const [index, uuid] = this[_element].isPointInElement(point, this[_data]);
+    if (index >= 0 && uuid) {
+      this[_coreEvent].trigger(
+        'screenDoubleClickElement', 
+        { index, uuid, element: deepClone(this[_data].elements?.[index])}
+      );
+    }
+    this[_draw]();
   }
 
   private [_handleClick](point: TypePoint): void {

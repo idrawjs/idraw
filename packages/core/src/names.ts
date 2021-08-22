@@ -15,6 +15,7 @@ const _coreEvent = Symbol('_coreEvent');
 const _mapper = Symbol('_mapper');
 const _initEvent = Symbol('_initEvent');
 const _handleClick = Symbol('_handleClick');
+const _handleDoubleClick = Symbol('_handleDoubleClick');
 const _handlePoint = Symbol('_handlePoint');
 const _handleMoveStart = Symbol('_handleMoveStart');
 const _handleMove = Symbol('_handleMove');
@@ -30,7 +31,8 @@ const _cursorStatus = Symbol('_cursorStatus');
 export {
   _board, _data, _opts, _config, _renderer, _element, _helper, _hasInited,
   _mode, _tempData, _prevPoint, _draw,
-  _selectedDotDirection, _coreEvent, _mapper, _initEvent, _handlePoint, _handleClick,
+  _selectedDotDirection, _coreEvent, _mapper, _initEvent,
+  _handlePoint, _handleClick, _handleDoubleClick,
   _handleMoveStart, _handleMove, _handleMoveEnd, _handleHover, _dragElements,
   _transfromElement, _emitChangeScreen, _emitChangeData, _onlyRender, _cursorStatus,
 };

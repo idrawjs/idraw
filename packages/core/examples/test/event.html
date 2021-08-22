@@ -1,0 +1,125 @@
+<html>
+  <head>
+    <style></style>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <style>
+      html,body { margin: 0; padding: 0; }
+      .box canvas {
+        border-right: 1px solid #aaaaaa40;
+        border-bottom: 1px solid #aaaaaa40;
+        background-image:
+        linear-gradient(#aaaaaa40 1px, transparent 0),
+        linear-gradient(90deg, #aaaaaa40 1px, transparent 0),
+        linear-gradient(#aaa 1px, transparent 0),
+        linear-gradient(90deg, #aaa 1px, transparent 0);
+        background-size: 10px 10px, 10px 10px, 50px 50px, 50px 50px;
+      }
+      .list {
+        width: 910px;
+        overflow: hidden;
+        border-top: 1px solid #f0f0f0;
+        border-left: 1px solid #f0f0f0;
+      }
+      .box {
+        width: 300;
+        min-height: 242;
+        float: left;
+        border-right: 1px solid #f0f0f0;
+        border-bottom: 1px solid #f0f0f0;
+        padding: 10px 0;
+      }
+      .box .title {
+        text-align: center;
+        font-size: 14px;
+        color: #000;
+        display: inline-block;
+        height: 20px;
+        line-height: 20px;
+        width: 100%;
+        font-family: monospace;
+      }
+    </style>
+  </head>
+  <body>
+
+    <div class="list">
+      <div class="box" id="double-click-event">
+        <div class="title">doubleClickElement</div>
+      </div>
+    </div>
+
+    <script src="./../../dist/index.global.js"></script>
+    <script>
+      var Core = window.iDrawCore;
+      var opts = {
+        width: 300,
+        height: 200,
+        contextWidth: 300,
+        contextHeight: 200,
+        devicePixelRatio: 4,
+      }
+      var config = {
+        elementWrapper: {
+          dotSize: 4,
+        },
+      };
+      var elemText1 = {
+        name: "text-001",
+        x: 20,
+        y: 40,
+        w: 240,
+        h: 80,
+        type: "text",
+        desc: {
+          fontSize: 16,
+          color: "#3f51b5",
+          text: "Life is like an ocean.\r\nOnly those with strong \nwill can reach \nthe other shore",
+          fontFamily: 'monospace',
+          fontWeight: 'bold',
+          textAlign: 'left',
+          borderRadius: 8,
+          borderWidth: 2,
+          borderColor: "#2196f3",
+          bgColor: '#c6e0f5',
+        },
+      };
+      var elemText2 = {
+        name: "text-002",
+        x: 20,
+        y: 40,
+        w: 200,
+        h: 60,
+        type: "text",
+        desc: {
+          fontSize: 16,
+          color: "#333333",
+          text: "生活就像海洋，只有意志坚强的人，才能到达彼岸。",
+          fontFamily: 'monospace',
+          borderRadius: 10,
+          borderWidth: 3,
+          borderColor: "#2196f3",
+          bgColor: '#c6e0f5',
+        },
+      };
+    </script>
+    <script type="module">
+      import event from './../../../../scripts/browser/event.js';
+      import { getData } from './data.js';
+      (function() {
+        const mount = document.querySelector('#double-click-event');
+        const core = new Core(mount, opts, config);
+        const data = getData();
+        core.on('screenDoubleClickElement', (p) => {
+          console.log('screenDoubleClickElement ===', p)
+        })
+        core.setData(data);
+        setTimeout(() => {
+          event.click({ x: 100, y: 100 })
+          event.click({ x: 100, y: 100 })
+        }, 100);
+        
+      })();
+    </script>
+    
+  </body>
+</html>
