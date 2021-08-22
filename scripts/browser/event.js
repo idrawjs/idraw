@@ -1,3 +1,15 @@
+function click(opts){
+  const { x,y } = opts;
+  const event = new MouseEvent('click', {
+    screenX: x,
+    screenY: y,
+    clientX: x,
+    clientY: y,
+  });
+  const elem = document.elementFromPoint(x,y);
+  elem.dispatchEvent(event);
+}
+
 function mouseDown(opts){
   const { x,y } = opts;
   const event = new MouseEvent('mousedown', {
@@ -74,6 +86,7 @@ function wheelY(y, opts = { clientX: 0, clientY: 0 }){
 
 
 export default {
+  click,
   mouseDown,
   mouseUp,
   mouseMove,

@@ -109,7 +109,7 @@
 
     <script type="module">
       import event from './../../../../scripts/browser/event.js';
-      (function() {
+      (async function() {
         const Board = window.iDrawBoard; 
         const mount1 = document.querySelector('#mount-1');
         const mount2 = document.querySelector('#mount-2');
@@ -122,6 +122,9 @@
           mount2.appendChild(div);
         }
 
+        const handleDoubleClick = (e) => {
+          renderText(`doubleClick: x=${e.x}, y=${e.y}`);
+        }
         const handleHover = (e) => {
           renderText(`hover: x=${e.x}, y=${e.y}`);
         }
@@ -151,11 +154,27 @@
         board.on('moveEnd', handleMoveEnd);
         board.on('wheelX', handleWheelX);
         board.on('wheelY', handleWheelY);
+        board.on('doubleClick', handleDoubleClick)
 
         drawBoard(board)
         board.draw();
 
-        function triggerEvent(clientX, clientY) {
+        function delay(time) {
+          return new Promise((resolve) => {
+            resolve()
+          }, time)
+        }
+
+        async function triggerEvent(clientX, clientY) {
+          event.click({
+            x: clientX,
+            y: clientY,
+          });
+          await delay(10);
+          event.click({
+            x: clientX,
+            y: clientY,
+          });
           event.mouseMove({
             x: clientX,
             y: clientY,
@@ -178,21 +197,21 @@
           });
         }
 
-        setTimeout(() => {
-          triggerEvent(120, 100);
-          setTimeout(() => {
-            board.off('hover', handleHover);
-            board.off('point', handlePoint);
-            board.off('move', handleMove);
-            board.off('moveStart', handleMoveStart);
-            board.off('moveEnd', handleMoveEnd);
-            board.off('wheelX', handleWheelX);
-            board.off('wheelY', handleWheelY);
-            triggerEvent(100, 80)
-          }, 100);
-        }, 100);
-      })()
-
+        await delay(20);
+        triggerEvent(120, 100);
+        await delay(20);
+        
+        board.off('doubleClick', handleDoubleClick);
+        board.off('hover', handleHover);
+        board.off('point', handlePoint);
+        board.off('move', handleMove);
+        board.off('moveStart', handleMoveStart);
+        board.off('moveEnd', handleMoveEnd);
+        board.off('wheelX', handleWheelX);
+        board.off('wheelY', handleWheelY);
+        await delay(1000);
+        triggerEvent(100, 80)
+      })();
     </script>
   </body>
 </html>

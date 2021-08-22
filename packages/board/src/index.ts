@@ -8,6 +8,7 @@ import Context from './lib/context';
 import { TypeBoardEventArgMap } from './lib/event';
 import { Scroller } from './lib/scroller';
 import { Screen } from './lib/screen';
+// import { TempData } from './lib/watcher-temp';
 import {
   _canvas, _displayCanvas, _mount, _opts, _hasRendered, _ctx, _displayCtx,
   _originCtx, _watcher, _render, _parsePrivateOptions, _scroller,
@@ -60,27 +61,12 @@ class Board {
   }
 
   getOriginContext(): CanvasRenderingContext2D {
-    return this[_displayCtx];
+    return this[_originCtx];
   }
 
   getContext(): Context {
     return this[_ctx];
   }
-
-  // createContext(canvas: HTMLCanvasElement) {
-  //   const opts = this[_opts];
-  //   canvas.width = opts.contextWidth * opts.devicePixelRatio;
-  //   canvas.height = opts.contextHeight * opts.devicePixelRatio;
-  //   return new Context(canvas.getContext('2d') as CanvasRenderingContext2D, this[_opts]);
-  // }
-
-  // createCanvas() {
-  //   const opts = this[_opts];
-  //   const canvas = document.createElement('canvas');
-  //   canvas.width = opts.contextWidth * opts.devicePixelRatio;
-  //   canvas.height = opts.contextHeight * opts.devicePixelRatio;
-  //   return canvas;
-  // }
 
   scale(scaleRatio: number): TypeScreenContext {
     if (scaleRatio > 0) {
@@ -252,6 +238,8 @@ class Board {
         }
         scrollType = null;
       }, 16));
+
+      // this.on('doubleClick', (p: TypePoint) => {})
     }
   }
 
@@ -293,6 +281,7 @@ class Board {
       this[_doScrollY](point.y - ySize / 2, 0);
     }
   }
+
 
 }
 

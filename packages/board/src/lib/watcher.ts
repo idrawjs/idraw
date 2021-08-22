@@ -1,6 +1,6 @@
 import { TypePoint } from '@idraw/types';
 import { BoardEvent, TypeBoardEventArgMap } from './event';
-
+import { TempData } from './watcher-temp';
 
 export class Watcher {
 
@@ -10,6 +10,7 @@ export class Watcher {
   // private _onMoveStart?: TypeWatchCallback;
   // private _onMoveEnd?: TypeWatchCallback;
   private _event: BoardEvent;
+  private _temp: TempData = new TempData;
 
   constructor(canvas: HTMLCanvasElement) {
     this._canvas = canvas;
@@ -33,6 +34,7 @@ export class Watcher {
     canvas.addEventListener('mousemove', this._listenMove.bind(this), true);
     canvas.addEventListener('mouseup', this._listenMoveEnd.bind(this), true);
     canvas.addEventListener('mouseleave', this._listenMoveEnd.bind(this), true);
+    canvas.addEventListener('click', this._listenClick.bind(this), true);
     canvas.addEventListener('wheel', this._listenWheel.bind(this), true);
 
     canvas.addEventListener('touchstart', this._listenMoveStart.bind(this), true);
@@ -94,6 +96,27 @@ export class Watcher {
     }
     if (this._event.has('wheelY') && (e.deltaY > 0 || e.deltaY < 0)) {
       this._event.trigger('wheelY', e.deltaY);
+    }
+  }
+
+  _listenClick(e: MouseEvent|TouchEvent) {
+    e.preventDefault();
+    const maxLimitTime = 500;
+    const p = this._getPosition(e);
+    const t = Date.now();
+    if (this._isVaildPoint(p)) {
+      const preClickPoint = this._temp.get('prevClickPoint');
+      if (
+        preClickPoint && (t - preClickPoint.t <= maxLimitTime)
+        && Math.abs(preClickPoint.x - p.x) <= 5
+        && Math.abs(preClickPoint.y - p.y) <= 5
+      ) {
+        if (this._event.has('doubleClick')) {
+          this._event.trigger('doubleClick', { x: p.x, y: p.y });
+        }
+      } else {
+        this._temp.set('prevClickPoint', {x: p.x, y: p.y, t, })
+      }
     }
   }
 
