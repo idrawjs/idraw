@@ -14,12 +14,14 @@ const _initEvent = Symbol('_initEvent');
 const _doScrollX = Symbol('_doScrollX');
 const _doScrollY = Symbol('_doScrollY');
 const _doMoveScroll = Symbol('_doMoveScroll');
+// const _doDoubleClick = Symbol('_doDoubleClick');
 const _resetContext = Symbol('_resetContext');
 const _screen = Symbol('_screen');
+const _tempData = Symbol('_tempData');
 
 export {
   _canvas, _displayCanvas, _mount, _opts, _hasRendered, _ctx, _displayCtx,
   _originCtx, _watcher, _render, _parsePrivateOptions, _scroller,
   _initEvent, _doScrollX, _doScrollY, _doMoveScroll, _resetContext,
-  _screen,
+  _screen, _tempData,
 };

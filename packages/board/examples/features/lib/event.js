@@ -37,4 +37,8 @@ export function initEvent(board) {
   board.on('hover', (p) => {
     // console.log('hover', p);
   })
+
+  board.on('doubleClick', (p) => {
+    console.log('doubleClick', p);
+  })
 }
