@@ -39,6 +39,6 @@ export function initEvent(board) {
   })
 
   board.on('doubleClick', (p) => {
-    console.log('doubleClick', p);
+    console.log('on("doubleClick")', p);
   })
 }

@@ -101,12 +101,16 @@ export class Watcher {
 
   _listenClick(e: MouseEvent|TouchEvent) {
     e.preventDefault();
-    const maxLimitTime = 300;
+    const maxLimitTime = 500;
     const p = this._getPosition(e);
     const t = Date.now();
     if (this._isVaildPoint(p)) {
       const preClickPoint = this._temp.get('prevClickPoint');
-      if (preClickPoint && t - preClickPoint.t <= maxLimitTime) {
+      if (
+        preClickPoint && (t - preClickPoint.t <= maxLimitTime)
+        && Math.abs(preClickPoint.x - p.x) <= 5
+        && Math.abs(preClickPoint.y - p.y) <= 5
+      ) {
         if (this._event.has('doubleClick')) {
           this._event.trigger('doubleClick', { x: p.x, y: p.y });
         }
