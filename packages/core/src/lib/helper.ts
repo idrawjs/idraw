@@ -164,7 +164,7 @@ export class Helper implements TypeHelper {
     // ctx.rect(x, y, w, h);
     ctx.closePath();
     data.elements.forEach((elem) => {
-      if (elem.invisible !== true) {
+      if (elem?.operation?.invisible !== true) {
         const centerX = elem.x + elem.w / 2;
         const centerY = elem.y + elem.h / 2;
         if (ctx.isPointInPathWithoutScroll(centerX, centerY)) {
@@ -214,7 +214,7 @@ export class Helper implements TypeHelper {
     }
     const index: number = this._helperConfig.elementIndexMap[uuid];
     const elem = data.elements[index];
-    if (elem.invisible === true) {
+    if (elem?.operation?.invisible === true) {
       return;
     }
     const wrapper = this._createSelectedElementWrapper(elem, opts);
@@ -250,7 +250,7 @@ export class Helper implements TypeHelper {
     const wrapper: TypeHeplerSelectedElementWrapper = {
       uuid: elem.uuid,
       dotSize: dotSize,
-      lock: elem.lock === true,
+      lock: elem?.operation?.lock === true,
       dots: {
         topLeft: {
           x: elem.x - dotSize - bw,
@@ -291,7 +291,7 @@ export class Helper implements TypeHelper {
       },
       lineWidth: lineWidth,
       lineDash: lineDash,
-      color: elem.lock === true ? elemWrapper.lockColor : elemWrapper.color,
+      color: elem?.operation?.lock === true ? elemWrapper.lockColor : elemWrapper.color,
     };
 
     if (typeof elem.angle === 'number' && (elem.angle > 0 || elem.angle < 0)) {

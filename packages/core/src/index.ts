@@ -312,7 +312,7 @@ class Core {
         this[_tempData].set('selectedUUID', uuid);
       } else {
         const [index, uuid] = this[_element].isPointInElement(point, this[_data]);
-        if (index >= 0 && this[_data].elements[index]?.invisible !== true) {
+        if (index >= 0 && this[_data].elements[index]?.operation?.invisible !== true) {
           // Controll Element
           this.selectElementByIndex(index, { useMode: true });
           if (typeof uuid === 'string' && this[_coreEvent].has('screenSelectElement')) {
@@ -433,7 +433,7 @@ class Core {
         const index: number | null = this[_helper].getElementIndexByUUID(elementUUID);
         if (index !== null && index >= 0) {
           const elem = this[_data].elements[index];
-          if (elem.lock === true || elem.invisible === true) {
+          if (elem?.operation?.lock === true || elem?.operation?.invisible === true) {
             this[_board].resetCursor();
             return;
           }
@@ -471,7 +471,7 @@ class Core {
       const idx = this[_helper].getElementIndexByUUID(uuid);
       if (idx === null) return;
       const elem = this[_data].elements[idx];
-      if (elem.lock !== true && elem.invisible !== true) {
+      if (elem?.operation?.lock !== true && elem?.operation?.invisible !== true) {
         this[_element].dragElement(this[_data], uuid, point, prevPoint, this[_board].getContext().getTransform().scale);
       }
     });

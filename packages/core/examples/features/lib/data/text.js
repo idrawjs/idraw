@@ -44,8 +44,10 @@ const data = {
       w: 200,
       h: 100,
       type: "text",
-      invisible: true,
-      lock: true,
+      operation: {
+        invisible: true,
+        lock: true,
+      },
       desc: {
         fontSize: 20,
         color: "#333333",
