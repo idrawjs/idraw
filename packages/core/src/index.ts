@@ -224,6 +224,11 @@ class Core {
     }
   }
 
+  clearOperation() {
+    this[_tempData].clear();
+    this[_draw]();
+  }
+
   on<T extends keyof TypeCoreEventArgMap >(key: T, callback: (p: TypeCoreEventArgMap[T]) => void) {
     this[_coreEvent].on(key, callback);
   }

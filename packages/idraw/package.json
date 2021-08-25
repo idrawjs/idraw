@@ -26,7 +26,8 @@
     "@idraw/types": "^0.1.7"
   },
   "dependencies": {
-    "@idraw/core": "^0.1.7"
+    "@idraw/core": "^0.1.7",
+    "@idraw/util": "^0.1.7"
   },
   "publishConfig": {
     "access": "public"
