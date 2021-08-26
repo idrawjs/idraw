@@ -39,7 +39,7 @@ export function drawContext(
   }
   for (let i = 0; i < data.elements.length; i++) {
     const elem = data.elements[i];
-    if (elem.invisible === true) {
+    if (elem?.operation?.invisible === true) {
       continue;
     }
     switch (elem.type) {

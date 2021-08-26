@@ -1,7 +1,6 @@
 import Core from '@idraw/core';
-import {
-  TypeData, TypeConfig,
-} from '@idraw/types';
+import { TypeData, TypeConfig, } from '@idraw/types';
+import util from '@idraw/util';
 import { Options, Record, PrivateOptions } from './types';
 import { defaultOptions } from './config';
 
@@ -76,10 +75,15 @@ class IDraw extends Core {
   }
 
 
-  exportDataURL(
+  async exportDataURL(
     type: 'image/png' | 'image/jpeg',
     quality?: number
-  ) {
+  ): Promise<string> {
+    this.clearOperation();
+    // TODO 
+    // It Needs to listen the end of rendering
+    // It uses the delay function to simulate the end of rendering
+    await util.time.delay(300);
     const ctx = this.__getOriginContext();
     const canvas = ctx.canvas;
     const dataURL = canvas.toDataURL(type, quality);

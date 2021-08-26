@@ -88,9 +88,9 @@
       <div class="box" id="idraw-api-scrollTop">
         <div class="title">idraw.scrollTop</div>
       </div>
-      <!-- <div class="box" id="idraw-api-on/off">
-        <div class="title">idraw.on/off</div>
-      </div> -->
+      <div class="box" id="idraw-api-clearOperation">
+        <div class="title">idraw.clearOperation</div>
+      </div>
     </div>
 
     <script src="./../../dist/index.global.js"></script>
@@ -224,9 +224,9 @@
           }
         );
         core.setData(data);
-        setTimeout(() => {
-          event.mouseDown({ x: 100, y: 400 })
-        }, 20);
+        // setTimeout(() => {
+        //   event.mouseDown({ x: 100, y: 400 })
+        // }, 20);
       })();
     </script>
 
@@ -515,5 +515,21 @@
         core.scrollTop(80);
       })();
     </script>
+
+    <script type="module">
+      // idraw-api-clearOperation
+      import { getData } from './data.js';
+      import event from './../../../../scripts/browser/event.js';
+      (function() {
+        const mount = document.querySelector('#idraw-api-clearOperation');
+        const data = getData();
+        const core = new Core(mount, opts, config);
+        core.setData(data);
+        core.selectElementByIndex(1);
+        core.clearOperation();
+      })();
+    </script>
+
+
   </body>
 </html>

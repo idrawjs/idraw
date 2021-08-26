@@ -23,7 +23,9 @@ const data = {
       h: 120,
       // angle: 30,
       type: "rect",
-      lock: true,
+      operation: {
+        lock: true,
+      },
       desc: {
         color: "#cccccc",
         borderRadius: 60,

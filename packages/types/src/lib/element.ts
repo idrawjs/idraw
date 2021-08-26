@@ -6,14 +6,17 @@ type TypeElementAttrs = {
   w: number;
   h: number;
   angle: number;
+  operation?: {
+    lock?: boolean,
+    invisible?: boolean,
+  }
+  extension?: {[key: string]: any} | any;
 }
 
 type TypeElementBase <T extends keyof TypeElemDesc | TypeElemType> = TypeElementAttrs & {
   name?: string;
   uuid?: string;
   type: T | TypeElemType;
-  lock?: boolean;
-  invisible?: boolean;
   desc: TypeElemDesc[T];
 }
 
