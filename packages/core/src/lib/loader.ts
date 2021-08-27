@@ -189,6 +189,7 @@ export default class Loader {
     if (this._status === LoaderStatus.LOADING) {
       return;
     }
+    this._status = LoaderStatus.LOADING;
 
     if (this._currentUUIDQueue.length === 0) {
       if (this._waitingLoadQueue.length === 0) {
@@ -255,6 +256,7 @@ export default class Loader {
             elemH: this._storageLoadData[uuid].elemH,
           });
         }).catch((err) => {
+          console.warn(err);
 
           loadUUIDList.splice(loadUUIDList.indexOf(uuid), 1);
           const status = _loadAction();

@@ -31,6 +31,42 @@ export function isChangeHTMLElementResource(
   );
 }
 
+export function diffElementResourceChange(
+  before: TypeElement<keyof TypeElemDesc>,
+  after: TypeElement<keyof TypeElemDesc>,
+): string | null {
+  let result = null;
+  let isChange = false;
+  switch (after.type) {
+    case 'image': {
+      isChange = isChangeImageElementResource(
+        before as TypeElement<'image'>,
+        after as TypeElement<'image'>
+      );
+      break;
+    }
+    case 'svg': {
+      isChange = isChangeSVGElementResource(
+        before as TypeElement<'svg'>,
+        after as TypeElement<'svg'>
+      );
+      break;
+    }
+    case 'html': {
+      isChange = isChangeHTMLElementResource(
+        before as TypeElement<'html'>,
+        after as TypeElement<'html'>
+      );
+      break;
+    }
+    default: break;
+  }
+  if (isChange === true) {
+    result = after.uuid;
+  }
+  return result;
+}
+
 export function diffElementResourceChangeList(
   before: TypeData,
   after: TypeData,
