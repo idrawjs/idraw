@@ -24,7 +24,7 @@ import {
   _transfromElement, _emitChangeScreen, _emitChangeData, _onlyRender, _cursorStatus,
 } from './names';
 import { Mode, CursorStatus } from './constant/static';
-import { diffElementResourceChangeList } from './lib/diff';
+import { diffElementResourceChangeList, diffElementResourceChange } from './lib/diff';
 
 const { time } = util;
 const { deepClone } = util.data;
@@ -200,14 +200,19 @@ class Core {
     // if (this[_onlyRender] === true) return;
     const _elem  = deepClone(elem) as TypeElement<keyof TypeElemDesc>;
     const data = this[_data];
+    const resourceChangeUUIDs: string[] = [];
     for (let i = 0; i < data.elements.length; i++) {
       if (_elem.uuid === data.elements[i]?.uuid) {
+        const result = diffElementResourceChange(data.elements[i], _elem);
+        if (typeof result === 'string') {
+          resourceChangeUUIDs.push(result);
+        }
         data.elements[i] = _elem;
         break;
       }
     }
     this[_emitChangeData]();
-    this[_draw]();
+    this[_draw]({ resourceChangeUUIDs });
   }
 
   addElement(elem: TypeElementBase<keyof TypeElemDesc>): string | null {

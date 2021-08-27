@@ -28,6 +28,7 @@ export class Renderer {
     });
     this._loader.on('load', (res) => {
       this._drawFrame();
+      // console.log('Load: ', res);
     });
     this._loader.on('error', (res) => {
       console.log('Loader Error: ', res);
