@@ -37,14 +37,14 @@ export class Renderer {
     });
   }
 
-  render(data: TypeData, helper: TypeHelperConfig): void {
+  render(data: TypeData, helper: TypeHelperConfig, changeResourceUUIDs: string[]): void {
     const _data: QueueItem = deepClone({ data, helper }) as QueueItem;
     this._queue.push(_data);
     if (this._status !== DrawStatus.DRAWING) {
       this._status = DrawStatus.DRAWING;
       this._drawFrame();
     }
-    this._loader.load(data);
+    this._loader.load(data, changeResourceUUIDs);
   }
 
   private _drawFrame() {

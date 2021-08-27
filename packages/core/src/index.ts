@@ -24,6 +24,7 @@ import {
   _transfromElement, _emitChangeScreen, _emitChangeData, _onlyRender, _cursorStatus,
 } from './names';
 import { Mode, CursorStatus } from './constant/static';
+import { diffElementResourceChangeList } from './lib/diff';
 
 const { time } = util;
 const { deepClone } = util.data;
@@ -77,7 +78,11 @@ class Core {
     this[_hasInited] = true;
   }
 
-  [_draw](): void {
+  [_draw](
+    opts?: {
+      resourceChangeUUIDs?: string[],
+    }
+  ): void {
     const transfrom = this[_board].getTransform();
     this[_helper].updateConfig(this[_data], {
       width: this[_opts].width,
@@ -90,7 +95,7 @@ class Core {
       scrollX: transfrom.scrollX,
       scrollY: transfrom.scrollY,
     });
-    this[_renderer].render(this[_data], this[_helper].getConfig());
+    this[_renderer].render(this[_data], this[_helper].getConfig(), opts?.resourceChangeUUIDs || []);
   }
 
   resetSize(opts: TypeBoardSizeOptions) {
@@ -183,11 +188,12 @@ class Core {
   }
 
   setData(data: any | TypeData, opts?: { triggerChangeEvent: boolean }): void {
+    const resourceChangeUUIDs = diffElementResourceChangeList(this[_data], data);
     this[_data] = this[_element].initData(deepClone(parseData(data)));
     if (opts && opts.triggerChangeEvent === true) {
       this[_emitChangeData]();
     }
-    this[_draw]();
+    this[_draw]({ resourceChangeUUIDs });
   }
 
   updateElement(elem: TypeElement<keyof TypeElemDesc>) {

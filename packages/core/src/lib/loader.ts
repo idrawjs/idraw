@@ -38,8 +38,8 @@ export default class Loader {
     this._waitingLoadQueue = [];
   }
 
-  load(data: TypeData): void {
-    const [uuidQueue, loadData] = this._resetLoadData(data);
+  load(data: TypeData, changeResourceUUIDs: string[]): void {
+    const [uuidQueue, loadData] = this._resetLoadData(data, changeResourceUUIDs);
     if (this._status === LoaderStatus.FREE || this._status === LoaderStatus.COMPLETE) {
       this._currentUUIDQueue = uuidQueue;
       this._currentLoadData = loadData;
@@ -105,7 +105,7 @@ export default class Loader {
   //   return null;
   // }
 
-  private _resetLoadData(data: TypeData): [string[], TypeLoadData] {
+  private _resetLoadData(data: TypeData, changeResourceUUIDs: string[]): [string[], TypeLoadData] {
     const loadData: TypeLoadData = {};
     const uuidQueue: string[] = [];
 
@@ -119,25 +119,29 @@ export default class Loader {
           loadData[elem.uuid] = this._createEmptyLoadItem(elem);
           uuidQueue.push(elem.uuid);
         } else {
-          if (elem.type === 'image') {
-            const _ele = elem as TypeElement<'image'>;
-            if (_ele.desc.src !== storageLoadData[elem.uuid].source) {
-              loadData[elem.uuid] = this._createEmptyLoadItem(elem);
-              uuidQueue.push(elem.uuid);
-            }
-          } else if (elem.type === 'svg') {
-            const _ele = elem as TypeElement<'svg'>;
-            if (_ele.desc.svg !== storageLoadData[elem.uuid].source) {
-              loadData[elem.uuid] = this._createEmptyLoadItem(elem);
-              uuidQueue.push(elem.uuid);
-            }
-          } else if (elem.type === 'html') {
-            const _ele = elem as TypeElement<'html'>;
-            if (filterScript(_ele.desc.html) !== storageLoadData[elem.uuid].source) {
-              loadData[elem.uuid] = this._createEmptyLoadItem(elem);
-              uuidQueue.push(elem.uuid);
-            }
-          } 
+          if (changeResourceUUIDs.includes(elem.uuid)) {
+            loadData[elem.uuid] = this._createEmptyLoadItem(elem);
+            uuidQueue.push(elem.uuid);
+          }
+          // if (elem.type === 'image') {
+          //   const _ele = elem as TypeElement<'image'>;
+          //   if (_ele.desc.src !== storageLoadData[elem.uuid].source) {
+          //     loadData[elem.uuid] = this._createEmptyLoadItem(elem);
+          //     uuidQueue.push(elem.uuid);
+          //   }
+          // } else if (elem.type === 'svg') {
+          //   const _ele = elem as TypeElement<'svg'>;
+          //   if (_ele.desc.svg !== storageLoadData[elem.uuid].source) {
+          //     loadData[elem.uuid] = this._createEmptyLoadItem(elem);
+          //     uuidQueue.push(elem.uuid);
+          //   }
+          // } else if (elem.type === 'html') {
+          //   const _ele = elem as TypeElement<'html'>;
+          //   if (filterScript(_ele.desc.html) !== storageLoadData[elem.uuid].source) {
+          //     loadData[elem.uuid] = this._createEmptyLoadItem(elem);
+          //     uuidQueue.push(elem.uuid);
+          //   }
+          // } 
         }
       }
     }
