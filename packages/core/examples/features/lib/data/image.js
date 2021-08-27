@@ -37,9 +37,9 @@ const data = {
       x: 160,
       y: 160,
       w: 200,
-      h: 20,
+      h: 100,
       type: "image",
-      angle: 80,
+      angle: 45,
       desc: {
         src: "./../images/phone.png",
       },
