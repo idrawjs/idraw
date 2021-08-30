@@ -2,6 +2,8 @@
 
 <p align="center">iDraw.js is a simple JavaScript framework for Drawing on the web.</p>
 
+<p align="center">一个面向Web绘图的JavaScript框架</p>
+
 
 <p align="center"><a href="https://idraw.js.org">idraw.js.org</a></p>
 
@@ -20,21 +22,31 @@
 </p>
 
 
+
+
 <!-- [![Node.js CI](https://github.com/idrawjs/idraw/actions/workflows/node.js.yml/badge.svg?branch=main)](https://github.com/idrawjs/idraw/actions/workflows/node.js.yml) -->
 
 <hr/>
 
 
-- [Documents](https://idrawjs.github.io/docs/en/) | [中文文档](https://idrawjs.github.io/docs/zh/) 
-- [Online Playground](https://idrawjs.github.io/playground/)
-- [Online Studio](https://idrawjs.github.io/studio/)
+- [Documents](https://idraw.js.org/docs/en/) | [中文文档](https://idraw.js.org/docs/zh/) 
+- [Online Playground](https://idraw.js.org/playground/) | [在线API示例](https://idraw.js.org/playground/)
+- [Online Studio](https://idraw.js.org/studio/) | [在线绘图演示](https://idraw.js.org/studio/)
+ 
+## @idraw/studio Preview
 
+The preview of `@idraw/studo`. Click [here](https://github.com/idrawjs/studio) to get it.
+
+<div style="text-align: center">
+  <img src="./assets/preview/idraw-studio-preview.png" width="300" />
+</div>
 
 ## Install
 
 ```
 npm i idraw
 ```
+
 ## Getting Started
 
 ```js
