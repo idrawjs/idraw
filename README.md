@@ -38,7 +38,7 @@
 The preview of `@idraw/studo`. Click [here](https://github.com/idrawjs/studio) to get it.
 
 <div style="text-align: center">
-  <img src="./assets/preview/idraw-studio-preview.png" width="300" />
+  <img src="./assets/preview/idraw-studio-preview.png" width="700" />
 </div>
 
 ## Install
