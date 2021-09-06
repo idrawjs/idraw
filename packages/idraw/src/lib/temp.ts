@@ -1,8 +1,10 @@
+import { Record } from './../types';
 
 type TempDataDesc = {
-  isHover: boolean;
+  isHover: boolean,
+  doRecords: Record[],
+  unDoRecords: Record[],
 }
-
 
 export class TempData {
 
@@ -10,7 +12,9 @@ export class TempData {
 
   constructor() {
     this._temp = {
-      isHover: false
+      isHover: false,
+      doRecords: [],
+      unDoRecords: [],
     }
   }
 
@@ -25,6 +29,8 @@ export class TempData {
   clear() {
     this._temp = {
       isHover: false,
+      doRecords: [],
+      unDoRecords: [],
     }
   }
 }

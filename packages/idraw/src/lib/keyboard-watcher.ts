@@ -13,7 +13,7 @@ export type TypeKeyboardEventArgMap = {
 export interface TypeKeyboardEvent {
   on<T extends keyof TypeKeyboardEventArgMap >(key: T, callback: (p: TypeKeyboardEventArgMap[T]) => void): void
   off<T extends keyof TypeKeyboardEventArgMap >(key: T, callback: (p: TypeKeyboardEventArgMap[T]) => void): void
-  trigger<T extends keyof TypeKeyboardEventArgMap >(key: T, p: TypeKeyboardEventArgMap[T]): void
+  // trigger<T extends keyof TypeKeyboardEventArgMap >(key: T, p: TypeKeyboardEventArgMap[T]): void
 }
 
 
@@ -23,6 +23,13 @@ export class KeyboardEvent implements TypeKeyboardEvent {
 
   constructor() {
     this._listeners = new Map();
+    this._initEvent();
+  }
+
+  private _initEvent() {
+    document.addEventListener('keydown', (e) => {
+      console.log(e);
+    });
   }
 
   on<T extends keyof TypeKeyboardEventArgMap >(eventKey: T, callback: (p: TypeKeyboardEventArgMap[T]) => void) {

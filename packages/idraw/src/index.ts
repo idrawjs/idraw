@@ -1,19 +1,18 @@
 import Core from '@idraw/core';
 import { TypeData, TypeConfig, } from '@idraw/types';
-import util from '@idraw/util';
-import { Options, Record, PrivateOptions } from './types';
+import { Options, PrivateOptions } from './types';
 import { defaultOptions } from './config';
 import { TempData } from './lib/temp';
 import {
   _opts, _doRecords, _unDoRecords, _hasInited, _initEvent, _tempData,
   _createOpts, _pushRecord, _bindKeyboard,
 } from './names';
+import { redo, undo } from './mixins/record';
+import { exportDataURL } from './mixins/file';
 
 class iDraw extends Core {
 
   private [_opts]: PrivateOptions;
-  private [_doRecords]: Record[] = [];
-  private [_unDoRecords]: Record[] = [];
   private [_hasInited] = false; 
   private [_tempData] = new TempData();
 
@@ -30,48 +29,12 @@ class iDraw extends Core {
     this[_initEvent]();
   }
 
-  undo(): {
-    doRecordCount: number,
-    data: TypeData | null,
-  } {
-    if (!(this[_doRecords].length > 1)) {
-      return {
-        doRecordCount: this[_doRecords].length,
-        data: null,
-      };
-    }
-    const popRecord = this[_doRecords].pop();
-    if (popRecord) {
-      this[_unDoRecords].push(popRecord);
-    }
-    const record = this[_doRecords][this[_doRecords].length - 1];
-    if (record?.data) {
-      this.setData(record.data);
-    }
-    return {
-      doRecordCount: this[_doRecords].length,
-      data: record?.data || null,
-    };
+  undo(): { doRecordCount: number, data: TypeData | null, } {
+    return undo(this);
   }
 
-  redo(): {
-    undoRecordCount: number,
-    data: TypeData | null,
-  } {
-    if (!(this[_unDoRecords].length > 0)) {
-      return {
-        undoRecordCount: this[_unDoRecords].length,
-        data: null,
-      };
-    }
-    const record = this[_unDoRecords].pop();
-    if (record?.data) {
-      this.setData(record.data);
-    }
-    return {
-      undoRecordCount: this[_unDoRecords].length,
-      data: record?.data || null,
-    };
+  redo(): { undoRecordCount: number, data: TypeData | null, } {
+    return redo(this);
   }
 
 
@@ -79,15 +42,7 @@ class iDraw extends Core {
     type: 'image/png' | 'image/jpeg',
     quality?: number
   ): Promise<string> {
-    this.clearOperation();
-    // TODO 
-    // It Needs to listen the end of rendering
-    // It uses the delay function to simulate the end of rendering
-    await util.time.delay(300);
-    const ctx = this.__getOriginContext();
-    const canvas = ctx.canvas;
-    const dataURL = canvas.toDataURL(type, quality);
-    return dataURL;
+    return exportDataURL(this, type, quality);
   }
 
   private [_initEvent]() {
@@ -108,11 +63,13 @@ class iDraw extends Core {
   }
 
   private [_pushRecord](data: TypeData) {
-    if (this[_doRecords].length >= this[_opts].maxRecords) {
-      this[_doRecords].shift();
+    const doRecords = this[_tempData].get('doRecords');
+    if (doRecords.length >= this[_opts].maxRecords) {
+      doRecords.shift();
     }
-    this[_doRecords].push({ data, time: Date.now() });
-    this[_unDoRecords] = [];
+    doRecords.push({ data, time: Date.now() });
+    this[_tempData].set('doRecords', doRecords);
+    this[_tempData].set('unDoRecords', []);
   }
 
   private [_createOpts](opts: Options): PrivateOptions {
