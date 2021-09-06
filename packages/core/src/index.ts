@@ -235,6 +235,40 @@ class Core {
     }
   }
 
+  insertElementBefore(elem: TypeElementBase<keyof TypeElemDesc>, beforeUUID: string) {
+    const index = this[_helper].getElementIndexByUUID(beforeUUID);
+    if (index !== null) {
+      this.insertElementBeforeIndex(elem, index);
+    }
+  }
+
+  insertElementBeforeIndex(elem: TypeElementBase<keyof TypeElemDesc>, index: number) {
+    const _elem = deepClone(elem);
+    _elem.uuid = createUUID();
+    if (index >= 0) {
+      this[_data].elements.splice(index, 0, _elem);
+      this[_emitChangeData]();
+      this[_draw]();
+    }
+  }
+
+  insertElementAfter(elem: TypeElementBase<keyof TypeElemDesc>, beforeUUID: string) {
+    const index = this[_helper].getElementIndexByUUID(beforeUUID);
+    if (index !== null) {
+      this.insertElementAfterIndex(elem, index);
+    }
+  }
+
+  insertElementAfterIndex(elem: TypeElementBase<keyof TypeElemDesc>, index: number) {
+    const _elem = deepClone(elem);
+    _elem.uuid = createUUID();
+    if (index >= 0) {
+      this[_data].elements.splice(index + 1, 0, _elem);
+      this[_emitChangeData]();
+      this[_draw]();
+    }
+  }
+
   clearOperation() {
     this[_tempData].clear();
     this[_draw]();
