@@ -23,8 +23,8 @@ import {
   _emitChangeScreen, _emitChangeData, _onlyRender, _cursorStatus,
 } from './names';
 import { Mode, CursorStatus } from './constant/static';
-import { diffElementResourceChangeList, diffElementResourceChange } from './lib/diff';
-
+import { diffElementResourceChangeList } from './lib/diff';
+import { getSelectedElements, updateElement } from './mixins/element';
 const { time } = util;
 const { deepClone } = util.data;
 const { createUUID } = util.uuid;
@@ -196,22 +196,7 @@ class Core {
   }
 
   updateElement(elem: TypeElement<keyof TypeElemDesc>) {
-    // if (this[_onlyRender] === true) return;
-    const _elem  = deepClone(elem) as TypeElement<keyof TypeElemDesc>;
-    const data = this[_data];
-    const resourceChangeUUIDs: string[] = [];
-    for (let i = 0; i < data.elements.length; i++) {
-      if (_elem.uuid === data.elements[i]?.uuid) {
-        const result = diffElementResourceChange(data.elements[i], _elem);
-        if (typeof result === 'string') {
-          resourceChangeUUIDs.push(result);
-        }
-        data.elements[i] = _elem;
-        break;
-      }
-    }
-    this[_emitChangeData]();
-    this[_draw]({ resourceChangeUUIDs });
+    return updateElement(this, elem);
   }
 
   addElement(elem: TypeElementBase<keyof TypeElemDesc>): string | null {
@@ -249,6 +234,10 @@ class Core {
       this[_emitChangeData]();
       this[_draw]();
     }
+  }
+
+  getSelectedElements() {
+    return getSelectedElements(this);
   }
 
   insertElementAfter(elem: TypeElementBase<keyof TypeElemDesc>, beforeUUID: string) {
