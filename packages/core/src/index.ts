@@ -17,11 +17,10 @@ import check, { TypeCheck } from './lib/check';
 import { TempData } from './lib/temp';
 import {
   _board, _data, _opts, _config, _renderer, _element, _helper, _hasInited,
-  _mode, _tempData, _prevPoint, _draw,
-  _selectedDotDirection, _coreEvent, _mapper, _initEvent,
-  _handlePoint, _handleClick, _handleDoubleClick,
-  _handleMoveStart, _handleMove, _handleMoveEnd, _handleHover, _dragElements,
-  _transfromElement, _emitChangeScreen, _emitChangeData, _onlyRender, _cursorStatus,
+  _mode, _tempData, _prevPoint, _draw, _selectedDotDirection, _coreEvent, _mapper, _initEvent,
+  _handlePoint, _handleClick, _handleDoubleClick, _handleMoveStart, _handleMove, 
+  _handleMoveEnd, _handleHover, _handleLeave, _dragElements, _transfromElement, 
+  _emitChangeScreen, _emitChangeData, _onlyRender, _cursorStatus,
 } from './names';
 import { Mode, CursorStatus } from './constant/static';
 import { diffElementResourceChangeList, diffElementResourceChange } from './lib/diff';
@@ -308,6 +307,7 @@ class Core {
     }
 
     this[_board].on('hover', time.throttle(this[_handleHover].bind(this), 32));
+    this[_board].on('leave', time.throttle(this[_handleLeave].bind(this), 32));
     this[_board].on('point', time.throttle(this[_handleClick].bind(this), 16));
     this[_board].on('doubleClick', this[_handleDoubleClick].bind(this));
     if (this[_onlyRender] === true) {
@@ -506,6 +506,11 @@ class Core {
       if (index !== null) this[_coreEvent].trigger('mouseLeaveElement', { uuid, index, element: this[_data].elements[index] })
       this[_tempData].set('hoverUUID', null); 
     }
+    if (this[_coreEvent].has('mouseOverScreen')) this[_coreEvent].trigger('mouseOverScreen', point);
+  }
+
+  private [_handleLeave](): void {
+    if (this[_coreEvent].has('mouseLeaveScreen')) this[_coreEvent].trigger('mouseLeaveScreen', undefined);
   }
 
   private [_dragElements](uuids: string[], point: TypePoint, prevPoint: TypePoint|null): void {

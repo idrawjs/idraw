@@ -3,6 +3,7 @@ import { TypePoint } from '@idraw/types';
 export interface TypeBoardEventArgMap {
   'doubleClick': TypePoint;
   'hover': TypePoint;
+  'leave': void;
   'point': TypePoint;
   'move': TypePoint;
   'moveStart': TypePoint;

@@ -18,27 +18,27 @@ const idraw = new iDraw(mount, {
 });
 
 
-idraw.on('error', (data) => {
-  console.log('error: ', data);
-});
-idraw.on('changeData', (data) => {
-  console.log('changeData: ', data);
-});
-idraw.on('changeScreen', (data) => {
-  console.log('changeScreen: ', data);
-});
-idraw.on('screenSelectElement', (data) => {
-  console.log('screenSelectElement: ', data);
-});
-idraw.on('screenMoveElementStart', (data) => {
-  console.log('screenMoveElementStart: ', data);
-});
-idraw.on('screenMoveElementEnd', (data) => {
-  console.log('screenMoveElementEnd: ', data);
-});
-idraw.on('screenChangeElement', (data) => {
-  console.log('screenChangeElement: ', data);
-});
+// idraw.on('error', (data) => {
+//   console.log('error: ', data);
+// });
+// idraw.on('changeData', (data) => {
+//   console.log('changeData: ', data);
+// });
+// idraw.on('changeScreen', (data) => {
+//   console.log('changeScreen: ', data);
+// });
+// idraw.on('screenSelectElement', (data) => {
+//   console.log('screenSelectElement: ', data);
+// });
+// idraw.on('screenMoveElementStart', (data) => {
+//   console.log('screenMoveElementStart: ', data);
+// });
+// idraw.on('screenMoveElementEnd', (data) => {
+//   console.log('screenMoveElementEnd: ', data);
+// });
+// idraw.on('screenChangeElement', (data) => {
+//   console.log('screenChangeElement: ', data);
+// });
 
 
 idraw.setData(data, {

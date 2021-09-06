@@ -3,19 +3,19 @@ import { TypeData, TypeConfig, } from '@idraw/types';
 import util from '@idraw/util';
 import { Options, Record, PrivateOptions } from './types';
 import { defaultOptions } from './config';
+import { TempData } from './lib/temp';
+import {
+  _opts, _doRecords, _unDoRecords, _hasInited, _initEvent, _tempData,
+  _createOpts, _pushRecord, _bindKeyboard,
+} from './names';
 
-const _opts = Symbol('_opts');
-const _doRecords = Symbol('_doRecords');
-const _unDoRecords = Symbol('_unDoRecords');
-const _hasInited = Symbol('_hasInited');
-const _initEvent = Symbol('_initEvent');
-
-class IDraw extends Core {
+class iDraw extends Core {
 
   private [_opts]: PrivateOptions;
   private [_doRecords]: Record[] = [];
   private [_unDoRecords]: Record[] = [];
   private [_hasInited] = false; 
+  private [_tempData] = new TempData();
 
   constructor(mount: HTMLDivElement, opts: Options, config?: TypeConfig) {
     super(mount, {
@@ -26,7 +26,7 @@ class IDraw extends Core {
       devicePixelRatio: opts.devicePixelRatio || defaultOptions.devicePixelRatio,
       onlyRender: opts.onlyRender || defaultOptions.onlyRender,
     }, config || {});
-    this[_opts] = this._createOpts(opts);
+    this[_opts] = this[_createOpts](opts);
     this[_initEvent]();
   }
 
@@ -95,12 +95,19 @@ class IDraw extends Core {
       return;
     }
     this.on('changeData', (data: TypeData) => {
-      this._pushRecord(data);
+      this[_pushRecord](data);
     });
+    this.on('mouseLeaveScreen', () => {
+      this[_tempData].set('isHover', false);
+    });
+    this.on('mouseOverScreen', () => {
+      this[_tempData].set('isHover', true);
+    });
+    this[_bindKeyboard]();
     this[_hasInited] = true;
   }
 
-  private _pushRecord(data: TypeData) {
+  private [_pushRecord](data: TypeData) {
     if (this[_doRecords].length >= this[_opts].maxRecords) {
       this[_doRecords].shift();
     }
@@ -108,9 +115,19 @@ class IDraw extends Core {
     this[_unDoRecords] = [];
   }
 
-  private _createOpts(opts: Options): PrivateOptions {
+  private [_createOpts](opts: Options): PrivateOptions {
     return { ...defaultOptions, ...opts };
   }
+
+  private [_bindKeyboard]() {
+    document.addEventListener('keydown', (e) => {
+      if (this[_tempData].get('isHover') === true) {
+        // TODO
+        console.log(e);
+      }
+    });
+  }
+
 }
 
-export default IDraw;
+export default iDraw;
