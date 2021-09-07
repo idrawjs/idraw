@@ -10,7 +10,7 @@ import {
 } from './names';
 import { redo, undo } from './mixins/record';
 import { exportDataURL } from './mixins/file';
-import { copyElements, pasteElements } from './mixins/keyboard';
+import { copyElements, pasteElements, cutElements, deleteElements } from './mixins/keyboard';
 
 class iDraw extends Core {
 
@@ -58,12 +58,11 @@ class iDraw extends Core {
     this.on('mouseOverScreen', () => {
       this[_tempData].set('isHover', true);
     });
-    this[_keyboardWatcher].on('keyboardCopy', () => {
-      copyElements(this);
-    });
-    this[_keyboardWatcher].on('keyboardPaste', () => {
-      pasteElements(this);
-    });
+    this[_keyboardWatcher]
+      .on('keyboardCopy', () => copyElements(this))
+      .on('keyboardPaste', () => pasteElements(this))
+      .on('keyboardCut', () => cutElements(this))
+      .on('keyboardDelete', () => deleteElements(this));
     this[_hasInited] = true;
   }
 

@@ -57,6 +57,7 @@ export class KeyboardWatcher implements TypeKeyboardEvent {
     } else {
       this._listeners.set(eventKey, [callback]);
     }
+    return this;
   }
   
   off<T extends keyof TypeKeyboardEventArgMap >(eventKey: T, callback: (p: TypeKeyboardEventArgMap[T]) => void) {
@@ -72,6 +73,7 @@ export class KeyboardWatcher implements TypeKeyboardEvent {
       }
       this._listeners.set(eventKey, callbacks || []);
     }
+    return this;
   }
 
   trigger<T extends keyof TypeKeyboardEventArgMap >(eventKey: T, arg: TypeKeyboardEventArgMap[T]) {
