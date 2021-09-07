@@ -3,18 +3,21 @@ import { TypeData, TypeConfig, } from '@idraw/types';
 import { Options, PrivateOptions } from './types';
 import { defaultOptions } from './config';
 import { TempData } from './lib/temp';
+import { KeyboardWatcher } from './lib/keyboard-watcher';
 import {
-  _opts, _doRecords, _unDoRecords, _hasInited, _initEvent, _tempData,
-  _createOpts, _pushRecord, _bindKeyboard,
+  _opts, _hasInited, _initEvent, _tempData,
+  _createOpts, _pushRecord, _keyboardWatcher,
 } from './names';
 import { redo, undo } from './mixins/record';
 import { exportDataURL } from './mixins/file';
+import { copyElements, pasteElements } from './mixins/keyboard';
 
 class iDraw extends Core {
 
   private [_opts]: PrivateOptions;
   private [_hasInited] = false; 
   private [_tempData] = new TempData();
+  private [_keyboardWatcher] = new KeyboardWatcher();
 
   constructor(mount: HTMLDivElement, opts: Options, config?: TypeConfig) {
     super(mount, {
@@ -38,10 +41,7 @@ class iDraw extends Core {
   }
 
 
-  async exportDataURL(
-    type: 'image/png' | 'image/jpeg',
-    quality?: number
-  ): Promise<string> {
+  async exportDataURL(type: 'image/png' | 'image/jpeg', quality?: number ): Promise<string> {
     return exportDataURL(this, type, quality);
   }
 
@@ -58,7 +58,12 @@ class iDraw extends Core {
     this.on('mouseOverScreen', () => {
       this[_tempData].set('isHover', true);
     });
-    this[_bindKeyboard]();
+    this[_keyboardWatcher].on('keyboardCopy', () => {
+      copyElements(this);
+    });
+    this[_keyboardWatcher].on('keyboardPaste', () => {
+      pasteElements(this);
+    });
     this[_hasInited] = true;
   }
 
@@ -76,14 +81,14 @@ class iDraw extends Core {
     return { ...defaultOptions, ...opts };
   }
 
-  private [_bindKeyboard]() {
-    document.addEventListener('keydown', (e) => {
-      if (this[_tempData].get('isHover') === true) {
-        // TODO
-        console.log(e);
-      }
-    });
-  }
+  // private [_bindKeyboard]() {
+  //   document.addEventListener('keydown', (e) => {
+  //     if (this[_tempData].get('isHover') === true) {
+  //       // TODO
+  //       console.log(e);
+  //     }
+  //   });
+  // }
 
 }
 

@@ -1,9 +1,12 @@
+import { TypeElemDesc, TypeElement } from '@idraw/types';
 import { Record } from './../types';
+
 
 type TempDataDesc = {
   isHover: boolean,
   doRecords: Record[],
   unDoRecords: Record[],
+  clipboardElements: TypeElement<keyof TypeElemDesc>[]
 }
 
 export class TempData {
@@ -15,6 +18,7 @@ export class TempData {
       isHover: false,
       doRecords: [],
       unDoRecords: [],
+      clipboardElements: [],
     }
   }
 
@@ -31,6 +35,7 @@ export class TempData {
       isHover: false,
       doRecords: [],
       unDoRecords: [],
+      clipboardElements: [],
     }
   }
 }

@@ -3,11 +3,12 @@
 export type TypeKeyboardEventArgMap = {
   'keyboardCopy': void;
   'keyboardPaste': void;
+  'keyboardCut': void;
   'keyboardDelete': void;
-  'keyboardScrollRight': void;
-  'keyboardScrollLeft': void;
-  'keyboardScrollUp': void;
-  'keyboardScrollDown': void;
+  'keyboardArrowRight': void;
+  'keyboardArrowLeft': void;
+  'keyboardArrowUp': void;
+  'keyboardArrowDown': void;
 }
  
 export interface TypeKeyboardEvent {
@@ -17,7 +18,7 @@ export interface TypeKeyboardEvent {
 }
 
 
-export class KeyboardEvent implements TypeKeyboardEvent {
+export class KeyboardWatcher implements TypeKeyboardEvent {
 
   private _listeners: Map<string, ((p: any) => void)[]>;
 
@@ -28,7 +29,23 @@ export class KeyboardEvent implements TypeKeyboardEvent {
 
   private _initEvent() {
     document.addEventListener('keydown', (e) => {
-      console.log(e);
+      if ((e.metaKey === true || e.ctrlKey === true) && e.key === 'c') {
+        this.trigger('keyboardCopy', undefined);
+      } else if ((e.metaKey === true || e.ctrlKey === true) && e.key === 'v') {
+        this.trigger('keyboardPaste', undefined);
+      } else if ((e.metaKey === true || e.ctrlKey === true) && e.key === 'x') {
+        this.trigger('keyboardCut', undefined);
+      } else if (e.key === 'Backspace') {
+        this.trigger('keyboardDelete', undefined);
+      } else if (e.key === 'ArrowUp') {
+        this.trigger('keyboardArrowUp', undefined);
+      } else if (e.key === 'ArrowDown') {
+        this.trigger('keyboardArrowDown', undefined);
+      } else if (e.key === 'ArrowLeft') {
+        this.trigger('keyboardArrowLeft', undefined);
+      } else if (e.key === 'ArrowRight') {
+        this.trigger('keyboardArrowRight', undefined);
+      }
     });
   }
 
