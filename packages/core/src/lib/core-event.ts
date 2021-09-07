@@ -13,6 +13,8 @@ export type TypeCoreEventSelectBaseArg = {
 
 export type TypeCoreEventArgMap  = {
   'error': any;
+  'mouseOverScreen': TypePoint,
+  'mouseLeaveScreen': void,
   'mouseOverElement': TypeCoreEventSelectBaseArg & { element: TypeElement<keyof TypeElemDesc> }
   'mouseLeaveElement': TypeCoreEventSelectBaseArg & { element: TypeElement<keyof TypeElemDesc> }
   'screenClickElement': TypeCoreEventSelectBaseArg & { element: TypeElement<keyof TypeElemDesc> }

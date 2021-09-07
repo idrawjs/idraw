@@ -91,6 +91,12 @@
       <div class="box" id="idraw-api-clearOperation">
         <div class="title">idraw.clearOperation</div>
       </div>
+      <div class="box" id="idraw-api-insertElementBefore">
+        <div class="title">idraw.insertElementBefore</div>
+      </div>
+      <div class="box" id="idraw-api-insertElementAfter">
+        <div class="title">idraw.insertElementAfter</div>
+      </div>
     </div>
 
     <script src="./../../dist/index.global.js"></script>
@@ -527,6 +533,44 @@
         core.setData(data);
         core.selectElementByIndex(1);
         core.clearOperation();
+      })();
+    </script>
+
+    <script type="module">
+      // idraw-api-insertElementBefore
+      import { getData } from './data.js';
+      import event from './../../../../scripts/browser/event.js';
+      (function() {
+        const mount = document.querySelector('#idraw-api-insertElementBefore');
+        const data = getData();
+        const core = new Core(mount, opts, config);
+        core.setData(data);
+        
+        const _data = core.getData();
+        const elem = _data.elements[0];
+        elem.x += 20;
+        elem.y += 20;
+        core.insertElementBefore(elem, _data.elements[1].uuid);
+        core.clearOperation();
+      })();
+    </script>
+ 
+
+    <script type="module">
+      // idraw-api-insertElementAfter
+      import { getData } from './data.js';
+      import event from './../../../../scripts/browser/event.js';
+      (function() {
+        const mount = document.querySelector('#idraw-api-insertElementAfter');
+        const data = getData();
+        const core = new Core(mount, opts, config);
+        core.setData(data);
+        
+        const _data = core.getData();
+        const elem = _data.elements[0];
+        elem.x += 20;
+        elem.y += 20;
+        core.insertElementAfter(elem, _data.elements[1].uuid);
       })();
     </script>
 

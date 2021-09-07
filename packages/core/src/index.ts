@@ -17,15 +17,14 @@ import check, { TypeCheck } from './lib/check';
 import { TempData } from './lib/temp';
 import {
   _board, _data, _opts, _config, _renderer, _element, _helper, _hasInited,
-  _mode, _tempData, _prevPoint, _draw,
-  _selectedDotDirection, _coreEvent, _mapper, _initEvent,
-  _handlePoint, _handleClick, _handleDoubleClick,
-  _handleMoveStart, _handleMove, _handleMoveEnd, _handleHover, _dragElements,
-  _transfromElement, _emitChangeScreen, _emitChangeData, _onlyRender, _cursorStatus,
+  _mode, _tempData, _prevPoint, _draw, _selectedDotDirection, _coreEvent, _mapper, _initEvent,
+  _handlePoint, _handleClick, _handleDoubleClick, _handleMoveStart, _handleMove, 
+  _handleMoveEnd, _handleHover, _handleLeave, _dragElements, _transfromElement, 
+  _emitChangeScreen, _emitChangeData, _onlyRender, _cursorStatus,
 } from './names';
 import { Mode, CursorStatus } from './constant/static';
-import { diffElementResourceChangeList, diffElementResourceChange } from './lib/diff';
-
+import { diffElementResourceChangeList } from './lib/diff';
+import { getSelectedElements, updateElement } from './mixins/element';
 const { time } = util;
 const { deepClone } = util.data;
 const { createUUID } = util.uuid;
@@ -197,22 +196,7 @@ class Core {
   }
 
   updateElement(elem: TypeElement<keyof TypeElemDesc>) {
-    // if (this[_onlyRender] === true) return;
-    const _elem  = deepClone(elem) as TypeElement<keyof TypeElemDesc>;
-    const data = this[_data];
-    const resourceChangeUUIDs: string[] = [];
-    for (let i = 0; i < data.elements.length; i++) {
-      if (_elem.uuid === data.elements[i]?.uuid) {
-        const result = diffElementResourceChange(data.elements[i], _elem);
-        if (typeof result === 'string') {
-          resourceChangeUUIDs.push(result);
-        }
-        data.elements[i] = _elem;
-        break;
-      }
-    }
-    this[_emitChangeData]();
-    this[_draw]({ resourceChangeUUIDs });
+    return updateElement(this, elem);
   }
 
   addElement(elem: TypeElementBase<keyof TypeElemDesc>): string | null {
@@ -230,6 +214,44 @@ class Core {
     const index = this[_element].getElementIndex(this[_data], uuid);
     if (index >= 0) {
       this[_data].elements.splice(index, 1);
+      this[_emitChangeData]();
+      this[_draw]();
+    }
+  }
+
+  insertElementBefore(elem: TypeElementBase<keyof TypeElemDesc>, beforeUUID: string) {
+    const index = this[_helper].getElementIndexByUUID(beforeUUID);
+    if (index !== null) {
+      this.insertElementBeforeIndex(elem, index);
+    }
+  }
+
+  insertElementBeforeIndex(elem: TypeElementBase<keyof TypeElemDesc>, index: number) {
+    const _elem = deepClone(elem);
+    _elem.uuid = createUUID();
+    if (index >= 0) {
+      this[_data].elements.splice(index, 0, _elem);
+      this[_emitChangeData]();
+      this[_draw]();
+    }
+  }
+
+  getSelectedElements() {
+    return getSelectedElements(this);
+  }
+
+  insertElementAfter(elem: TypeElementBase<keyof TypeElemDesc>, beforeUUID: string) {
+    const index = this[_helper].getElementIndexByUUID(beforeUUID);
+    if (index !== null) {
+      this.insertElementAfterIndex(elem, index);
+    }
+  }
+
+  insertElementAfterIndex(elem: TypeElementBase<keyof TypeElemDesc>, index: number) {
+    const _elem = deepClone(elem);
+    _elem.uuid = createUUID();
+    if (index >= 0) {
+      this[_data].elements.splice(index + 1, 0, _elem);
       this[_emitChangeData]();
       this[_draw]();
     }
@@ -274,6 +296,7 @@ class Core {
     }
 
     this[_board].on('hover', time.throttle(this[_handleHover].bind(this), 32));
+    this[_board].on('leave', time.throttle(this[_handleLeave].bind(this), 32));
     this[_board].on('point', time.throttle(this[_handleClick].bind(this), 16));
     this[_board].on('doubleClick', this[_handleDoubleClick].bind(this));
     if (this[_onlyRender] === true) {
@@ -472,6 +495,11 @@ class Core {
       if (index !== null) this[_coreEvent].trigger('mouseLeaveElement', { uuid, index, element: this[_data].elements[index] })
       this[_tempData].set('hoverUUID', null); 
     }
+    if (this[_coreEvent].has('mouseOverScreen')) this[_coreEvent].trigger('mouseOverScreen', point);
+  }
+
+  private [_handleLeave](): void {
+    if (this[_coreEvent].has('mouseLeaveScreen')) this[_coreEvent].trigger('mouseLeaveScreen', undefined);
   }
 
   private [_dragElements](uuids: string[], point: TypePoint, prevPoint: TypePoint|null): void {

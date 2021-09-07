@@ -21,6 +21,7 @@ const _handleMoveStart = Symbol('_handleMoveStart');
 const _handleMove = Symbol('_handleMove');
 const _handleMoveEnd = Symbol('_handleMoveEnd');
 const _handleHover = Symbol('_handleHover');
+const _handleLeave = Symbol('_handleLeave');
 const _dragElements = Symbol('_dragElements');
 const _transfromElement = Symbol('_transfromElement');
 const _emitChangeScreen = Symbol('_emitChangeScreen');
@@ -30,9 +31,8 @@ const _cursorStatus = Symbol('_cursorStatus');
 
 export {
   _board, _data, _opts, _config, _renderer, _element, _helper, _hasInited,
-  _mode, _tempData, _prevPoint, _draw,
-  _selectedDotDirection, _coreEvent, _mapper, _initEvent,
-  _handlePoint, _handleClick, _handleDoubleClick,
-  _handleMoveStart, _handleMove, _handleMoveEnd, _handleHover, _dragElements,
-  _transfromElement, _emitChangeScreen, _emitChangeData, _onlyRender, _cursorStatus,
+  _mode, _tempData, _prevPoint, _draw, _selectedDotDirection, _coreEvent, _mapper, _initEvent,
+  _handlePoint, _handleClick, _handleDoubleClick, _handleMoveStart, _handleMove, 
+  _handleMoveEnd, _handleHover, _handleLeave, _dragElements, _transfromElement, 
+  _emitChangeScreen, _emitChangeData, _onlyRender, _cursorStatus,
 };
