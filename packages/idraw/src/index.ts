@@ -10,7 +10,9 @@ import {
 } from './names';
 import { redo, undo } from './mixins/record';
 import { exportDataURL } from './mixins/file';
-import { copyElements, pasteElements, cutElements, deleteElements } from './mixins/keyboard';
+import { copyElements, pasteElements, cutElements, deleteElements,
+  keyArrowUp, keyArrowDown, keyArrowLeft, keyArrowRight,
+} from './mixins/keyboard';
 
 class iDraw extends Core {
 
@@ -40,7 +42,6 @@ class iDraw extends Core {
     return redo(this);
   }
 
-
   async exportDataURL(type: 'image/png' | 'image/jpeg', quality?: number ): Promise<string> {
     return exportDataURL(this, type, quality);
   }
@@ -53,17 +54,21 @@ class iDraw extends Core {
       this[_pushRecord](data);
     });
     this.on('mouseLeaveScreen', () => {
-      this[_tempData].set('isHover', false);
+      this[_tempData].set('isFocus', false);
     });
     this.on('mouseOverScreen', () => {
-      this[_tempData].set('isHover', true);
+      this[_tempData].set('isFocus', true);
     });
     if (this[_opts].disableKeyboard !== true) {
       this[_keyboardWatcher]
         .on('keyboardCopy', () => copyElements(this))
         .on('keyboardPaste', () => pasteElements(this))
         .on('keyboardCut', () => cutElements(this))
-        .on('keyboardDelete', () => deleteElements(this));
+        .on('keyboardDelete', () => deleteElements(this))
+        .on('keyboardArrowUp', () => keyArrowUp(this))
+        .on('keyboardArrowDown', () => keyArrowDown(this))
+        .on('keyboardArrowLeft', () => keyArrowLeft(this))
+        .on('keyboardArrowRight', () => keyArrowRight(this));
     }
     this[_hasInited] = true;
   }
@@ -81,15 +86,6 @@ class iDraw extends Core {
   private [_createOpts](opts: Options): PrivateOptions {
     return { ...defaultOptions, ...opts };
   }
-
-  // private [_bindKeyboard]() {
-  //   document.addEventListener('keydown', (e) => {
-  //     if (this[_tempData].get('isHover') === true) {
-  //       // TODO
-  //       console.log(e);
-  //     }
-  //   });
-  // }
 
 }
 

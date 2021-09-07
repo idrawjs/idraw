@@ -5,7 +5,7 @@ const iDraw = window.iDraw;
 const mount = document.querySelector('#mount');
 
 const defaultConf = {
-  scale: 1,
+  scale: 2,
   scrollX: 0,
   scrollY: 0,
 }
@@ -44,6 +44,6 @@ const idraw = new iDraw(mount, {
 idraw.setData(data, {
   triggerChangeEvent: true,
 });
-
+idraw.scale(2);
 doAction(idraw);
 

@@ -3,7 +3,7 @@ import { Record } from './../types';
 
 
 type TempDataDesc = {
-  isHover: boolean,
+  isFocus: boolean,
   doRecords: Record[],
   unDoRecords: Record[],
   clipboardElements: TypeElement<keyof TypeElemDesc>[]
@@ -15,7 +15,7 @@ export class TempData {
 
   constructor() {
     this._temp = {
-      isHover: false,
+      isFocus: false,
       doRecords: [],
       unDoRecords: [],
       clipboardElements: [],
@@ -32,7 +32,7 @@ export class TempData {
 
   clear() {
     this._temp = {
-      isHover: false,
+      isFocus: false,
       doRecords: [],
       unDoRecords: [],
       clipboardElements: [],
