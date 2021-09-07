@@ -59,7 +59,7 @@ class iDraw extends Core {
     this.on('mouseOverScreen', () => {
       this[_tempData].set('isFocus', true);
     });
-    if (this[_opts].disableKeyboard !== true) {
+    if (this[_opts].disableKeyboard === false) {
       this[_keyboardWatcher]
         .on('keyboardCopy', () => copyElements(this))
         .on('keyboardPaste', () => pasteElements(this))
@@ -84,7 +84,7 @@ class iDraw extends Core {
   }
 
   private [_createOpts](opts: Options): PrivateOptions {
-    return { ...defaultOptions, ...opts };
+    return { ...{}, ...defaultOptions, ...opts };
   }
 
 }

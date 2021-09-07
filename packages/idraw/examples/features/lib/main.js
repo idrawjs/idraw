@@ -14,7 +14,8 @@ const idraw = new iDraw(mount, {
   height: 400,
   contextWidth: 600,
   contextHeight: 400,
-  devicePixelRatio: 4
+  devicePixelRatio: 4,
+  disableKeyboard: false,
 });
 
 
