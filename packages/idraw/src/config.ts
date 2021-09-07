@@ -8,4 +8,5 @@ export const defaultOptions: PrivateOptions = {
   devicePixelRatio: 1,
   onlyRender: false,
   maxRecords: 10,
+  disableKeyboard: false,
 }

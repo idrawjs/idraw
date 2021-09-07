@@ -5,10 +5,12 @@ import {
 
 export type Options = {
   maxRecords?: number;
+  disableKeyboard?: boolean;
 } & TypeCoreOptions;
 
 export type PrivateOptions = {
   maxRecords: number;
+  disableKeyboard: boolean;
 } & Options;
 
 export type Record = {

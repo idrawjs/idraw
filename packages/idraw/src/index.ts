@@ -58,11 +58,13 @@ class iDraw extends Core {
     this.on('mouseOverScreen', () => {
       this[_tempData].set('isHover', true);
     });
-    this[_keyboardWatcher]
-      .on('keyboardCopy', () => copyElements(this))
-      .on('keyboardPaste', () => pasteElements(this))
-      .on('keyboardCut', () => cutElements(this))
-      .on('keyboardDelete', () => deleteElements(this));
+    if (this[_opts].disableKeyboard !== true) {
+      this[_keyboardWatcher]
+        .on('keyboardCopy', () => copyElements(this))
+        .on('keyboardPaste', () => pasteElements(this))
+        .on('keyboardCut', () => cutElements(this))
+        .on('keyboardDelete', () => deleteElements(this));
+    }
     this[_hasInited] = true;
   }
 
