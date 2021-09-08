@@ -70,7 +70,7 @@ idraw.addElement({
   h: 100,
   type: "rect",
   desc: {
-    color: "#f7d3c1",
+    bgColor: "#f7d3c1",
     borderRadius: 20,
     borderWidth: 4,
     borderColor: "#ff6032",
@@ -94,4 +94,3 @@ To contribute, please follow the steps:
 - http://127.0.0.1:8080
   - http://127.0.0.1:8080/packages/idraw/examples/features/
   - http://127.0.0.1:8080/packages/core/examples/features/
-  - http://127.0.0.1:8080/packages/board/examples/features/

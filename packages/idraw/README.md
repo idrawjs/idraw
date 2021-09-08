@@ -21,5 +21,51 @@
 
 <hr/>
 
-- [Documents](https://idrawjs.github.io/docs/en/) | [中文文档](https://idrawjs.github.io/docs/zh/)   (`//TODO`)
-- [Playground](https://idrawjs.github.io/playground/)
+- [Documents](https://idraw.js.org/docs/en/) | [中文文档](https://idraw.js.org/docs/zh/) 
+- [Online Playground](https://idraw.js.org/playground/) | [在线API示例](https://idraw.js.org/playground/)
+- [Online Studio](https://idraw.js.org/studio/) | [在线绘图演示](https://idraw.js.org/studio/)
+ 
+## @idraw/studio Preview
+
+The preview of `@idraw/studo`. Click [here](https://github.com/idrawjs/studio) to get it.
+
+<div style="text-align: center">
+  <img src="./assets/preview/idraw-studio-preview.png" width="700" />
+</div>
+
+## Install
+
+```
+npm i idraw
+```
+
+## Getting Started
+
+```js
+import iDraw from 'idraw';
+
+const idraw = new iDraw(
+  document.querySelector('#app'),
+  {
+    width: 600,
+    height: 400,
+    contextWidth: 600,
+    contextHeight: 400,
+    devicePixelRatio: 4,
+  }
+);
+idraw.addElement({
+  name: "rect-1",
+  x: 140,
+  y: 120,
+  w: 200,
+  h: 100,
+  type: "rect",
+  desc: {
+    bgColor: "#f7d3c1",
+    borderRadius: 20,
+    borderWidth: 4,
+    borderColor: "#ff6032",
+  },
+});
+```
