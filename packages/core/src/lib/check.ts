@@ -35,8 +35,8 @@ function box(
 function rectDesc(
   desc: any
 ): boolean {
-  const { color } = desc;
-  if (desc.hasOwnProperty('color') && !is.color(color)) {
+  const { bgColor } = desc;
+  if (desc.hasOwnProperty('bgColor') && !is.color(bgColor)) {
     return false;
   }
   if (!box(desc)) {
@@ -48,8 +48,8 @@ function rectDesc(
 function circleDesc(
   desc: any
 ): boolean {
-  const { color, borderColor, borderWidth } = desc;
-  if (desc.hasOwnProperty('color') && !is.color(color)) {
+  const { bgColor, borderColor, borderWidth } = desc;
+  if (desc.hasOwnProperty('bgColor') && !is.color(bgColor)) {
     return false;
   }
   if (desc.hasOwnProperty('borderColor') && !is.color(borderColor)) {

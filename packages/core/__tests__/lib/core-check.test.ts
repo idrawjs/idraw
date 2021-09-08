@@ -32,18 +32,18 @@ describe("@idraw/core static check", () => {
   test('Core.check.rectDesc', () => {
 
     expect(Core.check.rectDesc({
-      color: '#ffffff',
+      bgColor: '#ffffff',
     })).toStrictEqual(true);
 
     expect(Core.check.rectDesc({
-      color: 123,
+      bgColor: 123,
     })).toStrictEqual(false);
 
     expect(Core.check.rectDesc({
       borderRadius: 12,
       borderWidth: 10,
       borderColor: '#123abf',
-      color: '#ffffff',
+      bgColor: '#ffffff',
     })).toStrictEqual(true);
 
     expect(Core.check.rectDesc({
@@ -58,17 +58,17 @@ describe("@idraw/core static check", () => {
   test('Core.check.circleDesc', () => {
 
     expect(Core.check.circleDesc({
-      color: '#ffffff',
+      bgColor: '#ffffff',
     })).toStrictEqual(true);
 
     expect(Core.check.circleDesc({
-      color: 123,
+      bgColor: 123,
     })).toStrictEqual(false);
 
     expect(Core.check.circleDesc({
       borderWidth: 10,
       borderColor: '#123abf',
-      color: '#ffffff',
+      bgColor: '#ffffff',
     })).toStrictEqual(true);
 
     expect(Core.check.circleDesc({

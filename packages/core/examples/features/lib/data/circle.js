@@ -9,7 +9,7 @@ const data = {
       h: 100,
       type: "circle",
       desc: {
-        color: "#f0f0f0",
+        bgColor: "#f0f0f0",
         borderWidth: 2,
         borderColor: '#999999'
       },
@@ -23,7 +23,7 @@ const data = {
       angle: 30,
       type: "circle",
       desc: {
-        color: "#f0f0f0",
+        bgColor: "#f0f0f0",
         borderWidth: 2,
         borderColor: '#666666'
       },
@@ -37,7 +37,7 @@ const data = {
       type: "circle",
       angle: 0,
       desc: {
-        color: "#f0f0f0",
+        bgColor: "#f0f0f0",
         borderWidth: 2,
         borderColor: '#666666'
       },
@@ -50,7 +50,7 @@ const data = {
       h: 300,
       type: "circle",
       desc: {
-        color: "#f0f0f0",
+        bgColor: "#f0f0f0",
         borderWidth: 10,
         borderColor: '#666666'
       },

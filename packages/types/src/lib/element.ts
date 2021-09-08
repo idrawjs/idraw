@@ -52,7 +52,7 @@ type TypeElemDesc = {
 type TypeElemType = 'text' | 'rect' | 'circle' | 'image' | 'svg' | 'html';
 
 type TypeElemDescRect = {
-  color?: string;
+  bgColor?: string;
 } & TypeElemBoxDesc
 
 type TypeElemDescText = {
@@ -67,7 +67,7 @@ type TypeElemDescText = {
 } & TypeElemBoxDesc
 
 type TypeElemDescCircle = {
-  color: string;
+  bgColor: string;
 } & TypeElemBoxDesc
 
 type TypeElemDescImage = {
