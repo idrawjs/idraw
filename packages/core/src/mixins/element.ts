@@ -31,7 +31,7 @@ export function getSelectedElements(core: Core): TypeElement<keyof TypeElemDesc>
       if (elem) elems.push(elem);
     }
   });
-  return elems;
+  return deepClone(elems);
 }
 
 export function updateElement(core: Core, elem: TypeElement<keyof TypeElemDesc>) {

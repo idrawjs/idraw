@@ -5,7 +5,7 @@ import {
 import { drawBox } from './base';
  
 export function drawRect(ctx: TypeContext, elem: TypeElement<'rect'>) {
-  drawBox(ctx, elem, elem.desc.color as string);
+  drawBox(ctx, elem, elem.desc.bgColor as string);
 }
 
  

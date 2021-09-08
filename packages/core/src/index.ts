@@ -222,8 +222,9 @@ class Core {
   insertElementBefore(elem: TypeElementBase<keyof TypeElemDesc>, beforeUUID: string) {
     const index = this[_helper].getElementIndexByUUID(beforeUUID);
     if (index !== null) {
-      this.insertElementBeforeIndex(elem, index);
+      return this.insertElementBeforeIndex(elem, index);
     }
+    return null;
   }
 
   insertElementBeforeIndex(elem: TypeElementBase<keyof TypeElemDesc>, index: number) {
@@ -233,7 +234,9 @@ class Core {
       this[_data].elements.splice(index, 0, _elem);
       this[_emitChangeData]();
       this[_draw]();
+      return _elem.uuid;
     }
+    return null;
   }
 
   getSelectedElements() {
@@ -243,8 +246,9 @@ class Core {
   insertElementAfter(elem: TypeElementBase<keyof TypeElemDesc>, beforeUUID: string) {
     const index = this[_helper].getElementIndexByUUID(beforeUUID);
     if (index !== null) {
-      this.insertElementAfterIndex(elem, index);
+      return this.insertElementAfterIndex(elem, index);
     }
+    return null;
   }
 
   insertElementAfterIndex(elem: TypeElementBase<keyof TypeElemDesc>, index: number) {
@@ -254,7 +258,9 @@ class Core {
       this[_data].elements.splice(index + 1, 0, _elem);
       this[_emitChangeData]();
       this[_draw]();
+      return _elem.uuid;
     }
+    return null;
   }
 
   clearOperation() {

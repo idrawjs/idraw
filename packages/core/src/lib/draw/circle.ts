@@ -9,7 +9,7 @@ export function drawCircle(ctx: TypeContext, elem: TypeElement<'circle'>) {
   rotateElement(ctx, elem, (ctx) => {
     const { x, y, w, h, desc } = elem;
     const {
-      color = '#000000',
+      bgColor = '#000000',
       borderColor = '#000000',
       borderWidth
     } = desc;
@@ -33,7 +33,7 @@ export function drawCircle(ctx: TypeContext, elem: TypeElement<'circle'>) {
     }
 
     ctx.beginPath();
-    ctx.setFillStyle(color);
+    ctx.setFillStyle(bgColor);
     ctx.moveTo(centerX + a, centerY);
     for(var i = 0; i < 2 * Math.PI; i += unit) {
       ctx.lineTo(centerX + a * Math.cos(i), centerY + b * Math.sin(i));

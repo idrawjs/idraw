@@ -8,7 +8,7 @@ const data = {
       h: 100,
       type: 'rect',
       desc: {
-        color: '#f0f0f0',
+        bgColor: '#f0f0f0',
         borderRadius: 20,
         borderWidth: 10,
         borderColor: '#bd0b64',

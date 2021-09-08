@@ -9,7 +9,7 @@ const data = {
       h: 50,
       type: "rect",
       desc: {
-        color: "#ffeb3b",
+        bgColor: "#ffeb3b",
         borderRadius: 10,
         borderWidth: 5,
         borderColor: "#ffc107",

@@ -9,7 +9,7 @@ const data = {
       h: 100,
       type: "rect",
       desc: {
-        color: "#f0f0f0",
+        bgColor: "#f0f0f0",
         borderRadius: 20,
         borderWidth: 10,
         borderColor: "#bd0b64",
@@ -27,7 +27,7 @@ const data = {
         lock: true,
       },
       desc: {
-        color: "#cccccc",
+        bgColor: "#cccccc",
         borderRadius: 60,
         borderWidth: 10,
         borderColor: "#bd0b64",
@@ -42,7 +42,7 @@ const data = {
       type: "rect",
       angle: 80,
       desc: {
-        color: "#c0c0c0",
+        bgColor: "#c0c0c0",
         borderRadius: 20,
         borderWidth: 10,
         borderColor: "#bd0b64",
@@ -56,7 +56,7 @@ const data = {
       h: 100,
       type: "rect",
       desc: {
-        color: "#e0e0e0",
+        bgColor: "#e0e0e0",
         borderRadius: 20,
         borderWidth: 10,
         borderColor: "#bd0b64",
