@@ -24,10 +24,12 @@ import {
 } from './names';
 import { Mode, CursorStatus } from './constant/static';
 import { diffElementResourceChangeList } from './lib/diff';
-import { getSelectedElements, updateElement } from './mixins/element';
+import { getSelectedElements, updateElement, selectElementByIndex, 
+  selectElement, moveUpElement, moveDownElement, addElement, deleteElement,
+  insertElementBefore, insertElementBeforeIndex, insertElementAfter, insertElementAfterIndex,
+} from './mixins/element';
 const { time } = util;
 const { deepClone } = util.data;
-const { createUUID } = util.uuid;
 
 class Core {
 
@@ -104,52 +106,51 @@ class Core {
   }
 
   selectElementByIndex(index: number, opts?: { useMode?: boolean }): void {
-    if (this[_onlyRender] === true) return;
-    if (this[_data].elements[index]) {
-      const uuid = this[_data].elements[index].uuid;
-      if (opts?.useMode === true) {
-        this[_mode] = Mode.SELECT_ELEMENT;
-      } else {
-        this[_mode] = Mode.NULL;
-      }
-      if (typeof uuid === 'string') {
-        this[_tempData].set('selectedUUID', uuid);
-        this[_tempData].set('selectedUUIDList', []);
-      }
-      this[_draw]();
-    }
+    return selectElementByIndex(this, index, opts)
   }
 
   selectElement(uuid: string, opts?: { useMode?: boolean }): void {
-    if (this[_onlyRender] === true) return;
-    const index = this[_helper].getElementIndexByUUID(uuid);
-    if (typeof index === 'number' && index >= 0) {
-      this.selectElementByIndex(index, opts);
-    }
+    return selectElement(this, uuid, opts);
   }
 
   moveUpElement(uuid: string): void {
-    // if (this[_onlyRender] === true) return;
-    const index = this[_helper].getElementIndexByUUID(uuid);
-    if (typeof index === 'number' && index >= 0 && index < this[_data].elements.length - 1) {
-      const temp = this[_data].elements[index];
-      this[_data].elements[index] = this[_data].elements[index + 1];
-      this[_data].elements[index + 1] = temp;
-    }
-    this[_emitChangeData]();
-    this[_draw]();
+    return moveUpElement(this, uuid);
   }
 
   moveDownElement(uuid: string): void {
-    // if (this[_onlyRender] === true) return;
-    const index = this[_helper].getElementIndexByUUID(uuid);
-    if (typeof index === 'number' && index > 0 && index < this[_data].elements.length) {
-      const temp = this[_data].elements[index];
-      this[_data].elements[index] = this[_data].elements[index - 1];
-      this[_data].elements[index - 1] = temp;
-    }
-    this[_emitChangeData]();
-    this[_draw]();
+    return moveDownElement(this, uuid);
+  }
+
+  updateElement(elem: TypeElement<keyof TypeElemDesc>) {
+    return updateElement(this, elem);
+  }
+
+  addElement(elem: TypeElementBase<keyof TypeElemDesc>): string | null {
+    return addElement(this, elem);
+  }
+
+  deleteElement(uuid: string) {
+    return deleteElement(this, uuid);
+  }
+
+  insertElementBefore(elem: TypeElementBase<keyof TypeElemDesc>, beforeUUID: string) {
+    return insertElementBefore(this, elem, beforeUUID);
+  }
+
+  insertElementBeforeIndex(elem: TypeElementBase<keyof TypeElemDesc>, index: number) {
+    return insertElementBeforeIndex(this, elem, index)
+  }
+
+  getSelectedElements() {
+    return getSelectedElements(this);
+  }
+
+  insertElementAfter(elem: TypeElementBase<keyof TypeElemDesc>, beforeUUID: string) {
+    return insertElementAfter(this, elem, beforeUUID);
+  }
+
+  insertElementAfterIndex(elem: TypeElementBase<keyof TypeElemDesc>, index: number) {
+    return insertElementAfterIndex(this, elem, index)
   }
 
   scale(ratio: number): TypeScreenContext {
@@ -193,74 +194,6 @@ class Core {
       this[_emitChangeData]();
     }
     this[_draw]({ resourceChangeUUIDs });
-  }
-
-  updateElement(elem: TypeElement<keyof TypeElemDesc>) {
-    return updateElement(this, elem);
-  }
-
-  addElement(elem: TypeElementBase<keyof TypeElemDesc>): string | null {
-    // if (this[_onlyRender] === true) return null;
-    const _elem = deepClone(elem);
-    _elem.uuid = createUUID();
-    this[_data].elements.push(_elem);
-    this[_emitChangeData]();
-    this[_draw]();
-    return _elem.uuid;
-  }
-
-  deleteElement(uuid: string) {
-    // if (this[_onlyRender] === true) return;
-    const index = this[_element].getElementIndex(this[_data], uuid);
-    if (index >= 0) {
-      this[_data].elements.splice(index, 1);
-      this[_emitChangeData]();
-      this[_draw]();
-    }
-  }
-
-  insertElementBefore(elem: TypeElementBase<keyof TypeElemDesc>, beforeUUID: string) {
-    const index = this[_helper].getElementIndexByUUID(beforeUUID);
-    if (index !== null) {
-      return this.insertElementBeforeIndex(elem, index);
-    }
-    return null;
-  }
-
-  insertElementBeforeIndex(elem: TypeElementBase<keyof TypeElemDesc>, index: number) {
-    const _elem = deepClone(elem);
-    _elem.uuid = createUUID();
-    if (index >= 0) {
-      this[_data].elements.splice(index, 0, _elem);
-      this[_emitChangeData]();
-      this[_draw]();
-      return _elem.uuid;
-    }
-    return null;
-  }
-
-  getSelectedElements() {
-    return getSelectedElements(this);
-  }
-
-  insertElementAfter(elem: TypeElementBase<keyof TypeElemDesc>, beforeUUID: string) {
-    const index = this[_helper].getElementIndexByUUID(beforeUUID);
-    if (index !== null) {
-      return this.insertElementAfterIndex(elem, index);
-    }
-    return null;
-  }
-
-  insertElementAfterIndex(elem: TypeElementBase<keyof TypeElemDesc>, index: number) {
-    const _elem = deepClone(elem);
-    _elem.uuid = createUUID();
-    if (index >= 0) {
-      this[_data].elements.splice(index + 1, 0, _elem);
-      this[_emitChangeData]();
-      this[_draw]();
-      return _elem.uuid;
-    }
-    return null;
   }
 
   clearOperation() {
