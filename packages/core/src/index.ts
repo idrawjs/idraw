@@ -5,22 +5,16 @@ import {
 }  from '@idraw/types';
 import Board from '@idraw/board';
 import util from '@idraw/util';
-import { Renderer } from './lib/renderer';
-import { Element } from './lib/element';
-import { Helper } from './lib/helper';
-import { Mapper } from './lib/mapper';
-import { mergeConfig } from './lib/config';
-import { CoreEvent, TypeCoreEventArgMap } from './lib/core-event';
-import { parseData } from './lib/parse';
 import is, { TypeIs } from './lib/is';
 import check, { TypeCheck } from './lib/check';
-import { TempData } from './lib/temp';
 import {
-  _board, _data, _opts, _config, _renderer, _element, _helper,
-  _tempData, _draw, _coreEvent, _mapper, _emitChangeScreen, _emitChangeData,
-  _todo
+  Renderer, Element, Helper, Mapper, mergeConfig, CoreEvent, 
+  TypeCoreEventArgMap, parseData, TempData, diffElementResourceChangeList, 
+} from './lib';
+import {
+  _board, _data, _opts, _config, _renderer, _element, _helper, _tempData, _draw, _coreEvent, 
+  _mapper, _emitChangeScreen, _emitChangeData,_todo
 } from './names';
-import { diffElementResourceChangeList } from './lib/diff';
 import { getSelectedElements, updateElement, selectElementByIndex, 
   selectElement, moveUpElement, moveDownElement, addElement, deleteElement,
   insertElementBefore, insertElementBeforeIndex, insertElementAfter, insertElementAfterIndex,
