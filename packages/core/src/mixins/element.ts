@@ -3,10 +3,8 @@ import {
 }  from '@idraw/types';
 import util from '@idraw/util';
 import {
-  _board, _data, _opts, _config, _renderer, _element, _helper, _hasInited,
-  _mode, _tempData, _prevPoint, _draw, _selectedDotDirection, _coreEvent, _mapper, _initEvent,
-  _handlePoint, _handleClick, _handleDoubleClick, _handleMoveStart, _handleMove, 
-  _handleMoveEnd, _handleHover, _handleLeave, _dragElements, _transfromElement, 
+  _board, _data, _opts, _config, _renderer, _element, _helper,
+  _mode, _tempData, _draw, _coreEvent, _mapper,
   _emitChangeScreen, _emitChangeData, _onlyRender, _cursorStatus,
 } from './../names';
 import { diffElementResourceChange } from './../lib/diff';
