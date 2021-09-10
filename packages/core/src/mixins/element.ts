@@ -4,8 +4,7 @@ import {
 import util from '@idraw/util';
 import {
   _board, _data, _opts, _config, _renderer, _element, _helper,
-  _mode, _tempData, _draw, _coreEvent, _mapper,
-  _emitChangeScreen, _emitChangeData, _onlyRender, _cursorStatus,
+  _tempData, _draw, _coreEvent, _emitChangeScreen, _emitChangeData,
 } from './../names';
 import { diffElementResourceChange } from './../lib/diff';
 import Core from './../index';
@@ -53,13 +52,13 @@ export function updateElement(core: Core, elem: TypeElement<keyof TypeElemDesc>)
 }
 
 export function selectElementByIndex(core: Core, index: number, opts?: { useMode?: boolean }): void {
-  if (core[_onlyRender] === true) return;
+  if (core[_tempData].get('onlyRender') === true) return;
   if (core[_data].elements[index]) {
     const uuid = core[_data].elements[index].uuid;
     if (opts?.useMode === true) {
-      core[_mode] = Mode.SELECT_ELEMENT;
+      core[_tempData].set('mode', Mode.SELECT_ELEMENT);
     } else {
-      core[_mode] = Mode.NULL;
+      core[_tempData].set('mode', Mode.NULL);
     }
     if (typeof uuid === 'string') {
       core[_tempData].set('selectedUUID', uuid);
@@ -71,7 +70,7 @@ export function selectElementByIndex(core: Core, index: number, opts?: { useMode
 
 
 export function selectElement(core: Core, uuid: string, opts?: { useMode?: boolean }): void {
-  if (core[_onlyRender] === true) return;
+  if (core[_tempData].get('onlyRender') === true) return;
   const index = core[_helper].getElementIndexByUUID(uuid);
   if (typeof index === 'number' && index >= 0) {
     core.selectElementByIndex(index, opts);

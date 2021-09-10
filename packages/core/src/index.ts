@@ -17,10 +17,9 @@ import check, { TypeCheck } from './lib/check';
 import { TempData } from './lib/temp';
 import {
   _board, _data, _opts, _config, _renderer, _element, _helper,
-  _mode, _tempData, _draw, _coreEvent, _mapper,  
-  _emitChangeScreen, _emitChangeData, _onlyRender, _cursorStatus,
+  _tempData, _draw, _coreEvent, _mapper, _emitChangeScreen, _emitChangeData,
+  _todo
 } from './names';
-import { Mode, CursorStatus } from './constant/static';
 import { diffElementResourceChangeList } from './lib/diff';
 import { getSelectedElements, updateElement, selectElementByIndex, 
   selectElement, moveUpElement, moveDownElement, addElement, deleteElement,
@@ -39,11 +38,8 @@ class Core {
   private [_element]: Element;
   private [_helper]: Helper;
   private [_mapper]: Mapper;
-  private [_mode]: Mode = Mode.NULL;
   private [_coreEvent]: CoreEvent = new CoreEvent();
-  private [_tempData]: TempData;
-  private [_onlyRender] = false;
-  private [_cursorStatus]: CursorStatus = CursorStatus.NULL;
+  private [_tempData]: TempData = new TempData();
 
   static is: TypeIs = is;
   static check: TypeCheck = check;
@@ -51,9 +47,8 @@ class Core {
   constructor(mount: HTMLDivElement, opts: TypeCoreOptions, config?: TypeConfig) {
     this[_data] = { elements: [] };
     this[_opts] = opts;
-    this[_onlyRender] = opts.onlyRender === true;
+    this[_tempData].set('onlyRender', opts.onlyRender === true)
     this[_config] = mergeConfig(config || {});
-    this[_tempData] = new TempData();
     this[_board] = new Board(mount, {
       ...this[_opts],
       canScroll: config?.scrollWrapper?.use,
@@ -241,11 +236,10 @@ class Core {
     }
   }
 
-  __todo() {
-    console.log(this[_onlyRender])
+  [_todo]() {
+    // TODO
+    // To avoid TS error 
     console.log(this[_mapper]);
-    console.log(this[_cursorStatus]);
-    console.log(this[_mode]);
   }
 }
 

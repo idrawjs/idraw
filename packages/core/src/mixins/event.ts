@@ -3,8 +3,8 @@ import util from '@idraw/util';
 import Core from './../index';
 import {
   _board, _data, _opts, _config, _renderer, _element, _helper,
-  _mode, _tempData, _draw, _coreEvent, _mapper,
-  _emitChangeScreen, _emitChangeData, _onlyRender, _cursorStatus,
+  _tempData, _draw, _coreEvent, _mapper,
+  _emitChangeScreen, _emitChangeData,
 } from './../names';
 import { Mode, CursorStatus } from './../constant/static';
 
@@ -21,7 +21,7 @@ export function initEvent(core: Core): void {
   core[_board].on('leave', time.throttle(handleLeave(core), 32));
   core[_board].on('point', time.throttle(handleClick(core), 16));
   core[_board].on('doubleClick', handleDoubleClick(core));
-  if (core[_onlyRender] === true) {
+  if (core[_tempData].get('onlyRender') === true) {
     return;
   }
   core[_board].on('point', handlePoint(core));
@@ -54,12 +54,12 @@ function handlePoint(core: Core) {
     }
     if (core[_helper].isPointInElementList(point, core[_data])) {
       // Coontroll Element-List
-      core[_mode] = Mode.SELECT_ELEMENT_LIST;
+      core[_tempData].set('mode', Mode.SELECT_ELEMENT_LIST);
     } else {
       const [uuid, direction] = core[_helper].isPointInElementWrapperDot(point);
       if (uuid && direction) {
         // Controll Element-Wrapper
-        core[_mode] = Mode.SELECT_ELEMENT_WRAPPER_DOT;
+        core[_tempData].set('mode', Mode.SELECT_ELEMENT_WRAPPER_DOT);
         core[_tempData].set('selectedDotDirection', direction);
         core[_tempData].set('selectedUUID', uuid);
       } else {
@@ -74,11 +74,11 @@ function handlePoint(core: Core) {
             );
             core[_emitChangeScreen]();
           }
-          core[_mode] = Mode.SELECT_ELEMENT;
+          core[_tempData].set('mode', Mode.SELECT_ELEMENT);
         } else {
           // Controll Area
           core[_tempData].set('selectedUUIDList', []);
-          core[_mode] = Mode.SELECT_AREA;
+          core[_tempData].set('mode', Mode.SELECT_AREA);
         }
       }
     }
@@ -107,9 +107,9 @@ function handleMoveStart(core: Core) {
     core[_tempData].set('prevPoint', point);
     const uuid = core[_tempData].get('selectedUUID');
   
-    if (core[_mode] === Mode.SELECT_ELEMENT_LIST) {
+    if (core[_tempData].get('mode') === Mode.SELECT_ELEMENT_LIST) {
       // TODO
-    } else if (core[_mode] === Mode.SELECT_ELEMENT) {
+    } else if (core[_tempData].get('mode') === Mode.SELECT_ELEMENT) {
       if (typeof uuid === 'string' && core[_coreEvent].has('screenMoveElementStart')) {
         core[_coreEvent].trigger('screenMoveElementStart', {
           index: core[_element].getElementIndex(core[_data], uuid),
@@ -118,7 +118,7 @@ function handleMoveStart(core: Core) {
           y: point.y
         });
       } 
-    } else if (core[_mode] === Mode.SELECT_AREA) {
+    } else if (core[_tempData].get('mode') === Mode.SELECT_AREA) {
       core[_helper].startSelectArea(point);
     }
   }
@@ -127,20 +127,20 @@ function handleMoveStart(core: Core) {
 
 function handleMove(core: Core) {
   return function(point: TypePoint): void {
-    if (core[_mode] === Mode.SELECT_ELEMENT_LIST) {
+    if (core[_tempData].get('mode') === Mode.SELECT_ELEMENT_LIST) {
       dragElements(core, core[_tempData].get('selectedUUIDList'), point, core[_tempData].get('prevPoint'));
       core[_draw]();
-      core[_cursorStatus] = CursorStatus.DRAGGING;
+      core[_tempData].set('cursorStatus', CursorStatus.DRAGGING);
     } else if (typeof core[_tempData].get('selectedUUID') === 'string') {
-      if (core[_mode] === Mode.SELECT_ELEMENT) {
+      if (core[_tempData].get('mode') === Mode.SELECT_ELEMENT) {
         dragElements(core, [core[_tempData].get('selectedUUID') as string], point, core[_tempData].get('prevPoint'));
         core[_draw]();
-        core[_cursorStatus] = CursorStatus.DRAGGING;
-      } else if (core[_mode] === Mode.SELECT_ELEMENT_WRAPPER_DOT && core[_tempData].get('selectedDotDirection')) {
+        core[_tempData].set('cursorStatus', CursorStatus.DRAGGING);
+      } else if (core[_tempData].get('mode') === Mode.SELECT_ELEMENT_WRAPPER_DOT && core[_tempData].get('selectedDotDirection')) {
         transfromElement(core, core[_tempData].get('selectedUUID') as string, point, core[_tempData].get('prevPoint'), core[_tempData].get('selectedDotDirection') as TypeHelperWrapperDotDirection);
-        core[_cursorStatus] = CursorStatus.DRAGGING;
+        core[_tempData].set('cursorStatus', CursorStatus.DRAGGING)
       }
-    } else if (core[_mode] === Mode.SELECT_AREA) {
+    } else if (core[_tempData].get('mode') === Mode.SELECT_AREA) {
       core[_helper].changeSelectArea(point);
       core[_draw]();
     }
@@ -190,23 +190,23 @@ function handleMoveEnd(core: Core) {
         }
         core[_emitChangeData]();
       }
-    } else if (core[_mode] === Mode.SELECT_AREA) {
+    } else if (core[_tempData].get('mode') === Mode.SELECT_AREA) {
       const uuids = core[_helper].calcSelectedElements(core[_data]);
       if (uuids.length > 0) {
         core[_tempData].set('selectedUUIDList', uuids);
         core[_tempData].set('selectedUUID', null);
       } else {
-        core[_mode] = Mode.NULL;
+        core[_tempData].set('mode', Mode.NULL);
       }
       core[_helper].clearSelectedArea();
       core[_draw]();
     }
     
-    if (core[_mode] !== Mode.SELECT_ELEMENT) {
+    if (core[_tempData].get('mode') !== Mode.SELECT_ELEMENT) {
       core[_tempData].set('selectedUUID', null);
     }
-    core[_cursorStatus] = CursorStatus.NULL;
-    core[_mode] = Mode.NULL;
+    core[_tempData].set('cursorStatus', CursorStatus.NULL);
+    core[_tempData].set('mode', Mode.NULL);
   }
 }
 
@@ -214,11 +214,11 @@ function handleHover(core: Core) {
   return function (point: TypePoint): void {
     let isMouseOverElement: boolean = false;
     
-    if (core[_mode] === Mode.SELECT_AREA) {
-      if (core[_onlyRender] !== true) core[_board].resetCursor();
-    } else if (core[_cursorStatus] === CursorStatus.NULL) {
+    if (core[_tempData].get('mode') === Mode.SELECT_AREA) {
+      if (core[_tempData].get('onlyRender') !== true) core[_board].resetCursor();
+    } else if (core[_tempData].get('cursorStatus') === CursorStatus.NULL) {
       const { cursor, elementUUID } = core[_mapper].judgePointCursor(point, core[_data]);
-      if (core[_onlyRender] !== true) core[_board].setCursor(cursor);
+      if (core[_tempData].get('onlyRender') !== true) core[_board].setCursor(cursor);
       if (elementUUID) {
         const index: number | null = core[_helper].getElementIndexByUUID(elementUUID);
         if (index !== null && index >= 0) {

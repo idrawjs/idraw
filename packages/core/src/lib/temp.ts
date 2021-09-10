@@ -1,7 +1,11 @@
 import { TypeHelperWrapperDotDirection, TypePoint } from '@idraw/types';
+import { Mode, CursorStatus } from './../constant/static';
 
 type TempDataDesc = {
   hasInited: boolean;
+  onlyRender: boolean;
+  mode: Mode,
+  cursorStatus: CursorStatus
   selectedUUID: string | null,
   selectedUUIDList: string[],
   hoverUUID: string | null,
@@ -11,7 +15,10 @@ type TempDataDesc = {
 
 function createData(): TempDataDesc {
   return {
+    onlyRender: false,
     hasInited: false,
+    mode: Mode.NULL,
+    cursorStatus: CursorStatus.NULL,
     selectedUUID: null,
     selectedUUIDList: [],
     hoverUUID: null,
