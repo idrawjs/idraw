@@ -100,3 +100,7 @@ export function keyArrowRight(idraw: iDraw) {
     idraw.scrollLeft(scrollLeft + keyArrowMoveDistance);
   }
 }
+
+export function keyUndo(idraw: iDraw) {
+  idraw.undo();
+}

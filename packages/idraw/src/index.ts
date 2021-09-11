@@ -11,7 +11,7 @@ import {
 import { redo, undo } from './mixins/record';
 import { exportDataURL } from './mixins/file';
 import { copyElements, pasteElements, cutElements, deleteElements,
-  keyArrowUp, keyArrowDown, keyArrowLeft, keyArrowRight,
+  keyArrowUp, keyArrowDown, keyArrowLeft, keyArrowRight, keyUndo,
 } from './mixins/keyboard';
 
 class iDraw extends Core {
@@ -68,7 +68,8 @@ class iDraw extends Core {
         .on('keyboardArrowUp', () => keyArrowUp(this))
         .on('keyboardArrowDown', () => keyArrowDown(this))
         .on('keyboardArrowLeft', () => keyArrowLeft(this))
-        .on('keyboardArrowRight', () => keyArrowRight(this));
+        .on('keyboardArrowRight', () => keyArrowRight(this))
+        .on('keyboardUndo', () => keyUndo(this));
     }
     this[_hasInited] = true;
   }

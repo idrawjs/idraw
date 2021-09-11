@@ -9,6 +9,7 @@ export type TypeKeyboardEventArgMap = {
   'keyboardArrowLeft': void;
   'keyboardArrowUp': void;
   'keyboardArrowDown': void;
+  'keyboardUndo': void;
 }
  
 export interface TypeKeyboardEvent {
@@ -35,6 +36,8 @@ export class KeyboardWatcher implements TypeKeyboardEvent {
         this.trigger('keyboardPaste', undefined);
       } else if ((e.metaKey === true || e.ctrlKey === true) && e.key === 'x') {
         this.trigger('keyboardCut', undefined);
+      } else if ((e.metaKey === true || e.ctrlKey === true) && e.key === 'z') {
+        this.trigger('keyboardUndo', undefined);
       } else if (e.key === 'Backspace') {
         this.trigger('keyboardDelete', undefined);
       } else if (e.key === 'ArrowUp') {
