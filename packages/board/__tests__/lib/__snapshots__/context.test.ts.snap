@@ -4,8 +4,8 @@ exports[`@idraw/board: src/lib/context Context 1`] = `
 Array [
   Object {
     "props": Object {
-      "height": 1600,
-      "width": 2400,
+      "height": 1800,
+      "width": 2000,
       "x": 0,
       "y": 0,
     },
@@ -21,8 +21,8 @@ Array [
   },
   Object {
     "props": Object {
-      "height": 1600,
-      "width": 2400,
+      "height": 1800,
+      "width": 2000,
       "x": 0,
       "y": 0,
     },
@@ -38,10 +38,10 @@ Array [
   },
   Object {
     "props": Object {
-      "height": 480,
-      "width": 800,
-      "x": 40,
-      "y": 40,
+      "height": 240,
+      "width": 400,
+      "x": 20,
+      "y": 20,
     },
     "transform": Array [
       1,
@@ -55,8 +55,25 @@ Array [
   },
   Object {
     "props": Object {
-      "height": 480,
-      "width": 800,
+      "height": 240,
+      "width": 400,
+      "x": 160,
+      "y": 160,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "fillRect",
+  },
+  Object {
+    "props": Object {
+      "height": 240,
+      "width": 400,
       "x": 320,
       "y": 320,
     },
@@ -72,10 +89,10 @@ Array [
   },
   Object {
     "props": Object {
-      "height": 480,
-      "width": 800,
-      "x": 640,
-      "y": 640,
+      "height": 200,
+      "width": 400,
+      "x": 780,
+      "y": 580,
     },
     "transform": Array [
       1,
@@ -87,12 +104,102 @@ Array [
     ],
     "type": "fillRect",
   },
+]
+`;
+
+exports[`@idraw/board: src/lib/context Context.arc 1`] = `
+Array [
   Object {
     "props": Object {
-      "height": 400,
-      "width": 800,
-      "x": 1560,
-      "y": 1160,
+      "fillRule": "nonzero",
+      "path": Array [
+        Object {
+          "props": Object {},
+          "transform": Array [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+          ],
+          "type": "beginPath",
+        },
+        Object {
+          "props": Object {
+            "anticlockwise": true,
+            "endAngle": 6.283185307179586,
+            "radius": 100,
+            "startAngle": 0,
+            "x": 140,
+            "y": 160,
+          },
+          "transform": Array [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+          ],
+          "type": "arc",
+        },
+      ],
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "fill",
+  },
+]
+`;
+
+exports[`@idraw/board: src/lib/context Context.fill 1`] = `
+Array [
+  Object {
+    "props": Object {
+      "fillRule": "nonzero",
+      "path": Array [
+        Object {
+          "props": Object {},
+          "transform": Array [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+          ],
+          "type": "beginPath",
+        },
+      ],
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "fill",
+  },
+]
+`;
+
+exports[`@idraw/board: src/lib/context Context.fillRect 1`] = `
+Array [
+  Object {
+    "props": Object {
+      "height": 1800,
+      "width": 2000,
+      "x": 0,
+      "y": 0,
     },
     "transform": Array [
       1,
@@ -103,6 +210,56 @@ Array [
       0,
     ],
     "type": "fillRect",
+  },
+]
+`;
+
+exports[`@idraw/board: src/lib/context Context.rect 1`] = `
+Array [
+  Object {
+    "props": Object {
+      "fillRule": "nonzero",
+      "path": Array [
+        Object {
+          "props": Object {},
+          "transform": Array [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+          ],
+          "type": "beginPath",
+        },
+        Object {
+          "props": Object {
+            "height": 400,
+            "width": 200,
+            "x": 20,
+            "y": 40,
+          },
+          "transform": Array [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+          ],
+          "type": "rect",
+        },
+      ],
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "fill",
   },
 ]
 `;
