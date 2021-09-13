@@ -174,7 +174,6 @@ describe('@idraw/board: src/lib/context', () => {
     expect(calls).toMatchSnapshot();
   })
 
-
   test('Context.fillRect', async () => {
     const opts = deepClone(options);
     const canvas = document.createElement('canvas');
@@ -182,7 +181,7 @@ describe('@idraw/board: src/lib/context', () => {
     canvas.height = opts.contextHeight;
     const ctx2d: CanvasRenderingContext2D = canvas.getContext('2d') as CanvasRenderingContext2D;
     const ctx = new Context(ctx2d, opts);
-    ctx.fillRect(0, 0, opts.contextWidth, opts.contextHeight);
+    ctx.fillRect(10, 20, 80, 100);
     // @ts-ignore
     const calls = ctx2d.__getDrawCalls();
     // console.log('calls =', JSON.stringify(calls, null, 2));
@@ -195,6 +194,200 @@ describe('@idraw/board: src/lib/context', () => {
     //   }
     // ]);
   })
+
+  test('Context.clearRect', async () => {
+    const opts = deepClone(options);
+    const canvas = document.createElement('canvas');
+    canvas.width = opts.contextWidth;
+    canvas.height = opts.contextHeight;
+    const ctx2d: CanvasRenderingContext2D = canvas.getContext('2d') as CanvasRenderingContext2D;
+    const ctx = new Context(ctx2d, opts);
+    ctx.clearRect(0, 0, opts.contextWidth, opts.contextHeight);
+    // @ts-ignore
+    const calls = ctx2d.__getDrawCalls();
+    // console.log('calls =', JSON.stringify(calls, null, 2));
+    expect(calls).toMatchSnapshot();
+  })
+
+  test('Context.beginPath', async () => {
+    const opts = deepClone(options);
+    const canvas = document.createElement('canvas');
+    canvas.width = opts.contextWidth;
+    canvas.height = opts.contextHeight;
+    const ctx2d: CanvasRenderingContext2D = canvas.getContext('2d') as CanvasRenderingContext2D;
+    const ctx = new Context(ctx2d, opts);
+    ctx.beginPath();
+    ctx.fill();
+    // @ts-ignore
+    const calls = ctx2d.__getDrawCalls();
+    // console.log('calls =', JSON.stringify(calls, null, 2));
+    expect(calls).toMatchSnapshot();
+  })
+
+
+  test('Context.closePath', async () => {
+    const opts = deepClone(options);
+    const canvas = document.createElement('canvas');
+    canvas.width = opts.contextWidth;
+    canvas.height = opts.contextHeight;
+    const ctx2d: CanvasRenderingContext2D = canvas.getContext('2d') as CanvasRenderingContext2D;
+    const ctx = new Context(ctx2d, opts);
+    ctx.closePath();
+    ctx.fill();
+    // @ts-ignore
+    const calls = ctx2d.__getDrawCalls();
+    // console.log('calls =', JSON.stringify(calls, null, 2));
+    expect(calls).toMatchSnapshot();
+  })
+
+  test('Context.lineTo', async () => {
+    const opts = deepClone(options);
+    const canvas = document.createElement('canvas');
+    canvas.width = opts.contextWidth;
+    canvas.height = opts.contextHeight;
+    const ctx2d: CanvasRenderingContext2D = canvas.getContext('2d') as CanvasRenderingContext2D;
+    const ctx = new Context(ctx2d, opts);
+    ctx.lineTo(10, 20);
+    ctx.fill();
+    // @ts-ignore
+    const calls = ctx2d.__getDrawCalls();
+    // console.log('calls =', JSON.stringify(calls, null, 2));
+    expect(calls).toMatchSnapshot();
+  })
+
+  test('Context.moveTo', async () => {
+    const opts = deepClone(options);
+    const canvas = document.createElement('canvas');
+    canvas.width = opts.contextWidth;
+    canvas.height = opts.contextHeight;
+    const ctx2d: CanvasRenderingContext2D = canvas.getContext('2d') as CanvasRenderingContext2D;
+    const ctx = new Context(ctx2d, opts);
+    ctx.moveTo(10, 20);
+    ctx.fill();
+    // @ts-ignore
+    const calls = ctx2d.__getDrawCalls();
+    // console.log('calls =', JSON.stringify(calls, null, 2));
+    expect(calls).toMatchSnapshot();
+  });
+  
+  test('Context.arcTo', async () => {
+    const opts = deepClone(options);
+    const canvas = document.createElement('canvas');
+    canvas.width = opts.contextWidth;
+    canvas.height = opts.contextHeight;
+    const ctx2d: CanvasRenderingContext2D = canvas.getContext('2d') as CanvasRenderingContext2D;
+    const ctx = new Context(ctx2d, opts);
+    ctx.arcTo(50, 50, 100, 100, Math.PI * 2);
+    ctx.fill();
+    // @ts-ignore
+    const calls = ctx2d.__getDrawCalls();
+    // console.log('calls =', JSON.stringify(calls, null, 2));
+    expect(calls).toMatchSnapshot();
+  });
+
+  test('Context.setLineWidth', async () => {
+    const opts = deepClone(options);
+    const canvas = document.createElement('canvas');
+    canvas.width = opts.contextWidth;
+    canvas.height = opts.contextHeight;
+    const lineWidth = 12;
+    const ctx2d: CanvasRenderingContext2D = canvas.getContext('2d') as CanvasRenderingContext2D;
+    const ctx = new Context(ctx2d, opts);
+    ctx.setLineWidth(lineWidth);
+    expect(ctx2d.lineWidth).toStrictEqual(lineWidth * opts.devicePixelRatio);
+  });
+  
+  test('Context.setLineDash', async () => {
+    const opts = deepClone(options);
+    const canvas = document.createElement('canvas');
+    canvas.width = opts.contextWidth;
+    canvas.height = opts.contextHeight;
+    const lineDash = [10, 20];
+    const ctx2d: CanvasRenderingContext2D = canvas.getContext('2d') as CanvasRenderingContext2D;
+    const ctx = new Context(ctx2d, opts);
+    ctx.setLineDash(lineDash);
+    // @ts-ignore
+    // const calls = ctx2d.__getDrawCalls();
+    // console.log('calls =', JSON.stringify(calls, null, 2));
+    // expect(calls).toMatchSnapshot();
+    expect(ctx2d.getLineDash()).toStrictEqual(lineDash.map(n => n * opts.devicePixelRatio));
+  });
+
+
+  test('Context.setStrokeStyle', async () => {
+    const opts = deepClone(options);
+    const canvas = document.createElement('canvas');
+    canvas.width = opts.contextWidth;
+    canvas.height = opts.contextHeight;
+    const ctx2d: CanvasRenderingContext2D = canvas.getContext('2d') as CanvasRenderingContext2D;
+    const ctx = new Context(ctx2d, opts);
+    const color = '#f0f0f0';
+    ctx.setStrokeStyle(color);
+    ctx.fillRect(0, 0, opts.contextWidth, opts.contextHeight);
+    expect(ctx2d.strokeStyle).toStrictEqual(color);
+  });
+
+  // test('Context.isPointInPath', async () => {
+  //   const opts = deepClone(options);
+  //   const canvas = document.createElement('canvas');
+  //   canvas.width = opts.contextWidth;
+  //   canvas.height = opts.contextHeight;
+  //   // const lineDash = [10, 20];
+  //   const ctx2d: CanvasRenderingContext2D = canvas.getContext('2d') as CanvasRenderingContext2D;
+  //   const ctx = new Context(ctx2d, opts);
+  //   const x = 50;
+  //   const y = 50;
+  //   const w = 50;
+  //   const h = 50;
+
+  //   ctx.beginPath();
+  //   ctx.moveTo(x, y);
+  //   ctx.lineTo(x + w, y);
+  //   ctx.lineTo(x + w, y + h);
+  //   ctx.lineTo(x, y + h);
+  //   ctx.lineTo(x, y);
+  //   ctx.closePath();
+    
+  //   // @ts-ignore
+  //   const calls = ctx2d.__getDrawCalls();
+  //   console.log('calls =', calls);
+  //   // expect(calls).toMatchSnapshot();
+  //   console.log('ctx.isPointInPath(51, 51) =', ctx.isPointInPath(60, 60))
+  //   expect(ctx.isPointInPath(51, 51))
+  //     .toStrictEqual(ctx2d.isPointInPath(60 * opts.devicePixelRatio, 60 * opts.devicePixelRatio));
+  // });
+
+  // test('Context.isPointInPathWithoutScroll', async () => {
+  //   const opts = deepClone(options);
+  //   const canvas = document.createElement('canvas');
+  //   canvas.width = opts.contextWidth;
+  //   canvas.height = opts.contextHeight;
+  //   // const lineDash = [10, 20];
+  //   const ctx2d: CanvasRenderingContext2D = canvas.getContext('2d') as CanvasRenderingContext2D;
+  //   const ctx = new Context(ctx2d, opts);
+
+  //   ctx.setTransform({
+  //     scale: 2,
+  //     scrollX: 10,
+  //     scrollY: 10,
+  //   })
+
+  //   ctx.beginPath();
+  //   ctx.rect(50, 50, 100, 100);
+  //   ctx.closePath();
+  //   // @ts-ignore
+  //   const calls = ctx2d.__getDrawCalls();
+  //   // expect(calls).toMatchSnapshot();
+  //   console.log('ctx.isPointInPathWithoutScroll(51, 51) =', ctx.isPointInPathWithoutScroll(51, 51))
+  //   expect(ctx.isPointInPathWithoutScroll(51, 51))
+  //     .toStrictEqual(
+  //       ctx2d.isPointInPath(
+  //         60 * opts.devicePixelRatio,
+  //         60 * opts.devicePixelRatio
+  //       )
+  //     );
+  // });
+
   
 })
 

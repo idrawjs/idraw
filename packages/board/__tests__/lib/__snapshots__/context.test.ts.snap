@@ -159,6 +159,157 @@ Array [
 ]
 `;
 
+exports[`@idraw/board: src/lib/context Context.arcTo 1`] = `
+Array [
+  Object {
+    "props": Object {
+      "fillRule": "nonzero",
+      "path": Array [
+        Object {
+          "props": Object {},
+          "transform": Array [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+          ],
+          "type": "beginPath",
+        },
+        Object {
+          "props": Object {
+            "cpx1": 100,
+            "cpx2": 200,
+            "cpy1": 100,
+            "cpy2": 200,
+            "radius": 12.566370614359172,
+          },
+          "transform": Array [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+          ],
+          "type": "arcTo",
+        },
+      ],
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "fill",
+  },
+]
+`;
+
+exports[`@idraw/board: src/lib/context Context.beginPath 1`] = `
+Array [
+  Object {
+    "props": Object {
+      "fillRule": "nonzero",
+      "path": Array [
+        Object {
+          "props": Object {},
+          "transform": Array [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+          ],
+          "type": "beginPath",
+        },
+      ],
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "fill",
+  },
+]
+`;
+
+exports[`@idraw/board: src/lib/context Context.clearRect 1`] = `
+Array [
+  Object {
+    "props": Object {
+      "height": 1800,
+      "width": 2000,
+      "x": 0,
+      "y": 0,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "clearRect",
+  },
+]
+`;
+
+exports[`@idraw/board: src/lib/context Context.closePath 1`] = `
+Array [
+  Object {
+    "props": Object {
+      "fillRule": "nonzero",
+      "path": Array [
+        Object {
+          "props": Object {},
+          "transform": Array [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+          ],
+          "type": "beginPath",
+        },
+        Object {
+          "props": Object {},
+          "transform": Array [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+          ],
+          "type": "closePath",
+        },
+      ],
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "fill",
+  },
+]
+`;
+
 exports[`@idraw/board: src/lib/context Context.fill 1`] = `
 Array [
   Object {
@@ -196,10 +347,10 @@ exports[`@idraw/board: src/lib/context Context.fillRect 1`] = `
 Array [
   Object {
     "props": Object {
-      "height": 1800,
-      "width": 2000,
-      "x": 0,
-      "y": 0,
+      "height": 200,
+      "width": 160,
+      "x": 20,
+      "y": 40,
     },
     "transform": Array [
       1,
@@ -210,6 +361,102 @@ Array [
       0,
     ],
     "type": "fillRect",
+  },
+]
+`;
+
+exports[`@idraw/board: src/lib/context Context.lineTo 1`] = `
+Array [
+  Object {
+    "props": Object {
+      "fillRule": "nonzero",
+      "path": Array [
+        Object {
+          "props": Object {},
+          "transform": Array [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+          ],
+          "type": "beginPath",
+        },
+        Object {
+          "props": Object {
+            "x": 20,
+            "y": 40,
+          },
+          "transform": Array [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+          ],
+          "type": "lineTo",
+        },
+      ],
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "fill",
+  },
+]
+`;
+
+exports[`@idraw/board: src/lib/context Context.moveTo 1`] = `
+Array [
+  Object {
+    "props": Object {
+      "fillRule": "nonzero",
+      "path": Array [
+        Object {
+          "props": Object {},
+          "transform": Array [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+          ],
+          "type": "beginPath",
+        },
+        Object {
+          "props": Object {
+            "x": 20,
+            "y": 40,
+          },
+          "transform": Array [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+          ],
+          "type": "moveTo",
+        },
+      ],
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "fill",
   },
 ]
 `;
