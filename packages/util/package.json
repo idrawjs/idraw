@@ -1,6 +1,6 @@
 {
   "name": "@idraw/util",
-  "version": "0.2.0-alpha.1",
+  "version": "0.2.0-y.0",
   "description": "",
   "main": "dist/index.cjs.js",
   "module": "dist/index.es.js",
