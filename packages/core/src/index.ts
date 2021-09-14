@@ -15,7 +15,7 @@ import {
   _board, _data, _opts, _config, _renderer, _element, _helper, _tempData, _draw, _coreEvent, 
   _mapper, _emitChangeScreen, _emitChangeData,_todo
 } from './names';
-import { getSelectedElements, updateElement, selectElementByIndex, 
+import { getSelectedElements, updateElement, selectElementByIndex, getElement, getElementByIndex,
   selectElement, moveUpElement, moveDownElement, addElement, deleteElement,
   insertElementBefore, insertElementBeforeIndex, insertElementAfter, insertElementAfterIndex,
 } from './mixins/element';
@@ -80,6 +80,14 @@ class Core {
       scrollY: transfrom.scrollY,
     });
     this[_renderer].render(this[_data], this[_helper].getConfig(), opts?.resourceChangeUUIDs || []);
+  }
+
+  getElement(uuid: string) {
+    return getElement(this, uuid);
+  }
+
+  getElementByIndex(index: number) {
+    return getElementByIndex(this, index);
   }
 
   selectElementByIndex(index: number, opts?: { useMode?: boolean }): void {

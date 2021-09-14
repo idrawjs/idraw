@@ -22,6 +22,7 @@ function renderElemens(core) {
       <span class="elem-item-btn ${i === elems.length - 1 ? 'btn-hidden' : ''}" data-elem-btn-up="${ele.uuid || ''}">Up</span>
       <span class="elem-item-btn ${i === 0 ? 'btn-hidden' : '' }" data-elem-btn-down="${ele.uuid || ''}">Down</span>
       <span class="elem-item-btn" data-elem-btn-lock="${ele.uuid || ''}">Lock</span>
+      <span class="elem-item-btn" data-elem-btn-invisible="${ele.uuid || ''}">Invisible</span>
     </div>
     `);
   }
@@ -44,6 +45,10 @@ function listenElements(core) {
       renderElemens(core);
     } else if (el.hasAttribute('data-elem-btn-down')) {
       const uuid = el.getAttribute('data-elem-btn-down');
+      core.moveDownElement(uuid);
+      renderElemens(core);
+    } else if (el.hasAttribute('data-elem-btn-lock')) {
+      const uuid = el.getAttribute('data-elem-btn-lock');
       core.moveDownElement(uuid);
       renderElemens(core);
     }

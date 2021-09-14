@@ -3,7 +3,7 @@ import Core from './../../src';
 import { getData } from './../data';
 import { Element } from './../../src/lib/element';
 
-describe("./lib/element", () => {
+describe("@idraw/core: lib/element", () => {
   document.body.innerHTML = `
     <div id="mount"></div>
   `;
