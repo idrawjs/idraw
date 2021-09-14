@@ -39,7 +39,7 @@ const core = new Core(mount, {
 });
 
 
-initEvent();
+// initEvent();
 
 core.setData(data);
 
@@ -86,3 +86,8 @@ function initEvent() {
   })
   
 }
+
+// TODO
+core.on('screenDoubleClickElement', (p) => {
+  console.log('screenDoubleClickElement ===', p)
+})

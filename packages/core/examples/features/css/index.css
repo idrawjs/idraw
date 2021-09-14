@@ -55,12 +55,13 @@ html, body {
 
 .elem-item {
   height: 32px;
-  width: 240px;
+  min-width: 300px;
   border: 1px solid #999999;
   border-bottom: none;
   line-height: 30px;
   color: #666;
   font-size: 14px;
+  user-select: none;
 }
 
 .elem-item:last-child {
@@ -68,7 +69,7 @@ html, body {
 }
 
 .elem-item-name {
-  margin-left: 10px;
+  margin: 0 10px;
   cursor: pointer;
 }
 
@@ -76,7 +77,8 @@ html, body {
   float: right;
   font-size: 12px;
   height: 24px;
-  width: 40px;
+  min-width: 40px;
+  padding: 0 6px;
   border-radius: 12px;
   border: 1px solid #cccccc;
   text-align: center;

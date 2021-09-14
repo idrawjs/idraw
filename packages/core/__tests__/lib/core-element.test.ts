@@ -25,6 +25,17 @@ describe("@idraw/core: Element API", () => {
     expect(elems).toStrictEqual([_data.elements[1]]);
   });
 
+  test('getElement', async () => {  
+    const uuid = core.getData().elements[0]?.uuid;
+    const elem = core.getElement(uuid);
+    expect(elem).toStrictEqual(core.getData().elements[0])
+  });
+
+  test('getElementByIndex', async () => {  
+    const index = 0;
+    const elem = core.getElementByIndex(index);
+    expect(elem).toStrictEqual(core.getData().elements[index])
+  });
 
 });
 

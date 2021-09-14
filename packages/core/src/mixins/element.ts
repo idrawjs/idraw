@@ -33,6 +33,23 @@ export function getSelectedElements(core: Core): TypeElement<keyof TypeElemDesc>
   return deepClone(elems);
 }
 
+export function getElement(core: Core, uuid: string): TypeElement<keyof TypeElemDesc>|null {
+  let elem: TypeElement<keyof TypeElemDesc>|null = null;
+  const index = core[_helper].getElementIndexByUUID(uuid);
+  if (index !== null && core[_data].elements[index]) {
+    elem = deepClone(core[_data].elements[index]);
+  }
+  return elem;
+}
+
+export function getElementByIndex(core: Core, index: number): TypeElement<keyof TypeElemDesc>|null {
+  let elem: TypeElement<keyof TypeElemDesc>|null = null;
+  if (index >=0  && core[_data].elements[index]) {
+    elem = deepClone(core[_data].elements[index]);
+  }
+  return elem;
+}
+
 export function updateElement(core: Core, elem: TypeElement<keyof TypeElemDesc>) {
   const _elem  = deepClone(elem) as TypeElement<keyof TypeElemDesc>;
   const data = core[_data];
