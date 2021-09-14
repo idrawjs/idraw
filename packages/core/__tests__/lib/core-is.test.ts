@@ -1,6 +1,6 @@
 import Core from './../../src';
 
-describe("@idraw/core static is", () => {
+describe("@idraw/core:static is", () => {
 
   test('Core.is.number', () => {
     expect(Core.is.number(0)).toStrictEqual(true);

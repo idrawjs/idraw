@@ -37,10 +37,13 @@ function handleDoubleClick(core: Core) {
   return function ( point: TypePoint) {
     const [index, uuid] = core[_element].isPointInElement(point, core[_data]);
     if (index >= 0 && uuid) {
-      core[_coreEvent].trigger(
-        'screenDoubleClickElement', 
-        { index, uuid, element: deepClone(core[_data].elements?.[index])}
-      );
+      const elem = deepClone(core[_data].elements?.[index]);
+      if (elem?.operation?.invisible !== true) {
+        core[_coreEvent].trigger(
+          'screenDoubleClickElement', 
+          { index, uuid, element: deepClone(core[_data].elements?.[index])}
+        );
+      }
     }
     core[_draw]();
   }
@@ -90,7 +93,6 @@ function handlePoint(core: Core) {
 
 function handleClick(core: Core) {
   return function(point: TypePoint): void {
-    console.log('handleClick: point =', point)
     const [index, uuid] = core[_element].isPointInElement(point, core[_data]);
     if (index >= 0 && uuid) {
       core[_coreEvent].trigger(

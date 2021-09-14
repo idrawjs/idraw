@@ -49,7 +49,21 @@ function listenElements(core) {
       renderElemens(core);
     } else if (el.hasAttribute('data-elem-btn-lock')) {
       const uuid = el.getAttribute('data-elem-btn-lock');
-      core.moveDownElement(uuid);
+      const elem = core.getElement(uuid);
+      if (!elem.operation) {
+        elem.operation = {};
+      }
+      elem.operation.lock = !elem.operation.lock;
+      core.updateElement(elem);
+      renderElemens(core);
+    } else if (el.hasAttribute('data-elem-btn-invisible')) {
+      const uuid = el.getAttribute('data-elem-btn-invisible');
+      const elem = core.getElement(uuid);
+      if (!elem.operation) {
+        elem.operation = {};
+      }
+      elem.operation.invisible = !elem.operation.invisible;
+      core.updateElement(elem);
       renderElemens(core);
     }
   }, true);

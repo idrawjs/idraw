@@ -61,6 +61,7 @@ html, body {
   line-height: 30px;
   color: #666;
   font-size: 14px;
+  user-select: none;
 }
 
 .elem-item:last-child {
