@@ -1,4 +1,4 @@
-import Context2d from './../../src/lib/context-2d';
+import Context2d from './../../src/lib/context-2d/index';
 
 describe('@idraw/kernal: lib/context-2d', () => {
   test('Context2d.globalAlpha', async () => {  
