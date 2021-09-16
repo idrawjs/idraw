@@ -1,22 +1,22 @@
-import { TypeContext, TypeBoardSizeOptions } from '@idraw/types';
+// import { TypeContext, TypeBoardSizeOptions } from '@idraw/types';
 
-interface CanvasRenderingContext2D extends 
-  CanvasCompositing, 
-  CanvasDrawImage, 
-  CanvasDrawPath,
-  CanvasFillStrokeStyles, 
-  CanvasFilters, 
-  CanvasImageData, 
-  CanvasImageSmoothing, 
-  CanvasPath, 
-  CanvasPathDrawingStyles, 
-  CanvasRect, 
-  CanvasShadowStyles, 
-  CanvasState, 
-  CanvasText, 
-  CanvasTextDrawingStyles, 
-  CanvasTransform, 
-  CanvasUserInterface {};
+// interface CanvasRenderingContext2D extends 
+//   CanvasCompositing, 
+//   CanvasDrawImage, 
+//   CanvasDrawPath,
+//   CanvasFillStrokeStyles, 
+//   CanvasFilters, 
+//   CanvasImageData, 
+//   CanvasImageSmoothing, 
+//   CanvasPath, 
+//   CanvasPathDrawingStyles, 
+//   CanvasRect, 
+//   CanvasShadowStyles, 
+//   CanvasState, 
+//   CanvasText, 
+//   CanvasTextDrawingStyles, 
+//   CanvasTransform, 
+//   CanvasUserInterface {};
 
 
 type ContextRecord = {
@@ -27,6 +27,7 @@ type ContextRecord = {
 
 type ContextAttr = {
   globalAlpha?: number;
+  globalCompositeOperation?: string;
 }
 
 class Context2d {
@@ -50,6 +51,22 @@ class Context2d {
       args: [value]
     })
   }
+
+  get globalCompositeOperation (): string | undefined {
+    return this._attrs['globalCompositeOperation'];
+  }
+
+  // source-over source-in source-out source-atop destination-over destination-in destination-out destination-atop lighter copy xor multiply screen overlay darken lighten color-dodge color-burn hard-light soft-light difference exclusion hue saturation color luminosity 
+  set globalCompositeOperation(value: string | undefined) {
+    this._attrs['globalCompositeOperation'] = value;
+    this._records.push({
+      name: 'globalCompositeOperation',
+      type: 'attr',
+      args: [value]
+    })
+  }
+
+  
 
   $getAllRecords(): ContextRecord[] {
     return this._records;
