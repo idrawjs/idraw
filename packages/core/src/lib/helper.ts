@@ -50,23 +50,33 @@ export class Helper implements TypeHelper {
     return null;
   }
 
-  isPointInElementWrapperDot(p: TypePoint): [string | null | undefined, TypeHelperWrapperDotDirection | null] {
+  isPointInElementWrapperDot(p: TypePoint): 
+    [ 
+      string | null | undefined, 
+      TypeHelperWrapperDotDirection | null,
+      number | null,
+  ] {
     const ctx = this._ctx;
-    const uuid = this._helperConfig?.selectedElementWrapper?.uuid;
+    const uuid = this._helperConfig?.selectedElementWrapper?.uuid || null;
+    let directIdx = null;
     let direction: TypeHelperWrapperDotDirection | null = null;
     if (!this._helperConfig.selectedElementWrapper) {
-      return [null, null];
+      return [uuid, direction, directIdx];
     }
     const wrapper = this._helperConfig.selectedElementWrapper;
     const dots = [
       wrapper.dots.topLeft, wrapper.dots.top, wrapper.dots.topRight, wrapper.dots.right,
       wrapper.dots.bottomRight, wrapper.dots.bottom, wrapper.dots.bottomLeft, wrapper.dots.left,
-      wrapper.dots.rotate,
     ];
     const directionNames: TypeHelperWrapperDotDirection[] = [
-      'top-left', 'top', 'top-right', 'right',
-      'bottom-right', 'bottom', 'bottom-left', 'left', 
-      'rotate',
+      'right',
+      'top-right',
+      'top',
+      'top-left',
+      'left', 
+      'bottom-left',
+      'bottom',
+      'bottom-right',
     ];
     rotateContext(ctx, wrapper.translate, wrapper.radian || 0, () => {
       for (let i = 0; i < dots.length; i ++) {
@@ -78,11 +88,23 @@ export class Helper implements TypeHelper {
           direction = directionNames[i];
         }
         if (direction) {
+          directIdx = i;
           break;
         }
       }
     });
-    return [uuid, direction];
+    if (direction === null) {
+      rotateContext(ctx, wrapper.translate, wrapper.radian || 0, () => {
+        const dot = wrapper.dots.rotate;
+        ctx.beginPath();
+        ctx.arc(dot.x, dot.y, wrapper.dotSize, 0, Math.PI * 2);
+        ctx.closePath();
+        if (ctx.isPointInPath(p.x, p.y)) {
+          direction = 'rotate';
+        }
+      });
+    }
+    return [uuid, direction, directIdx];
   }
 
   isPointInElementList(p: TypePoint, data: TypeData): boolean {

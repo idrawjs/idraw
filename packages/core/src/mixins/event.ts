@@ -139,7 +139,13 @@ function handleMove(core: Core) {
         core[_draw]();
         core[_tempData].set('cursorStatus', CursorStatus.DRAGGING);
       } else if (core[_tempData].get('mode') === Mode.SELECT_ELEMENT_WRAPPER_DOT && core[_tempData].get('selectedDotDirection')) {
-        transfromElement(core, core[_tempData].get('selectedUUID') as string, point, core[_tempData].get('prevPoint'), core[_tempData].get('selectedDotDirection') as TypeHelperWrapperDotDirection);
+        transfromElement(
+          core,
+          core[_tempData].get('selectedUUID') as string,
+          point,
+          core[_tempData].get('prevPoint'),
+          core[_tempData].get('selectedDotDirection') as TypeHelperWrapperDotDirection
+        );
         core[_tempData].set('cursorStatus', CursorStatus.DRAGGING)
       }
     } else if (core[_tempData].get('mode') === Mode.SELECT_AREA) {

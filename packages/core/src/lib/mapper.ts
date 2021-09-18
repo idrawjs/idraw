@@ -49,6 +49,11 @@ export class Mapper {
     const [uuid, direction] = this[_helper].isPointInElementWrapperDot(p);
     if (uuid && direction) {
       switch (direction) {
+        case 'top-right' : {
+          cursor = 'ne-resize';
+          break;
+        }
+        
         case 'top-left' : {
           cursor = 'nw-resize';
           break;
@@ -57,10 +62,7 @@ export class Mapper {
           cursor = 'n-resize';
           break;
         }
-        case 'top-right' : {
-          cursor = 'ne-resize';
-          break;
-        }
+        
         case 'right' : {
           cursor = 'e-resize';
           break;
