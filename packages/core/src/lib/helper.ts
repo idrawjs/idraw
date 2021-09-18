@@ -50,7 +50,7 @@ export class Helper implements TypeHelper {
     return null;
   }
 
-  isPointInElementWrapperDot(p: TypePoint): 
+  isPointInElementWrapperDot(p: TypePoint, data?: TypeData): 
     [ 
       string | null | undefined, 
       TypeHelperWrapperDotDirection | null,
@@ -65,10 +65,16 @@ export class Helper implements TypeHelper {
     }
     const wrapper = this._helperConfig.selectedElementWrapper;
     const dots = [
-      wrapper.dots.topLeft, wrapper.dots.top, wrapper.dots.topRight, wrapper.dots.right,
-      wrapper.dots.bottomRight, wrapper.dots.bottom, wrapper.dots.bottomLeft, wrapper.dots.left,
+      wrapper.dots.right,
+      wrapper.dots.topRight,
+      wrapper.dots.top,
+      wrapper.dots.topLeft,
+      wrapper.dots.left,
+      wrapper.dots.bottomLeft,
+      wrapper.dots.bottom,
+      wrapper.dots.bottomRight,
     ];
-    const directionNames: TypeHelperWrapperDotDirection[] = [
+    let directionNames: TypeHelperWrapperDotDirection[] = [
       'right',
       'top-right',
       'top',
@@ -78,6 +84,37 @@ export class Helper implements TypeHelper {
       'bottom',
       'bottom-right',
     ];
+
+    let angleMoveNum = 0;
+    if (data && uuid) {
+      const elemIdx = this.getElementIndexByUUID(uuid);
+      if (elemIdx !== null && elemIdx >= 0) {
+        const elem = data.elements[elemIdx];
+        let angle = elem.angle;
+        if (angle < 0) {
+          angle += 360;
+        }
+        if (angle < 45) {
+          angleMoveNum = 0
+        } else if (angle < 90) {
+          angleMoveNum = 1
+        } else if (angle < 135) {
+          angleMoveNum = 2
+        } else if (angle < 180) {
+          angleMoveNum = 3
+        } else if (angle < 225) {
+          angleMoveNum = 4
+        } else if (angle < 270) {
+          angleMoveNum = 5
+        } else if (angle < 315) {
+          angleMoveNum = 6
+        }
+      }
+    }
+    if (angleMoveNum > 0) {
+      directionNames = directionNames.slice(-angleMoveNum).concat(directionNames.slice(0, -angleMoveNum))
+    }
+
     rotateContext(ctx, wrapper.translate, wrapper.radian || 0, () => {
       for (let i = 0; i < dots.length; i ++) {
         const dot = dots[i];
