@@ -59,7 +59,7 @@ function handlePoint(core: Core) {
       // Coontroll Element-List
       core[_tempData].set('mode', Mode.SELECT_ELEMENT_LIST);
     } else {
-      const [uuid, direction] = core[_helper].isPointInElementWrapperDot(point);
+      const [uuid, direction] = core[_helper].isPointInElementWrapperDot(point, core[_data]);
       if (uuid && direction) {
         // Controll Element-Wrapper
         core[_tempData].set('mode', Mode.SELECT_ELEMENT_WRAPPER_DOT);
@@ -139,7 +139,13 @@ function handleMove(core: Core) {
         core[_draw]();
         core[_tempData].set('cursorStatus', CursorStatus.DRAGGING);
       } else if (core[_tempData].get('mode') === Mode.SELECT_ELEMENT_WRAPPER_DOT && core[_tempData].get('selectedDotDirection')) {
-        transfromElement(core, core[_tempData].get('selectedUUID') as string, point, core[_tempData].get('prevPoint'), core[_tempData].get('selectedDotDirection') as TypeHelperWrapperDotDirection);
+        transfromElement(
+          core,
+          core[_tempData].get('selectedUUID') as string,
+          point,
+          core[_tempData].get('prevPoint'),
+          core[_tempData].get('selectedDotDirection') as TypeHelperWrapperDotDirection
+        );
         core[_tempData].set('cursorStatus', CursorStatus.DRAGGING)
       }
     } else if (core[_tempData].get('mode') === Mode.SELECT_AREA) {
