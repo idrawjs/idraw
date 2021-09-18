@@ -1,22 +1,22 @@
 // import { TypeContext, TypeBoardSizeOptions } from '@idraw/types';
 
-// interface CanvasRenderingContext2D extends 
-//   CanvasCompositing, 
-//   CanvasDrawImage, 
-//   CanvasDrawPath,
-//   CanvasFillStrokeStyles, 
-//   CanvasFilters, 
-//   CanvasImageData, 
-//   CanvasImageSmoothing, 
-//   CanvasPath, 
-//   CanvasPathDrawingStyles, 
-//   CanvasRect, 
-//   CanvasShadowStyles, 
-//   CanvasState, 
-//   CanvasText, 
-//   CanvasTextDrawingStyles, 
-//   CanvasTransform, 
-//   CanvasUserInterface {};
+interface CanvasRenderingContext2D extends 
+  // CanvasCompositing,  // OK
+  // CanvasDrawImage,  // OK
+  CanvasDrawPath,
+  CanvasFillStrokeStyles, 
+  CanvasFilters, 
+  CanvasImageData, 
+  CanvasImageSmoothing, 
+  CanvasPath, 
+  CanvasPathDrawingStyles, 
+  CanvasRect, 
+  CanvasShadowStyles, 
+  CanvasState, 
+  CanvasText, 
+  CanvasTextDrawingStyles, 
+  CanvasTransform, 
+  CanvasUserInterface {};
 
 
 type ContextRecord = {
@@ -66,6 +66,21 @@ class Context2d {
     })
   }
 
+  
+  drawImage(
+    image: CanvasImageSource, sx: number, sy: number, 
+    sw?: number, sh?: number, dx?: number, dy?: number, dw?: number, dh?: number
+  ): void{
+    const args = Array.from(arguments);
+    this._records.push({
+      name: 'drawImage',
+      type: 'method',
+      args: args,
+    });
+  }
+
+  // drawImage(image: CanvasImageSource, dx: number, dy: number, dw: number, dh: number): void {
+  // }
   
 
   $getAllRecords(): ContextRecord[] {
