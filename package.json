@@ -21,7 +21,8 @@
     "precommit": "npm run lint",
     "prepush": "npm run lint",
     "clear:jest": "rm -rf ./packages/*/__tests__/__snapshots__",
-    "pu": "npm run build && lerna publish --force-publish"
+    "pu": "npm run build && lerna publish --force-publish",
+    "hello": "node ./scripts/hello.js"
   },
   "devDependencies": {
     "@babel/core": "^7.13.14",
