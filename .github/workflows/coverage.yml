@@ -26,7 +26,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm install
-    - run: npm run init
+    - run: npm run beforetest
     - run: npm run cover
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1.0.2
