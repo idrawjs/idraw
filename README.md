@@ -9,10 +9,15 @@
 
 
 <p align="center">
+
   <a title="CI" href="https://github.com/idrawjs/idraw/actions/workflows/node.js.yml">
     <img src="https://github.com/idrawjs/idraw/actions/workflows/node.js.yml/badge.svg?branch=main" alt="CI">
   <a>
 
+  <a href="https://codecov.io/gh/idrawjs/idraw">
+    <img src="https://codecov.io/gh/idrawjs/idraw/branch/main/graph/badge.svg?token=MICIC9SCKY"/>
+  </a>
+    
   <a href="https://www.npmjs.com/package/idraw">
     <img src="https://img.shields.io/npm/v/idraw.svg?sanitize=idraw" alt="Version">
   </a>

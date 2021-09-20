@@ -28,7 +28,6 @@ jobs:
     - run: npm install
     - run: npm run beforetest
     - run: npm run cover
-    - run: npm run hello
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v2
       with:
