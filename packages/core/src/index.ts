@@ -79,6 +79,7 @@ class Core {
       scrollX: transfrom.scrollX,
       scrollY: transfrom.scrollY,
     });
+    this[_renderer].thaw();
     this[_renderer].render(this[_data], this[_helper].getConfig(), opts?.resourceChangeUUIDs || []);
   }
 
@@ -189,6 +190,7 @@ class Core {
 
   clearOperation() {
     this[_tempData].clear();
+    this[_tempData].set('onlyRender', this[_opts].onlyRender === true)
     this[_draw]();
   }
 
@@ -207,6 +209,22 @@ class Core {
   pointContextToScreen(p: TypePoint) {
     return this[_board].pointContextToScreen(p);
   }
+
+  setOnlyRender() {
+    this[_tempData].set('onlyRender', true);
+  }
+
+  cancelOnlyRender() {
+    this[_tempData].set('onlyRender', false);
+  }
+
+  // stopRender() {
+  //   this[_renderer].stop();
+  // }
+
+  // restartRender() {
+  //   this[_renderer].restart();
+  // }
 
   __getBoardContext(): TypeContext {
     return this[_board].getContext();

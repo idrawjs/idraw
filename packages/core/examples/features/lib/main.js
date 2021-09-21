@@ -87,7 +87,10 @@ function initEvent() {
   
 }
 
-// TODO
-core.on('screenDoubleClickElement', (p) => {
-  console.log('screenDoubleClickElement ===', p)
+// // TODO
+core.on('drawFrame', () => {
+  console.log(' === drawFrame === ')
+})
+core.on('drawFrameComplete', () => {
+  console.log(' === drawFrameComplete === ')
 })
