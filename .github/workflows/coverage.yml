@@ -25,8 +25,10 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: npm install cnpm -g --registry=https://registry.nlark.com
-    - run: cnpm install
+    - run: npm config set registry https://registry.yarnpkg.com/
+    # - run: npm install
+    - run: npm install --global yarn
+    - run: yarn
     - run: npm run beforetest
     - run: npm run cover
     - name: Upload coverage to Codecov
