@@ -37,6 +37,6 @@ jobs:
         flags: unittests # optional
         name: codecov-umbrella # optional
         fail_ci_if_error: false # optional (default = false)
-        verbose: false # optional (default = false)
+        verbose: true # optional (default = false)
 
 
