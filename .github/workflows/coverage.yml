@@ -25,7 +25,7 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: npm install cnpm -g --registry=https://registry.nlark.com
+    - run: npm install cnpm -g --registry=https://r.npm.taobao.org/
     - run: cnpm install
     - run: npm run beforetest
     - run: npm run cover
