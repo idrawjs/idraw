@@ -24,7 +24,9 @@ export type TypeCoreEventArgMap  = {
   'screenMoveElementEnd': TypeCoreEventSelectBaseArg & TypePoint,
   'screenChangeElement': TypeCoreEventSelectBaseArg & { width: number, height: number, angle: number};
   'changeData': TypeData;
-  'changeScreen': TypeScreenData
+  'changeScreen': TypeScreenData,
+  'drawFrameComplete': void;
+  'drawFrame': void;
 }
  
 export interface TypeCoreEvent {

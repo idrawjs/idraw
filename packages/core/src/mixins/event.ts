@@ -29,6 +29,13 @@ export function initEvent(core: Core): void {
   core[_board].on('move', time.throttle(handleMove(core), 16));
   core[_board].on('moveEnd', handleMoveEnd(core));
 
+  core[_renderer].on('drawFrame', () => {
+    core[_coreEvent].trigger('drawFrame', undefined);
+  });
+  core[_renderer].on('drawFrameComplete', () => {
+    core[_coreEvent].trigger('drawFrameComplete', undefined);
+  })
+
   core[_tempData].set('hasInited', true);
 }
 
