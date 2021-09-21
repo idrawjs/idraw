@@ -25,7 +25,7 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: npm --registry=https://registry.nlark.com
+    - run: npm config set registry https://registry.nlark.com
     - run: npm install
     - run: npm run beforetest
     - run: npm run cover
