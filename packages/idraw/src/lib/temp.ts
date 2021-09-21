@@ -3,10 +3,21 @@ import { Record } from './../types';
 
 
 type TempDataDesc = {
+  isDownloading: boolean;
   isFocus: boolean,
   doRecords: Record[],
   unDoRecords: Record[],
   clipboardElements: TypeElement<keyof TypeElemDesc>[]
+}
+
+function createDefaultData() {
+  return {
+    isFocus: false,
+    doRecords: [],
+    unDoRecords: [],
+    clipboardElements: [],
+    isDownloading: false,
+  }
 }
 
 export class TempData {
@@ -14,12 +25,7 @@ export class TempData {
   private _temp: TempDataDesc
 
   constructor() {
-    this._temp = {
-      isFocus: false,
-      doRecords: [],
-      unDoRecords: [],
-      clipboardElements: [],
-    }
+    this._temp = createDefaultData();
   }
 
   set<T extends keyof TempDataDesc >(name: T, value:  TempDataDesc[T]) {
@@ -31,11 +37,6 @@ export class TempData {
   }
 
   clear() {
-    this._temp = {
-      isFocus: false,
-      doRecords: [],
-      unDoRecords: [],
-      clipboardElements: [],
-    }
+    this._temp = createDefaultData();
   }
 }

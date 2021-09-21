@@ -112,7 +112,6 @@ export class Renderer extends RendererEvent {
       }
       this.trigger('drawFrame', undefined)
 
-      // // TODO
       if (this._loader.isComplete() === true && this._queue.length === 1 && this._status === DrawStatus.FREE) {
         this.trigger('drawFrameComplete', undefined);
         this.freeze();
