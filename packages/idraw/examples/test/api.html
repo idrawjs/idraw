@@ -138,8 +138,11 @@
         const mount = document.querySelector('#mount-1');
         const idraw = new iDraw(mount, opts, config);
         idraw.setData(testData);
+        // idraw.setOnlyRender();
+
         idraw.scale(2);
         idraw.selectElementByIndex(1);
+
         setTimeout(async () => {
           const pngSrc = await idraw.exportDataURL('image/png');
           const mount2 = document.querySelector('#mount-2');

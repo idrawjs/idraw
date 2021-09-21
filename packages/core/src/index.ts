@@ -190,6 +190,7 @@ class Core {
 
   clearOperation() {
     this[_tempData].clear();
+    this[_tempData].set('onlyRender', this[_opts].onlyRender === true)
     this[_draw]();
   }
 

@@ -1,8 +1,5 @@
-import util from '@idraw/util';
 import { _tempData } from '../names';
 import iDraw from './../index';
-
-
 
 export async function exportDataURL(
   idraw: iDraw,
@@ -12,8 +9,8 @@ export async function exportDataURL(
   if (idraw[_tempData].get('isDownloading') === true) {
     return Promise.reject('Busy!');
   }
-  idraw[_tempData].set('isDownloading', true);
 
+  idraw[_tempData].set('isDownloading', true);
   return new Promise((resolve, reject) => {
     let dataURL: string = '';
     function listenRenderFrameComplete() {
@@ -34,12 +31,4 @@ export async function exportDataURL(
 
   
 
-  // TODO 
-  // It Needs to listen the end of rendering
-  // It uses the delay function to simulate the end of rendering
-  await util.time.delay(300);
-  const ctx = idraw.__getOriginContext();
-  const canvas = ctx.canvas;
-  const dataURL = canvas.toDataURL(type, quality);
-  return dataURL;
 }
