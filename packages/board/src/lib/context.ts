@@ -73,7 +73,7 @@ class Context implements TypeContext {
     };
   }
 
-  setFillStyle(color: string | CanvasPattern) {
+  setFillStyle(color: string | CanvasPattern | CanvasGradient) {
     this._ctx.fillStyle = color;
   }
 

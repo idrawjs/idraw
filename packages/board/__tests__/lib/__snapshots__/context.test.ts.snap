@@ -310,6 +310,77 @@ Array [
 ]
 `;
 
+exports[`@idraw/board: src/lib/context Context.createPattern 1`] = `
+Array [
+  Object {
+    "props": Object {
+      "height": 600,
+      "width": 600,
+      "x": 0,
+      "y": 0,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "fillRect",
+  },
+]
+`;
+
+exports[`@idraw/board: src/lib/context Context.drawImage 1`] = `
+Array [
+  Object {
+    "props": Object {
+      "dHeight": 0,
+      "dWidth": 0,
+      "dx": 22,
+      "dy": 24,
+      "img": <img />,
+      "sHeight": 0,
+      "sWidth": 0,
+      "sx": 0,
+      "sy": 0,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "drawImage",
+  },
+  Object {
+    "props": Object {
+      "dHeight": 104,
+      "dWidth": 102,
+      "dx": 22,
+      "dy": 24,
+      "img": <img />,
+      "sHeight": 204,
+      "sWidth": 202,
+      "sx": 122,
+      "sy": 124,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "drawImage",
+  },
+]
+`;
+
 exports[`@idraw/board: src/lib/context Context.fill 1`] = `
 Array [
   Object {
@@ -361,6 +432,28 @@ Array [
       0,
     ],
     "type": "fillRect",
+  },
+]
+`;
+
+exports[`@idraw/board: src/lib/context Context.fillText 1`] = `
+Array [
+  Object {
+    "props": Object {
+      "maxWidth": null,
+      "text": "Hello world",
+      "x": 100,
+      "y": 200,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "fillText",
   },
 ]
 `;
@@ -507,6 +600,280 @@ Array [
       0,
     ],
     "type": "fill",
+  },
+]
+`;
+
+exports[`@idraw/board: src/lib/context Context.restore 1`] = `
+Array [
+  Object {
+    "props": Object {
+      "height": 200,
+      "width": 200,
+      "x": 20,
+      "y": 20,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "fillRect",
+  },
+  Object {
+    "props": Object {
+      "height": 200,
+      "width": 200,
+      "x": 300,
+      "y": 150,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "fillRect",
+  },
+]
+`;
+
+exports[`@idraw/board: src/lib/context Context.rotate 1`] = `
+Array [
+  Object {
+    "props": Object {
+      "path": Array [
+        Object {
+          "props": Object {},
+          "transform": Array [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+          ],
+          "type": "beginPath",
+        },
+        Object {
+          "props": Object {
+            "height": 400,
+            "width": 200,
+            "x": 20,
+            "y": 40,
+          },
+          "transform": Array [
+            0.8660254037844387,
+            0.49999999999999994,
+            -0.49999999999999994,
+            0.8660254037844387,
+            0,
+            0,
+          ],
+          "type": "rect",
+        },
+      ],
+    },
+    "transform": Array [
+      0.8660254037844387,
+      0.49999999999999994,
+      -0.49999999999999994,
+      0.8660254037844387,
+      0,
+      0,
+    ],
+    "type": "stroke",
+  },
+]
+`;
+
+exports[`@idraw/board: src/lib/context Context.save 1`] = `
+Array [
+  Object {
+    "props": Object {
+      "height": 200,
+      "width": 200,
+      "x": 20,
+      "y": 20,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "fillRect",
+  },
+  Object {
+    "props": Object {
+      "height": 200,
+      "width": 200,
+      "x": 300,
+      "y": 150,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "fillRect",
+  },
+]
+`;
+
+exports[`@idraw/board: src/lib/context Context.scale 1`] = `
+Array [
+  Object {
+    "props": Object {
+      "path": Array [
+        Object {
+          "props": Object {},
+          "transform": Array [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+          ],
+          "type": "beginPath",
+        },
+        Object {
+          "props": Object {
+            "height": 400,
+            "width": 200,
+            "x": 20,
+            "y": 40,
+          },
+          "transform": Array [
+            2,
+            0,
+            0,
+            3,
+            0,
+            0,
+          ],
+          "type": "rect",
+        },
+      ],
+    },
+    "transform": Array [
+      2,
+      0,
+      0,
+      3,
+      0,
+      0,
+    ],
+    "type": "stroke",
+  },
+]
+`;
+
+exports[`@idraw/board: src/lib/context Context.stroke 1`] = `
+Array [
+  Object {
+    "props": Object {
+      "path": Array [
+        Object {
+          "props": Object {},
+          "transform": Array [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+          ],
+          "type": "beginPath",
+        },
+        Object {
+          "props": Object {
+            "height": 400,
+            "width": 200,
+            "x": 20,
+            "y": 40,
+          },
+          "transform": Array [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+          ],
+          "type": "rect",
+        },
+      ],
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "stroke",
+  },
+]
+`;
+
+exports[`@idraw/board: src/lib/context Context.translate 1`] = `
+Array [
+  Object {
+    "props": Object {
+      "path": Array [
+        Object {
+          "props": Object {},
+          "transform": Array [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+          ],
+          "type": "beginPath",
+        },
+        Object {
+          "props": Object {
+            "height": 400,
+            "width": 200,
+            "x": 20,
+            "y": 40,
+          },
+          "transform": Array [
+            1,
+            0,
+            0,
+            1,
+            100,
+            120,
+          ],
+          "type": "rect",
+        },
+      ],
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      100,
+      120,
+    ],
+    "type": "stroke",
   },
 ]
 `;
