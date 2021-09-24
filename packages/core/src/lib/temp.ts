@@ -10,6 +10,7 @@ type TempDataDesc = {
   selectedUUIDList: string[],
   hoverUUID: string | null,
   selectedDotDirection: TypeHelperWrapperDotDirection | null,
+  hoverDotDirection: TypeHelperWrapperDotDirection | null,
   prevPoint: TypePoint | null,
 }
 
@@ -23,6 +24,7 @@ function createData(): TempDataDesc {
     selectedUUIDList: [],
     hoverUUID: null,
     selectedDotDirection: null,
+    hoverDotDirection: null,
     prevPoint: null,
   }
 }

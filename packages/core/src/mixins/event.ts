@@ -66,11 +66,13 @@ function handlePoint(core: Core) {
       // Coontroll Element-List
       core[_tempData].set('mode', Mode.SELECT_ELEMENT_LIST);
     } else {
-      const [uuid, direction] = core[_helper].isPointInElementWrapperDot(point, core[_data]);
-      if (uuid && direction) {
+      const {
+        uuid, selectedDotDirection
+      } = core[_helper].isPointInElementWrapperDot(point, core[_data]);
+      if (uuid && selectedDotDirection) {
         // Controll Element-Wrapper
         core[_tempData].set('mode', Mode.SELECT_ELEMENT_WRAPPER_DOT);
-        core[_tempData].set('selectedDotDirection', direction);
+        core[_tempData].set('selectedDotDirection', selectedDotDirection);
         core[_tempData].set('selectedUUID', uuid);
       } else {
         const [index, uuid] = core[_element].isPointInElement(point, core[_data]);

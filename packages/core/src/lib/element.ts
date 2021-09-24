@@ -96,16 +96,20 @@ export class Element {
     if (data.elements[index]?.operation?.lock === true) {
       return null;
     }
-    const moveX = (point.x - prevPoint.x) / scale;
-    const moveY = (point.y - prevPoint.y) / scale;
+    let moveX = (point.x - prevPoint.x) / scale;
+    let moveY = (point.y - prevPoint.y) / scale;
     const elem = data.elements[index];
     // const { devicePixelRatio } = this._ctx.getSize();
+
+    // if (typeof elem.angle === 'number' && (elem.angle > 0 || elem.angle < 0)) {
+    //   moveY = (point.y - prevPoint.y) / scale;
+    // }
 
     switch (direction) {
       case 'top-left': {
         if (elem.w - moveX > 0 && elem.h - moveY > 0)  {
           elem.x += moveX;
-          elem.y += moveY;
+          elem.y -= moveY;
           elem.w -= moveX;
           elem.h -= moveY;
         }
@@ -113,9 +117,17 @@ export class Element {
       }
       case 'top': {
         if (elem.h - moveY > 0) {
-          elem.y += moveY;
+          // elem.y += moveY;
+          const p = calcuScaleElemPosition(elem, moveX, moveY, direction);
+          // // elem.x = p.x;
+          elem.y = p.y;
           elem.h -= moveY;
+          // console.log(p);
+
+          // elem.y += moveY;
+          // elem.h -= moveY;
         }
+        
         break;
       }
       case 'top-right': {
@@ -199,4 +211,65 @@ export class Element {
     elem.angle = limitAngle(elem.angle || 0);
   }
   
+}
+
+
+function calcuScaleElemPosition(
+  elem: TypeElement<keyof TypeElemDesc>,
+  moveX: number,
+  moveY: number,
+  direction: TypeHelperWrapperDotDirection
+): TypePoint {
+  const p = { x: elem.x, y: elem.y };
+  let angle = elem.angle;
+  if (angle < 0) {
+    angle = Math.max(0, 360 + angle);
+  }
+  switch (direction) {
+    case 'top-left': {
+      break;
+    }
+    case 'top': {
+      // if (elem.angle < 90) {
+      //   p.x = p.x - moveY * Math.sin(parseRadian(elem.angle));
+      //   p.y = p.y + moveY * Math.cos(parseRadian(elem.angle));
+      //   // parseRadian(elem.angle)
+      //   // p.y += moveY;
+      // } else {
+      //   p.y += moveY;
+      // }
+
+      // TODO
+      parseRadian(elem.angle)
+
+      p.y += moveY;
+      break;
+    }
+    case 'top-right': {
+      break;
+    }
+    case 'right': {
+      break;
+    }
+    case 'bottom-right': {
+      break;
+    }
+    case 'bottom': {
+      break;
+    }
+    case 'bottom-left': {
+      break;
+    }
+    case 'left': {
+      break;
+    }
+    default: {
+      break;
+    }
+  }
+  return p;
+}
+
+function parseRadian(angle: number) {
+  return angle * Math.PI / 180;
 }
