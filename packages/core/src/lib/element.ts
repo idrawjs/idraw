@@ -118,7 +118,7 @@ export class Element {
       case 'top': {
         if (elem.h - moveY > 0) {
           // elem.y += moveY;
-          const p = calcuScaleElemPosition(elem, moveX, moveY, direction);
+          const p = calcuScaleElemPosition(elem, moveX, moveY, direction, scale);
           // // elem.x = p.x;
           elem.y = p.y;
           elem.h -= moveY;
@@ -218,7 +218,8 @@ function calcuScaleElemPosition(
   elem: TypeElement<keyof TypeElemDesc>,
   moveX: number,
   moveY: number,
-  direction: TypeHelperWrapperDotDirection
+  direction: TypeHelperWrapperDotDirection,
+  scale: number,
 ): TypePoint {
   const p = { x: elem.x, y: elem.y };
   let angle = elem.angle;
@@ -230,19 +231,14 @@ function calcuScaleElemPosition(
       break;
     }
     case 'top': {
-      // if (elem.angle < 90) {
-      //   p.x = p.x - moveY * Math.sin(parseRadian(elem.angle));
-      //   p.y = p.y + moveY * Math.cos(parseRadian(elem.angle));
-      //   // parseRadian(elem.angle)
-      //   // p.y += moveY;
-      // } else {
-      //   p.y += moveY;
-      // }
-
-      // TODO
-      parseRadian(elem.angle)
-
-      p.y += moveY;
+      if (elem.angle < 90) {
+        p.x = p.x - (moveY) * Math.sin(parseRadian(elem.angle));
+        p.y = p.y + (moveY) * Math.cos(parseRadian(elem.angle));
+        // parseRadian(elem.angle)
+        // p.y += moveY;
+      } else {
+        p.y += moveY;
+      }
       break;
     }
     case 'top-right': {
