@@ -40,7 +40,7 @@ const data = {
       w: 200,
       h: 20,
       type: "rect",
-      angle: 45,
+      angle: 60,
       desc: {
         bgColor: "#c0c0c0",
         borderRadius: 20,

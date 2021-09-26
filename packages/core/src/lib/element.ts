@@ -121,7 +121,7 @@ export class Element {
           const p = calcuScaleElemPosition(elem, moveX, moveY, direction, scale);
           // // elem.x = p.x;
           elem.y = p.y;
-          elem.h -= moveY;
+          elem.h = p.h;
           // console.log(p);
 
           // elem.y += moveY;
@@ -220,8 +220,8 @@ function calcuScaleElemPosition(
   moveY: number,
   direction: TypeHelperWrapperDotDirection,
   scale: number,
-): TypePoint {
-  const p = { x: elem.x, y: elem.y };
+): TypePoint & { w: number, h: number } {
+  const p = { x: elem.x, y: elem.y, w: elem.w, h: elem.h };
   let angle = elem.angle;
   if (angle < 0) {
     angle = Math.max(0, 360 + angle);
@@ -231,13 +231,41 @@ function calcuScaleElemPosition(
       break;
     }
     case 'top': {
-      if (elem.angle < 90) {
-        p.x = p.x - (moveY) * Math.sin(parseRadian(elem.angle));
-        p.y = p.y + (moveY) * Math.cos(parseRadian(elem.angle));
-        // parseRadian(elem.angle)
-        // p.y += moveY;
+      // // console.log('elem.angle =', elem.angle, moveY);
+      if (elem.angle <= 90 && elem.angle > 0) {
+        // const radian = parseRadian(elem.angle);
+        // let moveDist = 0;
+        // if (elem.angle < 45) {
+        //   moveDist = moveY / Math.cos(radian)
+        // } else {
+        //   moveDist = -moveX / Math.sin(radian)
+        // }
+        // let centerX = p.x + elem.w / 2;
+        // let centerY = p.y + elem.h / 2;
+        // centerX = centerX - moveDist * Math.sin(radian);
+        // centerY = centerY + moveDist * Math.cos(radian);
+        // if (p.h - moveDist > 0) {
+        //   p.h = p.h - moveDist;
+        //   p.x = centerX - p.w / 2;
+        //   p.y = centerY - p.h / 2;
+        // }
+
+        const radian = parseRadian(elem.angle);
+        let moveDist = 0;
+        if (elem.angle < 45) {
+          moveDist = moveY / Math.cos(radian)
+        } else {
+          moveDist = -moveX / Math.sin(radian)
+        }
+        if (p.h - moveDist > 0) {
+          p.h = p.h - moveDist;
+          p.x = p.x - moveDist * Math.sin(radian)
+          p.y = p.y + moveDist * Math.cos(radian);
+        }
+
       } else {
         p.y += moveY;
+        p.h -= moveY;
       }
       break;
     }
