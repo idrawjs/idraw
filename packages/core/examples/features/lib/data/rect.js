@@ -35,12 +35,12 @@ const data = {
     },
     {
       name: "rect-003",
-      x: 160,
-      y: 160,
-      w: 200,
+      x: 250,
+      y: 150,
+      w: 150,
       h: 20,
       type: "rect",
-      angle: 60,
+      angle: 45,
       desc: {
         bgColor: "#c0c0c0",
         borderRadius: 20,

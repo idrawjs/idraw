@@ -34,7 +34,7 @@ const core = new Core(mount, {
     color: '#e91e63',
     dotSize: 8,
     lineWidth: 1,
-    lineDash: [12, 12],
+    // lineDash: [12, 12],
   },
 });
 
