@@ -326,7 +326,7 @@ function calcuScaleElemPosition(
           centerX = centerX + centerMoveDist * Math.sin(radian);
           centerY = centerY - centerMoveDist * Math.cos(radian);
         }
-        if (p.h + moveDist > 0) {
+        if (p.w + moveDist > 0) {
           p.w = p.w + moveDist;
           p.x = centerX - p.w / 2;
           p.y = centerY - p.h / 2;
@@ -470,7 +470,7 @@ function calcuScaleElemPosition(
           centerX = centerX - centerMoveDist * Math.sin(radian);
           centerY = centerY + centerMoveDist * Math.cos(radian);
         }
-        if (p.h + moveDist > 0) {
+        if (p.w + moveDist > 0) {
           p.w = p.w + moveDist;
           p.x = centerX - p.w / 2;
           p.y = centerY - p.h / 2;
@@ -494,110 +494,6 @@ function parseRadian(angle: number) {
   return angle * Math.PI / 180;
 }
 
-// function getMoveDistance(elem: TypeElement<keyof TypeElemDesc>,
-//   moveX: number,
-//   moveY: number,
-//   direction: TypeHelperWrapperDotDirection,
-//   scale: number,
-// ): {
-//   distanceX: number,
-//   distanceY: number,
-//   distance: number,
-//   distanceLength: number,
-// } {
-//   const p = { x: elem.x, y: elem.y, w: elem.w, h: elem.h };
-//   let angle = elem.angle;
-//   if (angle < 0) {
-//     angle = Math.max(0, 360 + angle);
-//   }
-//   let distanceX: number = moveX;
-//   let distanceY: number = moveY;
-//   let distanceLength: number = Math.sqrt(moveX * moveX + moveY * moveY);
-//   let distance: number = distanceLength;
-//   switch (direction) {
-//     case 'top-left': {
-//       break;
-//     }
-//     case 'top': {
-//       if (elem.angle === 0) {
-//         distance = moveY > 0 ? distance : -distance;
-//       } else if (elem.angle > 0 || elem.angle < 0) {
-//         distance = moveY > 0 ? distance : -distance;
-//         if (angle < 90) {
-//           moveDist = -moveY; // TODO
-//         } else if (angle < 180) {
-//           moveDist = moveX;  // TODO
-//           const radian = parseRadian(angle - 90);
-//           const centerMoveDist = moveDist / 2;
-//           centerX = centerX + centerMoveDist * Math.cos(radian);
-//           centerY = centerY + centerMoveDist * Math.sin(radian);
-//         } else if (angle < 270) {
-//           moveDist = moveY;  // TODO
-//           const radian = parseRadian(angle - 180);
-//           const centerMoveDist = moveDist / 2;
-//           centerX = centerX - centerMoveDist * Math.sin(radian);
-//           centerY = centerY + centerMoveDist * Math.cos(radian);
-//         } else if (angle < 360) {
-//           moveDist = -moveX;  // TODO
-//           const radian = parseRadian(angle - 270);
-//           const centerMoveDist = moveDist / 2;
-//           centerX = centerX - centerMoveDist * Math.cos(radian);
-//           centerY = centerY - centerMoveDist * Math.sin(radian);
-//         }
-//         if (p.h + moveDist > 0) {
-//           p.h = p.h + moveDist;
-//           p.x = centerX - p.w / 2;
-//           p.y = centerY - p.h / 2;
-//         }
-//       } else {
-//         if (p.h - moveY > 0) {
-//           p.y += moveY;
-//           p.h -= moveY;
-//         }
-//       }
-//       break;
-//     }
-//     case 'top-right': {
-//       if (elem.h - moveY > 0 && elem.w + moveX > 0) {
-//         p.y += moveY;
-//         p.w += moveX;
-//         p.h -= moveY;
-//       }
-//       break;
-//     }
-//     case 'right': {
-//       if (elem.w + moveX > 0) {
-//         p.w += moveX;
-//       }
-//       break;
-//     }
-//     case 'bottom-right': {
-//       if (elem.w + moveX > 0 && elem.h + moveY > 0) {
-//         p.w += moveX;
-//         p.h += moveY;
-//       }
-//       break;
-//     }
-//     case 'bottom': {
-//       if (elem.h + moveY > 0) {
-//         p.h += moveY;
-//       }
-//       break;
-//     }
-//     case 'bottom-left': {
-//       if (elem.w - moveX > 0 && elem.h + moveY > 0) {
-//         p.x += moveX;
-//         p.w -= moveX;
-//         p.h += moveY;
-//       }
-//       break;
-//     }
-//     default: {
-//       break;
-//     }
-//   }
-//   return { distanceX, distanceY, distanceLength, distance };
-// }
 
 
 function calcMoveDist(moveX: number, moveY: number) {
