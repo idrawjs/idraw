@@ -297,36 +297,37 @@ function calcuScaleElemPosition(
         }
       } else if (elem.angle > 0 || elem.angle < 0) {
         const angle = elem.angle > 0 ? elem.angle : Math.max(0, elem.angle + 360);
-        let moveDist = moveY;
+        let moveDist = calcMoveDist(moveX, moveY);
         let centerX = p.x + elem.w / 2;
         let centerY = p.y + elem.h / 2;
         if (angle < 90) {
-          moveDist = -moveY; // TODO
+          moveDist = changeMoveDistDirect(moveDist, moveY);
           const radian = parseRadian(angle);
-          const centerMoveDist = moveDist / 2;
-          centerX = centerX + centerMoveDist * Math.sin(radian);
-          centerY = centerY - centerMoveDist * Math.cos(radian);
-        } else if (angle < 180) {
-          moveDist = moveX;  // TODO
-          const radian = parseRadian(angle - 90);
           const centerMoveDist = moveDist / 2;
           centerX = centerX + centerMoveDist * Math.cos(radian);
           centerY = centerY + centerMoveDist * Math.sin(radian);
-        } else if (angle < 270) {
-          moveDist = moveY;  // TODO
-          const radian = parseRadian(angle - 180);
+        } else if (angle < 180) {
+          moveDist = changeMoveDistDirect(moveDist, moveY);
+          const radian = parseRadian(angle - 90);
           const centerMoveDist = moveDist / 2;
           centerX = centerX - centerMoveDist * Math.sin(radian);
           centerY = centerY + centerMoveDist * Math.cos(radian);
+        } else if (angle < 270) {
+          moveDist = changeMoveDistDirect(moveDist, moveY);
+          const radian = parseRadian(angle - 180);
+          const centerMoveDist = moveDist / 2;
+          centerX = centerX + centerMoveDist * Math.cos(radian);
+          centerY = centerY + centerMoveDist * Math.sin(radian);
+          moveDist = 0 - moveDist;
         } else if (angle < 360) {
-          moveDist = -moveX;  // TODO
+          moveDist = changeMoveDistDirect(moveDist, moveX);
           const radian = parseRadian(angle - 270);
           const centerMoveDist = moveDist / 2;
-          centerX = centerX - centerMoveDist * Math.cos(radian);
-          centerY = centerY - centerMoveDist * Math.sin(radian);
+          centerX = centerX + centerMoveDist * Math.sin(radian);
+          centerY = centerY - centerMoveDist * Math.cos(radian);
         }
         if (p.h + moveDist > 0) {
-          p.h = p.h + moveDist;
+          p.w = p.w + moveDist;
           p.x = centerX - p.w / 2;
           p.y = centerY - p.h / 2;
         }
