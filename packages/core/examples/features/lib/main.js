@@ -34,7 +34,7 @@ const core = new Core(mount, {
     color: '#e91e63',
     dotSize: 8,
     lineWidth: 1,
-    lineDash: [12, 12],
+    // lineDash: [12, 12],
   },
 });
 
@@ -84,13 +84,12 @@ function initEvent() {
   core.on('screenDoubleClickElement', (p) => {
     console.log('screenDoubleClickElement ===', p)
   })
+  core.on('drawFrame', () => {
+    console.log(' === drawFrame === ')
+  })
+  core.on('drawFrameComplete', () => {
+    console.log(' === drawFrameComplete === ')
+  })
   
 }
 
-// // TODO
-core.on('drawFrame', () => {
-  console.log(' === drawFrame === ')
-})
-core.on('drawFrameComplete', () => {
-  console.log(' === drawFrameComplete === ')
-})

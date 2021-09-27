@@ -3,20 +3,24 @@ import { TypePoint } from './board';
 
 // type test = {[uuid string]: TypeElement}
 
+type TypeDot =  TypePoint & {
+  invisible?: boolean;
+};
+
 type TypeHeplerSelectedElementWrapper = {
   uuid: string;
   dotSize: number;
   lock: boolean;
   dots: {
-    topLeft: TypePoint,
-    top: TypePoint,
-    topRight: TypePoint,
-    right: TypePoint,
-    bottomRight: TypePoint,
-    bottom: TypePoint,
-    bottomLeft: TypePoint,
-    left: TypePoint,
-    rotate: TypePoint,
+    topLeft: TypeDot,
+    top: TypeDot,
+    topRight: TypeDot,
+    right: TypeDot,
+    bottomRight: TypeDot,
+    bottom: TypeDot,
+    bottomLeft: TypeDot,
+    left: TypeDot,
+    rotate: TypeDot,
   },
   lineDash: number[];
   lineWidth: number;

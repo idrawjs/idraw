@@ -8,6 +8,9 @@ import Board from '@idraw/board';
 import util from '@idraw/util';
 import { parseAngleToRadian, calcElementCenter } from './calculate';
 import { rotateContext, rotateElement } from './transform';
+import { LIMIT_QBLIQUE_ANGLE } from './../constant/element';
+
+const limitQbliqueAngle = LIMIT_QBLIQUE_ANGLE;
 
 const { deepClone } = util.data;
 
@@ -51,17 +54,19 @@ export class Helper implements TypeHelper {
   }
 
   isPointInElementWrapperDot(p: TypePoint, data?: TypeData): 
-    [ 
-      string | null | undefined, 
-      TypeHelperWrapperDotDirection | null,
-      number | null,
-  ] {
+  {
+    uuid: string | null | undefined, 
+    selectedDotDirection: TypeHelperWrapperDotDirection | null,
+    hoverDotDirection: TypeHelperWrapperDotDirection | null,
+    directIndex: number | null,
+  } {
     const ctx = this._ctx;
     const uuid = this._helperConfig?.selectedElementWrapper?.uuid || null;
-    let directIdx = null;
-    let direction: TypeHelperWrapperDotDirection | null = null;
+    let directIndex = null;
+    let selectedDotDirection: TypeHelperWrapperDotDirection | null = null;
+    let hoverDotDirection: TypeHelperWrapperDotDirection | null = null;
     if (!this._helperConfig.selectedElementWrapper) {
-      return [uuid, direction, directIdx];
+      return {uuid, selectedDotDirection, directIndex, hoverDotDirection};
     }
     const wrapper = this._helperConfig.selectedElementWrapper;
     const dots = [
@@ -84,6 +89,7 @@ export class Helper implements TypeHelper {
       'bottom',
       'bottom-right',
     ];
+    let hoverDirectionNames = util.data.deepClone(directionNames);
 
     let angleMoveNum = 0;
     if (data && uuid) {
@@ -112,36 +118,42 @@ export class Helper implements TypeHelper {
       }
     }
     if (angleMoveNum > 0) {
-      directionNames = directionNames.slice(-angleMoveNum).concat(directionNames.slice(0, -angleMoveNum))
+      hoverDirectionNames = hoverDirectionNames.slice(-angleMoveNum).concat(hoverDirectionNames.slice(0, -angleMoveNum))
     }
+
 
     rotateContext(ctx, wrapper.translate, wrapper.radian || 0, () => {
       for (let i = 0; i < dots.length; i ++) {
         const dot = dots[i];
+        if (dot.invisible === true) {
+          continue;
+        }
         ctx.beginPath();
         ctx.arc(dot.x, dot.y, wrapper.dotSize, 0, Math.PI * 2);
         ctx.closePath();
         if (ctx.isPointInPath(p.x, p.y)) {
-          direction = directionNames[i];
+          selectedDotDirection = directionNames[i];
+          hoverDotDirection = hoverDirectionNames[i];
         }
-        if (direction) {
-          directIdx = i;
+        if (selectedDotDirection) {
+          directIndex = i;
           break;
         }
       }
     });
-    if (direction === null) {
+    if (selectedDotDirection === null) {
       rotateContext(ctx, wrapper.translate, wrapper.radian || 0, () => {
         const dot = wrapper.dots.rotate;
         ctx.beginPath();
         ctx.arc(dot.x, dot.y, wrapper.dotSize, 0, Math.PI * 2);
         ctx.closePath();
         if (ctx.isPointInPath(p.x, p.y)) {
-          direction = 'rotate';
+          selectedDotDirection = 'rotate';
+          hoverDotDirection =  'rotate';
         }
       });
     }
-    return [uuid, direction, directIdx];
+    return {uuid, selectedDotDirection, hoverDotDirection, directIndex};
   }
 
   isPointInElementList(p: TypePoint, data: TypeData): boolean {
@@ -305,6 +317,10 @@ export class Helper implements TypeHelper {
     const rotateLimit = 12;
     // @ts-ignore
     const bw = elem.desc?.borderWidth || 0;  
+    let hideObliqueDirection = false;
+    if (typeof elem.angle === 'number' && Math.abs(elem.angle) > limitQbliqueAngle) {
+      hideObliqueDirection = true;
+    }
     
     const wrapper: TypeHeplerSelectedElementWrapper = {
       uuid: elem.uuid,
@@ -314,6 +330,7 @@ export class Helper implements TypeHelper {
         topLeft: {
           x: elem.x - dotSize - bw,
           y: elem.y - dotSize - bw,
+          invisible: hideObliqueDirection,
         },
         top: {
           x: elem.x + elem.w / 2,
@@ -322,6 +339,7 @@ export class Helper implements TypeHelper {
         topRight: {
           x: elem.x + elem.w + dotSize + bw,
           y: elem.y - dotSize - bw,
+          invisible: hideObliqueDirection,
         },
         right: {
           x: elem.x + elem.w + dotSize + bw,
@@ -330,6 +348,7 @@ export class Helper implements TypeHelper {
         bottomRight: {
           x: elem.x + elem.w + dotSize + bw,
           y: elem.y + elem.h + dotSize + bw,
+          invisible: hideObliqueDirection,
         },
         bottom: {
           x: elem.x + elem.w / 2,
@@ -338,6 +357,7 @@ export class Helper implements TypeHelper {
         bottomLeft: {
           x: elem.x - dotSize - bw,
           y: elem.y + elem.h + dotSize + bw,
+          invisible: hideObliqueDirection,
         },
         left: {
           x: elem.x - dotSize - bw,

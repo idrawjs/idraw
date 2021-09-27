@@ -13,8 +13,8 @@ html, body {
   background-image:
   linear-gradient(#aaaaaa2a 1px, transparent 0),
   linear-gradient(90deg, #aaaaaa2a 1px, transparent 0),
-  linear-gradient(#aaaaaa1a 1px, transparent 0),
-  linear-gradient(90deg, #aaaaaa1a 1px, transparent 0);
+  linear-gradient(#aaaaaa4a 1px, transparent 0),
+  linear-gradient(90deg, #aaaaaa4a 1px, transparent 0);
   background-size: 10px 10px, 10px 10px, 50px 50px, 50px 50px;
 }
 

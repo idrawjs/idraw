@@ -46,7 +46,9 @@ export class Mapper {
     if (!this.isEffectivePoint(p)) {
       return { cursor, elementUUID};
     }
-    const [uuid, direction] = this[_helper].isPointInElementWrapperDot(p, data);
+    const { uuid, hoverDotDirection }  = this[_helper].isPointInElementWrapperDot(p, data);
+    
+    const direction = hoverDotDirection;
     if (uuid && direction) {
       switch (direction) {
         case 'top-right' : {

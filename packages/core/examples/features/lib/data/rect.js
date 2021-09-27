@@ -35,9 +35,9 @@ const data = {
     },
     {
       name: "rect-003",
-      x: 160,
-      y: 160,
-      w: 200,
+      x: 250,
+      y: 150,
+      w: 150,
       h: 20,
       type: "rect",
       angle: 45,
@@ -50,8 +50,8 @@ const data = {
     },
     {
       name: "rect-004",
-      x: 400 - 10,
-      y: 300 - 10,
+      x: 400 - 50,
+      y: 300 - 50,
       w: 200,
       h: 100,
       type: "rect",
