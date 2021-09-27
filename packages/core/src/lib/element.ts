@@ -105,75 +105,96 @@ export class Element {
     //   moveY = (point.y - prevPoint.y) / scale;
     // }
 
-    switch (direction) {
-      case 'top-left': {
-        if (elem.w - moveX > 0 && elem.h - moveY > 0)  {
-          elem.x += moveX;
-          elem.y -= moveY;
-          elem.w -= moveX;
-          elem.h -= moveY;
-        }
-        break;
-      }
-      case 'top': {
-        const p = calcuScaleElemPosition(elem, moveX, moveY, direction, scale);
-        elem.x = p.x;
-        elem.y = p.y;
-        elem.h = p.h;
-        break;
-      }
-      case 'top-right': {
-        if (elem.h - moveY > 0 && elem.w + moveX > 0) {
-          elem.y += moveY;
-          elem.w += moveX;
-          elem.h -= moveY;
-        }
-        break;
-      }
-      case 'right': {
-        if (elem.w + moveX > 0) {
-          elem.w += moveX;
-        }
-        break;
-      }
-      case 'bottom-right': {
-        if (elem.w + moveX > 0 && elem.h + moveY > 0) {
-          elem.w += moveX;
-          elem.h += moveY;
-        }
-        break;
-      }
-      case 'bottom': {
-        if (elem.h + moveY > 0) {
-          elem.h += moveY;
-        }
-        break;
-      }
-      case 'bottom-left': {
-        if (elem.w - moveX > 0 && elem.h + moveY > 0) {
-          elem.x += moveX;
-          elem.w -= moveX;
-          elem.h += moveY;
-        }
-        break;
-      }
-      case 'left': {
-        if (elem.w - moveX > 0) {
-          elem.x += moveX;
-          elem.w -= moveX;
-        }
-        break;
-      }
-      case 'rotate': {
-        const center = calcElementCenter(elem);
-        const radian = calcRadian(center, prevPoint, point);
-        elem.angle = (elem.angle || 0) + parseRadianToAngle(radian);
-        break;
-      }
-      default: {
-        break;
-      }
+    if ([
+      'top-left', 'top', 'top-right', 'right', 
+      'bottom-right', 'bottom', 'bottom-left', 'left'
+    ].includes(direction)) {
+      const p = calcuScaleElemPosition(elem, moveX, moveY, direction, scale);
+      elem.x = p.x;
+      elem.y = p.y;
+      elem.w = p.w;
+      elem.h = p.h;
+    } else if (direction === 'rotate') {
+      const center = calcElementCenter(elem);
+      const radian = calcRadian(center, prevPoint, point);
+      elem.angle = (elem.angle || 0) + parseRadianToAngle(radian);
     }
+
+    // switch (direction) {
+    //   case 'top-left': {
+    //     const p = calcuScaleElemPosition(elem, moveX, moveY, direction, scale);
+    //     elem.x = p.x;
+    //     elem.y = p.y;
+    //     elem.w = p.w;
+    //     elem.h = p.h;
+    //     break;
+    //   }
+    //   case 'top': {
+    //     const p = calcuScaleElemPosition(elem, moveX, moveY, direction, scale);
+    //     elem.x = p.x;
+    //     elem.y = p.y;
+    //     elem.w = p.w;
+    //     elem.h = p.h;
+    //     break;
+    //   }
+    //   case 'top-right': {
+    //     const p = calcuScaleElemPosition(elem, moveX, moveY, direction, scale);
+    //     elem.x = p.x;
+    //     elem.y = p.y;
+    //     elem.w = p.w;
+    //     elem.h = p.h;
+    //     break;
+    //   }
+    //   case 'right': {
+    //     const p = calcuScaleElemPosition(elem, moveX, moveY, direction, scale);
+    //     elem.x = p.x;
+    //     elem.y = p.y;
+    //     elem.w = p.w;
+    //     elem.h = p.h;
+    //     break;
+    //   }
+    //   case 'bottom-right': {
+    //     const p = calcuScaleElemPosition(elem, moveX, moveY, direction, scale);
+    //     elem.x = p.x;
+    //     elem.y = p.y;
+    //     elem.w = p.w;
+    //     elem.h = p.h;
+    //     break;
+    //   }
+    //   case 'bottom': {
+    //     const p = calcuScaleElemPosition(elem, moveX, moveY, direction, scale);
+    //     elem.x = p.x;
+    //     elem.y = p.y;
+    //     elem.w = p.w;
+    //     elem.h = p.h;
+    //     break;
+    //   }
+    //   case 'bottom-left': {
+    //     const p = calcuScaleElemPosition(elem, moveX, moveY, direction, scale);
+    //     elem.x = p.x;
+    //     elem.y = p.y;
+    //     elem.w = p.w;
+    //     elem.h = p.h;
+    //     break;
+    //   }
+    //   case 'left': {
+    //     const p = calcuScaleElemPosition(elem, moveX, moveY, direction, scale);
+    //     elem.x = p.x;
+    //     elem.y = p.y;
+    //     elem.w = p.w;
+    //     elem.h = p.h;
+    //     break;
+    //   }
+    //   case 'rotate': {
+    //     const center = calcElementCenter(elem);
+    //     const radian = calcRadian(center, prevPoint, point);
+    //     elem.angle = (elem.angle || 0) + parseRadianToAngle(radian);
+    //     break;
+    //   }
+    //   default: {
+    //     break;
+    //   }
+    // }
 
     this.limitElementAttrs(elem);
 
@@ -220,6 +241,12 @@ function calcuScaleElemPosition(
   }
   switch (direction) {
     case 'top-left': {
+      if (elem.w - moveX > 0 && elem.h - moveY > 0)  {
+        p.x += moveX;
+        p.y += moveY;
+        p.w -= moveX;
+        p.h -= moveY;
+      }
       break;
     }
     case 'top': {
@@ -267,25 +294,48 @@ function calcuScaleElemPosition(
           p.h -= moveY;
         }
       }
-      
       break;
     }
     case 'top-right': {
+      if (elem.h - moveY > 0 && elem.w + moveX > 0) {
+        p.y += moveY;
+        p.w += moveX;
+        p.h -= moveY;
+      }
       break;
     }
     case 'right': {
+      if (elem.w + moveX > 0) {
+        p.w += moveX;
+      }
       break;
     }
     case 'bottom-right': {
+      if (elem.w + moveX > 0 && elem.h + moveY > 0) {
+        p.w += moveX;
+        p.h += moveY;
+      }
       break;
     }
     case 'bottom': {
+      if (elem.h + moveY > 0) {
+        p.h += moveY;
+      }
       break;
     }
     case 'bottom-left': {
+      if (elem.w - moveX > 0 && elem.h + moveY > 0) {
+        p.x += moveX;
+        p.w -= moveX;
+        p.h += moveY;
+      }
       break;
     }
     case 'left': {
+      if (elem.w - moveX > 0) {
+        p.x += moveX;
+        p.w -= moveX;
+      }
       break;
     }
     default: {
