@@ -44,13 +44,21 @@ export function drawElementWrapper(ctx: TypeContext, config: TypeHelperConfig) {
       // draw wrapper's dots
       ctx.setFillStyle(wrapper.color);
       [
-        wrapper.dots.topLeft, wrapper.dots.top, wrapper.dots.topRight, wrapper.dots.right,
-        wrapper.dots.bottomRight, wrapper.dots.bottom, wrapper.dots.bottomLeft, wrapper.dots.left,
+        wrapper.dots.topLeft,
+        wrapper.dots.top,
+        wrapper.dots.topRight,
+        wrapper.dots.right,
+        wrapper.dots.bottomRight,
+        wrapper.dots.bottom,
+        wrapper.dots.bottomLeft,
+        wrapper.dots.left,
       ].forEach((dot) => {
-        ctx.beginPath();
-        ctx.arc(dot.x, dot.y, wrapper.dotSize, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.closePath();
+        if (dot.invisible !== true) {
+          ctx.beginPath();
+          ctx.arc(dot.x, dot.y, wrapper.dotSize, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.closePath();
+        }
       });
     } else {
       // draw wrapper's lock dots,

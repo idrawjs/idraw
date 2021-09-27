@@ -122,6 +122,9 @@ export class Helper implements TypeHelper {
     rotateContext(ctx, wrapper.translate, wrapper.radian || 0, () => {
       for (let i = 0; i < dots.length; i ++) {
         const dot = dots[i];
+        if (dot.invisible === true) {
+          continue;
+        }
         ctx.beginPath();
         ctx.arc(dot.x, dot.y, wrapper.dotSize, 0, Math.PI * 2);
         ctx.closePath();
@@ -311,6 +314,10 @@ export class Helper implements TypeHelper {
     const rotateLimit = 12;
     // @ts-ignore
     const bw = elem.desc?.borderWidth || 0;  
+    let hideObliqueDirection = false;
+    if (typeof elem.angle === 'number' && Math.abs(elem.angle) > 30) {
+      hideObliqueDirection = true;
+    }
     
     const wrapper: TypeHeplerSelectedElementWrapper = {
       uuid: elem.uuid,
@@ -320,6 +327,7 @@ export class Helper implements TypeHelper {
         topLeft: {
           x: elem.x - dotSize - bw,
           y: elem.y - dotSize - bw,
+          invisible: hideObliqueDirection,
         },
         top: {
           x: elem.x + elem.w / 2,
@@ -328,6 +336,7 @@ export class Helper implements TypeHelper {
         topRight: {
           x: elem.x + elem.w + dotSize + bw,
           y: elem.y - dotSize - bw,
+          invisible: hideObliqueDirection,
         },
         right: {
           x: elem.x + elem.w + dotSize + bw,
@@ -336,6 +345,7 @@ export class Helper implements TypeHelper {
         bottomRight: {
           x: elem.x + elem.w + dotSize + bw,
           y: elem.y + elem.h + dotSize + bw,
+          invisible: hideObliqueDirection,
         },
         bottom: {
           x: elem.x + elem.w / 2,
@@ -344,6 +354,7 @@ export class Helper implements TypeHelper {
         bottomLeft: {
           x: elem.x - dotSize - bw,
           y: elem.y + elem.h + dotSize + bw,
+          invisible: hideObliqueDirection,
         },
         left: {
           x: elem.x - dotSize - bw,
