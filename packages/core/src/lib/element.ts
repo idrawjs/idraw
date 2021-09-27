@@ -242,52 +242,60 @@ function calcuScaleElemPosition(
       break;
     }
     case 'top-right': {
-      // if (elem.angle === 0) {
+      if (elem.angle === 0) {
         if (p.h - moveY > 0) {
           p.y += moveY;
           p.h -= moveY;
         }
-      // } else if (elem.angle > 0 || elem.angle < 0) {
-      //   const angle = elem.angle > 0 ? elem.angle : Math.max(0, elem.angle + 360);
-      //   let moveDist = moveY;
-      //   let centerX = p.x + elem.w / 2;
-      //   let centerY = p.y + elem.h / 2;
-      //   if (angle < 90) {
-      //     moveDist = -moveY; // TODO
-      //     const radian = parseRadian(angle);
-      //     const centerMoveDist = moveDist / 2;
-      //     centerX = centerX + centerMoveDist * Math.sin(radian);
-      //     centerY = centerY - centerMoveDist * Math.cos(radian);
-      //   } else if (angle < 180) {
-      //     moveDist = moveX;  // TODO
-      //     const radian = parseRadian(angle - 90);
-      //     const centerMoveDist = moveDist / 2;
-      //     centerX = centerX + centerMoveDist * Math.cos(radian);
-      //     centerY = centerY + centerMoveDist * Math.sin(radian);
-      //   } else if (angle < 270) {
-      //     moveDist = moveY;  // TODO
-      //     const radian = parseRadian(angle - 180);
-      //     const centerMoveDist = moveDist / 2;
-      //     centerX = centerX - centerMoveDist * Math.sin(radian);
-      //     centerY = centerY + centerMoveDist * Math.cos(radian);
-      //   } else if (angle < 360) {
-      //     moveDist = -moveX;  // TODO
-      //     const radian = parseRadian(angle - 270);
-      //     const centerMoveDist = moveDist / 2;
-      //     centerX = centerX - centerMoveDist * Math.cos(radian);
-      //     centerY = centerY - centerMoveDist * Math.sin(radian);
-      //   }
-      //   if (p.h + moveDist > 0) {
-      //     p.h = p.h + moveDist;
-      //     p.x = centerX - p.w / 2;
-      //     p.y = centerY - p.h / 2;
-      //   }
-      // } else {
-      //   if (p.h - moveY > 0) {
-      //     p.y += moveY;
-      //     p.h -= moveY;
-      //   }
-      // }
+      } else if (elem.angle > 0 || elem.angle < 0) {
+        const angle = elem.angle > 0 ? elem.angle : Math.max(0, elem.angle + 360);
+        let moveDist = calcMoveDist(moveX, moveY);
+        let centerX = p.x + elem.w / 2;
+        let centerY = p.y + elem.h / 2;
+        let moveDistW: number = 0;
+        let moveDistH: number = 0;
+        if (angle < 90) {
+          const radianDist = Math.atan(Math.tan(Math.abs(moveY)/Math.abs(moveX)))
+          const radian = parseRadian(angle);
+          const radianResult = radianDist + radian;
+          moveDistH = moveDist * Math.sin(radianResult);
+          moveDistW =  moveDist * Math.cos(radianResult);
+          moveDistH = 0 - changeMoveDistDirect(moveDistH, moveY);
+          moveDistW = changeMoveDistDirect(moveDistW, moveX);
+          {
+            // top direct
+            const radian = parseRadian(angle);
+            const centerMoveDist = moveDistH / 2;
+            centerX = centerX + centerMoveDist * Math.sin(radian);
+            centerY = centerY - centerMoveDist * Math.cos(radian);
+          }
+          {
+            // right direct
+            const radian = parseRadian(angle);
+            const centerMoveDist = moveDistW / 2;
+            centerX = centerX + centerMoveDist * Math.cos(radian);
+            centerY = centerY + centerMoveDist * Math.sin(radian);
+          }
+        
+        } else if (angle < 180) {
+          // TODO
+        } else if (angle < 270) {
+          // TODO
+        } else if (angle < 360) {
+          // TODO
+        }
+        if (p.h + moveDistH > 0 && p.w + moveDistW > 0) {
+          p.h = p.h + moveDistH;
+          p.w = p.w + moveDistW;
+          p.x = centerX - p.w / 2;
+          p.y = centerY - p.h / 2;
+        }
+      } else {
+        if (p.h - moveY > 0) {
+          p.y += moveY;
+          p.h -= moveY;
+        }
+      }
       break;
     }
     case 'right': {
