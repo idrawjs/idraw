@@ -10,9 +10,10 @@ import util from '@idraw/util';
 import { rotateElement } from './transform';
 import { calcRadian, calcElementCenter, parseRadianToAngle } from './calculate';
 import { limitAngle, limitNum } from './value';
+import { LIMIT_QBLIQUE_ANGLE } from './../constant/element';
 
 const { createUUID } = util.uuid;
-const limitQbliqueAngle = 30;
+const limitQbliqueAngle = LIMIT_QBLIQUE_ANGLE;
 
 export class Element {
   private _ctx: TypeContext;
@@ -246,8 +247,9 @@ function calcuScaleElemPosition(
       break;
     }
     case 'top-right': {
-      if (p.h - moveY > 0) {
+      if (p.h - moveY > 0 && p.w + moveX > 0) {
         p.y += moveY;
+        p.w += moveX;
         p.h -= moveY;
       }
       // // TODO
@@ -531,8 +533,6 @@ function calcuScaleElemPosition(
 function parseRadian(angle: number) {
   return angle * Math.PI / 180;
 }
-
-
 
 function calcMoveDist(moveX: number, moveY: number) {
   return Math.sqrt(moveX * moveX + moveY * moveY);

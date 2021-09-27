@@ -8,6 +8,9 @@ import Board from '@idraw/board';
 import util from '@idraw/util';
 import { parseAngleToRadian, calcElementCenter } from './calculate';
 import { rotateContext, rotateElement } from './transform';
+import { LIMIT_QBLIQUE_ANGLE } from './../constant/element';
+
+const limitQbliqueAngle = LIMIT_QBLIQUE_ANGLE;
 
 const { deepClone } = util.data;
 
@@ -315,7 +318,7 @@ export class Helper implements TypeHelper {
     // @ts-ignore
     const bw = elem.desc?.borderWidth || 0;  
     let hideObliqueDirection = false;
-    if (typeof elem.angle === 'number' && Math.abs(elem.angle) > 30) {
+    if (typeof elem.angle === 'number' && Math.abs(elem.angle) > limitQbliqueAngle) {
       hideObliqueDirection = true;
     }
     

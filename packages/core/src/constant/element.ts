@@ -10,3 +10,6 @@ const elementTypes = {
 
 export const elementNames = Object.keys(elementTypes);
 
+
+// limitQbliqueAngle
+export const LIMIT_QBLIQUE_ANGLE = 15;

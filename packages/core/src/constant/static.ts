@@ -8,5 +8,5 @@ export enum Mode {
 
 export enum CursorStatus {
   DRAGGING = 'dragging',
-  NULL = 'null'
+  NULL = 'null',
 }
