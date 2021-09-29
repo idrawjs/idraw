@@ -90,6 +90,7 @@ function handlePoint(core: Core) {
         } else {
           // Controll Area
           core[_tempData].set('selectedUUIDList', []);
+          core[_tempData].set('selectedUUID', null);
           core[_tempData].set('mode', Mode.SELECT_AREA);
         }
       }
