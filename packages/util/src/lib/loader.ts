@@ -1,4 +1,5 @@
-const { Image, Blob, FileReader } = window;
+import { parseHTMLToDataURL, parseSVGToDataURL } from './parser';
+const { Image } = window;
 
 export function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
@@ -13,52 +14,17 @@ export function loadImage(src: string): Promise<HTMLImageElement> {
 }
 
 
-export function loadSVG(svg: string): Promise<HTMLImageElement> {
-  return new Promise((resolve, reject) => {
-    const _svg = svg;
-    const image = new Image();
-    const blob = new Blob([_svg], { type: 'image/svg+xml;charset=utf-8'});
-    const reader = new FileReader();
-    reader.readAsDataURL(blob);
-    reader.onload = function (event: ProgressEvent<FileReader>) {
-      const base64: string = event?.target?.result as string;
-      image.onload = function() {
-        resolve(image);
-      };
-      image.src = base64;
-    };
-    reader.onerror = function(err) {
-      reject(err);
-    };
-  });
+export async function loadSVG(svg: string): Promise<HTMLImageElement> {
+  const dataURL = await parseSVGToDataURL(svg);
+  const image = await loadImage(dataURL);
+  return image;
 }
 
 
-export function loadHTML(html: string, opts: { width: number, height: number }): Promise<HTMLImageElement> {
-  const { width, height } = opts;
-  return new Promise((resolve, reject) => {
-    const _svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="${width || ''}" height = "${height || ''}">
-      <foreignObject width="100%" height="100%">
-        <div xmlns = "http://www.w3.org/1999/xhtml">
-          ${html}
-        </div>
-      </foreignObject>
-    </svg>
-    `;;
-    const image = new Image();
-    const blob = new Blob([_svg], { type: 'image/svg+xml;charset=utf-8'});
-    const reader = new FileReader();
-    reader.readAsDataURL(blob);
-    reader.onload = function (event: ProgressEvent<FileReader>) {
-      const base64: string = event?.target?.result as string;
-      image.onload = function() {
-        resolve(image);
-      };
-      image.src = base64;
-    };
-    reader.onerror = function(err) {
-      reject(err);
-    };
-  });
+export async function loadHTML(html: string, opts: { width: number, height: number }): Promise<HTMLImageElement> {
+  const dataURL = await parseHTMLToDataURL(html, opts);
+  const image = await loadImage(dataURL);
+  return image;
 }
+
+
