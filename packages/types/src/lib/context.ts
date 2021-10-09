@@ -51,6 +51,10 @@ interface TypeContext {
   drawImage(image: CanvasImageSource, sx: number, sy: number, sw: number, sh: number, dx: number, dy: number, dw: number, dh: number): void;
   createPattern(image: CanvasImageSource, repetition: string | null): CanvasPattern | null;
   setGlobalAlpha(alpha: number): void;
+  setShadowColor(color: string): void;
+  setShadowOffsetX(offsetX: number): void;
+  setShadowOffsetY(offsetY: number): void;
+  setShadowBlur(blur: number): void;
 }
 
 export {

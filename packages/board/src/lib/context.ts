@@ -237,6 +237,22 @@ class Context implements TypeContext {
     this._ctx.scale(ratioX, ratioY);
   }
 
+  setShadowColor(color: string): void {
+    this._ctx.shadowColor = color;
+  }
+
+  setShadowOffsetX(offsetX: number): void {
+    this._ctx.shadowOffsetX = this._doSize(offsetX);
+  }
+
+  setShadowOffsetY(offsetY: number): void {
+    this._ctx.shadowOffsetY = this._doSize(offsetY);
+  }
+
+  setShadowBlur(blur: number): void {
+    this._ctx.shadowBlur = this._doSize(blur);
+  }
+
   private _doSize(num: number) {
     return this._opts.devicePixelRatio * num;
   }
