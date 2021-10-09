@@ -4,6 +4,7 @@ import {
   TypeElement,
   TypeHelperConfig,
 } from '@idraw/types';
+import util from '@idraw/util';
 import Loader from '../loader';
 import { clearContext, drawBox } from './base';
 import { rotateElement } from './../transform';
@@ -68,19 +69,44 @@ export function drawText(
     });
 
     // draw text lines
-    let _y = elem.y;
-    if (lines.length * fontHeight < elem.h) {
-      _y += ((elem.h - lines.length * fontHeight) / 2);
-    }
-    lines.forEach((line, i) => {
-      let _x = elem.x;
-      if (desc.textAlign === 'center') {
-        _x = elem.x + (elem.w - line.width) / 2;
-      } else if (desc.textAlign === 'right') {
-        _x = elem.x + (elem.w - line.width);
+    {
+      let _y = elem.y;
+      if (lines.length * fontHeight < elem.h) {
+        _y += ((elem.h - lines.length * fontHeight) / 2);
       }
-      ctx.fillText(line.text, _x, _y + fontHeight * i);
-    });
+      lines.forEach((line, i) => {
+        let _x = elem.x;
+        if (desc.textAlign === 'center') {
+          _x = elem.x + (elem.w - line.width) / 2;
+        } else if (desc.textAlign === 'right') {
+          _x = elem.x + (elem.w - line.width);
+        }
+        ctx.fillText(line.text, _x, _y + fontHeight * i);
+      });
+    }
+
+    // draw text stroke
+    if (util.color.isColorStr(desc.strokeColor) && desc.strokeWidth !== undefined && desc.strokeWidth > 0) {
+      let _y = elem.y;
+      if (lines.length * fontHeight < elem.h) {
+        _y += ((elem.h - lines.length * fontHeight) / 2);
+      }
+      lines.forEach((line, i) => {
+        let _x = elem.x;
+        if (desc.textAlign === 'center') {
+          _x = elem.x + (elem.w - line.width) / 2;
+        } else if (desc.textAlign === 'right') {
+          _x = elem.x + (elem.w - line.width);
+        }
+        if (desc.strokeColor !== undefined) {
+          ctx.setStrokeStyle(desc.strokeColor);
+        }
+        if (desc.strokeWidth !== undefined && desc.strokeWidth > 0) {
+          ctx.setLineWidth(desc.strokeWidth);
+        }
+        ctx.strokeText(line.text, _x, _y + fontHeight * i);
+      });
+    }
 
   });
 }

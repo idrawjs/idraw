@@ -198,6 +198,14 @@ class Context implements TypeContext {
     }
   }
 
+  strokeText(text: string, x: number, y: number, maxWidth?: number | undefined): void {
+    if (maxWidth !== undefined) {
+      return this._ctx.strokeText(text, this._doSize(x), this._doSize(y), this._doSize(maxWidth));
+    } else {
+      return this._ctx.strokeText(text, this._doSize(x), this._doSize(y));
+    }
+  }
+
   setFont(opts: { fontSize: number, fontFamily?: string, fontWeight?: 'bold' }): void {
     const strList: string[] = [];
     if (opts.fontWeight === 'bold') {

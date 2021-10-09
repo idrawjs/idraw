@@ -10,7 +10,7 @@ const data = {
       type: "text",
       desc: {
         fontSize: 20,
-        color: "#333333",
+        color: "#ffffff",
         text: "生活就像海洋，只有意志坚强的人，才能到达彼岸。",
         fontFamily: '',
         fontWeight: 'bold',
@@ -18,6 +18,8 @@ const data = {
         borderWidth: 2,
         borderColor: "#bd0b64",
         bgColor: '#f0f0f0',
+        strokeColor: '#2196f3',
+        strokeWidth: 1,
       },
     },
     {

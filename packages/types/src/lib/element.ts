@@ -64,6 +64,8 @@ type TypeElemDescText = {
   fontFamily?: string;
   textAlign?: 'center' | 'left' | 'right';
   bgColor?: string;
+  strokeColor?: string;
+  strokeWidth?: number;
 } & TypeElemBoxDesc
 
 type TypeElemDescCircle = {
