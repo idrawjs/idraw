@@ -34,7 +34,8 @@ const data = {
         fontSize: 40,
         fontWeight: 'blod',
         text: "Hello Text",
-        color: "#999999",
+        // color: "#999999",
+        color: "#ffffff",
         borderRadius: 60,
         borderWidth: 4,
         borderColor: "#03a9f4",
@@ -42,7 +43,7 @@ const data = {
         textShadowColor: '#000000',
         textShadowOffsetX: 2,
         textShadowOffsetY: 2,
-        textShadowBlur: 0.5,
+        textShadowBlur: 2,
       },
     },
     {
