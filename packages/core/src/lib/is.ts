@@ -81,6 +81,10 @@ function lineHeight(value: any) {
   return number(value) && value > 0;
 }
 
+function strokeWidth(value: any) {
+  return number(value) && value > 0;
+}
+
 function textAlign(value: any) {
   return ['center', 'left', 'right'].includes(value);
 }
@@ -98,6 +102,7 @@ const is: TypeIs = {
   borderWidth, borderRadius, color,
   imageSrc, imageURL, imageBase64, svg, html,
   text, fontSize, lineHeight, textAlign, fontFamily, fontWeight,
+  strokeWidth,
 };
 
 type TypeIs = {
@@ -121,6 +126,7 @@ type TypeIs = {
   lineHeight: (value: any) => boolean,
   textAlign: (value: any) => boolean,
   fontFamily: (value: any) => boolean,
+  strokeWidth: (value: any) => boolean,
 }
 
 export default is;

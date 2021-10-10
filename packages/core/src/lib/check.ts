@@ -97,7 +97,7 @@ function textDesc(
 ): boolean {
   const {
     text, color, fontSize, lineHeight, fontFamily, textAlign,
-    fontWeight, bgColor,
+    fontWeight, bgColor, strokeWidth, strokeColor
   } = desc;
   if (!is.text(text)){
     return false;
@@ -123,6 +123,13 @@ function textDesc(
   if (desc.hasOwnProperty('textAlign') && !is.textAlign(textAlign)){
     return false;
   }
+  if (desc.hasOwnProperty('strokeWidth') && !is.strokeWidth(strokeWidth)){
+    return false;
+  }
+  if (desc.hasOwnProperty('strokeColor') && !is.color(strokeColor)){
+    return false;
+  }
+  
   if (!box(desc)) {
     return false;
   }

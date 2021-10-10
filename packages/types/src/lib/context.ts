@@ -41,6 +41,7 @@ interface TypeContext {
   measureText(text: string): TextMetrics;
   setTextAlign(align: CanvasTextAlign): void;
   fillText(text: string, x: number, y: number, maxWidth?: number | undefined): void;
+  strokeText(text: string, x: number, y: number, maxWidth?: number | undefined): void;
   setFont(opts: { fontSize: number, fontFamily?: string, fontWeight?: string }): void
   setTextBaseline(baseline: CanvasTextBaseline): void;
   save(): void;
@@ -50,6 +51,10 @@ interface TypeContext {
   drawImage(image: CanvasImageSource, sx: number, sy: number, sw: number, sh: number, dx: number, dy: number, dw: number, dh: number): void;
   createPattern(image: CanvasImageSource, repetition: string | null): CanvasPattern | null;
   setGlobalAlpha(alpha: number): void;
+  setShadowColor(color: string): void;
+  setShadowOffsetX(offsetX: number): void;
+  setShadowOffsetY(offsetY: number): void;
+  setShadowBlur(blur: number): void;
 }
 
 export {

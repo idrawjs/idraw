@@ -11,7 +11,13 @@ const data = {
       desc: {
         bgColor: "#f0f0f0",
         borderWidth: 2,
-        borderColor: '#999999'
+        borderColor: '#999999',
+
+        shadowColor: '#03a9f4',
+        // shadowColor: '#000000',
+        shadowOffsetX: 2,
+        shadowOffsetY: 2,
+        shadowBlur: 2,
       },
     },
     {
@@ -25,7 +31,8 @@ const data = {
       desc: {
         bgColor: "#f0f0f0",
         borderWidth: 2,
-        borderColor: '#666666'
+        borderColor: '#666666',
+        
       },
     },
     {
@@ -50,9 +57,16 @@ const data = {
       h: 300,
       type: "circle",
       desc: {
-        bgColor: "#f0f0f0",
+        // bgColor: "#f0f0f0",
+        bgColor: "#000000",
         borderWidth: 10,
-        borderColor: '#666666'
+        borderColor: '#666666',
+
+        shadowColor: '#03a9f4',
+        // shadowColor: '#000000',
+        shadowOffsetX: 2,
+        shadowOffsetY: 2,
+        shadowBlur: 2,
       },
     },
   ],

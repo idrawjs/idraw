@@ -5,6 +5,7 @@ import {
 } from '@idraw/types';
 import util from '@idraw/util';
 import { rotateElement } from './../transform';
+import is from './../is';
 
 const { istype, color } = util;
 
@@ -15,6 +16,10 @@ export function clearContext(ctx: TypeContext) {
   ctx.setStrokeStyle('#000000');
   ctx.setLineDash([]);
   ctx.setGlobalAlpha(1);
+  ctx.setShadowColor('#00000000');
+  ctx.setShadowOffsetX(0)
+  ctx.setShadowOffsetY(0);
+  ctx.setShadowBlur(0);
 }
 
 export function drawBgColor(ctx: TypeContext, color: string) {
@@ -30,6 +35,7 @@ export function drawBox(
 ): void {
   clearContext(ctx);
   drawBoxBorder(ctx, elem);
+  clearContext(ctx);
   rotateElement(ctx, elem, () => {
     const { x, y, w, h } = elem;
     let r: number = elem.desc.borderRadius || 0;
@@ -77,6 +83,19 @@ export function drawBoxBorder(
     r = Math.min(r, w / 2, h / 2);
     if (r < w / 2 && r < h / 2) {
       r = r + bw / 2;
+    }
+    const { desc } = elem;
+    if (desc.shadowColor !== undefined && util.color.isColorStr(desc.shadowColor)) {
+      ctx.setShadowColor(desc.shadowColor);
+    }
+    if (desc.shadowOffsetX !== undefined && is.number(desc.shadowOffsetX)) {
+      ctx.setShadowOffsetX(desc.shadowOffsetX);
+    }
+    if (desc.shadowOffsetY !== undefined && is.number(desc.shadowOffsetY)) {
+      ctx.setShadowOffsetY(desc.shadowOffsetY);
+    }
+    if (desc.shadowBlur !== undefined && is.number(desc.shadowBlur)) {
+      ctx.setShadowBlur(desc.shadowBlur);
     }
     ctx.beginPath();
     ctx.setLineWidth(bw);

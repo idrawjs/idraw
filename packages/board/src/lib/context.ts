@@ -198,6 +198,14 @@ class Context implements TypeContext {
     }
   }
 
+  strokeText(text: string, x: number, y: number, maxWidth?: number | undefined): void {
+    if (maxWidth !== undefined) {
+      return this._ctx.strokeText(text, this._doSize(x), this._doSize(y), this._doSize(maxWidth));
+    } else {
+      return this._ctx.strokeText(text, this._doSize(x), this._doSize(y));
+    }
+  }
+
   setFont(opts: { fontSize: number, fontFamily?: string, fontWeight?: 'bold' }): void {
     const strList: string[] = [];
     if (opts.fontWeight === 'bold') {
@@ -227,6 +235,22 @@ class Context implements TypeContext {
 
   scale(ratioX: number, ratioY: number) {
     this._ctx.scale(ratioX, ratioY);
+  }
+
+  setShadowColor(color: string): void {
+    this._ctx.shadowColor = color;
+  }
+
+  setShadowOffsetX(offsetX: number): void {
+    this._ctx.shadowOffsetX = this._doSize(offsetX);
+  }
+
+  setShadowOffsetY(offsetY: number): void {
+    this._ctx.shadowOffsetY = this._doSize(offsetY);
+  }
+
+  setShadowBlur(blur: number): void {
+    this._ctx.shadowBlur = this._doSize(blur);
   }
 
   private _doSize(num: number) {

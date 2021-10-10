@@ -2,6 +2,7 @@ import dataRect from "./rect.js";
 import dataImage from "./image.js";
 import dataSVG from "./svg.js";
 import dataText from "./text.js";
+import dataCircle from "./circle.js";
 
 const url = new URLSearchParams(window.location.search);
 
@@ -10,6 +11,7 @@ const dataMap = {
   image: dataImage,
   svg: dataSVG,
   text: dataText,
+  circle: dataCircle,
 };
 
 export function getData() {
