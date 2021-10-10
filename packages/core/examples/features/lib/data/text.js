@@ -44,6 +44,11 @@ const data = {
         textShadowOffsetX: 2,
         textShadowOffsetY: 2,
         textShadowBlur: 2,
+
+        shadowColor: '#000000',
+        shadowOffsetX: 2,
+        shadowOffsetY: 2,
+        shadowBlur: 2,
       },
     },
     {

@@ -28,6 +28,10 @@ type TypeElemBoxDesc = {
   borderRadius?: number;
   borderWidth?: number;
   borderColor?: string;
+  shadowColor?: string;
+  shadowOffsetX?: number;
+  shadowOffsetY?: number;
+  shadowBlur?: number;
 }
 
 type TypeElemDesc = {

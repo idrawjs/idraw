@@ -8,6 +8,7 @@ import util from '@idraw/util';
 import Loader from '../loader';
 import { clearContext, drawBox } from './base';
 import { rotateElement } from './../transform';
+import is from './../is';
 
 export function drawText(
   ctx: TypeContext,
@@ -74,16 +75,16 @@ export function drawText(
       if (lines.length * fontHeight < elem.h) {
         _y += ((elem.h - lines.length * fontHeight) / 2);
       }
-      if (desc.textShadowColor !== undefined) {
+      if (desc.textShadowColor !== undefined && util.color.isColorStr(desc.textShadowColor)) {
         ctx.setShadowColor(desc.textShadowColor);
       }
-      if (desc.textShadowOffsetX !== undefined) {
+      if (desc.textShadowOffsetX !== undefined && is.number(desc.textShadowOffsetX)) {
         ctx.setShadowOffsetX(desc.textShadowOffsetX);
       }
-      if (desc.textShadowOffsetY !== undefined) {
+      if (desc.textShadowOffsetY !== undefined && is.number(desc.textShadowOffsetY)) {
         ctx.setShadowOffsetY(desc.textShadowOffsetY);
       }
-      if (desc.textShadowBlur !== undefined) {
+      if (desc.textShadowBlur !== undefined && is.number(desc.textShadowBlur)) {
         ctx.setShadowBlur(desc.textShadowBlur);
       }
       lines.forEach((line, i) => {
