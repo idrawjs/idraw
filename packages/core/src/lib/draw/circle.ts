@@ -1,11 +1,11 @@
-import {
-  TypeContext, 
-  TypeElement,
-} from '@idraw/types';
+import { TypeContext, TypeElement, } from '@idraw/types';
+import util from '@idraw/util'
 import { rotateElement } from './../transform';
+import is from './../is';
+import { clearContext } from './base';
 
 export function drawCircle(ctx: TypeContext, elem: TypeElement<'circle'>) {
-
+  clearContext(ctx);
   rotateElement(ctx, elem, (ctx) => {
     const { x, y, w, h, desc } = elem;
     const {
@@ -13,6 +13,7 @@ export function drawCircle(ctx: TypeContext, elem: TypeElement<'circle'>) {
       borderColor = '#000000',
       borderWidth
     } = desc;
+
     const a = w / 2;
     const b = h / 2;
     const centerX = x + a;
@@ -21,6 +22,18 @@ export function drawCircle(ctx: TypeContext, elem: TypeElement<'circle'>) {
     if (borderWidth && borderWidth > 0) {
       const ba = borderWidth / 2 + a;
       const bb = borderWidth / 2 + b;
+      if (desc.shadowColor !== undefined && util.color.isColorStr(desc.shadowColor)) {
+        ctx.setShadowColor(desc.shadowColor);
+      }
+      if (desc.shadowOffsetX !== undefined && is.number(desc.shadowOffsetX)) {
+        ctx.setShadowOffsetX(desc.shadowOffsetX);
+      }
+      if (desc.shadowOffsetY !== undefined && is.number(desc.shadowOffsetY)) {
+        ctx.setShadowOffsetY(desc.shadowOffsetY);
+      }
+      if (desc.shadowBlur !== undefined && is.number(desc.shadowBlur)) {
+        ctx.setShadowBlur(desc.shadowBlur);
+      }
       ctx.beginPath();
       ctx.setStrokeStyle(borderColor);
       ctx.setLineWidth(borderWidth)

@@ -24,15 +24,18 @@ type TypeElement<T extends keyof TypeElemDesc | TypeElemType> = TypeElementBase<
   uuid: string;
 }
 
-type TypeElemBoxDesc = {
-  borderRadius?: number;
-  borderWidth?: number;
-  borderColor?: string;
+type TypeElemDescBase = {
   shadowColor?: string;
   shadowOffsetX?: number;
   shadowOffsetY?: number;
   shadowBlur?: number;
 }
+
+type TypeElemBoxDesc = {
+  borderRadius?: number;
+  borderWidth?: number;
+  borderColor?: string;
+} & TypeElemDescBase;
 
 type TypeElemDesc = {
   'text': TypeElemDescText,
@@ -82,7 +85,7 @@ type TypeElemDescCircle = {
 
 type TypeElemDescImage = {
   src: string;
-}
+} & TypeElemDescBase;
 
 type TypeElemDescSVG = {
   svg: string;
