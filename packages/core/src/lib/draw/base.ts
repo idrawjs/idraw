@@ -15,6 +15,10 @@ export function clearContext(ctx: TypeContext) {
   ctx.setStrokeStyle('#000000');
   ctx.setLineDash([]);
   ctx.setGlobalAlpha(1);
+  ctx.setShadowColor('#00000000');
+  ctx.setShadowOffsetX(0)
+  ctx.setShadowOffsetY(0);
+  ctx.setShadowBlur(0);
 }
 
 export function drawBgColor(ctx: TypeContext, color: string) {

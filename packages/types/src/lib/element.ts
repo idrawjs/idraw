@@ -66,10 +66,10 @@ type TypeElemDescText = {
   bgColor?: string;
   strokeColor?: string;
   strokeWidth?: number;
-  shadowColor?: string;
-  shadowOffsetX?: number;
-  shadowOffsetY?: number;
-  shadowOffsetBlur?: number;
+  textShadowColor?: string;
+  textShadowOffsetX?: number;
+  textShadowOffsetY?: number;
+  textShadowBlur?: number;
 } & TypeElemBoxDesc
 
 type TypeElemDescCircle = {

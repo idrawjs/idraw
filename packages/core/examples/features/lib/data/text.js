@@ -37,7 +37,12 @@ const data = {
         color: "#999999",
         borderRadius: 60,
         borderWidth: 4,
-        borderColor: "#03a9f4"
+        borderColor: "#03a9f4",
+
+        textShadowColor: '#000000',
+        textShadowOffsetX: 2,
+        textShadowOffsetY: 2,
+        textShadowBlur: 0.5,
       },
     },
     {

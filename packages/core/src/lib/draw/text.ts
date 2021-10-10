@@ -74,6 +74,18 @@ export function drawText(
       if (lines.length * fontHeight < elem.h) {
         _y += ((elem.h - lines.length * fontHeight) / 2);
       }
+      if (desc.textShadowColor !== undefined) {
+        ctx.setShadowColor(desc.textShadowColor);
+      }
+      if (desc.textShadowOffsetX !== undefined) {
+        ctx.setShadowOffsetX(desc.textShadowOffsetX);
+      }
+      if (desc.textShadowOffsetY !== undefined) {
+        ctx.setShadowOffsetY(desc.textShadowOffsetY);
+      }
+      if (desc.textShadowBlur !== undefined) {
+        ctx.setShadowBlur(desc.textShadowBlur);
+      }
       lines.forEach((line, i) => {
         let _x = elem.x;
         if (desc.textAlign === 'center') {
@@ -83,6 +95,7 @@ export function drawText(
         }
         ctx.fillText(line.text, _x, _y + fontHeight * i);
       });
+      clearContext(ctx);
     }
 
     // draw text stroke
