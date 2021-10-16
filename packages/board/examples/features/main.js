@@ -10,17 +10,17 @@ const Board = window.iDrawBoard;
 const mount = document.querySelector("#mount");
 const board = new Board(mount, opts);
 
-// const conf = {
-//   scale: 0.5,
-//   scrollX: 100,
-//   scrollY: 200,
-// }
-
 const conf = {
-  scale: 2,
-  scrollX: -200,
-  scrollY: -100,
-};
+  scale: 1,
+  // scrollX: 100,
+  // scrollY: 200,
+}
+
+// const conf = {
+//   scale: 2,
+//   scrollX: -200,
+//   scrollY: -100,
+// };
 
 drawData(board);
 
