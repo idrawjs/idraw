@@ -2,7 +2,8 @@ import {
   TypeScreenPosition, TypeScreenSize, TypeScreenContext, TypePoint, TypePointCursor,
   TypeBoardOptions, TypeBoardSizeOptions, } from '@idraw/types';
 import util from '@idraw/util';
-import { Watcher } from './lib/watcher';
+// import { Watcher } from './lib/watcher';
+import { ScreenWatcher } from './lib/screen-watcher';
 import { setStyle } from './lib/style';
 import Context from './lib/context';
 import { TypeBoardEventArgMap } from './lib/event';
@@ -31,7 +32,8 @@ class Board {
   private [_ctx]: Context;
   private [_displayCtx]: CanvasRenderingContext2D;
   private [_originCtx]: CanvasRenderingContext2D;
-  private [_watcher]: Watcher;
+  // private [_watcher]: Watcher;
+  private [_watcher]: ScreenWatcher;
   private [_scroller]: Scroller;
   private [_screen]: Screen;
 
@@ -45,7 +47,8 @@ class Board {
     this[_displayCtx] = this[_displayCanvas].getContext('2d') as CanvasRenderingContext2D;
     this[_ctx] = new Context(this[_originCtx], this[_opts]);
     this[_screen] = new Screen(this[_ctx], this[_opts]);
-    this[_watcher] = new Watcher(this[_displayCanvas]);
+    // this[_watcher] = new Watcher(this[_displayCanvas]);
+    this[_watcher] = new ScreenWatcher(this[_displayCanvas]);
     this[_scroller] = new Scroller(
       this[_displayCtx], {
         width: opts.width,
@@ -109,7 +112,8 @@ class Board {
   }
 
   clear() {
-    this[_displayCtx].clearRect(0, 0, this[_displayCanvas].width, this[_displayCanvas].height);
+    this[_displayCtx].clearRect(0, 0, this[_canvas].width, this[_canvas].height)
+    // this[_displayCtx].clearRect(0, 0, this[_displayCanvas].width, this[_displayCanvas].height);
   }
 
   on<T extends keyof TypeBoardEventArgMap >(name: T, callback: (p: TypeBoardEventArgMap[T]) => void) {
