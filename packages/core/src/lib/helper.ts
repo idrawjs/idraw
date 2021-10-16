@@ -166,6 +166,7 @@ export class Helper implements TypeHelper {
       const elemIdx = this._helperConfig.elementIndexMap[wrapper.uuid];
       const ele = data.elements[elemIdx];
       if (!ele) continue;
+      if (ele.operation?.invisible === true) continue;
       let bw = 0;
       // @ts-ignore
       if (ele.desc?.borderWidth > 0) {
@@ -178,9 +179,7 @@ export class Helper implements TypeHelper {
         ctx.lineTo(ele.x + ele.w + bw, ele.y - bw);
         ctx.lineTo(ele.x + ele.w + bw, ele.y + ele.h + bw);
         ctx.lineTo(ele.x - bw, ele.y + ele.h + bw);
-        ctx.lineTo(ele.x, ele.y);
-
-        ctx.rect(ele.x, ele.y, ele.w, ele.h);
+        ctx.lineTo(ele.x - bw, ele.y - bw);
         ctx.closePath();
         if (ctx.isPointInPath(p.x, p.y)) {
           idx = i;
