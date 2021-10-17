@@ -2,17 +2,24 @@ import { TypePoint } from '@idraw/types'
 
 type TempDataDesc = {
   prevClickPoint: TypePoint & { t: number } | null,
+  isHoverCanvas: boolean;
+  isDragCanvas: boolean; 
 }
 
+function createTempData() {
+  return {
+    prevClickPoint: null,
+    isHoverCanvas: false,
+    isDragCanvas: false,
+  }
+}
 
 export class TempData {
 
   private _temp: TempDataDesc
 
   constructor() {
-    this._temp = {
-      prevClickPoint: null
-    }
+    this._temp = createTempData();
   }
 
   set<T extends keyof TempDataDesc >(name: T, value:  TempDataDesc[T]) {
@@ -24,8 +31,6 @@ export class TempData {
   }
 
   clear() {
-    this._temp = {
-      prevClickPoint: null,
-    }
+    this._temp = createTempData();
   }
 }

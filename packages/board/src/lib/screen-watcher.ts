@@ -33,22 +33,48 @@ export class ScreenWatcher {
   _initEvent(): void {
     const canvas = this._canvas;
     const container = this._container;
-    container.addEventListener('mousemove', this._listenHover.bind(this), true);
-    container.addEventListener('mousedown', this._listenMoveStart.bind(this), true);
-    container.addEventListener('mousemove', this._listenMove.bind(this), true);
-    container.addEventListener('mouseup', this._listenMoveEnd.bind(this), true);
-    container.addEventListener('mouseleave', this._listenMoveEnd.bind(this), true);
-    container.addEventListener('mouseleave', this._listenLeave.bind(this), true);
-    container.addEventListener('click', this._listenClick.bind(this), true);
+    container.addEventListener('mousemove', this._listenHover.bind(this), false);
+    container.addEventListener('mousedown', this._listenMoveStart.bind(this), false);
+    container.addEventListener('mousemove', this._listenMove.bind(this), false);
+    container.addEventListener('mouseup', this._listenMoveEnd.bind(this), false);
+    container.addEventListener('click', this._listenClick.bind(this), false);
 
-    canvas.addEventListener('wheel', this._listenWheel.bind(this), true);
+    canvas.addEventListener('wheel', this._listenWheel.bind(this), false);
+    canvas.addEventListener('mousedown', this._listenCanvasMoveStart.bind(this), true);
+    canvas.addEventListener('mouseup', this._listenCanvasMoveEnd.bind(this), true);
+    canvas.addEventListener('mouseover', this._listenCanvasMoveOver.bind(this), true);
+    canvas.addEventListener('mouseleave', this._listenCanvasMoveLeave.bind(this), true);
 
-    container.addEventListener('touchstart', this._listenMoveStart.bind(this), true);
-    container.addEventListener('touchmove', this._listenMove.bind(this), true);
-    container.addEventListener('touchend', this._listenMoveEnd.bind(this), true);
+    // container.addEventListener('touchstart', this._listenMoveStart.bind(this), true);
+    // container.addEventListener('touchmove', this._listenMove.bind(this), true);
+    // container.addEventListener('touchend', this._listenMoveEnd.bind(this), true);
+  }
+
+  _listenCanvasMoveStart() {
+    if (this._temp.get('isHoverCanvas')) {
+      this._temp.set('isDragCanvas', true);
+    }  
+  }
+
+  _listenCanvasMoveEnd() {
+    this._temp.set('isDragCanvas', false); 
+  }
+
+  _listenCanvasMoveOver() {
+    this._temp.set('isHoverCanvas', true);
+  }
+
+  _listenCanvasMoveLeave() {
+    this._temp.set('isHoverCanvas', false);
+    if (this._event.has('leave')) {
+      this._event.trigger('leave', undefined);
+    }
   }
 
   _listenHover(e: MouseEvent|TouchEvent|Event): void {
+    if (!(this._temp.get('isDragCanvas') || this._temp.get('isHoverCanvas'))) {
+      return;
+    }
     e.preventDefault();
     const p = this._getPosition(e as MouseEvent|TouchEvent);
     if (this._isVaildPoint(p)) {
@@ -59,14 +85,10 @@ export class ScreenWatcher {
     this._isMoving = true;
   }
 
-  _listenLeave(e: MouseEvent|TouchEvent|Event): void {
-    e.preventDefault();
-    if (this._event.has('leave')) {
-      this._event.trigger('leave', undefined);
-    }
-  }
-
   _listenMoveStart(e: MouseEvent|TouchEvent|Event): void {
+    if (this._temp.get('isHoverCanvas') !== true) {
+      return;
+    }
     e.preventDefault();
     const p = this._getPosition(e as MouseEvent|TouchEvent);
     if (this._isVaildPoint(p)) {
@@ -81,6 +103,9 @@ export class ScreenWatcher {
   }
   
   _listenMove(e: MouseEvent|TouchEvent|Event): void {
+    if (!(this._temp.get('isHoverCanvas') || this._temp.get('isDragCanvas'))) {
+      return;
+    }
     e.preventDefault();
     e.stopPropagation();
     if (this._event.has('move') && this._isMoving === true) {
@@ -92,6 +117,9 @@ export class ScreenWatcher {
   }
   
   _listenMoveEnd(e: MouseEvent|TouchEvent|Event): void {
+    if (!(this._temp.get('isHoverCanvas') || this._temp.get('isDragCanvas'))) {
+      return;
+    }
     e.preventDefault();
     if (this._event.has('moveEnd')) {
       const p = this._getPosition(e as MouseEvent|TouchEvent);
@@ -99,6 +127,7 @@ export class ScreenWatcher {
         this._event.trigger('moveEnd', p);
       }
     }
+    this._temp.set('isDragCanvas', false); 
     this._isMoving = false;
   }
 
@@ -113,6 +142,9 @@ export class ScreenWatcher {
   }
 
   _listenClick(e: MouseEvent|TouchEvent|Event) {
+    if (!this._temp.get('isHoverCanvas')) {
+      return;
+    }
     e.preventDefault();
     const maxLimitTime = 500;
     const p = this._getPosition(e as MouseEvent|TouchEvent);
