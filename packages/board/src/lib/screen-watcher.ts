@@ -72,7 +72,7 @@ export class ScreenWatcher {
           //   'mousemove',
           //   throttle(this._listSameOriginParentWindow.bind(this), 16), 
           //   false);
-          window.parent.window.addEventListener(
+          target.parent.window.addEventListener(
             'mousemove',
             this._listSameOriginParentWindow.bind(this), 
             false);
