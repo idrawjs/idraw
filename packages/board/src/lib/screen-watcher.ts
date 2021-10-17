@@ -1,9 +1,9 @@
 import { TypePoint } from '@idraw/types';
-import util from '@idraw/util';
+// import util from '@idraw/util';
 import { BoardEvent, TypeBoardEventArgMap } from './event';
 import { TempData } from './watcher-temp';
 
-const { throttle } = util.time;
+// const { throttle } = util.time;
 
 // const isInIframe = window.self === window.top;
 
@@ -52,21 +52,39 @@ export class ScreenWatcher {
     canvas.addEventListener('mouseup', this._listenCanvasMoveEnd.bind(this), true);
     canvas.addEventListener('mouseover', this._listenCanvasMoveOver.bind(this), true);
     canvas.addEventListener('mouseleave', this._listenCanvasMoveLeave.bind(this), true);
-
-    // If in iframe
-    if (window.self !== window.parent) {
-      // If in same origin 
-      if (window.self.origin === window.parent.self.origin) {
-        window.parent.window.addEventListener(
-          'mousemove',
-          throttle(this._listSameOriginParentWindow.bind(this), 16), 
-          false);
-      }
-    }
+    this._initParentEvent();
+    
 
     // container.addEventListener('touchstart', this._listenMoveStart.bind(this), true);
     // container.addEventListener('touchmove', this._listenMove.bind(this), true);
     // container.addEventListener('touchend', this._listenMoveEnd.bind(this), true);
+  }
+
+  _initParentEvent() {
+    let target = window;
+    let targetOrigin = target.origin;
+    while (target.self !== target.top) {
+      // If in iframe
+      if (target.self !== target.parent) {
+        // If in same origin 
+        if (target.origin === targetOrigin) {
+          // window.parent.window.addEventListener(
+          //   'mousemove',
+          //   throttle(this._listSameOriginParentWindow.bind(this), 16), 
+          //   false);
+          window.parent.window.addEventListener(
+            'mousemove',
+            this._listSameOriginParentWindow.bind(this), 
+            false);
+        }
+      }
+      // @ts-ignore
+      target = target.parent;
+      if (!target) {
+        break;
+      }
+    }
+    
   }
 
   _listenHover(e: MouseEvent|TouchEvent): void {
