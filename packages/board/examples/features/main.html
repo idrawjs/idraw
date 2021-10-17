@@ -3,6 +3,14 @@
     <style></style>
     <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
     <style>
+      html, body {
+        margin: 0; padding: 0;
+        background: #f0f0f088;
+      }
+      #mount {
+        margin-top: 50px;
+        margin-left: 60px;
+      }
       #mount canvas {
         border-right: 1px solid #aaaaaa40;
         border-bottom: 1px solid #aaaaaa40;
@@ -12,6 +20,7 @@
         linear-gradient(#aaa 1px, transparent 0),
         linear-gradient(90deg, #aaa 1px, transparent 0);
         background-size: 10px 10px, 10px 10px, 50px 50px, 50px 50px;
+        background-color: #ffffff;
       }
     </style>
   </head>
@@ -52,5 +61,11 @@
 
     <script src="./../../dist/index.global.js"></script>
     <script type="module" src="./main.js"></script>
+    <script>
+      // console.log(parent.window.location);
+      // parent.document.addEventListener('click', (e) => {
+      //   console.log('xxxxxxx: ', e);
+      // })
+    </script>
   </body>
 </html>
