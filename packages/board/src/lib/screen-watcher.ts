@@ -1,6 +1,9 @@
 import { TypePoint } from '@idraw/types';
+import util from '@idraw/util';
 import { BoardEvent, TypeBoardEventArgMap } from './event';
 import { TempData } from './watcher-temp';
+
+const { throttle } = util.time;
 
 // const isInIframe = window.self === window.top;
 
@@ -45,9 +48,36 @@ export class ScreenWatcher {
     canvas.addEventListener('mouseover', this._listenCanvasMoveOver.bind(this), true);
     canvas.addEventListener('mouseleave', this._listenCanvasMoveLeave.bind(this), true);
 
+    // If in iframe
+    if (window.self !== window.parent) {
+      // If in same origin 
+      if (window.self.origin === window.parent.self.origin) {
+        window.parent.window.addEventListener(
+          'mousemove',
+          throttle(this._listSameOriginParentWindow.bind(this), 16), 
+          false);
+      }
+    }
+
     // container.addEventListener('touchstart', this._listenMoveStart.bind(this), true);
     // container.addEventListener('touchmove', this._listenMove.bind(this), true);
     // container.addEventListener('touchend', this._listenMoveEnd.bind(this), true);
+  }
+
+  _listSameOriginParentWindow() {
+    if (this._temp.get('isHoverCanvas')) {
+      if (this._event.has('leave')) {
+        this._event.trigger('leave', undefined);
+      }
+    }
+    if (this._temp.get('isDragCanvas')) {
+      if (this._event.has('moveEnd')) {
+        this._event.trigger('moveEnd', {x: 0, y: 0});
+      }
+    }
+    this._isMoving = false;
+    this._temp.set('isDragCanvas', false);
+    this._temp.set('isHoverCanvas', false)
   }
 
   _listenCanvasMoveStart() {
