@@ -36,13 +36,18 @@ export class ScreenWatcher {
   _initEvent(): void {
     const canvas = this._canvas;
     const container = this._container;
-    container.addEventListener('mousemove', this._listenHover.bind(this), false);
-    container.addEventListener('mousedown', this._listenMoveStart.bind(this), false);
-    container.addEventListener('mousemove', this._listenMove.bind(this), false);
-    container.addEventListener('mouseup', this._listenMoveEnd.bind(this), false);
-    container.addEventListener('click', this._listenClick.bind(this), false);
+    // container.addEventListener('mousemove', this._listenWindowHover.bind(this), false);
+    // container.addEventListener('mousedown', this._listenWindowMoveStart.bind(this), false);
+    container.addEventListener('mousemove', this._listenWindowMove.bind(this), false);
+    container.addEventListener('mouseup', this._listenWindowMoveEnd.bind(this), false);
 
-    canvas.addEventListener('wheel', this._listenWheel.bind(this), false);
+    canvas.addEventListener('mousemove', this._listenHover.bind(this), false);
+    canvas.addEventListener('mousedown', this._listenMoveStart.bind(this), false);
+    canvas.addEventListener('mousemove', this._listenMove.bind(this), false);
+    canvas.addEventListener('mouseup', this._listenMoveEnd.bind(this), false);
+
+    canvas.addEventListener('click', this._listenCanvasClick.bind(this), false);
+    canvas.addEventListener('wheel', this._listenCanvasWheel.bind(this), false);
     canvas.addEventListener('mousedown', this._listenCanvasMoveStart.bind(this), true);
     canvas.addEventListener('mouseup', this._listenCanvasMoveEnd.bind(this), true);
     canvas.addEventListener('mouseover', this._listenCanvasMoveOver.bind(this), true);
@@ -64,6 +69,60 @@ export class ScreenWatcher {
     // container.addEventListener('touchend', this._listenMoveEnd.bind(this), true);
   }
 
+  _listenHover(e: MouseEvent|TouchEvent): void {
+    e.preventDefault();
+    const p = this._getPosition(e);
+    if (this._isVaildPoint(p)) {
+      if (this._event.has('hover')) {
+        this._event.trigger('hover', p);
+      }
+    }
+    this._isMoving = true;
+  }
+
+  // _listenLeave(e: MouseEvent|TouchEvent): void {
+  //   e.preventDefault();
+  //   if (this._event.has('leave')) {
+  //     this._event.trigger('leave', undefined);
+  //   }
+  // }
+
+  _listenMoveStart(e: MouseEvent|TouchEvent): void {
+    e.preventDefault();
+    const p = this._getPosition(e);
+    if (this._isVaildPoint(p)) {
+      if (this._event.has('point')) {
+        this._event.trigger('point', p);
+      }
+      if (this._event.has('moveStart')) {
+        this._event.trigger('moveStart', p);
+      }
+    }
+    this._isMoving = true;
+  }
+  
+  _listenMove(e: MouseEvent|TouchEvent): void {
+    e.preventDefault();
+    e.stopPropagation();
+    if (this._event.has('move') && this._isMoving === true) {
+      const p = this._getPosition(e);
+      if (this._isVaildPoint(p)) {
+        this._event.trigger('move', p);
+      }
+    }
+  }
+  
+  _listenMoveEnd(e: MouseEvent|TouchEvent): void {
+    e.preventDefault();
+    if (this._event.has('moveEnd')) {
+      const p = this._getPosition(e);
+      if (this._isVaildPoint(p)) {
+        this._event.trigger('moveEnd', p);
+      }
+    }
+    this._isMoving = false;
+  }
+
   _listSameOriginParentWindow() {
     if (this._temp.get('isHoverCanvas')) {
       if (this._event.has('leave')) {
@@ -72,7 +131,7 @@ export class ScreenWatcher {
     }
     if (this._temp.get('isDragCanvas')) {
       if (this._event.has('moveEnd')) {
-        this._event.trigger('moveEnd', {x: 0, y: 0});
+        this._event.trigger('moveEnd', {x: NaN, y: NaN});
       }
     }
     this._isMoving = false;
@@ -101,39 +160,39 @@ export class ScreenWatcher {
     }
   }
 
-  _listenHover(e: MouseEvent|TouchEvent|Event): void {
-    if (!(this._temp.get('isDragCanvas') || this._temp.get('isHoverCanvas'))) {
-      return;
-    }
-    e.preventDefault();
-    const p = this._getPosition(e as MouseEvent|TouchEvent);
-    if (this._isVaildPoint(p)) {
-      if (this._event.has('hover')) {
-        this._event.trigger('hover', p);
-      }
-    }
-    this._isMoving = true;
-  }
+  // _listenWindowHover(e: MouseEvent|TouchEvent|Event): void {
+  //   if (this._temp.get('isDragCanvas')) {
+  //     return;
+  //   }
+  //   e.preventDefault();
+  //   const p = this._getPosition(e as MouseEvent|TouchEvent);
+  //   if (this._isVaildPoint(p)) {
+  //     if (this._event.has('hover')) {
+  //       this._event.trigger('hover', p);
+  //     }
+  //   }
+  //   this._isMoving = true;
+  // }
 
-  _listenMoveStart(e: MouseEvent|TouchEvent|Event): void {
-    if (this._temp.get('isHoverCanvas') !== true) {
-      return;
-    }
-    e.preventDefault();
-    const p = this._getPosition(e as MouseEvent|TouchEvent);
-    if (this._isVaildPoint(p)) {
-      if (this._event.has('point')) {
-        this._event.trigger('point', p);
-      }
-      if (this._event.has('moveStart')) {
-        this._event.trigger('moveStart', p);
-      }
-    }
-    this._isMoving = true;
-  }
+  // _listenWindowMoveStart(e: MouseEvent|TouchEvent|Event): void {
+  //   if (this._temp.get('isHoverCanvas') !== true) {
+  //     return;
+  //   }
+  //   e.preventDefault();
+  //   const p = this._getPosition(e as MouseEvent|TouchEvent);
+  //   if (this._isVaildPoint(p)) {
+  //     if (this._event.has('point')) {
+  //       this._event.trigger('point', p);
+  //     }
+  //     if (this._event.has('moveStart')) {
+  //       this._event.trigger('moveStart', p);
+  //     }
+  //   }
+  //   this._isMoving = true;
+  // }
   
-  _listenMove(e: MouseEvent|TouchEvent|Event): void {
-    if (!(this._temp.get('isHoverCanvas') || this._temp.get('isDragCanvas'))) {
+  _listenWindowMove(e: MouseEvent|TouchEvent|Event): void {
+    if (this._temp.get('isDragCanvas') !== true) {
       return;
     }
     e.preventDefault();
@@ -146,8 +205,8 @@ export class ScreenWatcher {
     }
   }
   
-  _listenMoveEnd(e: MouseEvent|TouchEvent|Event): void {
-    if (!(this._temp.get('isHoverCanvas') || this._temp.get('isDragCanvas'))) {
+  _listenWindowMoveEnd(e: MouseEvent|TouchEvent|Event): void {
+    if (!this._temp.get('isDragCanvas') === true) {
       return;
     }
     e.preventDefault();
@@ -161,7 +220,7 @@ export class ScreenWatcher {
     this._isMoving = false;
   }
 
-  _listenWheel(e: WheelEvent) {
+  _listenCanvasWheel(e: WheelEvent) {
     e.preventDefault();
     if (this._event.has('wheelX') && (e.deltaX > 0 || e.deltaX < 0)) {
       this._event.trigger('wheelX', e.deltaX);
@@ -171,10 +230,7 @@ export class ScreenWatcher {
     }
   }
 
-  _listenClick(e: MouseEvent|TouchEvent|Event) {
-    if (!this._temp.get('isHoverCanvas')) {
-      return;
-    }
+  _listenCanvasClick(e: MouseEvent|TouchEvent|Event) {
     e.preventDefault();
     const maxLimitTime = 500;
     const p = this._getPosition(e as MouseEvent|TouchEvent);

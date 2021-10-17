@@ -112,8 +112,7 @@ class Board {
   }
 
   clear() {
-    this[_displayCtx].clearRect(0, 0, this[_canvas].width, this[_canvas].height)
-    // this[_displayCtx].clearRect(0, 0, this[_displayCanvas].width, this[_displayCanvas].height);
+    this[_displayCtx].clearRect(0, 0, this[_displayCanvas].width, this[_displayCanvas].height);
   }
 
   on<T extends keyof TypeBoardEventArgMap >(name: T, callback: (p: TypeBoardEventArgMap[T]) => void) {
