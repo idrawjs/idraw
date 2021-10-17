@@ -194,7 +194,12 @@ export class ScreenWatcher {
   }
 
   private _isVaildPoint(p: TypePoint): boolean {
-    return ( p.x > 0 && p.y > 0);
+    return isAvailableNum(p.x) && isAvailableNum(p.y);
   }
   
+}
+
+
+function isAvailableNum(num: any): boolean {
+  return (num > 0 || num < 0 || num === 0);
 }
