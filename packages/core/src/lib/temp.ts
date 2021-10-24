@@ -1,4 +1,4 @@
-import { TypeHelperWrapperDotDirection, TypePoint } from '@idraw/types';
+import { TypeHelperWrapperControllerDirection, TypePoint } from '@idraw/types';
 import { Mode, CursorStatus } from './../constant/static';
 
 type TempDataDesc = {
@@ -9,8 +9,8 @@ type TempDataDesc = {
   selectedUUID: string | null,
   selectedUUIDList: string[],
   hoverUUID: string | null,
-  selectedDotDirection: TypeHelperWrapperDotDirection | null,
-  hoverDotDirection: TypeHelperWrapperDotDirection | null,
+  selectedControllerDirection: TypeHelperWrapperControllerDirection | null,
+  hoverControllerDirection: TypeHelperWrapperControllerDirection | null,
   prevPoint: TypePoint | null,
 }
 
@@ -23,8 +23,8 @@ function createData(): TempDataDesc {
     selectedUUID: null,
     selectedUUIDList: [],
     hoverUUID: null,
-    selectedDotDirection: null,
-    hoverDotDirection: null,
+    selectedControllerDirection: null,
+    hoverControllerDirection: null,
     prevPoint: null,
   }
 }

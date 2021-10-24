@@ -1,7 +1,7 @@
 type TypeConfig = {
   elementWrapper?: {
     color?: string,
-    dotSize?: number,
+    controllerSize?: number,
     lineWidth?: number,
     lineDash?: number[],
   },
@@ -16,7 +16,7 @@ type TypeConfigStrict = TypeConfig & {
   elementWrapper: {
     color: string,
     lockColor: string,
-    dotSize: number,
+    controllerSize: number,
     lineWidth: number,
     lineDash: number[],
   },

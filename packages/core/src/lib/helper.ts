@@ -1,6 +1,6 @@
 import {
   TypeData, TypeHelper, TypeHelperConfig, TypeHelperUpdateOpts,
-  TypeHelperWrapperDotDirection, TypeElement,
+  TypeHelperWrapperControllerDirection, TypeElement,
   TypeElemDesc, TypeContext, TypePoint, TypeConfigStrict,
   TypeHeplerSelectedElementWrapper
 } from '@idraw/types';
@@ -53,33 +53,33 @@ export class Helper implements TypeHelper {
     return null;
   }
 
-  isPointInElementWrapperDot(p: TypePoint, data?: TypeData): 
+  isPointInElementWrapperController(p: TypePoint, data?: TypeData): 
   {
     uuid: string | null | undefined, 
-    selectedDotDirection: TypeHelperWrapperDotDirection | null,
-    hoverDotDirection: TypeHelperWrapperDotDirection | null,
+    selectedControllerDirection: TypeHelperWrapperControllerDirection | null,
+    hoverControllerDirection: TypeHelperWrapperControllerDirection | null,
     directIndex: number | null,
   } {
     const ctx = this._ctx;
     const uuid = this._helperConfig?.selectedElementWrapper?.uuid || null;
     let directIndex = null;
-    let selectedDotDirection: TypeHelperWrapperDotDirection | null = null;
-    let hoverDotDirection: TypeHelperWrapperDotDirection | null = null;
+    let selectedControllerDirection: TypeHelperWrapperControllerDirection | null = null;
+    let hoverControllerDirection: TypeHelperWrapperControllerDirection | null = null;
     if (!this._helperConfig.selectedElementWrapper) {
-      return {uuid, selectedDotDirection, directIndex, hoverDotDirection};
+      return {uuid, selectedControllerDirection, directIndex, hoverControllerDirection};
     }
     const wrapper = this._helperConfig.selectedElementWrapper;
-    const dots = [
-      wrapper.dots.right,
-      wrapper.dots.topRight,
-      wrapper.dots.top,
-      wrapper.dots.topLeft,
-      wrapper.dots.left,
-      wrapper.dots.bottomLeft,
-      wrapper.dots.bottom,
-      wrapper.dots.bottomRight,
+    const controllers = [
+      wrapper.controllers.right,
+      wrapper.controllers.topRight,
+      wrapper.controllers.top,
+      wrapper.controllers.topLeft,
+      wrapper.controllers.left,
+      wrapper.controllers.bottomLeft,
+      wrapper.controllers.bottom,
+      wrapper.controllers.bottomRight,
     ];
-    let directionNames: TypeHelperWrapperDotDirection[] = [
+    let directionNames: TypeHelperWrapperControllerDirection[] = [
       'right',
       'top-right',
       'top',
@@ -123,37 +123,39 @@ export class Helper implements TypeHelper {
 
 
     rotateContext(ctx, wrapper.translate, wrapper.radian || 0, () => {
-      for (let i = 0; i < dots.length; i ++) {
-        const dot = dots[i];
-        if (dot.invisible === true) {
+      for (let i = 0; i < controllers.length; i ++) {
+        const controller = controllers[i];
+        if (controller.invisible === true) {
           continue;
         }
         ctx.beginPath();
-        ctx.arc(dot.x, dot.y, wrapper.dotSize, 0, Math.PI * 2);
+        ctx.arc(controller.x, controller.y, wrapper.controllerSize, 0, Math.PI * 2);
         ctx.closePath();
         if (ctx.isPointInPath(p.x, p.y)) {
-          selectedDotDirection = directionNames[i];
-          hoverDotDirection = hoverDirectionNames[i];
+          selectedControllerDirection = directionNames[i];
+          hoverControllerDirection = hoverDirectionNames[i];
         }
-        if (selectedDotDirection) {
+        if (selectedControllerDirection) {
           directIndex = i;
           break;
         }
       }
     });
-    if (selectedDotDirection === null) {
-      rotateContext(ctx, wrapper.translate, wrapper.radian || 0, () => {
-        const dot = wrapper.dots.rotate;
-        ctx.beginPath();
-        ctx.arc(dot.x, dot.y, wrapper.dotSize, 0, Math.PI * 2);
-        ctx.closePath();
-        if (ctx.isPointInPath(p.x, p.y)) {
-          selectedDotDirection = 'rotate';
-          hoverDotDirection =  'rotate';
-        }
-      });
+    if (selectedControllerDirection === null) {
+      const controller = wrapper.controllers.rotate;
+      if (controller.invisible !== true) {
+        rotateContext(ctx, wrapper.translate, wrapper.radian || 0, () => {
+          ctx.beginPath();
+          ctx.arc(controller.x, controller.y, wrapper.controllerSize, 0, Math.PI * 2);
+          ctx.closePath();
+          if (ctx.isPointInPath(p.x, p.y)) {
+            selectedControllerDirection = 'rotate';
+            hoverControllerDirection =  'rotate';
+          }
+        });
+      }
     }
-    return {uuid, selectedDotDirection, hoverDotDirection, directIndex};
+    return {uuid, selectedControllerDirection, hoverControllerDirection, directIndex};
   }
 
   isPointInElementList(p: TypePoint, data: TypeData): boolean {
@@ -309,7 +311,7 @@ export class Helper implements TypeHelper {
   ): TypeHeplerSelectedElementWrapper {
     const { scale } = opts;
     const elemWrapper = this._coreConfig.elementWrapper;
-    const dotSize = elemWrapper.dotSize / scale;
+    const controllerSize = elemWrapper.controllerSize / scale;
     const lineWidth = elemWrapper.lineWidth / scale;
     const lineDash = elemWrapper.lineDash.map(n => (n / scale));
 
@@ -323,48 +325,53 @@ export class Helper implements TypeHelper {
     
     const wrapper: TypeHeplerSelectedElementWrapper = {
       uuid: elem.uuid,
-      dotSize: dotSize,
+      controllerSize: controllerSize,
       lock: elem?.operation?.lock === true,
-      dots: {
+      controllers: {
         topLeft: {
-          x: elem.x - dotSize - bw,
-          y: elem.y - dotSize - bw,
-          invisible: hideObliqueDirection,
+          x: elem.x - controllerSize - bw,
+          y: elem.y - controllerSize - bw,
+          invisible: hideObliqueDirection || elem?.operation?.disbaleScale === true,
         },
         top: {
           x: elem.x + elem.w / 2,
-          y: elem.y - dotSize - bw,
+          y: elem.y - controllerSize - bw,
+          invisible: elem?.operation?.disbaleScale === true,
         },
         topRight: {
-          x: elem.x + elem.w + dotSize + bw,
-          y: elem.y - dotSize - bw,
-          invisible: hideObliqueDirection,
+          x: elem.x + elem.w + controllerSize + bw,
+          y: elem.y - controllerSize - bw,
+          invisible: hideObliqueDirection || elem?.operation?.disbaleScale === true,
         },
         right: {
-          x: elem.x + elem.w + dotSize + bw,
+          x: elem.x + elem.w + controllerSize + bw,
           y: elem.y + elem.h / 2,
+          invisible: elem?.operation?.disbaleScale === true
         },
         bottomRight: {
-          x: elem.x + elem.w + dotSize + bw,
-          y: elem.y + elem.h + dotSize + bw,
-          invisible: hideObliqueDirection,
+          x: elem.x + elem.w + controllerSize + bw,
+          y: elem.y + elem.h + controllerSize + bw,
+          invisible: hideObliqueDirection || elem?.operation?.disbaleScale === true,
         },
         bottom: {
           x: elem.x + elem.w / 2,
-          y: elem.y + elem.h + dotSize + bw,
+          y: elem.y + elem.h + controllerSize + bw,
+          invisible: elem?.operation?.disbaleScale === true,
         },
         bottomLeft: {
-          x: elem.x - dotSize - bw,
-          y: elem.y + elem.h + dotSize + bw,
-          invisible: hideObliqueDirection,
+          x: elem.x - controllerSize - bw,
+          y: elem.y + elem.h + controllerSize + bw,
+          invisible: hideObliqueDirection || elem?.operation?.disbaleScale === true,
         },
         left: {
-          x: elem.x - dotSize - bw,
+          x: elem.x - controllerSize - bw,
           y: elem.y + elem.h / 2,
+          invisible: elem?.operation?.disbaleScale === true
         },
         rotate: {
           x: elem.x + elem.w / 2,
-          y: elem.y - dotSize - (dotSize * 2 + rotateLimit) - bw,
+          y: elem.y - controllerSize - (controllerSize * 2 + rotateLimit) - bw,
+          invisible: elem?.operation?.disbaleRotate === true
         }
       },
       lineWidth: lineWidth,

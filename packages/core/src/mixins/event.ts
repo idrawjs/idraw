@@ -1,4 +1,4 @@
-import { TypePoint, TypeHelperWrapperDotDirection } from '@idraw/types';
+import { TypePoint, TypeHelperWrapperControllerDirection } from '@idraw/types';
 import util from '@idraw/util';
 import Core from './../index';
 import {
@@ -67,12 +67,12 @@ function handlePoint(core: Core) {
       core[_tempData].set('mode', Mode.SELECT_ELEMENT_LIST);
     } else {
       const {
-        uuid, selectedDotDirection
-      } = core[_helper].isPointInElementWrapperDot(point, core[_data]);
-      if (uuid && selectedDotDirection) {
+        uuid, selectedControllerDirection
+      } = core[_helper].isPointInElementWrapperController(point, core[_data]);
+      if (uuid && selectedControllerDirection) {
         // Controll Element-Wrapper
-        core[_tempData].set('mode', Mode.SELECT_ELEMENT_WRAPPER_DOT);
-        core[_tempData].set('selectedDotDirection', selectedDotDirection);
+        core[_tempData].set('mode', Mode.SELECT_ELEMENT_WRAPPER_CONTROLLER);
+        core[_tempData].set('selectedControllerDirection', selectedControllerDirection);
         core[_tempData].set('selectedUUID', uuid);
       } else {
         const [index, uuid] = core[_element].isPointInElement(point, core[_data]);
@@ -148,13 +148,13 @@ function handleMove(core: Core) {
         dragElements(core, [core[_tempData].get('selectedUUID') as string], point, core[_tempData].get('prevPoint'));
         core[_draw]();
         core[_tempData].set('cursorStatus', CursorStatus.DRAGGING);
-      } else if (core[_tempData].get('mode') === Mode.SELECT_ELEMENT_WRAPPER_DOT && core[_tempData].get('selectedDotDirection')) {
+      } else if (core[_tempData].get('mode') === Mode.SELECT_ELEMENT_WRAPPER_CONTROLLER && core[_tempData].get('selectedControllerDirection')) {
         transfromElement(
           core,
           core[_tempData].get('selectedUUID') as string,
           point,
           core[_tempData].get('prevPoint'),
-          core[_tempData].get('selectedDotDirection') as TypeHelperWrapperDotDirection
+          core[_tempData].get('selectedControllerDirection') as TypeHelperWrapperControllerDirection
         );
         core[_tempData].set('cursorStatus', CursorStatus.DRAGGING)
       }
@@ -283,7 +283,7 @@ function handleLeave(core: Core) {
 
 function transfromElement(
   core: Core,
-  uuid: string, point: TypePoint, prevPoint: TypePoint|null, direction: TypeHelperWrapperDotDirection
+  uuid: string, point: TypePoint, prevPoint: TypePoint|null, direction: TypeHelperWrapperControllerDirection
 ): null | {
   width: number,
   height: number,

@@ -3,24 +3,24 @@ import { TypePoint } from './board';
 
 // type test = {[uuid string]: TypeElement}
 
-type TypeDot =  TypePoint & {
+type TypeController =  TypePoint & {
   invisible?: boolean;
 };
 
 type TypeHeplerSelectedElementWrapper = {
   uuid: string;
-  dotSize: number;
+  controllerSize: number;
   lock: boolean;
-  dots: {
-    topLeft: TypeDot,
-    top: TypeDot,
-    topRight: TypeDot,
-    right: TypeDot,
-    bottomRight: TypeDot,
-    bottom: TypeDot,
-    bottomLeft: TypeDot,
-    left: TypeDot,
-    rotate: TypeDot,
+  controllers: {
+    topLeft: TypeController,
+    top: TypeController,
+    topRight: TypeController,
+    right: TypeController,
+    bottomRight: TypeController,
+    bottom: TypeController,
+    bottomLeft: TypeController,
+    left: TypeController,
+    rotate: TypeController,
   },
   lineDash: number[];
   lineWidth: number;
@@ -69,7 +69,7 @@ interface TypeHelper {
   getConfig(): TypeHelperConfig;
 }
 
-type TypeHelperWrapperDotDirection 
+type TypeHelperWrapperControllerDirection 
 = 'top-left' | 'top' | 'top-right' | 'right'
 | 'bottom-right' | 'bottom' | 'bottom-left' | 'left'
 | 'rotate';
@@ -78,7 +78,7 @@ export {
   TypeHelper,
   TypeHelperConfig,
   TypeHelperUpdateOpts,
-  TypeHelperWrapperDotDirection,
+  TypeHelperWrapperControllerDirection,
   TypeHeplerSelectedElementWrapper,
   TypeHeplerSelectedAreaWrapper,
 };

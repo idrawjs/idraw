@@ -9,6 +9,8 @@ type TypeElementAttrs = {
   operation?: {
     lock?: boolean,
     invisible?: boolean,
+    disbaleScale?: boolean,
+    disbaleRotate?: boolean,
   }
   extension?: {[key: string]: any} | any;
 }
