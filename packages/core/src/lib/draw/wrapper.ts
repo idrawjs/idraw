@@ -26,20 +26,23 @@ export function drawElementWrapper(ctx: TypeContext, config: TypeHelperConfig) {
     ctx.closePath();
     
     if (wrapper.lock !== true) {
-      // draw wrapper's rotate line
-      ctx.beginPath();
-      ctx.moveTo(wrapper.controllers.top.x, wrapper.controllers.top.y);
-      ctx.lineTo(wrapper.controllers.rotate.x, wrapper.controllers.rotate.y + wrapper.controllerSize);
-      ctx.stroke();
-      ctx.closePath();
+      if (wrapper.controllers.rotate.invisible !== true) {
+        // draw wrapper's rotate line
+        ctx.beginPath();
+        ctx.moveTo(wrapper.controllers.top.x, wrapper.controllers.top.y);
+        ctx.lineTo(wrapper.controllers.rotate.x, wrapper.controllers.rotate.y + wrapper.controllerSize);
+        ctx.stroke();
+        ctx.closePath();
 
-      // draw wrapper's rotate
-      ctx.beginPath();
-      ctx.setLineDash([]);
-      ctx.setLineWidth(wrapper.controllerSize / 2);
-      ctx.arc(wrapper.controllers.rotate.x, wrapper.controllers.rotate.y, wrapper.controllerSize * 0.8, Math.PI / 6, Math.PI * 2);
-      ctx.stroke();
-      ctx.closePath();
+        // draw wrapper's rotate
+        ctx.beginPath();
+        ctx.setLineDash([]);
+        ctx.setLineWidth(wrapper.controllerSize / 2);
+        ctx.arc(wrapper.controllers.rotate.x, wrapper.controllers.rotate.y, wrapper.controllerSize * 0.8, Math.PI / 6, Math.PI * 2);
+        ctx.stroke();
+        ctx.closePath();
+      }
+      
 
       // draw wrapper's controllers
       ctx.setFillStyle(wrapper.color);

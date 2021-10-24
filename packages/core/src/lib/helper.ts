@@ -142,16 +142,18 @@ export class Helper implements TypeHelper {
       }
     });
     if (selectedControllerDirection === null) {
-      rotateContext(ctx, wrapper.translate, wrapper.radian || 0, () => {
-        const controller = wrapper.controllers.rotate;
-        ctx.beginPath();
-        ctx.arc(controller.x, controller.y, wrapper.controllerSize, 0, Math.PI * 2);
-        ctx.closePath();
-        if (ctx.isPointInPath(p.x, p.y)) {
-          selectedControllerDirection = 'rotate';
-          hoverControllerDirection =  'rotate';
-        }
-      });
+      const controller = wrapper.controllers.rotate;
+      if (controller.invisible !== true) {
+        rotateContext(ctx, wrapper.translate, wrapper.radian || 0, () => {
+          ctx.beginPath();
+          ctx.arc(controller.x, controller.y, wrapper.controllerSize, 0, Math.PI * 2);
+          ctx.closePath();
+          if (ctx.isPointInPath(p.x, p.y)) {
+            selectedControllerDirection = 'rotate';
+            hoverControllerDirection =  'rotate';
+          }
+        });
+      }
     }
     return {uuid, selectedControllerDirection, hoverControllerDirection, directIndex};
   }
@@ -329,42 +331,47 @@ export class Helper implements TypeHelper {
         topLeft: {
           x: elem.x - controllerSize - bw,
           y: elem.y - controllerSize - bw,
-          invisible: hideObliqueDirection,
+          invisible: hideObliqueDirection || elem?.operation?.disbaleScale === true,
         },
         top: {
           x: elem.x + elem.w / 2,
           y: elem.y - controllerSize - bw,
+          invisible: elem?.operation?.disbaleScale === true,
         },
         topRight: {
           x: elem.x + elem.w + controllerSize + bw,
           y: elem.y - controllerSize - bw,
-          invisible: hideObliqueDirection,
+          invisible: hideObliqueDirection || elem?.operation?.disbaleScale === true,
         },
         right: {
           x: elem.x + elem.w + controllerSize + bw,
           y: elem.y + elem.h / 2,
+          invisible: elem?.operation?.disbaleScale === true
         },
         bottomRight: {
           x: elem.x + elem.w + controllerSize + bw,
           y: elem.y + elem.h + controllerSize + bw,
-          invisible: hideObliqueDirection,
+          invisible: hideObliqueDirection || elem?.operation?.disbaleScale === true,
         },
         bottom: {
           x: elem.x + elem.w / 2,
           y: elem.y + elem.h + controllerSize + bw,
+          invisible: elem?.operation?.disbaleScale === true,
         },
         bottomLeft: {
           x: elem.x - controllerSize - bw,
           y: elem.y + elem.h + controllerSize + bw,
-          invisible: hideObliqueDirection,
+          invisible: hideObliqueDirection || elem?.operation?.disbaleScale === true,
         },
         left: {
           x: elem.x - controllerSize - bw,
           y: elem.y + elem.h / 2,
+          invisible: elem?.operation?.disbaleScale === true
         },
         rotate: {
           x: elem.x + elem.w / 2,
           y: elem.y - controllerSize - (controllerSize * 2 + rotateLimit) - bw,
+          invisible: elem?.operation?.disbaleRotate === true
         }
       },
       lineWidth: lineWidth,
