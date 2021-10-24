@@ -17,67 +17,67 @@ export function drawElementWrapper(ctx: TypeContext, config: TypeHelperConfig) {
     ctx.setLineDash(wrapper.lineDash);
     ctx.setLineWidth(wrapper.lineWidth);
     ctx.setStrokeStyle(wrapper.color);
-    ctx.moveTo(wrapper.dots.topLeft.x, wrapper.dots.topLeft.y);
-    ctx.lineTo(wrapper.dots.topRight.x, wrapper.dots.topRight.y);
-    ctx.lineTo(wrapper.dots.bottomRight.x, wrapper.dots.bottomRight.y);
-    ctx.lineTo(wrapper.dots.bottomLeft.x, wrapper.dots.bottomLeft.y);
-    ctx.lineTo(wrapper.dots.topLeft.x, wrapper.dots.topLeft.y - wrapper.lineWidth / 2);
+    ctx.moveTo(wrapper.controllers.topLeft.x, wrapper.controllers.topLeft.y);
+    ctx.lineTo(wrapper.controllers.topRight.x, wrapper.controllers.topRight.y);
+    ctx.lineTo(wrapper.controllers.bottomRight.x, wrapper.controllers.bottomRight.y);
+    ctx.lineTo(wrapper.controllers.bottomLeft.x, wrapper.controllers.bottomLeft.y);
+    ctx.lineTo(wrapper.controllers.topLeft.x, wrapper.controllers.topLeft.y - wrapper.lineWidth / 2);
     ctx.stroke();
     ctx.closePath();
     
     if (wrapper.lock !== true) {
       // draw wrapper's rotate line
       ctx.beginPath();
-      ctx.moveTo(wrapper.dots.top.x, wrapper.dots.top.y);
-      ctx.lineTo(wrapper.dots.rotate.x, wrapper.dots.rotate.y + wrapper.dotSize);
+      ctx.moveTo(wrapper.controllers.top.x, wrapper.controllers.top.y);
+      ctx.lineTo(wrapper.controllers.rotate.x, wrapper.controllers.rotate.y + wrapper.controllerSize);
       ctx.stroke();
       ctx.closePath();
 
       // draw wrapper's rotate
       ctx.beginPath();
       ctx.setLineDash([]);
-      ctx.setLineWidth(wrapper.dotSize / 2);
-      ctx.arc(wrapper.dots.rotate.x, wrapper.dots.rotate.y, wrapper.dotSize * 0.8, Math.PI / 6, Math.PI * 2);
+      ctx.setLineWidth(wrapper.controllerSize / 2);
+      ctx.arc(wrapper.controllers.rotate.x, wrapper.controllers.rotate.y, wrapper.controllerSize * 0.8, Math.PI / 6, Math.PI * 2);
       ctx.stroke();
       ctx.closePath();
 
-      // draw wrapper's dots
+      // draw wrapper's controllers
       ctx.setFillStyle(wrapper.color);
       [
-        wrapper.dots.topLeft,
-        wrapper.dots.top,
-        wrapper.dots.topRight,
-        wrapper.dots.right,
-        wrapper.dots.bottomRight,
-        wrapper.dots.bottom,
-        wrapper.dots.bottomLeft,
-        wrapper.dots.left,
-      ].forEach((dot) => {
-        if (dot.invisible !== true) {
+        wrapper.controllers.topLeft,
+        wrapper.controllers.top,
+        wrapper.controllers.topRight,
+        wrapper.controllers.right,
+        wrapper.controllers.bottomRight,
+        wrapper.controllers.bottom,
+        wrapper.controllers.bottomLeft,
+        wrapper.controllers.left,
+      ].forEach((controller) => {
+        if (controller.invisible !== true) {
           ctx.beginPath();
-          ctx.arc(dot.x, dot.y, wrapper.dotSize, 0, Math.PI * 2);
+          ctx.arc(controller.x, controller.y, wrapper.controllerSize, 0, Math.PI * 2);
           ctx.fill();
           ctx.closePath();
         }
       });
     } else {
-      // draw wrapper's lock dots,
+      // draw wrapper's lock controllers,
       clearContext(ctx);
       ctx.setStrokeStyle(wrapper.color);
       [
-        wrapper.dots.topLeft, wrapper.dots.top, wrapper.dots.topRight, wrapper.dots.right,
-        wrapper.dots.bottomRight, wrapper.dots.bottom, wrapper.dots.bottomLeft, wrapper.dots.left,
-      ].forEach((dot) => {
+        wrapper.controllers.topLeft, wrapper.controllers.top, wrapper.controllers.topRight, wrapper.controllers.right,
+        wrapper.controllers.bottomRight, wrapper.controllers.bottom, wrapper.controllers.bottomLeft, wrapper.controllers.left,
+      ].forEach((controller) => {
 
         ctx.beginPath();
-        ctx.moveTo(dot.x - wrapper.dotSize / 2, dot.y - wrapper.dotSize / 2);
-        ctx.lineTo(dot.x + wrapper.dotSize / 2, dot.y + wrapper.dotSize / 2);
+        ctx.moveTo(controller.x - wrapper.controllerSize / 2, controller.y - wrapper.controllerSize / 2);
+        ctx.lineTo(controller.x + wrapper.controllerSize / 2, controller.y + wrapper.controllerSize / 2);
         ctx.stroke();
         ctx.closePath();
 
         ctx.beginPath();
-        ctx.moveTo(dot.x + wrapper.dotSize / 2, dot.y - wrapper.dotSize / 2);
-        ctx.lineTo(dot.x - wrapper.dotSize / 2, dot.y + wrapper.dotSize / 2);
+        ctx.moveTo(controller.x + wrapper.controllerSize / 2, controller.y - wrapper.controllerSize / 2);
+        ctx.lineTo(controller.x - wrapper.controllerSize / 2, controller.y + wrapper.controllerSize / 2);
         ctx.stroke();
         ctx.closePath();
       });
@@ -126,10 +126,10 @@ export function drawElementListWrappers(ctx: TypeContext, config: TypeHelperConf
       ctx.setGlobalAlpha(0.05);
       ctx.setFillStyle(wrapper.color);
       ctx.fillRect(
-        wrapper.dots.topLeft.x,
-        wrapper.dots.topLeft.y,
-        wrapper.dots.bottomRight.x - wrapper.dots.topLeft.x,
-        wrapper.dots.bottomRight.y - wrapper.dots.topLeft.y,
+        wrapper.controllers.topLeft.x,
+        wrapper.controllers.topLeft.y,
+        wrapper.controllers.bottomRight.x - wrapper.controllers.topLeft.x,
+        wrapper.controllers.bottomRight.y - wrapper.controllers.topLeft.y,
       );
 
       clearContext(ctx);
@@ -137,32 +137,32 @@ export function drawElementListWrappers(ctx: TypeContext, config: TypeHelperConf
       ctx.setLineDash(wrapper.lineDash);
       ctx.setLineWidth(wrapper.lineWidth);
       ctx.setStrokeStyle(wrapper.color);
-      ctx.moveTo(wrapper.dots.topLeft.x, wrapper.dots.topLeft.y);
-      ctx.lineTo(wrapper.dots.topRight.x, wrapper.dots.topRight.y);
-      ctx.lineTo(wrapper.dots.bottomRight.x, wrapper.dots.bottomRight.y);
-      ctx.lineTo(wrapper.dots.bottomLeft.x, wrapper.dots.bottomLeft.y);
-      ctx.lineTo(wrapper.dots.topLeft.x, wrapper.dots.topLeft.y - wrapper.lineWidth / 2);
+      ctx.moveTo(wrapper.controllers.topLeft.x, wrapper.controllers.topLeft.y);
+      ctx.lineTo(wrapper.controllers.topRight.x, wrapper.controllers.topRight.y);
+      ctx.lineTo(wrapper.controllers.bottomRight.x, wrapper.controllers.bottomRight.y);
+      ctx.lineTo(wrapper.controllers.bottomLeft.x, wrapper.controllers.bottomLeft.y);
+      ctx.lineTo(wrapper.controllers.topLeft.x, wrapper.controllers.topLeft.y - wrapper.lineWidth / 2);
       ctx.stroke();
       ctx.closePath();
 
       if (wrapper.lock === true) {
-        // draw wrapper's lock dots,
+        // draw wrapper's lock controllers,
         clearContext(ctx);
         // ctx.setFillStyle(wrapper.color);
         ctx.setStrokeStyle(wrapper.color);
         [
-          wrapper.dots.topLeft, wrapper.dots.top, wrapper.dots.topRight, wrapper.dots.right,
-          wrapper.dots.bottomRight, wrapper.dots.bottom, wrapper.dots.bottomLeft, wrapper.dots.left,
-        ].forEach((dot) => {
+          wrapper.controllers.topLeft, wrapper.controllers.top, wrapper.controllers.topRight, wrapper.controllers.right,
+          wrapper.controllers.bottomRight, wrapper.controllers.bottom, wrapper.controllers.bottomLeft, wrapper.controllers.left,
+        ].forEach((controller) => {
           ctx.beginPath();
-          ctx.moveTo(dot.x - wrapper.dotSize / 2, dot.y - wrapper.dotSize / 2);
-          ctx.lineTo(dot.x + wrapper.dotSize / 2, dot.y + wrapper.dotSize / 2);
+          ctx.moveTo(controller.x - wrapper.controllerSize / 2, controller.y - wrapper.controllerSize / 2);
+          ctx.lineTo(controller.x + wrapper.controllerSize / 2, controller.y + wrapper.controllerSize / 2);
           ctx.stroke();
           ctx.closePath();
 
           ctx.beginPath();
-          ctx.moveTo(dot.x + wrapper.dotSize / 2, dot.y - wrapper.dotSize / 2);
-          ctx.lineTo(dot.x - wrapper.dotSize / 2, dot.y + wrapper.dotSize / 2);
+          ctx.moveTo(controller.x + wrapper.controllerSize / 2, controller.y - wrapper.controllerSize / 2);
+          ctx.lineTo(controller.x - wrapper.controllerSize / 2, controller.y + wrapper.controllerSize / 2);
           ctx.stroke();
           ctx.closePath();
         });

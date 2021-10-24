@@ -2,7 +2,7 @@ import {
   TypeContext,
   TypePoint,
   TypeData,
-  TypeHelperWrapperDotDirection,
+  TypeHelperWrapperControllerDirection,
   TypeElement,
   TypeElemDesc,
 } from '@idraw/types';
@@ -84,7 +84,7 @@ export class Element {
     point: TypePoint,
     prevPoint: TypePoint,
     scale: number,
-    direction: TypeHelperWrapperDotDirection
+    direction: TypeHelperWrapperControllerDirection
   ): null | {
     width: number,
     height: number,
@@ -156,7 +156,7 @@ function calcuScaleElemPosition(
   elem: TypeElement<keyof TypeElemDesc>,
   moveX: number,
   moveY: number,
-  direction: TypeHelperWrapperDotDirection,
+  direction: TypeHelperWrapperControllerDirection,
   scale: number,
 ): TypePoint & { w: number, h: number } {
   const p = { x: elem.x, y: elem.y, w: elem.w, h: elem.h };
