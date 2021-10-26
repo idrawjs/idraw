@@ -18,30 +18,25 @@ export function drawCircle(ctx: TypeContext, elem: TypeElement<'circle'>) {
     const b = h / 2;
     const centerX = x + a;
     const centerY = y + b;
-    const unit = (a > b) ? 1 / a : 1 / b;
 
     // draw border
     if (borderWidth && borderWidth > 0) {
+
       const ba = borderWidth / 2 + a;
       const bb = borderWidth / 2 + b;
       ctx.beginPath();
       ctx.setStrokeStyle(borderColor);
-      ctx.setLineWidth(borderWidth)
-      ctx.moveTo(centerX + ba, centerY);
-      for(var i = 0; i < 2 * Math.PI; i += unit) {
-        ctx.lineTo(centerX + ba * Math.cos(i), centerY + bb * Math.sin(i));
-      }
-      ctx.lineTo(centerX + ba, centerY);
+      ctx.setLineWidth(borderWidth);
+      ctx.ellipse(centerX, centerY, ba, bb, 0,  0, 2 * Math.PI)
+      
+      ctx.closePath();
       ctx.stroke();
     }
 
     // draw content
     ctx.beginPath();
     ctx.setFillStyle(bgColor);
-    ctx.moveTo(centerX + a, centerY);
-    for(var i = 0; i < 2 * Math.PI; i += unit) {
-      ctx.lineTo(centerX + a * Math.cos(i), centerY + b * Math.sin(i));
-    }
+    ctx.ellipse(centerX, centerY, a, b, 0,  0, 2 * Math.PI)
     ctx.closePath();
     ctx.fill();
     
