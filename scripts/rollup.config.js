@@ -4,6 +4,7 @@ const typescript = require('rollup-plugin-typescript2');
 const { terser } = require('rollup-plugin-terser');
 const cleanup = require('rollup-plugin-cleanup');
 const { nodeResolve } = require('@rollup/plugin-node-resolve');
+const json = require('@rollup/plugin-json');
 const { getTargetPackage } = require('./config');
 const dtsPlugin = require('./util/dts-plugin');
 const stylePlugin = require('./util/style-plugin');
@@ -78,6 +79,7 @@ function createConfigItem(params, opts = {}) {
           tsconfig: path.resolve(__dirname, '..', 'tsconfig.json'),
           tsconfigOverride: {}
         }),
+        json(),
       ],
       ...plugins,
       ...[
