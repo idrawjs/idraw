@@ -22,6 +22,7 @@
     "prepush": "npm run lint",
     "clear:jest": "rm -rf ./packages/*/__tests__/__snapshots__",
     "pu": "npm run build && lerna publish --force-publish",
+    "pu2": "lerna version && npm run build && lerna publish from-git --force-publish",
     "hello": "node ./scripts/hello.js"
   },
   "devDependencies": {
