@@ -1,8 +1,10 @@
+const process = require('process');
 const path = require('path');
 const typescript = require('rollup-plugin-typescript2');
 const { terser } = require('rollup-plugin-terser');
 const cleanup = require('rollup-plugin-cleanup');
 const { nodeResolve } = require('@rollup/plugin-node-resolve');
+const json = require('@rollup/plugin-json');
 const { getTargetPackage } = require('./config');
 const dtsPlugin = require('./util/dts-plugin');
 const stylePlugin = require('./util/style-plugin');
@@ -26,6 +28,15 @@ for(let i = 0; i < packages.length; i++) {
     format: 'iife',
     plugins: []
   });
+  if (process.env.NODE_ENV === 'production') {
+    modules.push({
+      input: resolveFile([pkg.dirName, 'src', 'index.ts']),
+      output: resolveFile([pkg.dirName, 'dist', 'index.global.min.js']),
+      name: pkg.globalName,
+      format: 'iife',
+      plugins: []
+    });
+  }
   modules.push({
     input: resolveFile([pkg.dirName, 'src', 'index.ts']),
     output: resolveFile([pkg.dirName, 'dist', 'index.cjs.js']),
@@ -48,7 +59,7 @@ for(let i = 0; i < packages.length; i++) {
 }
 
 
-function createConfigItem(params) {
+function createConfigItem(params, opts = {}) {
   const { input, output, name, format, plugins = [], esModule, exports} = params;
   return {
     input: input,
@@ -68,31 +79,37 @@ function createConfigItem(params) {
           tsconfig: path.resolve(__dirname, '..', 'tsconfig.json'),
           tsconfigOverride: {}
         }),
+        json(),
       ],
       ...plugins,
       ...[
         // cleanPlugin({
         //   sourcemap: process.env.NODE_ENV === 'development',
         // }),
-        // terser({
-        //   output: {
-        //     beautify: true,
-        //     // comments: false,
-        //     // indent_level: 2,
-        //     // quote_style: 3,
-        //   }
-        // })
         cleanup({
           comments: 'none',
         }),
-      ]
+      ],
+      ...(opts.minify === true ? [
+        terser({
+          output: {
+            beautify: false,
+            comments: false,
+            indent_level: 2,
+            quote_style: 3,
+          }
+        })
+      ] : [])
     ],
   };
 }
 
 function createDevConfig(mods) {
   const configs = mods.map((mod) => {
-    return createConfigItem(mod);
+    const cfg = createConfigItem(mod, {
+      minify: mod.output.endsWith('.mini.js'),
+    });
+    return cfg;
   });
   return configs;
 }

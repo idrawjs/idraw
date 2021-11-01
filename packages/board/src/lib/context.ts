@@ -253,6 +253,13 @@ class Context implements TypeContext {
     this._ctx.shadowBlur = this._doSize(blur);
   }
 
+  ellipse(
+    x: number,y: number, radiusX: number, radiusY: number,
+    rotation: number, startAngle: number, endAngle: number, counterclockwise?: boolean | undefined
+  ) {
+    this._ctx.ellipse(this._doSize(x), this._doSize(y), this._doSize(radiusX), this._doSize(radiusY), rotation, startAngle, endAngle, counterclockwise)
+  }
+
   private _doSize(num: number) {
     return this._opts.devicePixelRatio * num;
   }

@@ -30,13 +30,22 @@ export class Screen {
 
   calcScreen(): {
     size: TypeScreenSize, position: TypeScreenPosition, deviceSize: TypeScreenSize,
-    width: number, height: number, devicePixelRatio: number
-    } {
+    width: number, height: number, devicePixelRatio: number,
+    canScrollXPrev: boolean,
+    canScrollXNext: boolean,
+    canScrollYPrev: boolean,
+    canScrollYNext: boolean,
+  } {
     const scaleRatio = this[_ctx].getTransform().scale;
     const { 
       width, height, contextWidth, contextHeight,
       devicePixelRatio: pxRatio,
     } = this[_opts];
+
+    let canScrollXPrev: boolean = true;
+    let canScrollXNext: boolean = true;
+    let canScrollYPrev: boolean = true;
+    let canScrollYNext: boolean = true;
 
     // init scroll
     if (contextWidth * scaleRatio <= width) {
@@ -44,6 +53,8 @@ export class Screen {
       this[_ctx].setTransform({
         scrollX: (width - contextWidth * scaleRatio) / 2,
       });
+      canScrollXPrev = false;
+      canScrollXNext = false;
     }
 
     if (contextHeight * scaleRatio <= height) {
@@ -51,17 +62,21 @@ export class Screen {
       this[_ctx].setTransform({
         scrollY: (height - contextHeight * scaleRatio) / 2,
       });
+      canScrollYPrev = false;
+      canScrollYNext = false;
     }
 
     if (contextWidth * scaleRatio >= width && this[_ctx].getTransform().scrollX > 0) {
       this[_ctx].setTransform({
         scrollX: 0,
       });
+      canScrollXPrev = false;
     }
     if (contextHeight * scaleRatio >= height && this[_ctx].getTransform().scrollY > 0) {
       this[_ctx].setTransform({
         scrollY: 0,
       });
+      canScrollYPrev = false;
     }
 
     const { scrollX: _scrollX, scrollY: _scrollY } = this[_ctx].getTransform();
@@ -71,11 +86,13 @@ export class Screen {
       this[_ctx].setTransform({
         scrollX: 0 - Math.abs(contextWidth * scaleRatio - width)
       });
+      canScrollXNext = false;
     }
     if (_scrollY < 0 && Math.abs(_scrollY) > Math.abs(contextHeight * scaleRatio - height)) {
       this[_ctx].setTransform({
         scrollY: 0 - Math.abs(contextHeight * scaleRatio - height)
       });
+      canScrollYNext = false;
     }
 
     // result size
@@ -106,6 +123,10 @@ export class Screen {
       width: this[_opts].width,
       height: this[_opts].height,
       devicePixelRatio: this[_opts].devicePixelRatio,
+      canScrollYPrev,
+      canScrollYNext,
+      canScrollXPrev,
+      canScrollXNext,
     };
   }
 

@@ -5,7 +5,7 @@
     "dev": "node ./scripts/dev.js",
     "dev:board": "node ./scripts/dev.js board",
     "dev:core": "node ./scripts/dev.js core",
-    "build": "node ./scripts/build.js",
+    "build": "NODE_ENV=production node ./scripts/build.js",
     "snapshot": "node ./scripts/build.js && node ./scripts/snapshot.js",
     "e2e": "mocha --exit ./__tests__/e2e.test.js",
     "init": "lerna bootstrap",
@@ -22,6 +22,7 @@
     "prepush": "npm run lint",
     "clear:jest": "rm -rf ./packages/*/__tests__/__snapshots__",
     "pu": "npm run build && lerna publish --force-publish",
+    "pu2": "lerna version && npm run build && lerna publish from-git --force-publish",
     "hello": "node ./scripts/hello.js"
   },
   "devDependencies": {
@@ -29,6 +30,7 @@
     "@babel/preset-env": "^7.13.12",
     "@babel/preset-typescript": "^7.13.0",
     "@microsoft/api-extractor": "^7.13.2",
+    "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^11.2.1",
     "@rollup/pluginutils": "^4.1.1",
     "@types/jest": "^26.0.23",

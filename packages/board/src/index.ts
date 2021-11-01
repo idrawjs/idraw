@@ -48,7 +48,7 @@ class Board {
     this[_ctx] = new Context(this[_originCtx], this[_opts]);
     this[_screen] = new Screen(this[_ctx], this[_opts]);
     // this[_watcher] = new Watcher(this[_displayCanvas]);
-    this[_watcher] = new ScreenWatcher(this[_displayCanvas]);
+    this[_watcher] = new ScreenWatcher(this[_displayCanvas], this[_ctx]);
     this[_scroller] = new Scroller(
       this[_displayCtx], {
         width: opts.width,
@@ -80,18 +80,42 @@ class Board {
   }
 
   scrollX(x: number) {
+    this[_watcher].setStatusMap({
+      canScrollYPrev: true,
+      canScrollYNext: true,
+      canScrollXPrev: true,
+      canScrollXNext: true,
+    })
     if (x >= 0 || x < 0) {
       this[_ctx].setTransform({ scrollX: x });
     }
-    const { position, size } = this[_screen].calcScreen();
+    const { position, size, canScrollXNext, canScrollYNext, canScrollXPrev, canScrollYPrev } = this[_screen].calcScreen();
+    this[_watcher].setStatusMap({
+      canScrollYPrev,
+      canScrollYNext,
+      canScrollXPrev,
+      canScrollXNext,
+    })
     return { position, size};
   }
 
   scrollY(y: number): TypeScreenContext {
+    this[_watcher].setStatusMap({
+      canScrollYPrev: true,
+      canScrollYNext: true,
+      canScrollXPrev: true,
+      canScrollXNext: true,
+    })
     if (y >= 0 || y < 0) {
       this[_ctx].setTransform({ scrollY: y });
     }
-    const { position, size } = this[_screen].calcScreen();
+    const { position, size, canScrollXNext, canScrollYNext, canScrollXPrev, canScrollYPrev } = this[_screen].calcScreen();
+    this[_watcher].setStatusMap({
+      canScrollYPrev,
+      canScrollYNext,
+      canScrollXPrev,
+      canScrollXNext,
+    })
     return { position, size};
   }
 

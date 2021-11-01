@@ -54,7 +54,7 @@ describe('@idraw/board', () => {
 
 
     const screenInfo = board.getScreenInfo();
-    expect(screenInfo).toStrictEqual({"size":{"x":-1200,"y":-800,"w":1200,"h":800},"position":{"top":-400,"bottom":0,"left":-600,"right":0},"deviceSize":{"x":-2400,"y":-1600,"w":4800,"h":3200},"width":600,"height":400,"devicePixelRatio":4});
+    expect(screenInfo).toStrictEqual({"size":{"x":-1200,"y":-800,"w":1200,"h":800},"position":{"top":-400,"bottom":0,"left":-600,"right":0},"deviceSize":{"x":-2400,"y":-1600,"w":4800,"h":3200},"width":600,"height":400,"devicePixelRatio":4, "canScrollXNext": true, "canScrollXPrev": true, "canScrollYNext": true, "canScrollYPrev": true, });
 
   });
 

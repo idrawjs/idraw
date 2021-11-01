@@ -55,6 +55,7 @@ interface TypeContext {
   setShadowOffsetX(offsetX: number): void;
   setShadowOffsetY(offsetY: number): void;
   setShadowBlur(blur: number): void;
+  ellipse(x: number,y: number, radiusX: number, radiusY: number, rotation: number, startAngle: number, endAngle: number, counterclockwise?: boolean | undefined): void
 }
 
 export {
