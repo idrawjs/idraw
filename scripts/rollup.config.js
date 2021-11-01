@@ -31,7 +31,7 @@ for(let i = 0; i < packages.length; i++) {
   if (process.env.NODE_ENV === 'production') {
     modules.push({
       input: resolveFile([pkg.dirName, 'src', 'index.ts']),
-      output: resolveFile([pkg.dirName, 'dist', 'index.global.mini.js']),
+      output: resolveFile([pkg.dirName, 'dist', 'index.global.min.js']),
       name: pkg.globalName,
       format: 'iife',
       plugins: []
