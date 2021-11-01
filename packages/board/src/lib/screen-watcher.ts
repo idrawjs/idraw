@@ -1,4 +1,4 @@
-import { TypePoint } from '@idraw/types';
+import { TypePoint, TypeContext } from '@idraw/types';
 // import util from '@idraw/util';
 import { BoardEvent, TypeBoardEventArgMap } from './event';
 import { TempData } from './watcher-temp';
@@ -17,12 +17,23 @@ export class ScreenWatcher {
   private _event: BoardEvent;
   private _temp: TempData = new TempData;
   private _container: HTMLElement | Window  = window;
+  // private _ctx: TypeContext;
 
-  constructor(canvas: HTMLCanvasElement) {
+  constructor(canvas: HTMLCanvasElement, ctx: TypeContext) {
     this._canvas = canvas;
     this._isMoving = false;
     this._initEvent();
     this._event = new BoardEvent;
+    // this._ctx = ctx;
+  }
+
+  setStatusMap(statusMap: {
+    canScrollYPrev: boolean,
+    canScrollYNext: boolean,
+    canScrollXPrev: boolean,
+    canScrollXNext: boolean,
+  }) {
+    this._temp.set('statusMap', statusMap);
   }
 
   on<T extends keyof TypeBoardEventArgMap >(name: T, callback: (p: TypeBoardEventArgMap[T]) => void): void {
@@ -239,13 +250,28 @@ export class ScreenWatcher {
   }
 
   _listenCanvasWheel(e: WheelEvent) {
-    e.preventDefault();
+    // e.preventDefault();
+    // const { scrollX, scrollY } = this._ctx.getTransform();
+    // const { width, height } = this._ctx.getSize();
     if (this._event.has('wheelX') && (e.deltaX > 0 || e.deltaX < 0)) {
       this._event.trigger('wheelX', e.deltaX);
     }
     if (this._event.has('wheelY') && (e.deltaY > 0 || e.deltaY < 0)) {
       this._event.trigger('wheelY', e.deltaY);
     }
+    const {
+      canScrollYNext, canScrollYPrev
+    } = this._temp.get('statusMap');
+
+
+    if (e.deltaX > 0 && e.deltaX < 0) {
+      e.preventDefault();
+    } else if (e.deltaY > 0 && canScrollYNext === true) {
+      e.preventDefault();
+    } else if (e.deltaY < 0 && canScrollYPrev === true) {
+      e.preventDefault();
+    }
+
   }
 
   _listenCanvasClick(e: MouseEvent|TouchEvent|Event) {

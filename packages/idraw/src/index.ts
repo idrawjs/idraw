@@ -13,7 +13,7 @@ import { exportDataURL } from './mixins/file';
 import { copyElements, pasteElements, cutElements, deleteElements,
   keyArrowUp, keyArrowDown, keyArrowLeft, keyArrowRight, keyUndo,
 } from './mixins/keyboard';
-import { version } from './../package.json';
+// import { version } from './../package.json';
 
 class iDraw extends Core {
 
@@ -22,7 +22,7 @@ class iDraw extends Core {
   private [_tempData] = new TempData();
   private [_keyboardWatcher] = new KeyboardWatcher();
 
-  static version = version;
+  // static version = version;
 
   constructor(mount: HTMLDivElement, opts: Options, config?: TypeConfig) {
     super(mount, {

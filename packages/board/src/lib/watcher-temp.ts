@@ -3,7 +3,13 @@ import { TypePoint } from '@idraw/types'
 type TempDataDesc = {
   prevClickPoint: TypePoint & { t: number } | null,
   isHoverCanvas: boolean;
-  isDragCanvas: boolean; 
+  isDragCanvas: boolean;
+  statusMap: {
+    canScrollYPrev: boolean,
+    canScrollYNext: boolean,
+    canScrollXPrev: boolean,
+    canScrollXNext: boolean,
+  }
 }
 
 function createTempData() {
@@ -11,6 +17,12 @@ function createTempData() {
     prevClickPoint: null,
     isHoverCanvas: false,
     isDragCanvas: false,
+    statusMap: {
+      canScrollYPrev: true,
+      canScrollYNext: true,
+      canScrollXPrev: true,
+      canScrollXNext: true,
+    }
   }
 }
 
