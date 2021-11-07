@@ -10,12 +10,14 @@ const pkgNames = packages.map((pkg) => {
 
 async function main() {
 
-  pkgNames.forEach(async (name) => {
-    const target = name;
-    const pkgDir = path.resolve(`packages/${target}`);
-    // const pkg = require(`${pkgDir}/package.json`)
-    await fs.remove(`${pkgDir}/dist`);
-  });
+  if (process.env.BUILD_MODE === 'reset') {
+    pkgNames.forEach(async (name) => {
+      const target = name;
+      const pkgDir = path.resolve(`packages/${target}`);
+      // const pkg = require(`${pkgDir}/package.json`)
+      await fs.remove(`${pkgDir}/dist`);
+    });
+  }
 
   await 
   execa('rollup', [ '-c', './scripts/rollup.config.js', ], { stdio: 'inherit' });

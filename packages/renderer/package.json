@@ -1,0 +1,28 @@
+{
+  "name": "@idraw/renderer",
+  "version": "0.2.0-alpha.16",
+  "description": "",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.es.js",
+  "unpkg": "dist/index.global.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/idrawjs/idraw.git"
+  },
+  "bugs": {
+    "url": "https://github.com/idrawjs/idraw/issues"
+  },
+  "homepage": "https://github.com/idrawjs/idraw#readme",
+  "author": "chenshenhai",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  }
+}
