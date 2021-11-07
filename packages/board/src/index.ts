@@ -1,6 +1,6 @@
 import { 
   TypeScreenPosition, TypeScreenSize, TypeScreenContext, TypePoint, TypePointCursor,
-  TypeBoardOptions, TypeBoardSizeOptions, } from '@idraw/types';
+  TypeBoardOptions, TypeBoardSizeOptions, TypePlugin, } from '@idraw/types';
 import util from '@idraw/util';
 // import { Watcher } from './lib/watcher';
 import { ScreenWatcher } from './lib/screen-watcher';
@@ -9,12 +9,12 @@ import Context from './lib/context';
 import { TypeBoardEventArgMap } from './lib/event';
 import { Scroller } from './lib/scroller';
 import { Screen } from './lib/screen';
-// import { TempData } from './lib/watcher-temp';
+import { TempData } from './lib/temp';
 import {
   _canvas, _displayCanvas, _mount, _opts, _hasRendered, _ctx, _displayCtx,
   _originCtx, _watcher, _render, _parsePrivateOptions, _scroller,
   _initEvent, _doScrollX, _doScrollY, _doMoveScroll, _resetContext,
-  _screen,
+  _screen, _tempData
 } from './names';
 
 const { throttle } = util.time;
@@ -36,8 +36,11 @@ class Board {
   private [_watcher]: ScreenWatcher;
   private [_scroller]: Scroller;
   private [_screen]: Screen;
+  private [_tempData]: TempData;
 
   constructor(mount: HTMLDivElement, opts: TypeBoardOptions) {
+    this[_tempData] = new TempData(opts);
+
     this[_mount] = mount;
     this[_canvas] = document.createElement('canvas');
     this[_displayCanvas] = document.createElement('canvas');
@@ -135,6 +138,10 @@ class Board {
     return { position, size };
   }
 
+  addPlugin(plugin: TypePlugin) {
+    this[_tempData].get('plugins').push(plugin);
+  }
+
   clear() {
     this[_displayCtx].clearRect(0, 0, this[_displayCanvas].width, this[_displayCanvas].height);
   }
@@ -200,6 +207,7 @@ class Board {
     };
     return screenPoint;
   }
+
 
   private [_render]() {
     if (this[_hasRendered] === true) {

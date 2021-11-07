@@ -1,14 +1,37 @@
-type TempDataDesc = {}
+import { TypePlugin, TypeBoardOptions } from '@idraw/types';
+import Context from './context';
+
+type TempDataDesc = {
+  plugins: TypePlugin[],
+  ctx: Context,
+
+}
+
+function createDefaultData(opts: TypeBoardOptions) {
+  const canvas = document.createElement('canvas');
+  const ctx2d = canvas.getContext('2d') as CanvasRenderingContext2D;
+  const ctx = new Context(ctx2d, {
+    width: opts.width,
+    height: opts.height,
+    contextWidth: opts.contextWidth,
+    contextHeight: opts.contextHeight,
+    devicePixelRatio: opts.devicePixelRatio || window.devicePixelRatio || 1,
+  });
+
+  return {
+    plugins: [],
+    ctx: ctx
+  }
+}
+
 
 
 export class TempData {
 
   private _temp: TempDataDesc
 
-  constructor() {
-    this._temp = {
-      prevClickPoint: null
-    }
+  constructor(opts: TypeBoardOptions) {
+    this._temp = createDefaultData(opts)
   }
 
   set<T extends keyof TempDataDesc >(name: T, value:  TempDataDesc[T]) {
@@ -19,9 +42,7 @@ export class TempData {
     return this._temp[name];
   }
 
-  clear() {
-    this._temp = {
-      prevClickPoint: null,
-    }
+  clear(opts: TypeBoardOptions) {
+    this._temp = createDefaultData(opts)
   }
 }
