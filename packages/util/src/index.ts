@@ -5,6 +5,7 @@ import { createUUID } from './lib/uuid';
 import { deepClone } from './lib/data';
 import istype from './lib/istype';
 import { loadImage, loadSVG, loadHTML } from './lib/loader';
+import Context from './lib/context';
 
 export default {
   time: {
@@ -31,5 +32,6 @@ export default {
   istype,
   data: {
     deepClone,
-  }
+  },
+  Context,
 };
