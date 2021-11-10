@@ -22,6 +22,12 @@
   "homepage": "https://github.com/idrawjs/idraw#readme",
   "author": "chenshenhai",
   "license": "MIT",
+  "devDependencies": {
+    "@idraw/types": "^0.2.0-alpha.16"
+  },
+  "dependencies": {
+    "@idraw/util": "^0.2.0-alpha.16"
+  },
   "publishConfig": {
     "access": "public"
   }
