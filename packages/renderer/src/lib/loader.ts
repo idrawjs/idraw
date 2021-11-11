@@ -108,10 +108,12 @@ export default class Loader {
     const uuidQueue: string[] = [];
 
     const storageLoadData = this._storageLoadData;
+    // const currentUUIDs: string[] = []
 
     // add new load-data
     for (let i = data.elements.length - 1; i >= 0; i --) {
       const elem = data.elements[i] as TypeElement<'image' | 'svg' | 'html'>;
+      // currentUUIDs.push(elem.uuid);
       if (['image', 'svg', 'html', ].includes(elem.type)) {
         if (!storageLoadData[elem.uuid]) {
           loadData[elem.uuid] = this._createEmptyLoadItem(elem);
@@ -144,14 +146,13 @@ export default class Loader {
       }
     }
 
+    // const loadDataUUIDs = Object.keys(loadData);
     // // clear unuse load-data
-    // const uuids = Object.keys(currentLoadData);
-    // data.elements.forEach((elem) => {
-    //   if (uuids.includes(elem.uuid) !== true) {
-    //     delete loadData[elem.uuid];
+    // loadDataUUIDs.forEach((loadUUID) => {
+    //   if (currentUUIDs.includes(loadUUID) !== true) {
+    //     delete loadData[loadUUID];
     //   }
     // });
-
     return [uuidQueue, loadData];
   }
 

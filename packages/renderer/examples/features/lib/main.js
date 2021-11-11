@@ -10,7 +10,8 @@ const renderer = new Renderer({
   height: 400,
   contextWidth: 600,
   contextHeight: 400,
-  devicePixelRatio: 2,
+  devicePixelRatio: 1,
+  // devicePixelRatio: 2,
   // onlyRender: true,
 });
 
@@ -21,5 +22,9 @@ renderer.on('drawFrameComplete', (e) => {
   console.log('drawFrameComplete =', e)
 })
 
-
 renderer.render(canvas, data)
+renderer.render(canvas, { elements: data.elements.splice(1, 2) }, { forceUpdate: false })
+
+// setTimeout(() => {
+  // renderer.render(canvas, { elements: data.elements.splice(1, 2) }, { forceUpdate: false })
+// }, 2000);

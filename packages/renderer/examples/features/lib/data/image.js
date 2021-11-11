@@ -14,7 +14,7 @@ const data = {
       // angle: 30,
       // angle: 0,
       desc: {
-        src: "./../images/computer.png",
+        src: "./../../../core/examples/images/computer.png",
       },
     },
     {
@@ -29,7 +29,7 @@ const data = {
       borderColor: "#bd0b64",
       type: "image",
       desc: {
-        src: "./../images/chart.png",
+        src:  "./../../../core/examples/images/chart.png",
       },
     },
     {
@@ -41,7 +41,7 @@ const data = {
       type: "image",
       angle: 45,
       desc: {
-        src: "./../images/phone.png",
+        src:  "./../../../core/examples/images/phone.png",
       },
     },
     {
@@ -52,7 +52,7 @@ const data = {
       h: 100,
       type: "image",
       desc: {
-        src: "./../images/building-001.png",
+        src:  "./../../../core/examples/images/building-001.png",
       },
     },
     {
@@ -63,7 +63,7 @@ const data = {
       h: 100,
       type: "image",
       desc: {
-        src: "./../images/building-002.png",
+        src:  "./../../../core/examples/images/building-002.png",
       },
     },
     {
@@ -74,7 +74,7 @@ const data = {
       h: 100,
       type: "image",
       desc: {
-        src: "./../images/building-003.png",
+        src:  "./../../../core/examples/images/building-003.png",
       },
     },
   ],

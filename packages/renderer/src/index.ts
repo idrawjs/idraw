@@ -1,4 +1,4 @@
-import { TypeData, TypeContext, } from '@idraw/types';
+import { TypeData, TypeContext, TypeElement, TypeElemDesc } from '@idraw/types';
 import util from '@idraw/util';
 import { drawContext } from './lib/draw';
 import Loader from './lib/loader';
@@ -6,6 +6,7 @@ import { RendererEvent } from './lib/renderer-event';
 
 const { Context } = util;
 const { requestAnimationFrame } = window;
+const { createUUID } = util.uuid;
 const { deepClone } = util.data;
 
 type QueueItem = { data: TypeData };
@@ -59,31 +60,51 @@ export default class Renderer extends RendererEvent {
     this._status = DrawStatus.FREE;
   }
 
-  render(canvas: HTMLCanvasElement, data: TypeData, changeResourceUUIDs?: string[]): void { 
+  render(canvas: HTMLCanvasElement, originData: TypeData, opts?: {
+    // forceUpdate?: boolean,
+    changeResourceUUIDs?: string[]
+  }): void { 
     // if ([DrawStatus.STOP, DrawStatus.FREEZE].includes(this._status)) {
     //   return;
     // }
+    // this._status = DrawStatus.FREE;
 
-    const { width, height, contextWidth, contextHeight, devicePixelRatio } = this._opts;
-    canvas.width = width * devicePixelRatio;
-    canvas.height = height * devicePixelRatio;
-    const ctx2d = canvas.getContext('2d') as CanvasRenderingContext2D;
-    this._ctx = new Context(ctx2d, {
-      width,
-      height,
-      contextWidth: contextWidth || width,
-      contextHeight: contextHeight || height,
-      devicePixelRatio
-    })
+    const { changeResourceUUIDs = []} = opts || {};
+    this._status = DrawStatus.FREE;
+
+    const data = deepClone(originData);
+    if (Array.isArray(data.elements)) {
+      data.elements.forEach((elem: TypeElement<keyof TypeElemDesc>) => {
+        if (!(typeof elem.uuid === 'string' && elem.uuid)) {
+          elem.uuid = createUUID();
+        }
+      });
+    }
+
+    if (!this._ctx) {
+      const { width, height, contextWidth, contextHeight, devicePixelRatio } = this._opts;
+      canvas.width = width * devicePixelRatio;
+      canvas.height = height * devicePixelRatio;
+      const ctx2d = canvas.getContext('2d') as CanvasRenderingContext2D;
+      this._ctx = new Context(ctx2d, {
+        width,
+        height,
+        contextWidth: contextWidth || width,
+        contextHeight: contextHeight || height,
+        devicePixelRatio
+      })
+    }
+    
     if ([DrawStatus.FREEZE].includes(this._status)) {
       return;
     }
     const _data: QueueItem = deepClone({ data, }) as QueueItem;
     this._queue.push(_data);
-    if (this._status !== DrawStatus.DRAWING) {
-      this._status = DrawStatus.DRAWING;
-      this._drawFrame();
-    }
+    // if (this._status !== DrawStatus.DRAWING) {
+    //   this._status = DrawStatus.DRAWING;
+    //   this._drawFrame();
+    // }
+    this._drawFrame();
     this._loader.load(data, changeResourceUUIDs || []);
   }
 
