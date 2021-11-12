@@ -1,5 +1,0 @@
-class ElementBase {
-  constructor() {
-    
-  }
-}

@@ -9,3 +9,4 @@ export * from './lib/core';
 export * from './lib/screen';
 export * from './lib/device';
 export * from './lib/plugin';
+export * from './lib/common';

@@ -1,8 +1,4 @@
-import util from "@idraw/util";
-
-const { isColorStr } = util.color;
-
-
+import { isColorStr } from './color';
 
 function number(value: any) {
   return (typeof value === 'number' && (value > 0 || value <= 0));
@@ -97,7 +93,7 @@ function fontWeight(value: any) {
   return ['bold'].includes(value);
 }
 
-const is: TypeIs = {
+const is = {
   x, y, w, h, angle, number,
   borderWidth, borderRadius, color,
   imageSrc, imageURL, imageBase64, svg, html,
@@ -105,33 +101,5 @@ const is: TypeIs = {
   strokeWidth,
 };
 
-type TypeIs = {
-  x: (value: any) => boolean,
-  y: (value: any) => boolean,
-  w: (value: any) => boolean,
-  h: (value: any) => boolean,
-  angle: (value: any) => boolean,
-  number: (value: any) => boolean,
-  borderWidth: (value: any) => boolean,
-  borderRadius: (value: any) => boolean,
-  color: (value: any) => boolean,
-  imageSrc: (value: any) => boolean,
-  imageURL: (value: any) => boolean,
-  imageBase64: (value: any) => boolean,
-  svg: (value: any) => boolean,
-  html: (value: any) => boolean,
-  text: (value: any) => boolean,
-  fontSize: (value: any) => boolean,
-  fontWeight: (value: any) => boolean,
-  lineHeight: (value: any) => boolean,
-  textAlign: (value: any) => boolean,
-  fontFamily: (value: any) => boolean,
-  strokeWidth: (value: any) => boolean,
-}
 
 export default is;
-
-
-export {
-  TypeIs,
-};

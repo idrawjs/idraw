@@ -1,7 +1,5 @@
 import { TypeContext, TypeElement, } from '@idraw/types';
-// import util from '@idraw/util'
 import { rotateElement } from './../transform';
-// import is from './../is';
 import { clearContext } from './base';
 
 export function drawCircle(ctx: TypeContext, elem: TypeElement<'circle'>) {

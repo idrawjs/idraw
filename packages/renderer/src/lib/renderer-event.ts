@@ -1,7 +1,12 @@
+import { TypeElement, TypeElemDesc } from '@idraw/types';
+
 
 export type TypeRendererEventArgMap = {
-  'drawFrame': void;
-  'drawFrameComplete': void;
+  'drawFrame': { t: number };
+  'drawFrameComplete': { t: number };
+  'load': { element: TypeElement<keyof TypeElemDesc> },
+  'loadComplete': { t: number },
+  'error': { element: TypeElement<keyof TypeElemDesc>, error: any }
 }
  
 export interface TypeRendererEvent {

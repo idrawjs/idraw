@@ -4,6 +4,7 @@ import { LoaderEvent, TypeLoadData, TypeLoaderEventArgMap } from './loader-event
 import { filterScript } from './../util/filter';
 
 const { loadImage, loadSVG, loadHTML } = util.loader;
+const { deepClone } = util.data;
 
 type Options = {
   maxParallelNum: number
@@ -175,12 +176,14 @@ export default class Loader {
       elemH = _elem.desc.height || elem.h;
     }
     return {
+      uuid: elem.uuid,
       type: type,
       status: 'null',
       content: null,
       source,
       elemW,
       elemH,
+      element: deepClone(elem),
     };
   }
 
@@ -234,12 +237,14 @@ export default class Loader {
           const status = _loadAction();
 
           this._storageLoadData[uuid] = {
+            uuid,
             type: this._currentLoadData[uuid].type,
             status: 'loaded',
             content: image,
             source: this._currentLoadData[uuid].source,
             elemW: this._currentLoadData[uuid].elemW,
             elemH: this._currentLoadData[uuid].elemH,
+            element: this._currentLoadData[uuid].element,
           };
 
           if (loadUUIDList.length === 0 && uuids.length === 0 && status === true) {
@@ -247,12 +252,14 @@ export default class Loader {
             this._loadTask();
           }
           this._event.trigger('load', {
+            uuid: this._storageLoadData[uuid]?.uuid,
             type: this._storageLoadData[uuid].type,
             status: this._storageLoadData[uuid].status,
             content: this._storageLoadData[uuid].content,
             source: this._storageLoadData[uuid].source,
             elemW: this._storageLoadData[uuid].elemW,
             elemH: this._storageLoadData[uuid].elemH,
+            element: this._storageLoadData[uuid]?.element,
           });
         }).catch((err) => {
           console.warn(err);
@@ -262,6 +269,7 @@ export default class Loader {
 
           if (this._currentLoadData[uuid]) {
             this._storageLoadData[uuid] = {
+              uuid,
               type: this._currentLoadData[uuid]?.type,
               status: 'fail',
               content: null,
@@ -269,6 +277,7 @@ export default class Loader {
               source: this._currentLoadData[uuid]?.source,
               elemW: this._currentLoadData[uuid]?.elemW,
               elemH: this._currentLoadData[uuid]?.elemH,
+              element: this._currentLoadData[uuid]?.element,
             };
           }
 
@@ -279,12 +288,14 @@ export default class Loader {
           
           if (this._currentLoadData[uuid]) {
             this._event.trigger('error', {
+              uuid: uuid,
               type: this._storageLoadData[uuid]?.type,
               status: this._storageLoadData[uuid]?.status,
               content: this._storageLoadData[uuid]?.content,
               source: this._storageLoadData[uuid]?.source,
               elemW: this._storageLoadData[uuid]?.elemW,
               elemH: this._storageLoadData[uuid]?.elemH,
+              element: this._storageLoadData[uuid]?.element,
             });
           }
           

@@ -1,10 +1,9 @@
 
-import { TypeElementAttrs } from '@idraw/types';
+// import { TypeElementAttrs } from '@idraw/types';
 import is from './is';
 
-
 function attrs(
-  attrs: TypeElementAttrs
+  attrs: any
 ): boolean {
   const { x, y, w, h, angle } = attrs;
   if (!(is.x(x) && is.y(y) && is.w(w) && is.h(h) && is.angle(angle))) {
@@ -146,18 +145,5 @@ const check = {
   htmlDesc,
 };
 
-type TypeCheck = {
-  attrs: (value: any) => boolean,
-  rectDesc: (value: any) => boolean,
-  circleDesc: (value: any) => boolean,
-  imageDesc: (value: any) => boolean,
-  svgDesc: (value: any) => boolean,
-  htmlDesc: (value: any) => boolean,
-  textDesc: (value: any) => boolean,
-}
-
-export {
-  TypeCheck
-};
 
 export default check;

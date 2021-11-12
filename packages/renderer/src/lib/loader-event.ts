@@ -1,19 +1,23 @@
+import { TypeElement, TypeElemDesc } from '@idraw/types';
 
+export type TypeLoadDataItem = {
+  uuid: string,
+  type: 'image' | 'svg' | 'html',
+  status: 'null' | 'loaded' | 'fail',
+  content: null | HTMLImageElement | HTMLCanvasElement,
+  elemW: number;
+  elemH: number;
+  source: string,
+  element: TypeElement<keyof TypeElemDesc>
+  error?: any,
+}
 
 export type TypeLoadData = {
-  [uuid: string]: {
-    type: 'image' | 'svg' | 'html',
-    status: 'null' | 'loaded' | 'fail',
-    content: null | HTMLImageElement | HTMLCanvasElement,
-    elemW: number;
-    elemH: number;
-    source: string,
-    error?: any,
-  }
+  [uuid: string]: TypeLoadDataItem
 }
 
 export type TypeLoaderEventArgMap = {
-  'complete': undefined;
+  'complete': void;
   'load': TypeLoadData[string];
   'error': TypeLoadData[string];
 }

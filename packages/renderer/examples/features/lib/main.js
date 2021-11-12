@@ -15,6 +15,13 @@ const renderer = new Renderer({
   // onlyRender: true,
 });
 
+renderer.on('load', (e) => {
+  console.log('load =', e)
+})
+renderer.on('loadComplete', (e) => {
+  console.log('loadComplete =', e)
+})
+
 renderer.on('drawFrame', (e) => {
   console.log('drawFrame =', e)
 })
@@ -24,6 +31,8 @@ renderer.on('drawFrameComplete', (e) => {
 
 renderer.render(canvas, data)
 renderer.render(canvas, { elements: data.elements.splice(1, 2) }, { forceUpdate: false })
+
+console.log(renderer.getContext())
 
 // setTimeout(() => {
   // renderer.render(canvas, { elements: data.elements.splice(1, 2) }, { forceUpdate: false })

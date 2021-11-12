@@ -1,6 +1,7 @@
 import { TypeData, TypeContext, TypeElement, TypeElemDesc } from '@idraw/types';
 import util from '@idraw/util';
 import { drawContext } from './lib/draw';
+import { TypeLoadDataItem } from './lib/loader-event';
 import Loader from './lib/loader';
 import { RendererEvent } from './lib/renderer-event';
 import {
@@ -8,10 +9,10 @@ import {
   _drawFrame, _retainQueueOneItem
 } from './names';
 
-const { Context } = util;
 const { requestAnimationFrame } = window;
 const { createUUID } = util.uuid;
 const { deepClone } = util.data;
+const { Context } = util;
 
 type QueueItem = { data: TypeData };
 enum DrawStatus {
@@ -44,15 +45,15 @@ export default class Renderer extends RendererEvent {
     this[_loader] = new Loader({
       maxParallelNum: 6
     });
-    this[_loader].on('load', (res) => {
+    this[_loader].on('load', (res: TypeLoadDataItem) => {
       this[_drawFrame]();
-      // console.log('Load: ', res);
+      this.trigger('load', { element: res.element });
     });
-    this[_loader].on('error', (res) => {
-      console.log('Loader Error: ', res);
+    this[_loader].on('error', (res: TypeLoadDataItem) => {
+      this.trigger('error', { element: res.element, error: res.error });
     });
-    this[_loader].on('complete', (res) => {
-      // console.log('complete: ', res);
+    this[_loader].on('complete', () => {
+      this.trigger('loadComplete', { t: Date.now() })
     });
   }
 
@@ -104,6 +105,10 @@ export default class Renderer extends RendererEvent {
     this[_loader].load(data, changeResourceUUIDs || []);
   }
 
+  getContext(): TypeContext | null {
+    return this[_ctx]
+  }
+
   private [_freeze]() {
     this[_status] = DrawStatus.FREEZE;
   }
@@ -147,10 +152,10 @@ export default class Renderer extends RendererEvent {
       } else {
         this[_status] = DrawStatus.FREE;
       }
-      this.trigger('drawFrame', undefined)
+      this.trigger('drawFrame', { t: Date.now() })
 
       if (this[_loader].isComplete() === true && this[_queue].length === 1 && this[_status] === DrawStatus.FREE) {
-        this.trigger('drawFrameComplete', undefined);
+        this.trigger('drawFrameComplete', { t: Date.now() });
         this[_freeze]();
       }
     });
