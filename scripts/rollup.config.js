@@ -21,14 +21,7 @@ const external = [ '@idraw/types', '@idraw/util', '@idraw/board', '@idraw/core' 
 
 for(let i = 0; i < packages.length; i++) {
   const pkg = packages[i];
-  modules.push({
-    input: resolveFile([pkg.dirName, 'src', 'index.ts']),
-    output: resolveFile([pkg.dirName, 'dist', 'index.global.js']),
-    name: pkg.globalName,
-    format: 'iife',
-    plugins: []
-  });
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.BUILD_MODE === 'mini') {
     modules.push({
       input: resolveFile([pkg.dirName, 'src', 'index.ts']),
       output: resolveFile([pkg.dirName, 'dist', 'index.global.min.js']),
@@ -36,26 +29,34 @@ for(let i = 0; i < packages.length; i++) {
       format: 'iife',
       plugins: []
     });
+  } else {
+    modules.push({
+      input: resolveFile([pkg.dirName, 'src', 'index.ts']),
+      output: resolveFile([pkg.dirName, 'dist', 'index.global.js']),
+      name: pkg.globalName,
+      format: 'iife',
+      plugins: []
+    });
+    modules.push({
+      input: resolveFile([pkg.dirName, 'src', 'index.ts']),
+      output: resolveFile([pkg.dirName, 'dist', 'index.cjs.js']),
+      name: pkg.globalName,
+      format: 'cjs',
+      exports: 'default',
+      // plugins: [dtsPlugin(pkg.dirName),],
+      plugins: [],
+      external,
+    });
+    modules.push({
+      input: resolveFile([pkg.dirName, 'src', 'index.ts']),
+      output: resolveFile([pkg.dirName, 'dist', 'index.es.js']),
+      name: pkg.globalName,
+      esModule: true,
+      format: 'es',
+      external,
+      plugins: [dtsPlugin(pkg.dirName),]
+    });
   }
-  modules.push({
-    input: resolveFile([pkg.dirName, 'src', 'index.ts']),
-    output: resolveFile([pkg.dirName, 'dist', 'index.cjs.js']),
-    name: pkg.globalName,
-    format: 'cjs',
-    exports: 'default',
-    // plugins: [dtsPlugin(pkg.dirName),],
-    plugins: [],
-    external,
-  });
-  modules.push({
-    input: resolveFile([pkg.dirName, 'src', 'index.ts']),
-    output: resolveFile([pkg.dirName, 'dist', 'index.es.js']),
-    name: pkg.globalName,
-    esModule: true,
-    format: 'es',
-    external,
-    plugins: [dtsPlugin(pkg.dirName),]
-  });
 }
 
 

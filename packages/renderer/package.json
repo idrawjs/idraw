@@ -1,5 +1,5 @@
 {
-  "name": "@idraw/core",
+  "name": "@idraw/renderer",
   "version": "0.2.0-alpha.17",
   "description": "",
   "main": "dist/index.cjs.js",
@@ -26,7 +26,6 @@
     "@idraw/types": "^0.2.0-alpha.17"
   },
   "dependencies": {
-    "@idraw/board": "^0.2.0-alpha.17",
     "@idraw/util": "^0.2.0-alpha.17"
   },
   "publishConfig": {

@@ -7,6 +7,10 @@ const packages = [
     dirName: 'board',
     globalName: 'iDrawBoard',
   },
+  {
+    dirName: 'renderer',
+    globalName: 'iDrawRenderer',
+  },
   // {
   //   dirName: 'kernal',
   //   globalName: 'iDrawKernal',

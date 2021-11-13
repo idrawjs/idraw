@@ -8,6 +8,9 @@ const types = {
   uuid: 'Object',
   istype: 'Object',
   data: 'Object',
+  is: 'Object',
+  check: 'Object',
+  Context: 'Function',
 }
 
 function getType (data: any): string {
