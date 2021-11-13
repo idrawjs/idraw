@@ -21,5 +21,6 @@
   "homepage": "https://github.com/idrawjs/idraw#readme",
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "gitHead": "be7f4aec953e25aed3fc0d1f61ef9f99407b77f8"
 }

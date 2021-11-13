@@ -7,7 +7,7 @@
     "dev:core": "node ./scripts/dev.js core",
     "build": "npm run build:src && npm run build:min",
     "build:src": "NODE_ENV=production BUILD_MODE=reset node ./scripts/build.js",
-    "build:min": "NODE_ENV=production BUILD_MODE=mini node ./scripts/build.js",
+    "build:min": "node ./scripts/minify.js",
     "snapshot": "node ./scripts/build.js && node ./scripts/snapshot.js",
     "e2e": "mocha --exit ./__tests__/e2e.test.js",
     "init": "lerna bootstrap",
@@ -63,6 +63,7 @@
     "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-typescript2": "^0.30.0",
     "serve-handler": "^6.1.3",
+    "terser": "^5.9.0",
     "ts-node": "^9.1.1",
     "tslib": "^2.2.0",
     "typescript": "^4.3.2"
