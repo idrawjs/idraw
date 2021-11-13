@@ -37,13 +37,13 @@ for(let i = 0; i < packages.length; i++) {
       format: 'iife',
       plugins: []
     });
-    modules.push({
-      input: resolveFile([pkg.dirName, 'src', 'index.ts']),
-      output: resolveFile([pkg.dirName, 'dist', 'index.global.min.js']),
-      name: pkg.globalName,
-      format: 'iife',
-      plugins: [],
-    });
+    // modules.push({
+    //   input: resolveFile([pkg.dirName, 'src', 'index.ts']),
+    //   output: resolveFile([pkg.dirName, 'dist', 'index.global.min.js']),
+    //   name: pkg.globalName,
+    //   format: 'iife',
+    //   plugins: [],
+    // });
     modules.push({
       input: resolveFile([pkg.dirName, 'src', 'index.ts']),
       output: resolveFile([pkg.dirName, 'dist', 'index.cjs.js']),
