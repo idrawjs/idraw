@@ -22,13 +22,13 @@ const external = [ '@idraw/types', '@idraw/util', '@idraw/board', '@idraw/core' 
 for(let i = 0; i < packages.length; i++) {
   const pkg = packages[i];
   if (process.env.BUILD_MODE === 'mini') {
-    modules.push({
-      input: resolveFile([pkg.dirName, 'src', 'index.ts']),
-      output: resolveFile([pkg.dirName, 'dist', 'index.global.min.js']),
-      name: pkg.globalName,
-      format: 'iife',
-      plugins: []
-    });
+    // modules.push({
+    //   input: resolveFile([pkg.dirName, 'src', 'index.ts']),
+    //   output: resolveFile([pkg.dirName, 'dist', 'index.global.min.js']),
+    //   name: pkg.globalName,
+    //   format: 'iife',
+    //   plugins: [],
+    // });
   } else {
     modules.push({
       input: resolveFile([pkg.dirName, 'src', 'index.ts']),
@@ -37,6 +37,13 @@ for(let i = 0; i < packages.length; i++) {
       format: 'iife',
       plugins: []
     });
+    // modules.push({
+    //   input: resolveFile([pkg.dirName, 'src', 'index.ts']),
+    //   output: resolveFile([pkg.dirName, 'dist', 'index.global.min.js']),
+    //   name: pkg.globalName,
+    //   format: 'iife',
+    //   plugins: [],
+    // });
     modules.push({
       input: resolveFile([pkg.dirName, 'src', 'index.ts']),
       output: resolveFile([pkg.dirName, 'dist', 'index.cjs.js']),
