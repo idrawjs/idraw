@@ -6,8 +6,8 @@ export function drawData(board, idx) {
   const helperCtx = board.getHelperContext();
   const data = getData();
   board.clear();
-  ctx.clearRect(0, 0, opts.width, opts.height);
-  helperCtx.clearRect(0, 0, opts.width, opts.height);
+  ctx.clearRect(0, 0, opts.devicePixelRatio * opts.contextWidth, opts.devicePixelRatio * opts.contextHeight);
+  helperCtx.clearRect(0, 0, opts.devicePixelRatio * opts.contextWidth, opts.devicePixelRatio * opts.contextHeight);
 
   // ctx.setFillStyle('#ffffff');
   // ctx.fillRect(0, 0, opts.width, opts.height);
