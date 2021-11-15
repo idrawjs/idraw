@@ -1,9 +1,11 @@
-import { TypePlugin, TypeBoardOptions } from '@idraw/types';
-import Context from './context';
+import { TypePlugin, TypeBoardOptions, TypeContext } from '@idraw/types';
+import util from '@idraw/util';
+
+const Context = util.Context;
 
 type TempDataDesc = {
   plugins: TypePlugin[],
-  ctx: Context,
+  ctx: TypeContext,
 
 }
 

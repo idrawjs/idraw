@@ -38,6 +38,9 @@ class Context implements TypeContext {
       scrollY: 0,
     };
   }
+  getContext(): CanvasRenderingContext2D {
+    return this._ctx;
+  }
 
   resetSize(opts: TypeBoardSizeOptions) {
     this._opts = {...this._opts, ...opts};

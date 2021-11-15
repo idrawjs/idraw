@@ -1,4 +1,5 @@
 interface TypeContext {
+  getContext(): CanvasRenderingContext2D;
   setTransform(config: {
     scale?: number;
     scrollX?: number;
@@ -16,6 +17,13 @@ interface TypeContext {
     contextHeight: number;
     devicePixelRatio: number;
   };
+  resetSize(opts: {
+    width?: number;
+    height?: number;
+    contextWidth?: number;
+    contextHeight?: number;
+    devicePixelRatio?: number;
+  }): void;
   calcDeviceNum(num: number): number;
   calcScreenNum(num: number): number;
 

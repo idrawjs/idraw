@@ -37,5 +37,5 @@ export default {
   data: {
     deepClone,
   },
-  Context,
+  Context: Context,
 };

@@ -1,11 +1,9 @@
 import { 
   TypeScreenPosition, TypeScreenSize, TypeScreenContext, TypePoint, TypePointCursor,
-  TypeBoardOptions, TypeBoardSizeOptions, TypePlugin, } from '@idraw/types';
+  TypeBoardOptions, TypeBoardSizeOptions, TypePlugin, TypeContext } from '@idraw/types';
 import util from '@idraw/util';
-// import { Watcher } from './lib/watcher';
 import { ScreenWatcher } from './lib/screen-watcher';
 import { setStyle } from './lib/style';
-import Context from './lib/context';
 import { TypeBoardEventArgMap } from './lib/event';
 import { Scroller } from './lib/scroller';
 import { Screen } from './lib/screen';
@@ -17,6 +15,7 @@ import {
   _screen, _tempData
 } from './names';
 
+const { Context } = util;
 const { throttle } = util.time;
 
 type PrivateOptions = TypeBoardOptions & {
@@ -29,7 +28,7 @@ class Board {
   private [_mount]: HTMLDivElement;
   private [_opts]: PrivateOptions;
   private [_hasRendered] = false;
-  private [_ctx]: Context;
+  private [_ctx]: TypeContext;
   private [_displayCtx]: CanvasRenderingContext2D;
   private [_originCtx]: CanvasRenderingContext2D;
   // private [_watcher]: Watcher;
@@ -70,7 +69,7 @@ class Board {
     return this[_originCtx];
   }
 
-  getContext(): Context {
+  getContext(): TypeContext {
     return this[_ctx];
   }
 
