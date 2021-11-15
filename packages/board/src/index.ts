@@ -49,16 +49,17 @@ class Board {
     this[_displayCanvas] = document.createElement('canvas');
     this[_mount].appendChild(this[_displayCanvas]);
     this[_opts] = this[_parsePrivateOptions](opts);
-    const originCtx = this[_canvas].getContext('2d') as CanvasRenderingContext2D;
-    const displayCtx = this[_displayCanvas].getContext('2d') as CanvasRenderingContext2D;
-    const helperCtx = this[_displayCanvas].getContext('2d') as CanvasRenderingContext2D;
-    this[_ctx] = new Context(originCtx, this[_opts]);
-    this[_helperCtx] = new Context(helperCtx, this[_opts]);
+
+    const originCtx2d = this[_canvas].getContext('2d') as CanvasRenderingContext2D;
+    const displayCtx2d = this[_displayCanvas].getContext('2d') as CanvasRenderingContext2D;
+    const helperCtx2d = this[_helperCanvas].getContext('2d') as CanvasRenderingContext2D;
+    this[_ctx] = new Context(originCtx2d, this[_opts]);
+    this[_helperCtx] = new Context(helperCtx2d, this[_opts]);
     this[_screen] = new Screen(this[_ctx], this[_opts]);
     // this[_watcher] = new Watcher(this[_displayCanvas]);
     this[_watcher] = new ScreenWatcher(this[_displayCanvas], this[_ctx]);
     this[_scroller] = new Scroller(
-      displayCtx, {
+      displayCtx2d, {
         width: opts.width,
         height: opts.height,
         devicePixelRatio: opts.devicePixelRatio || 1,
@@ -244,6 +245,9 @@ class Board {
     const { width, height, contextWidth, contextHeight, devicePixelRatio } = this[_opts];
     this[_canvas].width = contextWidth * devicePixelRatio;
     this[_canvas].height = contextHeight * devicePixelRatio;
+
+    this[_helperCanvas].width = contextWidth * devicePixelRatio;
+    this[_helperCanvas].height = contextHeight * devicePixelRatio;
 
     this[_displayCanvas].width = width * devicePixelRatio;
     this[_displayCanvas].height = height * devicePixelRatio;

@@ -170,13 +170,16 @@ Array [
   },
   Object {
     "props": Object {
-      "dHeight": 150,
-      "dWidth": 300,
+      "dHeight": 3600,
+      "dWidth": 4000,
       "dx": 0,
       "dy": 0,
-      "img": <canvas />,
-      "sHeight": 150,
-      "sWidth": 300,
+      "img": <canvas
+        height="3600"
+        width="4000"
+      />,
+      "sHeight": 3600,
+      "sWidth": 4000,
       "sx": 0,
       "sy": 0,
     },
