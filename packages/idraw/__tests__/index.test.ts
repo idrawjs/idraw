@@ -36,12 +36,12 @@ describe("idraw", () => {
 
     requestAnimationFrameMock.triggerNextAnimationFrame();
   
-    const originCtx = idraw.__getOriginContext();
+    const originCtx = idraw.__getOriginContext2D();
     // @ts-ignore;
     const originCalls = originCtx.__getDrawCalls();
     expect(originCalls).toMatchSnapshot();
   
-    const displayCtx = idraw.__getDisplayContext();
+    const displayCtx = idraw.__getDisplayContext2D();
     // @ts-ignore;
     const displayCalls = displayCtx.__getDrawCalls();
     expect(displayCalls).toMatchSnapshot();
@@ -87,12 +87,12 @@ describe("idraw", () => {
 
     requestAnimationFrameMock.triggerNextAnimationFrame();
   
-    const originCtx = idraw.__getOriginContext();
+    const originCtx = idraw.__getOriginContext2D();
     // @ts-ignore;
     const originCalls = originCtx.__getDrawCalls();
     expect(originCalls).toMatchSnapshot();
   
-    const displayCtx = idraw.__getDisplayContext();
+    const displayCtx = idraw.__getDisplayContext2D();
     // @ts-ignore;
     const displayCalls = displayCtx.__getDrawCalls();
     expect(displayCalls).toMatchSnapshot();

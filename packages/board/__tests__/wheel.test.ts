@@ -43,12 +43,12 @@ describe('@idraw/board', () => {
   
     board.draw();
   
-    const originCtx = board.getOriginContext();
+    const originCtx = board.getOriginContext2D();
     // @ts-ignore;
     const originCalls = originCtx.__getDrawCalls();
     expect(originCalls).toMatchSnapshot();
   
-    const displayCtx = board.getDisplayContext();
+    const displayCtx = board.getDisplayContext2D();
     // @ts-ignore;
     const displayCalls = displayCtx.__getDrawCalls();
     expect(displayCalls).toMatchSnapshot();

@@ -16,7 +16,7 @@ export async function exportDataURL(
     function listenRenderFrameComplete() {
       idraw.off('drawFrameComplete', listenRenderFrameComplete);
       idraw[_tempData].set('isDownloading', false);
-      const ctx = idraw.__getOriginContext();
+      const ctx = idraw.__getOriginContext2D();
       const canvas = ctx.canvas;
       dataURL = canvas.toDataURL(type, quality);
       resolve(dataURL);

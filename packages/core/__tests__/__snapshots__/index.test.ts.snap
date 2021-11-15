@@ -589,5 +589,27 @@ Array [
     ],
     "type": "drawImage",
   },
+  Object {
+    "props": Object {
+      "dHeight": 150,
+      "dWidth": 300,
+      "dx": 0,
+      "dy": 0,
+      "img": <canvas />,
+      "sHeight": 150,
+      "sWidth": 300,
+      "sx": 0,
+      "sy": 0,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "drawImage",
+  },
 ]
 `;

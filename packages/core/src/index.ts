@@ -230,12 +230,12 @@ class Core {
     return this[_board].getContext();
   }
 
-  __getDisplayContext(): CanvasRenderingContext2D {
-    return this[_board].getDisplayContext();
+  __getDisplayContext2D(): CanvasRenderingContext2D {
+    return this[_board].getDisplayContext2D();
   }
 
-  __getOriginContext(): CanvasRenderingContext2D {
-    return this[_board].getOriginContext();
+  __getOriginContext2D(): CanvasRenderingContext2D {
+    return this[_board].getOriginContext2D();
   }
 
 
