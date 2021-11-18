@@ -1,6 +1,6 @@
 import { 
   TypeScreenPosition, TypeScreenSize, TypeScreenContext, TypePoint, TypePointCursor,
-  TypeBoardOptions, TypeBoardSizeOptions, TypePlugin, TypeContext, 
+  TypeBoardOptions, TypeBoardSizeOptions, InterfacePlugin, TypeContext, 
 } from '@idraw/types';
 import util from '@idraw/util';
 import { ScreenWatcher } from './lib/screen-watcher';
@@ -159,7 +159,7 @@ class Board {
     return { position, size };
   }
 
-  addPlugin(plugin: TypePlugin) {
+  addPlugin(plugin: InterfacePlugin) {
     this[_tempData].get('plugins').push(plugin);
   }
 

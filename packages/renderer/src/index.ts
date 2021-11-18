@@ -79,9 +79,8 @@ export default class Renderer extends RendererEvent {
     }
 
     if (!this[_ctx]) {
-      if (target instanceof Context) {
-        this[_ctx] = target as TypeContext;
-      } else if (this[_opts] && Object.prototype.toString.call(target) === '[object HTMLCanvasElement]') {
+      // TODO
+      if (this[_opts] && Object.prototype.toString.call(target) === '[object HTMLCanvasElement]') {
         const { width, height, contextWidth, contextHeight, devicePixelRatio } = this[_opts] as Options;
         const canvas = target as HTMLCanvasElement;
         canvas.width = width * devicePixelRatio;
@@ -94,6 +93,9 @@ export default class Renderer extends RendererEvent {
           contextHeight: contextHeight || height,
           devicePixelRatio
         })
+      } else if (target) {
+        // TODO
+        this[_ctx] = target as TypeContext;
       }
     }
     
@@ -144,10 +146,12 @@ export default class Renderer extends RendererEvent {
         if (item && ctx) {
           drawContext(ctx, item.data, this[_loader]);
           // this._board.draw();
+          // this.trigger('drawFrame', { t: Date.now() })
         }
       } else if (item && ctx) {
         drawContext(ctx, item.data, this[_loader]);
         // this._board.draw();
+        // this.trigger('drawFrame', { t: Date.now() })
         this[_retainQueueOneItem]();
         if (!isLastFrame) {
           this[_drawFrame]();

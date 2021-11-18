@@ -1,7 +1,9 @@
 import { getData } from './data/index.js';
-import util from './../../../node_modules/@idraw/util/dist/index.es.js'
+// import util from './../../../node_modules/@idraw/util/dist/index.es.js'
+// import util from './../../../../util/dist/index.es.js'
  
-const Context = util.Context;
+// const Context = util.Context;
+const Context = iDrawUtil.Context;
 const Renderer = window.iDrawRenderer;
 const data = getData();
 const canvas = document.querySelector('#canvas');
