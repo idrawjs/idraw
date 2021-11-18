@@ -38,15 +38,7 @@ renderer.on('drawFrameComplete', (e) => {
 
 canvas.width = opts.width * opts.devicePixelRatio;
 canvas.height = opts.height * opts.devicePixelRatio;
-const ctx = new Context(canvas.getContext('2d'), {
-  width: 600,
-  height: 400,
-  contextWidth: 600,
-  contextHeight: 400,
-  devicePixelRatio: 1,
-  // devicePixelRatio: 2,
-  // onlyRender: true,
-})
+const ctx = new Context(canvas.getContext('2d'), opts)
 renderer.render(ctx, data);
 renderer.render(ctx, { elements: data.elements.splice(1, 2) }, { forceUpdate: false })
 
