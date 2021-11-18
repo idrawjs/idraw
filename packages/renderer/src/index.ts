@@ -37,9 +37,9 @@ export default class Renderer extends RendererEvent {
   private [_ctx]: TypeContext | null = null;
   private [_status]: DrawStatus = DrawStatus.NULL; 
   private [_loader]: Loader;
-  private [_opts]: Options;
+  private [_opts]?: Options;
 
-  constructor(opts: Options) {
+  constructor(opts?: Options) {
     super();
     this[_opts] = opts;
     this[_loader] = new Loader({
@@ -57,7 +57,7 @@ export default class Renderer extends RendererEvent {
     });
   }
 
-  render(canvas: HTMLCanvasElement, originData: TypeData, opts?: {
+  render(target: HTMLCanvasElement | TypeContext, originData: TypeData, opts?: {
     // forceUpdate?: boolean,
     changeResourceUUIDs?: string[]
   }): void { 
@@ -79,17 +79,22 @@ export default class Renderer extends RendererEvent {
     }
 
     if (!this[_ctx]) {
-      const { width, height, contextWidth, contextHeight, devicePixelRatio } = this[_opts];
-      canvas.width = width * devicePixelRatio;
-      canvas.height = height * devicePixelRatio;
-      const ctx2d = canvas.getContext('2d') as CanvasRenderingContext2D;
-      this[_ctx] = new Context(ctx2d, {
-        width,
-        height,
-        contextWidth: contextWidth || width,
-        contextHeight: contextHeight || height,
-        devicePixelRatio
-      })
+      if (target instanceof Context) {
+        this[_ctx] = target as TypeContext;
+      } else if (this[_opts] && Object.prototype.toString.call(target) === '[object HTMLCanvasElement]') {
+        const { width, height, contextWidth, contextHeight, devicePixelRatio } = this[_opts] as Options;
+        const canvas = target as HTMLCanvasElement;
+        canvas.width = width * devicePixelRatio;
+        canvas.height = height * devicePixelRatio;
+        const ctx2d = canvas.getContext('2d') as CanvasRenderingContext2D;
+        this[_ctx] = new Context(ctx2d, {
+          width,
+          height,
+          contextWidth: contextWidth || width,
+          contextHeight: contextHeight || height,
+          devicePixelRatio
+        })
+      }
     }
     
     if ([DrawStatus.FREEZE].includes(this[_status])) {

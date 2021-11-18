@@ -4,7 +4,7 @@ import { TypeContext } from './context';
 import { TypePoint, TypePointCursor } from './board';
 
 
-export interface TypePlugin {
+export interface InterfacePlugin {
   onHover?: (detail: {
     point: TypePoint,
     selectedElement: TypeElement<keyof TypeElemDesc> | null,
