@@ -37,9 +37,9 @@ export default class Renderer extends RendererEvent {
   private [_ctx]: TypeContext | null = null;
   private [_status]: DrawStatus = DrawStatus.NULL; 
   private [_loader]: Loader;
-  private [_opts]: Options;
+  private [_opts]?: Options;
 
-  constructor(opts: Options) {
+  constructor(opts?: Options) {
     super();
     this[_opts] = opts;
     this[_loader] = new Loader({
@@ -57,7 +57,7 @@ export default class Renderer extends RendererEvent {
     });
   }
 
-  render(canvas: HTMLCanvasElement, originData: TypeData, opts?: {
+  render(target: HTMLCanvasElement | TypeContext, originData: TypeData, opts?: {
     // forceUpdate?: boolean,
     changeResourceUUIDs?: string[]
   }): void { 
@@ -79,17 +79,24 @@ export default class Renderer extends RendererEvent {
     }
 
     if (!this[_ctx]) {
-      const { width, height, contextWidth, contextHeight, devicePixelRatio } = this[_opts];
-      canvas.width = width * devicePixelRatio;
-      canvas.height = height * devicePixelRatio;
-      const ctx2d = canvas.getContext('2d') as CanvasRenderingContext2D;
-      this[_ctx] = new Context(ctx2d, {
-        width,
-        height,
-        contextWidth: contextWidth || width,
-        contextHeight: contextHeight || height,
-        devicePixelRatio
-      })
+      // TODO
+      if (this[_opts] && Object.prototype.toString.call(target) === '[object HTMLCanvasElement]') {
+        const { width, height, contextWidth, contextHeight, devicePixelRatio } = this[_opts] as Options;
+        const canvas = target as HTMLCanvasElement;
+        canvas.width = width * devicePixelRatio;
+        canvas.height = height * devicePixelRatio;
+        const ctx2d = canvas.getContext('2d') as CanvasRenderingContext2D;
+        this[_ctx] = new Context(ctx2d, {
+          width,
+          height,
+          contextWidth: contextWidth || width,
+          contextHeight: contextHeight || height,
+          devicePixelRatio
+        })
+      } else if (target) {
+        // TODO
+        this[_ctx] = target as TypeContext;
+      }
     }
     
     if ([DrawStatus.FREEZE].includes(this[_status])) {
@@ -109,13 +116,13 @@ export default class Renderer extends RendererEvent {
     return this[_ctx]
   }
 
+  thaw() {
+    this[_status] = DrawStatus.FREE;
+  }
+
   private [_freeze]() {
     this[_status] = DrawStatus.FREEZE;
   }
-
-  // private _thaw() {
-  //   this[_status] = DrawStatus.FREE;
-  // }
 
   private [_drawFrame]() {
     if (this[_status] === DrawStatus.FREEZE) {
@@ -139,10 +146,12 @@ export default class Renderer extends RendererEvent {
         if (item && ctx) {
           drawContext(ctx, item.data, this[_loader]);
           // this._board.draw();
+          // this.trigger('drawFrame', { t: Date.now() })
         }
       } else if (item && ctx) {
         drawContext(ctx, item.data, this[_loader]);
         // this._board.draw();
+        // this.trigger('drawFrame', { t: Date.now() })
         this[_retainQueueOneItem]();
         if (!isLastFrame) {
           this[_drawFrame]();
@@ -155,6 +164,9 @@ export default class Renderer extends RendererEvent {
       this.trigger('drawFrame', { t: Date.now() })
 
       if (this[_loader].isComplete() === true && this[_queue].length === 1 && this[_status] === DrawStatus.FREE) {
+        if (ctx && this[_queue][0] && this[_queue][0].data) {
+          drawContext(ctx, this[_queue][0].data, this[_loader]);
+        }
         this.trigger('drawFrameComplete', { t: Date.now() });
         this[_freeze]();
       }

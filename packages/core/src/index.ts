@@ -5,10 +5,11 @@ import {
 }  from '@idraw/types';
 import Board from '@idraw/board';
 import util from '@idraw/util';
+import Renderer from '@idraw/renderer';
 import is, { TypeIs } from './lib/is';
 import check, { TypeCheck } from './lib/check';
 import {
-  Renderer, Element, Helper, Mapper, mergeConfig, CoreEvent, 
+  Element, Helper, Mapper, mergeConfig, CoreEvent, 
   TypeCoreEventArgMap, parseData, TempData, diffElementResourceChangeList, 
 } from './lib';
 import {
@@ -20,6 +21,7 @@ import { getSelectedElements, updateElement, selectElementByIndex, getElement, g
   insertElementBefore, insertElementBeforeIndex, insertElementAfter, insertElementAfterIndex,
 } from './mixins/element';
 import { initEvent } from './mixins/event';
+import { drawElementWrapper, drawAreaWrapper, drawElementListWrappers } from './lib/draw/wrapper'
 const { deepClone } = util.data;
 
 class Core {
@@ -51,7 +53,24 @@ class Core {
         lineWidth: config?.scrollWrapper?.lineWidth || 12,
       }
     });
-    this[_renderer] = new Renderer(this[_board]); 
+    this[_renderer] = new Renderer(); 
+    const drawFrame = () => {
+      const helperCtx = this[_board].getHelperContext();
+      const helperConfig = this[_helper].getConfig();
+      this[_board].clear();
+      const { contextWidth, contextHeight, devicePixelRatio } = this[_opts];
+      helperCtx.clearRect(0, 0, contextWidth * devicePixelRatio, contextHeight * devicePixelRatio)
+      drawElementWrapper(helperCtx, helperConfig);
+      drawAreaWrapper(helperCtx, helperConfig);
+      drawElementListWrappers(helperCtx, helperConfig);
+      this[_board].draw();
+    }
+    this[_renderer].on('drawFrame', (e) => {
+      drawFrame();
+    })
+    this[_renderer].on('drawFrameComplete', (e) => {
+      drawFrame();
+    })
     this[_element] = new Element(this[_board].getContext());
     this[_helper] = new Helper(this[_board], this[_config]);
     this[_mapper] = new Mapper({
@@ -80,7 +99,9 @@ class Core {
       scrollY: transfrom.scrollY,
     });
     this[_renderer].thaw();
-    this[_renderer].render(this[_data], this[_helper].getConfig(), opts?.resourceChangeUUIDs || []);
+    this[_renderer].render(this[_board].getContext(), this[_data], {
+      changeResourceUUIDs: opts?.resourceChangeUUIDs || []
+    });
   }
 
   getElement(uuid: string) {
@@ -230,12 +251,12 @@ class Core {
     return this[_board].getContext();
   }
 
-  __getDisplayContext(): CanvasRenderingContext2D {
-    return this[_board].getDisplayContext();
+  __getDisplayContext2D(): CanvasRenderingContext2D {
+    return this[_board].getDisplayContext2D();
   }
 
-  __getOriginContext(): CanvasRenderingContext2D {
-    return this[_board].getOriginContext();
+  __getOriginContext2D(): CanvasRenderingContext2D {
+    return this[_board].getOriginContext2D();
   }
 
 

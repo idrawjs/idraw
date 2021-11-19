@@ -1,6 +1,6 @@
 {
   "name": "idraw",
-  "version": "0.2.0-alpha.20",
+  "version": "0.2.0-alpha.21",
   "description": "",
   "main": "dist/index.cjs.js",
   "module": "dist/index.es.js",
@@ -10,7 +10,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "files": [
-    "dist"
+    "dist/*.ts",
+    "dist/*.js"
   ],
   "repository": {
     "type": "git",
@@ -23,11 +24,11 @@
   "author": "chenshenhai",
   "license": "MIT",
   "devDependencies": {
-    "@idraw/types": "^0.2.0-alpha.20"
+    "@idraw/types": "^0.2.0-alpha.21"
   },
   "dependencies": {
-    "@idraw/core": "^0.2.0-alpha.20",
-    "@idraw/util": "^0.2.0-alpha.20"
+    "@idraw/core": "^0.2.0-alpha.21",
+    "@idraw/util": "^0.2.0-alpha.21"
   },
   "publishConfig": {
     "access": "public"

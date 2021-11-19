@@ -33,7 +33,7 @@ function moveElement(board, idx, moveX, moveY) {
     data.elements[idx].x += (moveX / scale);
     data.elements[idx].y += (moveY / scale);
   }
-  drawData(board)
+  drawData(board, idx)
 }
 
 const cursor = document.querySelector('#cursor');

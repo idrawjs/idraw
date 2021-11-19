@@ -1,6 +1,6 @@
 import Context from './../../src/lib/context';
-import util from '@idraw/util'
-import { getData } from './../data';
+import util from './../../src'
+import { getData } from './data';
 
 const { deepClone } = util.data;
 

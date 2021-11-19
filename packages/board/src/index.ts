@@ -1,22 +1,22 @@
 import { 
   TypeScreenPosition, TypeScreenSize, TypeScreenContext, TypePoint, TypePointCursor,
-  TypeBoardOptions, TypeBoardSizeOptions, TypePlugin, } from '@idraw/types';
+  TypeBoardOptions, TypeBoardSizeOptions, InterfacePlugin, TypeContext, 
+} from '@idraw/types';
 import util from '@idraw/util';
-// import { Watcher } from './lib/watcher';
 import { ScreenWatcher } from './lib/screen-watcher';
 import { setStyle } from './lib/style';
-import Context from './lib/context';
 import { TypeBoardEventArgMap } from './lib/event';
 import { Scroller } from './lib/scroller';
 import { Screen } from './lib/screen';
 import { TempData } from './lib/temp';
 import {
-  _canvas, _displayCanvas, _mount, _opts, _hasRendered, _ctx, _displayCtx,
-  _originCtx, _watcher, _render, _parsePrivateOptions, _scroller,
+  _canvas, _displayCanvas, _mount, _opts, _hasRendered, _ctx,
+  _watcher, _render, _parsePrivateOptions, _scroller, _helperCanvas, _helperCtx,
   _initEvent, _doScrollX, _doScrollY, _doMoveScroll, _resetContext,
   _screen, _tempData
 } from './names';
 
+const { Context } = util;
 const { throttle } = util.time;
 
 type PrivateOptions = TypeBoardOptions & {
@@ -24,14 +24,16 @@ type PrivateOptions = TypeBoardOptions & {
 }
 
 class Board {
+
+  private [_hasRendered] = false;
+
   private [_canvas]: HTMLCanvasElement;
+  private [_helperCanvas]: HTMLCanvasElement;
   private [_displayCanvas]: HTMLCanvasElement;
   private [_mount]: HTMLDivElement;
   private [_opts]: PrivateOptions;
-  private [_hasRendered] = false;
-  private [_ctx]: Context;
-  private [_displayCtx]: CanvasRenderingContext2D;
-  private [_originCtx]: CanvasRenderingContext2D;
+  private [_ctx]: TypeContext;
+  private [_helperCtx]: TypeContext;
   // private [_watcher]: Watcher;
   private [_watcher]: ScreenWatcher;
   private [_scroller]: Scroller;
@@ -43,17 +45,21 @@ class Board {
 
     this[_mount] = mount;
     this[_canvas] = document.createElement('canvas');
+    this[_helperCanvas] = document.createElement('canvas');
     this[_displayCanvas] = document.createElement('canvas');
     this[_mount].appendChild(this[_displayCanvas]);
     this[_opts] = this[_parsePrivateOptions](opts);
-    this[_originCtx] = this[_canvas].getContext('2d') as CanvasRenderingContext2D;
-    this[_displayCtx] = this[_displayCanvas].getContext('2d') as CanvasRenderingContext2D;
-    this[_ctx] = new Context(this[_originCtx], this[_opts]);
+
+    const originCtx2d = this[_canvas].getContext('2d') as CanvasRenderingContext2D;
+    const displayCtx2d = this[_displayCanvas].getContext('2d') as CanvasRenderingContext2D;
+    const helperCtx2d = this[_helperCanvas].getContext('2d') as CanvasRenderingContext2D;
+    this[_ctx] = new Context(originCtx2d, this[_opts]);
+    this[_helperCtx] = new Context(helperCtx2d, this[_opts]);
     this[_screen] = new Screen(this[_ctx], this[_opts]);
     // this[_watcher] = new Watcher(this[_displayCanvas]);
     this[_watcher] = new ScreenWatcher(this[_displayCanvas], this[_ctx]);
     this[_scroller] = new Scroller(
-      this[_displayCtx], {
+      displayCtx2d, {
         width: opts.width,
         height: opts.height,
         devicePixelRatio: opts.devicePixelRatio || 1,
@@ -62,21 +68,30 @@ class Board {
     this[_render]();
   }
 
-  getDisplayContext(): CanvasRenderingContext2D {
-    return this[_displayCtx];
+  getDisplayContext2D(): CanvasRenderingContext2D {
+    return this[_displayCanvas].getContext('2d') as CanvasRenderingContext2D;
   }
 
-  getOriginContext(): CanvasRenderingContext2D {
-    return this[_originCtx];
+  getOriginContext2D(): CanvasRenderingContext2D {
+    return this[_ctx].getContext();
   }
 
-  getContext(): Context {
+  getHelperContext2D(): CanvasRenderingContext2D {
+    return this[_helperCtx].getContext();
+  }
+
+  getContext(): TypeContext {
     return this[_ctx];
+  }
+
+  getHelperContext(): TypeContext {
+    return this[_helperCtx];
   }
 
   scale(scaleRatio: number): TypeScreenContext {
     if (scaleRatio > 0) {
       this[_ctx].setTransform({ scale: scaleRatio });
+      this[_helperCtx].setTransform({ scale: scaleRatio });
     }
     const { position, size } = this[_screen].calcScreen();
     return { position, size};
@@ -91,6 +106,7 @@ class Board {
     })
     if (x >= 0 || x < 0) {
       this[_ctx].setTransform({ scrollX: x });
+      this[_helperCtx].setTransform({ scrollX: x })
     }
     const { position, size, canScrollXNext, canScrollYNext, canScrollXPrev, canScrollYPrev } = this[_screen].calcScreen();
     this[_watcher].setStatusMap({
@@ -111,6 +127,7 @@ class Board {
     })
     if (y >= 0 || y < 0) {
       this[_ctx].setTransform({ scrollY: y });
+      this[_helperCtx].setTransform({ scrollY: y });
     }
     const { position, size, canScrollXNext, canScrollYNext, canScrollXPrev, canScrollYPrev } = this[_screen].calcScreen();
     this[_watcher].setStatusMap({
@@ -129,8 +146,12 @@ class Board {
   draw(): TypeScreenContext {
     this.clear();
     const { position, deviceSize, size } = this[_screen].calcScreen();
-    this[_displayCtx].drawImage(
+    const displayCtx = this[_displayCanvas].getContext('2d');
+    displayCtx?.drawImage(
       this[_canvas], deviceSize.x, deviceSize.y, deviceSize.w, deviceSize.h
+    );
+    displayCtx?.drawImage(
+      this[_helperCanvas], deviceSize.x, deviceSize.y, deviceSize.w, deviceSize.h
     );
     if (this[_opts].canScroll === true) {
       this[_scroller].draw(position);
@@ -138,12 +159,13 @@ class Board {
     return { position, size };
   }
 
-  addPlugin(plugin: TypePlugin) {
+  addPlugin(plugin: InterfacePlugin) {
     this[_tempData].get('plugins').push(plugin);
   }
 
   clear() {
-    this[_displayCtx].clearRect(0, 0, this[_displayCanvas].width, this[_displayCanvas].height);
+    const displayCtx = this[_displayCanvas].getContext('2d');
+    displayCtx?.clearRect(0, 0, this[_displayCanvas].width, this[_displayCanvas].height);
   }
 
   on<T extends keyof TypeBoardEventArgMap >(name: T, callback: (p: TypeBoardEventArgMap[T]) => void) {
@@ -173,6 +195,7 @@ class Board {
     this[_opts] = { ...this[_opts], ...opts };
     this[_resetContext]();
     this[_ctx].resetSize(opts);
+    this[_helperCtx].resetSize(opts);
     this[_screen].resetSize(opts);
     this[_scroller].resetSize({
       width: this[_opts].width,
@@ -222,6 +245,9 @@ class Board {
     const { width, height, contextWidth, contextHeight, devicePixelRatio } = this[_opts];
     this[_canvas].width = contextWidth * devicePixelRatio;
     this[_canvas].height = contextHeight * devicePixelRatio;
+
+    this[_helperCanvas].width = contextWidth * devicePixelRatio;
+    this[_helperCanvas].height = contextHeight * devicePixelRatio;
 
     this[_displayCanvas].width = width * devicePixelRatio;
     this[_displayCanvas].height = height * devicePixelRatio;

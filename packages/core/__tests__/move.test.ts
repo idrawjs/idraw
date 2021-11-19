@@ -4,13 +4,13 @@ import '../../../__tests__/polyfill/image';
 import IDraw from '../src';
 import { getData } from './data';
 
-function delay(time: number): Promise<void> {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, time)
-  });
-}
+// function delay(time: number): Promise<void> {
+//   return new Promise((resolve) => {
+//     setTimeout(() => {
+//       resolve();
+//     }, time)
+//   });
+// }
 
 describe("@idraw/core", () => {
 
@@ -37,12 +37,12 @@ describe("@idraw/core", () => {
 
     requestAnimationFrameMock.triggerNextAnimationFrame();
   
-    const originCtx = idraw.__getOriginContext();
+    const originCtx = idraw.__getOriginContext2D();
     // @ts-ignore;
     const originCalls = originCtx.__getDrawCalls();
     expect(originCalls).toMatchSnapshot();
   
-    const displayCtx = idraw.__getDisplayContext();
+    const displayCtx = idraw.__getDisplayContext2D();
     // @ts-ignore;
     const displayCalls = displayCtx.__getDrawCalls();
     expect(displayCalls).toMatchSnapshot();
@@ -67,12 +67,12 @@ describe("@idraw/core", () => {
 
     requestAnimationFrameMock.triggerNextAnimationFrame();
   
-    const originCtx = idraw.__getOriginContext();
+    const originCtx = idraw.__getOriginContext2D();
     // @ts-ignore;
     const originCalls = originCtx.__getDrawCalls();
     expect(originCalls).toMatchSnapshot();
   
-    const displayCtx = idraw.__getDisplayContext();
+    const displayCtx = idraw.__getDisplayContext2D();
     // @ts-ignore;
     const displayCalls = displayCtx.__getDrawCalls();
     expect(displayCalls).toMatchSnapshot();

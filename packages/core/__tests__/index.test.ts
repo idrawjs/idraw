@@ -29,12 +29,12 @@ describe("@idraw/core", () => {
 
     requestAnimationFrameMock.triggerNextAnimationFrame();
   
-    const originCtx = core.__getOriginContext();
+    const originCtx = core.__getOriginContext2D();
     // @ts-ignore;
     const originCalls = originCtx.__getDrawCalls();
     expect(originCalls).toMatchSnapshot();
   
-    const displayCtx = core.__getDisplayContext();
+    const displayCtx = core.__getDisplayContext2D();
     // @ts-ignore;
     const displayCalls = displayCtx.__getDrawCalls();
     expect(displayCalls).toMatchSnapshot();

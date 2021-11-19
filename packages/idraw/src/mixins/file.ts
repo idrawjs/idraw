@@ -16,7 +16,7 @@ export async function exportDataURL(
     function listenRenderFrameComplete() {
       idraw.off('drawFrameComplete', listenRenderFrameComplete);
       idraw[_tempData].set('isDownloading', false);
-      const ctx = idraw.__getOriginContext();
+      const ctx = idraw.__getOriginContext2D();
       const canvas = ctx.canvas;
       dataURL = canvas.toDataURL(type, quality);
       resolve(dataURL);
@@ -28,7 +28,17 @@ export async function exportDataURL(
       reject(err);
     }
   });
+}
 
-  
 
+
+export function toDataURL(
+  idraw: iDraw,
+  type: 'image/png' | 'image/jpeg',
+  quality?: number
+): string {
+  const ctx = idraw.__getOriginContext2D();
+  const canvas = ctx.canvas;
+  const dataURL: string = canvas.toDataURL(type, quality);
+  return dataURL;
 }

@@ -9,7 +9,7 @@ import {
   _createOpts, _pushRecord, _keyboardWatcher,
 } from './names';
 import { redo, undo } from './mixins/record';
-import { exportDataURL } from './mixins/file';
+import { exportDataURL, toDataURL } from './mixins/file';
 import { copyElements, pasteElements, cutElements, deleteElements,
   keyArrowUp, keyArrowDown, keyArrowLeft, keyArrowRight, keyUndo,
 } from './mixins/keyboard';
@@ -43,6 +43,10 @@ class iDraw extends Core {
 
   redo(): { undoRecordCount: number, data: TypeData | null, } {
     return redo(this);
+  }
+
+  toDataURL(type: 'image/png' | 'image/jpeg', quality?: number): string {
+    return toDataURL(this, type, quality);
   }
 
   async exportDataURL(type: 'image/png' | 'image/jpeg', quality?: number ): Promise<string> {
