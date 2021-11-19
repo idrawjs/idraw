@@ -6,7 +6,7 @@ const pageList = [
   { path: 'core/examples/test/elements.html', w: 930, h: 810, delay: 800 },
   { path: 'core/examples/test/api.html', w: 930, h: 1570, delay: 800 },
   { path: 'core/examples/test/resource.html', w: 930, h: 540, delay: 800 },
-  { path: 'idraw/examples/test/api.html', w: 930, h: 270, delay: 800 },
+  { path: 'idraw/examples/test/api.html', w: 930, h: 540, delay: 800 },
 ]
 
 module.exports = {

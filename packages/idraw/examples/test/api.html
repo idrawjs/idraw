@@ -15,13 +15,13 @@
         background-size: 10px 10px, 10px 10px, 50px 50px, 50px 50px;
       }
       .list {
-        width: 910px;
+        width: 920px;
         overflow: hidden;
         border-top: 1px solid #f0f0f0;
         border-left: 1px solid #f0f0f0;
       }
       .box {
-        width: 300;
+        width: 302;
         min-height: 220;
         float: left;
         border-right: 1px solid #f0f0f0;
@@ -51,6 +51,15 @@
       </div>
       <div class="box" id="mount-3">
         <div class="title">exportDataURL('image/jpeg')</div>
+      </div>
+      <div class="box" id="mount-4">
+        <div class="title">toDataURL('image/png')</div>
+      </div>
+      <div class="box" id="mount-5">
+        <div class="title">toDataURL('image/jpeg')</div>
+      </div>
+      <div class="box" id="mount-6">
+        
       </div>
     </div>
 
@@ -157,11 +166,28 @@
           imgJPG.src = jpgSrc;
           imgJPG.width = mount3.getBoundingClientRect().width;
           mount3.appendChild(imgJPG);
+
+          setTimeout(() => {
+            const pngSrc = idraw.toDataURL('image/png');
+            const mount4 = document.querySelector('#mount-4');
+            const imgPNG = new window.Image();
+            imgPNG.src = pngSrc;
+            imgPNG.width = mount4.getBoundingClientRect().width;
+            mount4.appendChild(imgPNG);
+
+            const jpgSrc = idraw.toDataURL('image/jpeg');
+            const mount5 = document.querySelector('#mount-5');
+            const imgJPG = new window.Image();
+            imgJPG.src = jpgSrc;
+            imgJPG.width = mount5.getBoundingClientRect().width;
+            mount5.appendChild(imgJPG);
+          }, 200);
         }, 100);
       })();
     </script>
 
-  
+   
+
   
   </body>
 </html>

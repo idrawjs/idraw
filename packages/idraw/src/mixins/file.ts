@@ -28,7 +28,17 @@ export async function exportDataURL(
       reject(err);
     }
   });
+}
 
-  
 
+
+export function toDataURL(
+  idraw: iDraw,
+  type: 'image/png' | 'image/jpeg',
+  quality?: number
+): string {
+  const ctx = idraw.__getOriginContext2D();
+  const canvas = ctx.canvas;
+  const dataURL: string = canvas.toDataURL(type, quality);
+  return dataURL;
 }
