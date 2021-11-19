@@ -566,6 +566,23 @@ Array [
   },
   Object {
     "props": Object {
+      "height": 1600,
+      "width": 2400,
+      "x": 0,
+      "y": 0,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "clearRect",
+  },
+  Object {
+    "props": Object {
       "dHeight": 1600,
       "dWidth": 2400,
       "dx": 0,
@@ -591,13 +608,16 @@ Array [
   },
   Object {
     "props": Object {
-      "dHeight": 150,
-      "dWidth": 300,
+      "dHeight": 1600,
+      "dWidth": 2400,
       "dx": 0,
       "dy": 0,
-      "img": <canvas />,
-      "sHeight": 150,
-      "sWidth": 300,
+      "img": <canvas
+        height="1600"
+        width="2400"
+      />,
+      "sHeight": 1600,
+      "sWidth": 2400,
       "sx": 0,
       "sy": 0,
     },
@@ -1180,6 +1200,23 @@ Array [
   },
   Object {
     "props": Object {
+      "height": 1600,
+      "width": 2400,
+      "x": 0,
+      "y": 0,
+    },
+    "transform": Array [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "clearRect",
+  },
+  Object {
+    "props": Object {
       "dHeight": 1600,
       "dWidth": 2400,
       "dx": 0,
@@ -1205,13 +1242,16 @@ Array [
   },
   Object {
     "props": Object {
-      "dHeight": 150,
-      "dWidth": 300,
+      "dHeight": 1600,
+      "dWidth": 2400,
       "dx": 0,
       "dy": 0,
-      "img": <canvas />,
-      "sHeight": 150,
-      "sWidth": 300,
+      "img": <canvas
+        height="1600"
+        width="2400"
+      />,
+      "sHeight": 1600,
+      "sWidth": 2400,
       "sx": 0,
       "sy": 0,
     },

@@ -4,13 +4,13 @@ import '../../../__tests__/polyfill/image';
 import IDraw from '../src';
 import { getData } from './data';
 
-function delay(time: number): Promise<void> {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, time)
-  });
-}
+// function delay(time: number): Promise<void> {
+//   return new Promise((resolve) => {
+//     setTimeout(() => {
+//       resolve();
+//     }, time)
+//   });
+// }
 
 describe("@idraw/core", () => {
 
