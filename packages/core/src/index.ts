@@ -98,6 +98,7 @@ class Core {
       scrollX: transfrom.scrollX,
       scrollY: transfrom.scrollY,
     });
+    this[_renderer].thaw();
     this[_renderer].render(this[_board].getContext(), this[_data], {
       changeResourceUUIDs: opts?.resourceChangeUUIDs || []
     });

@@ -116,13 +116,13 @@ export default class Renderer extends RendererEvent {
     return this[_ctx]
   }
 
+  thaw() {
+    this[_status] = DrawStatus.FREE;
+  }
+
   private [_freeze]() {
     this[_status] = DrawStatus.FREEZE;
   }
-
-  // private _thaw() {
-  //   this[_status] = DrawStatus.FREE;
-  // }
 
   private [_drawFrame]() {
     if (this[_status] === DrawStatus.FREEZE) {
@@ -164,6 +164,9 @@ export default class Renderer extends RendererEvent {
       this.trigger('drawFrame', { t: Date.now() })
 
       if (this[_loader].isComplete() === true && this[_queue].length === 1 && this[_status] === DrawStatus.FREE) {
+        if (ctx && this[_queue][0] && this[_queue][0].data) {
+          drawContext(ctx, this[_queue][0].data, this[_loader]);
+        }
         this.trigger('drawFrameComplete', { t: Date.now() });
         this[_freeze]();
       }
