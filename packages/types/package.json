@@ -8,7 +8,7 @@
   "author": "chenshenhai",
   "license": "MIT",
   "files": [
-    "src",
+    "src/**/*.ts",
     "index.ts"
   ],
   "repository": {
