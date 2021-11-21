@@ -3,36 +3,34 @@ import { TypeElemDesc, TypeElement } from './element';
 import { TypeContext } from './context';
 import { TypePoint, TypePointCursor } from './board';
 
+export type TypeHelperPluginEventDetail = {
+  controller: string | null,
+  point: TypePoint,
+  selectedElement: TypeElement<keyof TypeElemDesc> | null,
+  data: TypeData, 
+  helperCtx:TypeContext,
+}
 
-export interface InterfacePlugin {
-  onHover?: (detail: {
-    point: TypePoint,
-    selectedElement: TypeElement<keyof TypeElemDesc> | null,
-    data: TypeData, 
-    helperCtx:TypeContext,
-  }) => void | { cursor?: TypePointCursor };
-  onClick?: (detail: {
-    point: TypePoint,
-    selectedElement: TypeElement<keyof TypeElemDesc> | null,
-    data: TypeData, 
-    helperCtx:TypeContext
-  }) => void;
-  onMoveStart?: (detail: {
-    point: TypePoint,
-    selectedElement: TypeElement<keyof TypeElemDesc> | null,
-    data: TypeData, 
-    helperCtx:TypeContext
-  }) => void;
-  onMove?: (detail: {
-    point: TypePoint,
-    selectedElement: TypeElement<keyof TypeElemDesc> | null,
-    data: TypeData, 
-    helperCtx:TypeContext
-  }) => void;
-  onMoveEnd?: (detail: {
-    point: TypePoint,
-    selectedElement?: TypeElement<keyof TypeElemDesc> | null,
-    data: TypeData, 
-    helperCtx:TypeContext
-  }) => void;
+export type TypeHelperPluginEventResult = {
+  cursor?: TypePointCursor,
+  beController?: boolean;
+}
+
+export interface InterfaceHelperPlugin {
+
+  readonly name?: string;
+
+  readonly uuid?: string;
+ 
+  onHover?: (detail: TypeHelperPluginEventDetail) => void | TypeHelperPluginEventResult;
+
+  onPoint?: (detail: TypeHelperPluginEventDetail) => void | TypeHelperPluginEventResult;
+
+  onClick?: (detail: TypeHelperPluginEventDetail) => void | TypeHelperPluginEventResult;
+
+  onMoveStart?: (detail: TypeHelperPluginEventDetail) => void | TypeHelperPluginEventResult;
+
+  onMove?: (detail: TypeHelperPluginEventDetail) => void | TypeHelperPluginEventResult;
+
+  onMoveEnd?: (detail: TypeHelperPluginEventDetail) => void | TypeHelperPluginEventResult;
 }
