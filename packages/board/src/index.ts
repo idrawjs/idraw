@@ -1,6 +1,6 @@
 import { 
   TypeScreenPosition, TypeScreenSize, TypeScreenContext, TypePoint, TypePointCursor,
-  TypeBoardOptions, TypeBoardSizeOptions, InterfacePlugin, TypeContext, 
+  TypeBoardOptions, TypeBoardSizeOptions, TypeContext, 
 } from '@idraw/types';
 import util from '@idraw/util';
 import { ScreenWatcher } from './lib/screen-watcher';
@@ -8,7 +8,7 @@ import { setStyle } from './lib/style';
 import { TypeBoardEventArgMap } from './lib/event';
 import { Scroller } from './lib/scroller';
 import { Screen } from './lib/screen';
-import { TempData } from './lib/temp';
+// import { TempData } from './lib/temp';
 import {
   _canvas, _displayCanvas, _mount, _opts, _hasRendered, _ctx,
   _watcher, _render, _parsePrivateOptions, _scroller, _helperCanvas, _helperCtx,
@@ -38,10 +38,10 @@ class Board {
   private [_watcher]: ScreenWatcher;
   private [_scroller]: Scroller;
   private [_screen]: Screen;
-  private [_tempData]: TempData;
+  // private [_tempData]: TempData;
 
   constructor(mount: HTMLDivElement, opts: TypeBoardOptions) {
-    this[_tempData] = new TempData(opts);
+    // this[_tempData] = new TempData(opts);
 
     this[_mount] = mount;
     this[_canvas] = document.createElement('canvas');
@@ -157,10 +157,6 @@ class Board {
       this[_scroller].draw(position);
     }
     return { position, size };
-  }
-
-  addPlugin(plugin: InterfacePlugin) {
-    this[_tempData].get('plugins').push(plugin);
   }
 
   clear() {

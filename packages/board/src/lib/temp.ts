@@ -1,12 +1,10 @@
-import { InterfacePlugin, TypeBoardOptions, TypeContext } from '@idraw/types';
+import { TypeBoardOptions, TypeContext } from '@idraw/types';
 import util from '@idraw/util';
 
 const Context = util.Context;
 
 type TempDataDesc = {
-  plugins: InterfacePlugin[],
   ctx: TypeContext,
-
 }
 
 function createDefaultData(opts: TypeBoardOptions) {
