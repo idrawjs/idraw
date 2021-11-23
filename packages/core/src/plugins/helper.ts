@@ -30,7 +30,6 @@ export class HelperPlugin implements Required<InterfaceHelperPlugin> {
     
   }
 
-
   onMoveStart(detail: TypeHelperPluginEventDetail): void | TypeHelperPluginEventResult {
     
   }
