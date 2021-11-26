@@ -11,10 +11,10 @@ const _coreEvent = Symbol('_coreEvent');
 const _mapper = Symbol('_mapper');
 const _emitChangeScreen = Symbol('_emitChangeScreen');
 const _emitChangeData = Symbol('_emitChangeData');
-const _todo = Symbol('_todo');
+const _engine = Symbol('_engine');
 
 export {
   _board, _data, _opts, _config, _renderer, _element, _helper,
   _tempData, _draw, _coreEvent, _mapper,
-  _emitChangeScreen, _emitChangeData, _todo,
+  _emitChangeScreen, _emitChangeData, _engine,
 };

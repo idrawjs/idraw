@@ -3,7 +3,7 @@ import {
 }  from '@idraw/types';
 import util from '@idraw/util';
 import {
-  _board, _data, _opts, _config, _renderer, _element, _helper,
+  _board, _data, _opts, _config, _renderer, _element, _engine,
   _tempData, _draw, _coreEvent, _emitChangeScreen, _emitChangeData,
 } from './../names';
 import { diffElementResourceChange } from './../lib/diff';
@@ -17,14 +17,14 @@ const { createUUID } = util.uuid;
 export function getSelectedElements(core: Core): TypeElement<keyof TypeElemDesc>[] {
   const elems: TypeElement<keyof TypeElemDesc>[] = [];
   let list: string[] = [];
-  const uuid = core[_tempData].get('selectedUUID');
+  const uuid = core[_engine].temp.get('selectedUUID');
   if (typeof uuid === 'string' && uuid) {
     list.push(uuid);
   } else {
-    list = core[_tempData].get('selectedUUIDList');
+    list = core[_engine].temp.get('selectedUUIDList');
   }
   list.forEach((uuid) => {
-    const index = core[_helper].getElementIndexByUUID(uuid);
+    const index = core[_engine].helper.getElementIndexByUUID(uuid);
     if (index !== null && index >= 0) {
       const elem = core[_data]?.elements[index];
       if (elem) elems.push(elem);
@@ -35,7 +35,7 @@ export function getSelectedElements(core: Core): TypeElement<keyof TypeElemDesc>
 
 export function getElement(core: Core, uuid: string): TypeElement<keyof TypeElemDesc>|null {
   let elem: TypeElement<keyof TypeElemDesc>|null = null;
-  const index = core[_helper].getElementIndexByUUID(uuid);
+  const index = core[_engine].helper.getElementIndexByUUID(uuid);
   if (index !== null && core[_data].elements[index]) {
     elem = deepClone(core[_data].elements[index]);
   }
@@ -69,17 +69,16 @@ export function updateElement(core: Core, elem: TypeElement<keyof TypeElemDesc>)
 }
 
 export function selectElementByIndex(core: Core, index: number, opts?: { useMode?: boolean }): void {
-  if (core[_tempData].get('onlyRender') === true) return;
   if (core[_data].elements[index]) {
     const uuid = core[_data].elements[index].uuid;
     if (opts?.useMode === true) {
-      core[_tempData].set('mode', Mode.SELECT_ELEMENT);
+      core[_engine].temp.set('mode', Mode.SELECT_ELEMENT);
     } else {
-      core[_tempData].set('mode', Mode.NULL);
+      core[_engine].temp.set('mode', Mode.NULL);
     }
     if (typeof uuid === 'string') {
-      core[_tempData].set('selectedUUID', uuid);
-      core[_tempData].set('selectedUUIDList', []);
+      core[_engine].temp.set('selectedUUID', uuid);
+      core[_engine].temp.set('selectedUUIDList', []);
     }
     core[_draw]();
   }
@@ -87,16 +86,14 @@ export function selectElementByIndex(core: Core, index: number, opts?: { useMode
 
 
 export function selectElement(core: Core, uuid: string, opts?: { useMode?: boolean }): void {
-  if (core[_tempData].get('onlyRender') === true) return;
-  const index = core[_helper].getElementIndexByUUID(uuid);
+  const index = core[_engine].helper.getElementIndexByUUID(uuid);
   if (typeof index === 'number' && index >= 0) {
     core.selectElementByIndex(index, opts);
   }
 }
 
 export function moveUpElement(core: Core, uuid: string): void {
-  // if (this[_onlyRender] === true) return;
-  const index = core[_helper].getElementIndexByUUID(uuid);
+  const index = core[_engine].helper.getElementIndexByUUID(uuid);
   if (typeof index === 'number' && index >= 0 && index < core[_data].elements.length - 1) {
     const temp = core[_data].elements[index];
     core[_data].elements[index] = core[_data].elements[index + 1];
@@ -107,8 +104,7 @@ export function moveUpElement(core: Core, uuid: string): void {
 }
 
 export function moveDownElement(core: Core, uuid: string): void {
-  // if (this[_onlyRender] === true) return;
-  const index = core[_helper].getElementIndexByUUID(uuid);
+  const index = core[_engine].helper.getElementIndexByUUID(uuid);
   if (typeof index === 'number' && index > 0 && index < core[_data].elements.length) {
     const temp = core[_data].elements[index];
     core[_data].elements[index] = core[_data].elements[index - 1];
@@ -120,7 +116,6 @@ export function moveDownElement(core: Core, uuid: string): void {
 
 
 export function addElement(core: Core, elem: TypeElementBase<keyof TypeElemDesc>): string | null {
-  // if (this[_onlyRender] === true) return null;
   const _elem = deepClone(elem);
   _elem.uuid = createUUID();
   core[_data].elements.push(_elem);
@@ -130,7 +125,6 @@ export function addElement(core: Core, elem: TypeElementBase<keyof TypeElemDesc>
 }
 
 export function deleteElement(core: Core, uuid: string) {
-  // if (this[_onlyRender] === true) return;
   const index = core[_element].getElementIndex(core[_data], uuid);
   if (index >= 0) {
     core[_data].elements.splice(index, 1);
@@ -140,7 +134,7 @@ export function deleteElement(core: Core, uuid: string) {
 }
 
 export function insertElementBefore(core: Core, elem: TypeElementBase<keyof TypeElemDesc>, beforeUUID: string) {
-  const index = core[_helper].getElementIndexByUUID(beforeUUID);
+  const index = core[_engine].helper.getElementIndexByUUID(beforeUUID);
   if (index !== null) {
     return core.insertElementBeforeIndex(elem, index);
   }
@@ -162,7 +156,7 @@ export function insertElementBeforeIndex(core: Core, elem: TypeElementBase<keyof
 
 
 export function insertElementAfter(core: Core, elem: TypeElementBase<keyof TypeElemDesc>, beforeUUID: string) {
-  const index = core[_helper].getElementIndexByUUID(beforeUUID);
+  const index = core[_engine].helper.getElementIndexByUUID(beforeUUID);
   if (index !== null) {
     return core.insertElementAfterIndex(elem, index);
   }

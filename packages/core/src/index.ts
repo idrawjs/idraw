@@ -9,18 +9,19 @@ import Renderer from '@idraw/renderer';
 import is, { TypeIs } from './lib/is';
 import check, { TypeCheck } from './lib/check';
 import {
-  Element, Helper, Mapper, mergeConfig, CoreEvent, 
+  Element, mergeConfig, CoreEvent, 
   TypeCoreEventArgMap, parseData, TempData, diffElementResourceChangeList, 
 } from './lib';
 import {
-  _board, _data, _opts, _config, _renderer, _element, _helper, _tempData, _draw, _coreEvent, 
-  _mapper, _emitChangeScreen, _emitChangeData,_todo
+  _board, _data, _opts, _config, _renderer, _element, _tempData, _draw, _coreEvent, 
+  _mapper, _emitChangeScreen, _emitChangeData, _engine,
 } from './names';
 import { getSelectedElements, updateElement, selectElementByIndex, getElement, getElementByIndex,
   selectElement, moveUpElement, moveDownElement, addElement, deleteElement,
   insertElementBefore, insertElementBeforeIndex, insertElementAfter, insertElementAfterIndex,
 } from './mixins/element';
-import { initEvent } from './mixins/event';
+// import { initEvent } from './mixins/event';
+import { Engine } from './lib/engine';
 import { drawElementWrapper, drawAreaWrapper, drawElementListWrappers } from './lib/draw/wrapper'
 const { deepClone } = util.data;
 
@@ -32,10 +33,9 @@ class Core {
   private [_config]: TypeConfigStrict;
   private [_renderer]: Renderer;
   private [_element]: Element;
-  private [_helper]: Helper;
-  private [_mapper]: Mapper;
   private [_coreEvent]: CoreEvent = new CoreEvent();
   private [_tempData]: TempData = new TempData();
+  private [_engine]: Engine;
 
   static is: TypeIs = is;
   static check: TypeCheck = check;
@@ -43,7 +43,6 @@ class Core {
   constructor(mount: HTMLDivElement, opts: TypeCoreOptions, config?: TypeConfig) {
     this[_data] = { elements: [] };
     this[_opts] = opts;
-    this[_tempData].set('onlyRender', opts.onlyRender === true)
     this[_config] = mergeConfig(config || {});
     this[_board] = new Board(mount, {
       ...this[_opts],
@@ -56,7 +55,7 @@ class Core {
     this[_renderer] = new Renderer(); 
     const drawFrame = () => {
       const helperCtx = this[_board].getHelperContext();
-      const helperConfig = this[_helper].getConfig();
+      const helperConfig = this[_engine].getHelperConfig();
       this[_board].clear();
       const { contextWidth, contextHeight, devicePixelRatio } = this[_opts];
       helperCtx.clearRect(0, 0, contextWidth * devicePixelRatio, contextHeight * devicePixelRatio)
@@ -72,13 +71,27 @@ class Core {
       drawFrame();
     })
     this[_element] = new Element(this[_board].getContext());
-    this[_helper] = new Helper(this[_board], this[_config]);
-    this[_mapper] = new Mapper({
+    this[_engine] = new Engine({
+      coreEvent: this[_coreEvent],
       board: this[_board],
-      helper: this[_helper],
-      element: this[_element]
+      element: this[_element],
+      config: this[_config],
+      drawFeekback: this[_draw].bind(this),
+      getDataFeekback: () => this[_data],
+      selectElementByIndex: this.selectElementByIndex.bind(this),
+      emitChangeScreen: this[_emitChangeScreen].bind(this),
+      emitChangeData: this[_emitChangeData].bind(this),
     });
-    initEvent(this);
+    this[_engine].init();
+
+    this[_renderer].on('drawFrame', () => {
+      this[_coreEvent].trigger('drawFrame', undefined);
+    });
+    this[_renderer].on('drawFrameComplete', () => {
+      this[_coreEvent].trigger('drawFrameComplete', undefined);
+    })
+  
+    this[_tempData].set('hasInited', true);
   }
 
   [_draw](
@@ -86,18 +99,12 @@ class Core {
       resourceChangeUUIDs?: string[],
     }
   ): void {
-    const transfrom = this[_board].getTransform();
-    this[_helper].updateConfig(this[_data], {
+    this[_engine].updateHelperConfig({
       width: this[_opts].width,
       height: this[_opts].height,
-      canScroll: this[_config]?.scrollWrapper?.use === true,
-      selectedUUID: this[_tempData].get('selectedUUID'),
-      selectedUUIDList: this[_tempData].get('selectedUUIDList'),
       devicePixelRatio: this[_opts].devicePixelRatio,
-      scale: transfrom.scale,
-      scrollX: transfrom.scrollX,
-      scrollY: transfrom.scrollY,
     });
+
     this[_renderer].thaw();
     this[_renderer].render(this[_board].getContext(), this[_data], {
       changeResourceUUIDs: opts?.resourceChangeUUIDs || []
@@ -211,7 +218,6 @@ class Core {
 
   clearOperation() {
     this[_tempData].clear();
-    this[_tempData].set('onlyRender', this[_opts].onlyRender === true)
     this[_draw]();
   }
 
@@ -231,22 +237,6 @@ class Core {
     return this[_board].pointContextToScreen(p);
   }
 
-  setOnlyRender() {
-    this[_tempData].set('onlyRender', true);
-  }
-
-  cancelOnlyRender() {
-    this[_tempData].set('onlyRender', false);
-  }
-
-  // stopRender() {
-  //   this[_renderer].stop();
-  // }
-
-  // restartRender() {
-  //   this[_renderer].restart();
-  // }
-
   __getBoardContext(): TypeContext {
     return this[_board].getContext();
   }
@@ -264,9 +254,6 @@ class Core {
     if (this[_coreEvent].has('changeScreen')) {
       this[_coreEvent].trigger('changeScreen', {
         ...this.getScreenTransform(),
-        // ...{
-        //   selectedElementUUID: this[_tempData].get('selectedUUID')
-        // }
       });
     }
   }
@@ -275,12 +262,6 @@ class Core {
     if (this[_coreEvent].has('changeData')) {
       this[_coreEvent].trigger('changeData', deepClone(this[_data]));
     }
-  }
-
-  [_todo]() {
-    // TODO
-    // To avoid TS error 
-    console.log(this[_mapper]);
   }
 }
 

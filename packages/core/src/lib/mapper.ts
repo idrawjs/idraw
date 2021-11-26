@@ -47,7 +47,6 @@ export class Mapper {
       return { cursor, elementUUID};
     }
     const { uuid, hoverControllerDirection }  = this[_helper].isPointInElementWrapperController(p, data);
-    
     const direction = hoverControllerDirection;
     if (uuid && direction) {
       switch (direction) {
