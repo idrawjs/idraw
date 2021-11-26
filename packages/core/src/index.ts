@@ -14,13 +14,14 @@ import {
 } from './lib';
 import {
   _board, _data, _opts, _config, _renderer, _element, _helper, _tempData, _draw, _coreEvent, 
-  _mapper, _emitChangeScreen, _emitChangeData,_todo
+  _mapper, _emitChangeScreen, _emitChangeData, _todo
 } from './names';
 import { getSelectedElements, updateElement, selectElementByIndex, getElement, getElementByIndex,
   selectElement, moveUpElement, moveDownElement, addElement, deleteElement,
   insertElementBefore, insertElementBeforeIndex, insertElementAfter, insertElementAfterIndex,
 } from './mixins/element';
-import { initEvent } from './mixins/event';
+// import { initEvent } from './mixins/event';
+import { Engine } from './lib/engine';
 import { drawElementWrapper, drawAreaWrapper, drawElementListWrappers } from './lib/draw/wrapper'
 const { deepClone } = util.data;
 
@@ -78,7 +79,9 @@ class Core {
       helper: this[_helper],
       element: this[_element]
     });
-    initEvent(this);
+    // initEvent(this);
+    const engine = new Engine(this);
+    engine.init();
   }
 
   [_draw](
