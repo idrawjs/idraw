@@ -121,13 +121,13 @@ export class Helper implements TypeHelper {
       hoverDirectionNames = hoverDirectionNames.slice(-angleMoveNum).concat(hoverDirectionNames.slice(0, -angleMoveNum))
     }
 
-
     rotateContext(ctx, wrapper.translate, wrapper.radian || 0, () => {
       for (let i = 0; i < controllers.length; i ++) {
         const controller = controllers[i];
         if (controller.invisible === true) {
           continue;
         }
+
         ctx.beginPath();
         ctx.arc(controller.x, controller.y, wrapper.controllerSize, 0, Math.PI * 2);
         ctx.closePath();
@@ -141,6 +141,7 @@ export class Helper implements TypeHelper {
         }
       }
     });
+
     if (selectedControllerDirection === null) {
       const controller = wrapper.controllers.rotate;
       if (controller.invisible !== true) {
@@ -155,6 +156,7 @@ export class Helper implements TypeHelper {
         });
       }
     }
+    
     return {uuid, selectedControllerDirection, hoverControllerDirection, directIndex};
   }
 

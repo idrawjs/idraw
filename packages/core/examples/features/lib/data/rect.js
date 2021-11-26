@@ -62,8 +62,8 @@ const data = {
         borderColor: "#bd0b64",
       },
       operation: {
-        disbaleScale: true,
-        disbaleRotate: true,
+        // disbaleScale: true,
+        // disbaleRotate: true,
       }
     },
   ],

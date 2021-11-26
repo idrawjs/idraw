@@ -1,31 +1,10 @@
-import { TypeHelperWrapperControllerDirection, TypePoint } from '@idraw/types';
-import { Mode, CursorStatus } from './../constant/static';
-
 type TempDataDesc = {
   hasInited: boolean;
-  onlyRender: boolean;
-  mode: Mode,
-  cursorStatus: CursorStatus
-  selectedUUID: string | null,
-  selectedUUIDList: string[],
-  hoverUUID: string | null,
-  selectedControllerDirection: TypeHelperWrapperControllerDirection | null,
-  hoverControllerDirection: TypeHelperWrapperControllerDirection | null,
-  prevPoint: TypePoint | null,
 }
 
 function createData(): TempDataDesc {
   return {
-    onlyRender: false,
     hasInited: false,
-    mode: Mode.NULL,
-    cursorStatus: CursorStatus.NULL,
-    selectedUUID: null,
-    selectedUUIDList: [],
-    hoverUUID: null,
-    selectedControllerDirection: null,
-    hoverControllerDirection: null,
-    prevPoint: null,
   }
 }
 
