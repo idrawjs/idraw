@@ -1,5 +1,5 @@
 {
-  "name": "@idraw/renderer",
+  "name": "@idraw/render",
   "version": "0.2.0-alpha.22",
   "description": "",
   "main": "dist/index.cjs.js",

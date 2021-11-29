@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@idraw/board": "^0.2.0-alpha.22",
-    "@idraw/renderer": "^0.2.0-alpha.22",
+    "@idraw/render": "^0.2.0-alpha.22",
     "@idraw/util": "^0.2.0-alpha.22"
   },
   "publishConfig": {
