@@ -3,7 +3,7 @@
     "packages/types",
     "packages/util",
     "packages/board",
-    "packages/render",
+    "packages/renderer",
     "packages/core",
     "packages/idraw"
   ],

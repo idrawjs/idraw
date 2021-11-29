@@ -5,7 +5,7 @@ import {
 }  from '@idraw/types';
 import Board from '@idraw/board';
 import util from '@idraw/util';
-import Renderer from '@idraw/render';
+import Renderer from '@idraw/renderer';
 import is, { TypeIs } from './lib/is';
 import check, { TypeCheck } from './lib/check';
 import {

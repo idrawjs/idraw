@@ -8,7 +8,7 @@ const packages = [
     globalName: 'iDrawBoard',
   },
   {
-    dirName: 'render',
+    dirName: 'renderer',
     globalName: 'iDrawRenderer',
   },
   // {
