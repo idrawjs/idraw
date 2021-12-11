@@ -31,7 +31,7 @@ const core = new Core(mount, {
   },
   elementWrapper: {
     lockColor: '#009688',
-    color: '#e91e63',
+    color: '#009688',
     controllerSize: 6,
     lineWidth: 1,
     // lineDash: [12, 12],

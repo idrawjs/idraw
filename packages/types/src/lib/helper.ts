@@ -10,6 +10,7 @@ type TypeController =  TypePoint & {
 type TypeHeplerSelectedElementWrapper = {
   uuid: string;
   controllerSize: number;
+  controllerOffset: number;
   lock: boolean;
   controllers: {
     topLeft: TypeController,

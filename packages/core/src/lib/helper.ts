@@ -324,49 +324,53 @@ export class Helper implements TypeHelper {
     if (typeof elem.angle === 'number' && Math.abs(elem.angle) > limitQbliqueAngle) {
       hideObliqueDirection = true;
     }
+    // TODO
+    // const controllerOffset = controllerSize;
+    const controllerOffset = lineWidth;
     
     const wrapper: TypeHeplerSelectedElementWrapper = {
       uuid: elem.uuid,
       controllerSize: controllerSize,
+      controllerOffset: controllerOffset,
       lock: elem?.operation?.lock === true,
       controllers: {
         topLeft: {
-          x: elem.x - controllerSize - bw,
-          y: elem.y - controllerSize - bw,
+          x: elem.x - controllerOffset - bw,
+          y: elem.y - controllerOffset - bw,
           invisible: hideObliqueDirection || elem?.operation?.disbaleScale === true,
         },
         top: {
           x: elem.x + elem.w / 2,
-          y: elem.y - controllerSize - bw,
+          y: elem.y - controllerOffset - bw,
           invisible: elem?.operation?.disbaleScale === true,
         },
         topRight: {
-          x: elem.x + elem.w + controllerSize + bw,
-          y: elem.y - controllerSize - bw,
+          x: elem.x + elem.w + controllerOffset + bw,
+          y: elem.y - controllerOffset - bw,
           invisible: hideObliqueDirection || elem?.operation?.disbaleScale === true,
         },
         right: {
-          x: elem.x + elem.w + controllerSize + bw,
+          x: elem.x + elem.w + controllerOffset + bw,
           y: elem.y + elem.h / 2,
           invisible: elem?.operation?.disbaleScale === true
         },
         bottomRight: {
-          x: elem.x + elem.w + controllerSize + bw,
-          y: elem.y + elem.h + controllerSize + bw,
+          x: elem.x + elem.w + controllerOffset + bw,
+          y: elem.y + elem.h + controllerOffset + bw,
           invisible: hideObliqueDirection || elem?.operation?.disbaleScale === true,
         },
         bottom: {
           x: elem.x + elem.w / 2,
-          y: elem.y + elem.h + controllerSize + bw,
+          y: elem.y + elem.h + controllerOffset + bw,
           invisible: elem?.operation?.disbaleScale === true,
         },
         bottomLeft: {
-          x: elem.x - controllerSize - bw,
-          y: elem.y + elem.h + controllerSize + bw,
+          x: elem.x - controllerOffset - bw,
+          y: elem.y + elem.h + controllerOffset + bw,
           invisible: hideObliqueDirection || elem?.operation?.disbaleScale === true,
         },
         left: {
-          x: elem.x - controllerSize - bw,
+          x: elem.x - controllerOffset - bw,
           y: elem.y + elem.h / 2,
           invisible: elem?.operation?.disbaleScale === true
         },
