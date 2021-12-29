@@ -13,7 +13,7 @@ export const mergeCSS2StyleAttr = function(
       cssList.push(`${cssKey}:${cssVal}`);
     }
   }
-  const styleAttr = cssList.join('; ');
+  const styleAttr = cssList.join('; ') + ';';
   return styleAttr;
 };
 
