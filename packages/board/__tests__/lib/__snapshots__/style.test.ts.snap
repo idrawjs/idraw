@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`@idraw/board: src/lib/style getStyle 1`] = `
+Object {
+  "height": "20px",
+  "margin-top": "123px",
+  "overflow": "auto",
+  "width": "12px",
+}
+`;
+
+exports[`@idraw/board: src/lib/style setDomTransform 1`] = `
+<div
+  style="transform: matrix(1, 2, -1, 1, 80, 90);"
+/>
+`;
+
+exports[`@idraw/board: src/lib/style setStyle 1`] = `
+<div
+  style="width:12px;height:20px;overflow:auto;margin-top:123px;"
+/>
+`;
