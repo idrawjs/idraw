@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 
 function resolvePackagePath() {
   const pathList = Array.from(arguments);
@@ -12,8 +13,16 @@ function resolveProjectPath() {
   return path.join(baseDir, ...pathList);
 }
 
+function getTsConfig() {
+  const configPath = resolveProjectPath('tsconfig.json')
+  const configStr = fs.readFileSync(configPath, { encoding: 'utf8' });
+  const config = JSON.parse(configStr);
+  return config;
+}
+
 
 module.exports = {
   resolveProjectPath,
   resolvePackagePath,
+  getTsConfig,
 }
