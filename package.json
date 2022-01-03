@@ -2,9 +2,8 @@
   "name": "root",
   "private": false,
   "scripts": {
-    "dev": "node ./scripts/dev.js",
-    "dev:board": "node ./scripts/dev.js board",
-    "dev:core": "node ./scripts/dev.js core",
+    "dev": "node ./scripts/dev-vite.js",
+    "dev:board": "node ./scripts/dev-rollup.js board",
     "build": "npm run build:src && npm run build:min",
     "build:src": "NODE_ENV=production BUILD_MODE=reset node ./scripts/build.js",
     "build:min": "node ./scripts/minify.js",
@@ -34,13 +33,15 @@
     "@microsoft/api-extractor": "^7.13.2",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^11.2.1",
+    "@rollup/plugin-typescript": "^8.3.0",
     "@rollup/pluginutils": "^4.1.1",
     "@types/jest": "^26.0.23",
     "@typescript-eslint/eslint-plugin": "^4.25.0",
     "@typescript-eslint/parser": "^4.25.0",
     "babel-jest": "^26.6.3",
     "canvas": "^2.8.0",
-    "chalk": "^4.1.0",
+    "chalk": "^4.1.2",
+    "enquirer": "^2.3.6",
     "eslint": "^7.27.0",
     "execa": "^5.0.0",
     "fs-extra": "^9.1.0",
@@ -66,6 +67,7 @@
     "terser": "^5.9.0",
     "ts-node": "^9.1.1",
     "tslib": "^2.2.0",
-    "typescript": "^4.3.2"
+    "typescript": "^4.3.2",
+    "vite": "^2.7.10"
   }
 }
