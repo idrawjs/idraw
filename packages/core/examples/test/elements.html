@@ -73,6 +73,12 @@
     </div>
 
     <script src="./../../dist/index.global.js"></script>
+    <script type="module">
+      import event from './../../../../scripts/browser/event.js';
+      import { getData } from './data.js';
+      window.event = event;
+      window.getData = getData;
+    </script>
     <script>
       var Core = window.iDrawCore;
       var opts = {
@@ -384,7 +390,6 @@
     </script>
 
     <script type="module">
-      import event from './../../../../scripts/browser/event.js';
       (function() {
         const mount = document.querySelector('#mount-7');
         const core = new Core(mount, opts, config);
@@ -423,7 +428,6 @@
     </script>
 
     <script type="module">
-      import event from './../../../../scripts/browser/event.js';
       (function() {
         const mount = document.querySelector('#mount-8');
         const core = new Core(mount, opts, config);
@@ -465,7 +469,6 @@
     </script>
 
     <script type="module">
-      import event from './../../../../scripts/browser/event.js';
       (function() {
         const mount = document.querySelector('#mount-9');
         const core = new Core(mount, opts, config);

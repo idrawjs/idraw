@@ -4,7 +4,7 @@ const process = require('process');
 
 async function main() {
   
-  await execa( 'rollup',
+  await execa('rollup',
     [
       '-w',
       '-c',

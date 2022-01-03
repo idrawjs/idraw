@@ -7,7 +7,7 @@
   "unpkg": "dist/index.global.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite dev"
   },
   "files": [
     "dist/*.ts",

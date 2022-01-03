@@ -100,6 +100,12 @@
     </div>
 
     <script src="./../../dist/index.global.js"></script>
+    <script type="module">
+      import event from './../../../../scripts/browser/event.js';
+      import { getData } from './data.js';
+      window.event = event;
+      window.getData = getData;
+    </script>
     <script>
       var Core = window.iDrawCore;
       var opts = {
@@ -155,7 +161,6 @@
     </script>
     <script type="module">
       // Options Common
-      import event from './../../../../scripts/browser/event.js';
       (function() {
         const mount = document.querySelector('#idraw-opts');
         const core = new Core(mount, opts, config);
@@ -167,7 +172,6 @@
     </script>
     <script type="module">
       // Options onlyRender
-      import event from './../../../../scripts/browser/event.js';
       (function() {
         const mount = document.querySelector('#idraw-opts-onlyRender');
         const core = new Core(mount, Object.assign({}, opts, {
@@ -181,7 +185,6 @@
     </script>
     <script type="module">
       // Config
-      import event from './../../../../scripts/browser/event.js';
       (function() {
         const mount = document.querySelector('#idraw-config');
         const core = new Core(mount,
@@ -212,8 +215,6 @@
 
     <script type="module">
       // idraw-api-setData
-      import { getData } from './data.js';
-      import event from './../../../../scripts/browser/event.js';
       (function() {
         const mount = document.querySelector('#idraw-api-setData');
         const data = getData();
@@ -238,8 +239,6 @@
 
     <script type="module">
       // idraw-api-resetSize
-      import { getData } from './data.js';
-      import event from './../../../../scripts/browser/event.js';
       (function() {
         const mount = document.querySelector('#idraw-api-resetSize');
         const data = getData();
@@ -269,8 +268,6 @@
     
     <script type="module">
       // idraw-api-selectElement
-      import { getData } from './data.js';
-      import event from './../../../../scripts/browser/event.js';
       (function() {
         const mount = document.querySelector('#idraw-api-selectElement');
         const data = getData();
@@ -293,8 +290,6 @@
 
     <script type="module">
       // idraw-api-selectElementByIndex
-      import { getData } from './data.js';
-      import event from './../../../../scripts/browser/event.js';
       (function() {
         const mount = document.querySelector('#idraw-api-selectElementByIndex');
         const data = getData();
@@ -317,8 +312,6 @@
 
     <script type="module">
       // idraw-api-updateElement
-      import { getData } from './data.js';
-      import event from './../../../../scripts/browser/event.js';
       (function() {
         const mount = document.querySelector('#idraw-api-updateElement');
         const data = getData();
@@ -344,8 +337,6 @@
 
     <script type="module">
       // idraw-api-addElement
-      import { getData } from './data.js';
-      import event from './../../../../scripts/browser/event.js';
       (function() {
         const mount = document.querySelector('#idraw-api-addElement');
         const data = getData();
@@ -380,8 +371,6 @@
 
     <script type="module">
       // idraw-api-deleteElement
-      import { getData } from './data.js';
-      import event from './../../../../scripts/browser/event.js';
       (function() {
         const mount = document.querySelector('#idraw-api-deleteElement');
         const data = getData();
@@ -404,8 +393,6 @@
 
     <script type="module">
       // idraw-api-moveUpElementidraw
-      import { getData } from './data.js';
-      import event from './../../../../scripts/browser/event.js';
       (function() {
         const mount = document.querySelector('#idraw-api-moveUpElement');
         const data = getData();
@@ -428,8 +415,6 @@
 
     <script type="module">
       // idraw-api-moveDownElement
-      import { getData } from './data.js';
-      import event from './../../../../scripts/browser/event.js';
       (function() {
         const mount = document.querySelector('#idraw-api-moveDownElement');
         const data = getData();
@@ -452,8 +437,6 @@
 
     <script type="module">
       // idraw-api-scale
-      import { getData } from './data.js';
-      import event from './../../../../scripts/browser/event.js';
       (function() {
         const mount = document.querySelector('#idraw-api-scale');
         const data = getData();
@@ -476,8 +459,6 @@
 
     <script type="module">
       // idraw-api-scrollLeft
-      import { getData } from './data.js';
-      import event from './../../../../scripts/browser/event.js';
       (function() {
         const mount = document.querySelector('#idraw-api-scrollLeft');
         const data = getData();
@@ -500,8 +481,6 @@
 
     <script type="module">
       // idraw-api-scrollTop
-      import { getData } from './data.js';
-      import event from './../../../../scripts/browser/event.js';
       (function() {
         const mount = document.querySelector('#idraw-api-scrollTop');
         const data = getData();
@@ -524,8 +503,6 @@
 
     <script type="module">
       // idraw-api-clearOperation
-      import { getData } from './data.js';
-      import event from './../../../../scripts/browser/event.js';
       (function() {
         const mount = document.querySelector('#idraw-api-clearOperation');
         const data = getData();
@@ -538,8 +515,6 @@
 
     <script type="module">
       // idraw-api-insertElementBefore
-      import { getData } from './data.js';
-      import event from './../../../../scripts/browser/event.js';
       (function() {
         const mount = document.querySelector('#idraw-api-insertElementBefore');
         const data = getData();
@@ -558,8 +533,6 @@
 
     <script type="module">
       // idraw-api-insertElementAfter
-      import { getData } from './data.js';
-      import event from './../../../../scripts/browser/event.js';
       (function() {
         const mount = document.querySelector('#idraw-api-insertElementAfter');
         const data = getData();
