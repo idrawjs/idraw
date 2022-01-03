@@ -31,7 +31,15 @@ function getViteConfig(pkgName) {
       host: '127.0.0.1',
     },
     plugins: [],
-    esbuild: false,
+    esbuild: {
+      include: [
+        /\.ts$/,
+        /\.js$/,
+      ],
+      exclude: [
+        /\.html$/
+      ]
+    },
   });
   return viteConfig;
 }

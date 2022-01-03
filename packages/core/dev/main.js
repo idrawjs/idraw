@@ -1,8 +1,20 @@
 import Core from './../src/index';
-import data from './data';
+import { getData } from './data.js';
 
 console.log('Core =', Core)
 
+var opts = {
+  width: 300,
+  height: 200,
+  contextWidth: 300,
+  contextHeight: 200,
+  devicePixelRatio: 4,
+}
+// var config = {
+//   elementWrapper: {
+//     controllerSize: 4,
+//   }
+// }
 
 const mount = document.querySelector('#mount');
 const data = getData();
