@@ -172,9 +172,4 @@ To contribute, please follow the steps:
 - `cd idraw`
 - `npm i`
 - `npm run init`
-- `npm run dev`  for compiling all packages
-  -  `npm run dev ${module}` for compiling single module such as `idraw`
-- `npm run serve` for starting a server 
-- http://127.0.0.1:8080
-  - http://127.0.0.1:8080/packages/idraw/examples/features/
-  - http://127.0.0.1:8080/packages/core/examples/features/
+- `npm run dev` to select and develop single package
