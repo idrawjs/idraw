@@ -17,7 +17,6 @@
     "jsx": "preserve",
     "lib": ["ESNext", "dom"],
     "rootDir": ".",
-    "isolatedModules": true,
     // "paths": {
     //   "idraw": ["packages/idraw/src1"]
     // }
