@@ -2,8 +2,8 @@
   "name": "root",
   "private": false,
   "scripts": {
-    "dev": "node ./scripts/dev-vite.js",
-    "dev:board": "node ./scripts/dev-rollup.js board",
+    "start": "node ./scripts/dev-vite.js",
+    "dev": "node ./scripts/dev-rollup.js",
     "build": "npm run build:src && npm run build:min",
     "build:src": "NODE_ENV=production BUILD_MODE=reset node ./scripts/build-bundle.js",
     "build:mod": "node ./scripts/build-module.js",
@@ -68,8 +68,8 @@
     "serve-handler": "^6.1.3",
     "terser": "^5.9.0",
     "ts-node": "^9.1.1",
-    "tslib": "^2.2.0",
-    "typescript": "^4.3.2",
+    "tslib": "^2.3.1",
+    "typescript": "^4.5.4",
     "vite": "^2.7.10"
   }
 }

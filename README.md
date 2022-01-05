@@ -168,8 +168,24 @@ We appreciate your help!
 
 To contribute, please follow the steps:
 
+### Step 1: Prepare Project
+
 - `git clone git@github.com:idrawjs/idraw.git`
 - `cd idraw`
 - `npm i`
 - `npm run init`
-- `npm run dev` to select and develop single package
+
+### Step 2: Development
+
+#### Simple Mode
+
+- `npm run start` to select and develop single package
+
+#### Complete Mode
+
+- `npm run dev`  for compiling all packages
+  -  `npm run dev ${module}` for compiling single module such as `idraw`
+- `npm run serve` for starting a server 
+- http://127.0.0.1:8080
+  - http://127.0.0.1:8080/packages/idraw/examples/features/
+  - http://127.0.0.1:8080/packages/core/examples/features/
