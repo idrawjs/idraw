@@ -1,8 +1,6 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
     "declaration": true,
-    "outDir": "dist",
     "sourceMap": false,
     "target": "es5",
     "module": "ES2015",
@@ -14,18 +12,13 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "removeComments": true,
-    "jsx": "preserve",
-    "lib": ["ESNext", "dom"],
-    "rootDir": ".",
-    // "paths": {
-    //   "idraw": ["packages/idraw/src1"]
-    // }
+    "lib": ["ESNext", "dom"]
   },
   "include": [
     "packages/global.d.ts",
     "packages/*/src",
     "packages/*/__tests__",
-    "packages/*/dev",
+    "packages/*/dev"
   ],
   "exclude": [
     "packages/*/examples"

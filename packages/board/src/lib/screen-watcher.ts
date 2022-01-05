@@ -72,28 +72,33 @@ export class ScreenWatcher {
   }
 
   _initParentEvent() {
-    let target = window;
-    let targetOrigin = target.origin;
-    while (target.self !== target.top) {
-      // If in iframe
-      if (target.self !== target.parent) {
-        // If in same origin 
-        if (target.origin === targetOrigin) {
-          // window.parent.window.addEventListener(
-          //   'mousemove',
-          //   throttle(this._listSameOriginParentWindow.bind(this), 16), 
-          //   false);
-          target.parent.window.addEventListener(
-            'mousemove',
-            this._listSameOriginParentWindow.bind(this), 
-            false);
+    
+    try {
+      let target = window;
+      let targetOrigin = target.origin;
+      while (target.self !== target.top) {
+        // If in iframe
+        if (target.self !== target.parent) {
+          // If in same origin 
+          if (target.origin === targetOrigin) {
+            // window.parent.window.addEventListener(
+            //   'mousemove',
+            //   throttle(this._listSameOriginParentWindow.bind(this), 16), 
+            //   false);
+            target.parent.window.addEventListener(
+              'mousemove',
+              this._listSameOriginParentWindow.bind(this), 
+              false);
+          }
+        }
+        // @ts-ignore
+        target = target.parent;
+        if (!target) {
+          break;
         }
       }
-      // @ts-ignore
-      target = target.parent;
-      if (!target) {
-        break;
-      }
+    } catch (err) {
+      console.warn(err);
     }
     
   }
