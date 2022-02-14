@@ -38,34 +38,46 @@ export function drawText(
     const fontHeight = desc.lineHeight || desc.fontSize;
     const descTextList = descText.split('\n');
     const lines: {text: string, width: number}[] = [];
-
-    descTextList.forEach((tempText) => {
+    
+    let lineNum = 0;
+    descTextList.forEach((tempText: string, idx: number) => {
       let lineText = '';
-      let lineNum = 0;
-      for (let i = 0; i < tempText.length; i++) {
-        if (ctx.measureText(lineText + (tempText[i] || '')).width < ctx.calcDeviceNum(elem.w)) {
-          lineText += (tempText[i] || '');
-        } else {
-          lines.push({
-            text: lineText,
-            width: ctx.calcScreenNum(ctx.measureText(lineText).width),
-          });
-          lineText = (tempText[i] || '');
-          lineNum ++;
-        }
-        if ((lineNum + 1) * fontHeight > elem.h) {
-          break;
-        }
-        if (lineText && tempText.length - 1 === i) {
-          if ((lineNum + 1) * fontHeight < elem.h) {
+      
+      if (tempText.length > 0) {
+        for (let i = 0; i < tempText.length; i++) {
+          if (ctx.measureText(lineText + (tempText[i] || '')).width < ctx.calcDeviceNum(elem.w)) {
+            lineText += (tempText[i] || '');
+          } else {
             lines.push({
               text: lineText,
               width: ctx.calcScreenNum(ctx.measureText(lineText).width),
             });
+            lineText = (tempText[i] || '');
+            lineNum ++;
+          }
+          if ((lineNum + 1) * fontHeight > elem.h) {
             break;
           }
+          if (tempText.length - 1 === i) {
+            if ((lineNum + 1) * fontHeight < elem.h) {
+              lines.push({
+                text: lineText,
+                width: ctx.calcScreenNum(ctx.measureText(lineText).width),
+              });
+              if(idx < descTextList.length - 1){
+                lineNum ++
+              }
+              break;
+            }
+          }
         }
+      } else {
+        lines.push({
+          text: '',
+          width: 0,
+        });
       }
+      
     });
 
     // draw text lines
