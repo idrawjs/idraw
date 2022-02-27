@@ -98,7 +98,7 @@
     </script>
     <script>
       (function() {
-        const Board = window.iDrawBoard; 
+        const { Board } = window.iDrawBoard; 
         const mount = document.querySelector('#mount-1');
         const board = new Board(mount, opts);
         // board.on('wheelX', (deltaX) => {
@@ -128,7 +128,7 @@
     <script type="module">
       import event from './../../../../scripts/browser/event.js';
       (function() {
-        const Board = window.iDrawBoard; 
+        const { Board } = window.iDrawBoard; 
         const mount = document.querySelector('#mount-2');
         const board = new Board(mount, opts);
         drawBoard(board)

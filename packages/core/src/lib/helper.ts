@@ -4,15 +4,14 @@ import {
   TypeElemDesc, TypeContext, TypePoint, TypeConfigStrict,
   TypeHeplerSelectedElementWrapper
 } from '@idraw/types';
-import Board from '@idraw/board';
-import util from '@idraw/util';
+import { Board } from '@idraw/board';
+import { deepClone } from '@idraw/util';
 import { parseAngleToRadian, calcElementCenter } from './calculate';
 import { rotateContext, rotateElement } from './transform';
 import { LIMIT_QBLIQUE_ANGLE } from './../constant/element';
 
 const limitQbliqueAngle = LIMIT_QBLIQUE_ANGLE;
 
-const { deepClone } = util.data;
 
 export class Helper implements TypeHelper {
 
@@ -89,7 +88,7 @@ export class Helper implements TypeHelper {
       'bottom',
       'bottom-right',
     ];
-    let hoverDirectionNames = util.data.deepClone(directionNames);
+    let hoverDirectionNames = deepClone(directionNames);
 
     let angleMoveNum = 0;
     if (data && uuid) {

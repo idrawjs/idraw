@@ -3,7 +3,7 @@ import {
   TypeScreenPosition,
   TypeBoardScrollConfig,
 } from '@idraw/types';
-import util from '@idraw/util';
+import { isColorStr } from '@idraw/util';
 
 type TypeOptions = {
   width: number,
@@ -184,7 +184,7 @@ export class Scroller {
     }
     options.scrollConfig.lineWidth = Math.max(options.scrollConfig.lineWidth, defaultScrollConfig.lineWidth);
 
-    if (util.color.isColorStr(options.scrollConfig.color) !== true) {
+    if (isColorStr(options.scrollConfig.color) !== true) {
       options.scrollConfig.color = options.scrollConfig.color;
     }
     return options;

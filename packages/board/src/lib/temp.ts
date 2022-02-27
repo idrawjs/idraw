@@ -1,7 +1,5 @@
 import { TypeBoardOptions, TypeContext } from '@idraw/types';
-import util from '@idraw/util';
-
-const Context = util.Context;
+import { Context } from '@idraw/util';
 
 type TempDataDesc = {
   ctx: TypeContext,

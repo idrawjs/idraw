@@ -1,18 +1,16 @@
 import {
   TypeElement, TypeElemDesc, TypeElementBase,
 }  from '@idraw/types';
-import util from '@idraw/util';
+import { deepClone, createUUID } from '@idraw/util';
 import {
   _board, _data, _opts, _config, _renderer, _element, _engine,
   _tempData, _draw, _coreEvent, _emitChangeScreen, _emitChangeData,
 } from './../names';
 import { diffElementResourceChange } from './../lib/diff';
-import Core from './../index';
+import { Core } from './../index';
 import { Mode } from './../constant/static';
 
-// const { time } = util;
-const { deepClone } = util.data;
-const { createUUID } = util.uuid;
+ 
 
 export function getSelectedElements(core: Core): TypeElement<keyof TypeElemDesc>[] {
   const elems: TypeElement<keyof TypeElemDesc>[] = [];

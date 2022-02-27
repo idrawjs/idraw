@@ -1,5 +1,7 @@
 const ts = require('typescript');
-const babel = require('@babel/core');
+const path = require('path');
+const fs = require('fs-extra');
+// const babel = require('@babel/core');
 const glob = require("glob");
 const { packages } = require('./config');
 const { resolvePackagePath, getTsConfig } = require('./util/project');
@@ -8,6 +10,9 @@ build();
 
 async function build() {
   packages.forEach(async (pkg) => {
+    const target = pkg.dirName;
+    const pkgDir = path.resolve(`packages/${target}`);
+    await fs.remove(`${pkgDir}/esm`);
     buildPackage(pkg.dirName);
   });
 }
@@ -28,25 +33,10 @@ function buildPackage(dirName) {
     compilerOptions.target = ts.ScriptTarget.ES2015;
     compilerOptions.moduleResolution = ts.ModuleResolutionKind.NodeJs;
     compilerOptions.declaration = true;
-    compilerOptions.outDir = resolvePackagePath(dirName, 'dist', 'esm');
+    compilerOptions.outDir = resolvePackagePath(dirName, 'esm');
     compilerOptions.rootDir  = resolvePackagePath(dirName, 'src');
     const program = ts.createProgram(targetFiles, compilerOptions);
     program.emit();
   }
-
-  // build ts -> cjs
-  {
-    const tsConfig = getTsConfig();
-    const compilerOptions = tsConfig.compilerOptions;
-    compilerOptions.target = ts.ScriptTarget.ES5;
-    compilerOptions.moduleResolution = ts.ModuleResolutionKind.NodeJs;
-    compilerOptions.declaration = true;
-    compilerOptions.outDir = resolvePackagePath(dirName, 'dist', 'cjs');
-    compilerOptions.rootDir  = resolvePackagePath(dirName, 'src');
-    const program = ts.createProgram(targetFiles, compilerOptions);
-    program.emit();
-  }
-
-  // console.log('files ===', files);
 }
 

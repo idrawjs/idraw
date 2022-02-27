@@ -1,10 +1,7 @@
 import { TypeData, TypeElement } from '@idraw/types';
-import util from '@idraw/util';
+import { loadImage, loadSVG, loadHTML, deepClone } from '@idraw/util';
 import { LoaderEvent, TypeLoadData, TypeLoaderEventArgMap } from './loader-event';
 import { filterScript } from './../util/filter';
-
-const { loadImage, loadSVG, loadHTML } = util.loader;
-const { deepClone } = util.data;
 
 type Options = {
   maxParallelNum: number

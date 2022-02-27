@@ -4,7 +4,7 @@ import {
   TypeElement,
   // TypePoint,
 } from '@idraw/types';
-import util from '@idraw/util';
+import { isColorStr } from '@idraw/util';
 import Loader from '../loader';
 import { clearContext, drawBgColor } from './base';
 import { drawRect } from './rect';
@@ -13,8 +13,6 @@ import { drawSVG } from './svg';
 import { drawHTML } from './html';
 import { drawText } from './text';
 import { drawCircle } from './circle';
-
-const { isColorStr } = util.color;
 
 export function drawContext(
   ctx: TypeContext,

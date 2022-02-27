@@ -114,3 +114,5 @@ __tests__/test-result
 # __tests__/snapshot
 
 reports/
+
+packages/*/esm/

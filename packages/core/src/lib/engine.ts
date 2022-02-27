@@ -2,16 +2,14 @@ import {
   TypePoint, TypeHelperWrapperControllerDirection,InterfaceHelperPlugin,
   TypeConfigStrict, TypeData, TypeHelperConfig,
 } from '@idraw/types';
-import util from '@idraw/util';
-import Board from '@idraw/board';
+import { deepClone, throttle } from '@idraw/util';
+import { Board } from '@idraw/board';
 import { Mode, CursorStatus } from './../constant/static';
 import { TempData } from './engine-temp';
 import { Helper } from './helper';
 import { Mapper } from './mapper';
 import { Element } from './element';
 import { CoreEvent } from './core-event';
-const { time } = util;
-const { deepClone } = util.data;
 
 type Options = {
   coreEvent: CoreEvent,
@@ -80,13 +78,13 @@ export class Engine {
     }
     const { board } = this._opts;
     
-    board.on('hover', time.throttle(this._handleHover.bind(this), 32));
-    board.on('leave', time.throttle(this._handleLeave.bind(this), 32));
-    board.on('point', time.throttle(this._handleClick.bind(this), 16));
+    board.on('hover', throttle(this._handleHover.bind(this), 32));
+    board.on('leave', throttle(this._handleLeave.bind(this), 32));
+    board.on('point', throttle(this._handleClick.bind(this), 16));
     board.on('doubleClick', this._handleDoubleClick.bind(this));
     board.on('point', this._handlePoint.bind(this));
     board.on('moveStart', this._handleMoveStart.bind(this));
-    board.on('move', time.throttle(this._handleMove.bind(this), 16));
+    board.on('move', throttle(this._handleMove.bind(this), 16));
     board.on('moveEnd', this._handleMoveEnd.bind(this));
   }
 

@@ -2,7 +2,7 @@ import {
   InterfaceHelperPlugin, TypeHelperPluginEventDetail,
   TypeHelperPluginEventResult,
 } from '@idraw/types';
-import util from '@idraw/util';
+import { createUUID } from '@idraw/util';
 
 
 export class HelperPlugin implements Required<InterfaceHelperPlugin> {
@@ -13,7 +13,7 @@ export class HelperPlugin implements Required<InterfaceHelperPlugin> {
 
   constructor() {
     // TODO
-    this.uuid = util.uuid.createUUID();
+    this.uuid = createUUID();
   }
 
   onHover(detail: TypeHelperPluginEventDetail): void | TypeHelperPluginEventResult {

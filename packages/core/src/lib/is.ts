@@ -1,8 +1,5 @@
-import util from "@idraw/util";
-
-const { isColorStr } = util.color;
-
-
+import { isColorStr } from "@idraw/util";
+ 
 
 function number(value: any) {
   return (typeof value === 'number' && (value > 0 || value <= 0));

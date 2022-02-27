@@ -1,16 +1,22 @@
-import util from '../src';
+import util from '../src/default';
 
 const types = {
-  time: 'Object',
-  loader: 'Object',
-  file: 'Object',
-  color: 'Object',
-  uuid: 'Object',
-  istype: 'Object',
-  data: 'Object',
-  is: 'Object',
-  check: 'Object',
-  Context: 'Function',
+  'Context': 'Function',
+  'check': 'Object',
+  'compose': 'Function',
+  'createUUID': 'Function',
+  'deepClone': 'Function',
+  'delay': 'Function',
+  'downloadImageFromCanvas': 'Function',
+  'is': 'Object',
+  'isColorStr': 'Function',
+  'istype': 'Object',
+  'loadHTML': 'AsyncFunction',
+  'loadImage': 'Function',
+  'loadSVG': 'AsyncFunction',
+  'throttle': 'Function',
+  'toColorHexNum': 'Function',
+  'toColorHexStr': 'Function'
 }
 
 function getType (data: any): string {

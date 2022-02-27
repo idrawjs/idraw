@@ -10,7 +10,7 @@ const pkgNames = packages.map((pkg) => {
 
 async function main() {
 
-  if (process.env.BUILD_MODE === 'reset') {
+  if (process.env.BUILD_MODE === 'reset' && !process.argv[2]) {
     pkgNames.forEach(async (name) => {
       const target = name;
       const pkgDir = path.resolve(`packages/${target}`);
@@ -20,7 +20,13 @@ async function main() {
   }
 
   await 
-  execa('rollup', [ '-c', './scripts/rollup.config.js', ], { stdio: 'inherit' });
+  execa(
+    'rollup',
+    [ 
+      '-c', 
+      './scripts/rollup.config.js',
+      `--target-pkg=${process.argv[2] || ''}`,
+    ], { stdio: 'inherit' });
 
 }
 

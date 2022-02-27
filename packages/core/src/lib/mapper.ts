@@ -1,5 +1,5 @@
 import { TypeData, TypePoint, TypePointCursor } from '@idraw/types';
-import Board from '@idraw/board';
+import { Board } from '@idraw/board';
 import { Helper } from './helper';
 import { Element } from './element';
 

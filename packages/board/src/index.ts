@@ -9,6 +9,9 @@ import { TypeBoardEventArgMap } from './lib/event';
 import { Scroller } from './lib/scroller';
 import { Screen } from './lib/screen';
 // import { TempData } from './lib/temp';
+
+const { throttle, Context } = util;
+
 import {
   _canvas, _displayCanvas, _mount, _opts, _hasRendered, _ctx,
   _watcher, _render, _parsePrivateOptions, _scroller, _helperCanvas, _helperCtx,
@@ -16,14 +19,11 @@ import {
   _screen, _tempData
 } from './names';
 
-const { Context } = util;
-const { throttle } = util.time;
-
 type PrivateOptions = TypeBoardOptions & {
   devicePixelRatio: number
 }
 
-class Board {
+export class Board {
 
   private [_hasRendered] = false;
 
@@ -342,5 +342,5 @@ class Board {
 
 }
 
-export default Board;
+ 
 

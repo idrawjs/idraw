@@ -9,33 +9,22 @@ import Context from './lib/context';
 import is from './lib/is';
 import check from './lib/check'; 
 
-export default {
+
+export {
   is,
   check,
-  time: {
-    delay,
-    compose,
-    throttle,
-  },
-  loader: {
-    loadImage,
-    loadSVG,
-    loadHTML,
-  },
-  file: {
-    downloadImageFromCanvas,
-  },
-  color: {
-    toColorHexStr,
-    toColorHexNum,
-    isColorStr,
-  },
-  uuid: {
-    createUUID
-  },
+  delay,
+  compose,
+  throttle,
+  loadImage,
+  loadSVG,
+  loadHTML,
+  downloadImageFromCanvas,
+  toColorHexStr,
+  toColorHexNum,
+  isColorStr,
+  createUUID,
   istype,
-  data: {
-    deepClone,
-  },
-  Context: Context,
-};
+  deepClone,
+  Context,
+}

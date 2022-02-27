@@ -1,9 +1,9 @@
 {
   "name": "@idraw/board",
-  "version": "0.2.0-alpha.26",
+  "version": "0.3.0-alpha.0",
   "description": "",
   "main": "dist/index.cjs.js",
-  "module": "dist/index.es.js",
+  "module": "dist/index.esm.js",
   "unpkg": "dist/index.global.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -11,7 +11,9 @@
   },
   "files": [
     "dist/*.ts",
-    "dist/*.js"
+    "dist/*.js",
+    "esm/*.ts",
+    "esm/*.js"
   ],
   "repository": {
     "type": "git",
@@ -24,10 +26,10 @@
   "author": "chenshenhai",
   "license": "MIT",
   "devDependencies": {
-    "@idraw/types": "^0.2.0-alpha.26"
+    "@idraw/types": "^0.3.0-alpha.0"
   },
   "dependencies": {
-    "@idraw/util": "^0.2.0-alpha.26"
+    "@idraw/util": "^0.3.0-alpha.0"
   },
   "publishConfig": {
     "access": "public"

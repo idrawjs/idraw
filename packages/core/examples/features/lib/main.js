@@ -3,7 +3,7 @@ import { doScale } from './scale.js';
 import { doScroll } from './scroll.js';
 import { doElemens } from './element.js';
 
-const Core = window.iDrawCore;
+const { Core } = window.iDrawCore;
 const data = getData();
 const mount = document.querySelector('#mount');
 

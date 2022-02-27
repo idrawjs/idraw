@@ -1,3 +1,3 @@
-import util from '@idraw/util';
+import { istype } from '@idraw/util';
 
-export default util.istype;
+export default istype;

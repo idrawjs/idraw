@@ -1,5 +1,5 @@
 import { TypeData, TypeContext, TypeElement, TypeElemDesc } from '@idraw/types';
-import util from '@idraw/util';
+import { createUUID, deepClone, Context } from '@idraw/util';
 import { drawContext } from './lib/draw';
 import { TypeLoadDataItem } from './lib/loader-event';
 import Loader from './lib/loader';
@@ -10,9 +10,6 @@ import {
 } from './names';
 
 const { requestAnimationFrame } = window;
-const { createUUID } = util.uuid;
-const { deepClone } = util.data;
-const { Context } = util;
 
 type QueueItem = { data: TypeData };
 enum DrawStatus {
@@ -31,7 +28,7 @@ type Options = {
   devicePixelRatio: number,
 }
 
-export default class Renderer extends RendererEvent {
+export class Renderer extends RendererEvent {
 
   private [_queue]: QueueItem[] = [];
   private [_ctx]: TypeContext | null = null;
