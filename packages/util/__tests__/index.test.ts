@@ -1,4 +1,4 @@
-import util from '../src/default.js';
+import util from '../src/default';
 
 const types = {
   'Context': 'Function',
