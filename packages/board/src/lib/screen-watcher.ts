@@ -1,5 +1,4 @@
-import { TypePoint, TypeContext } from '@idraw/types';
-// import util from '@idraw/util';
+import { TypePoint, TypeContext } from '@idraw/types'; 
 import { BoardEvent, TypeBoardEventArgMap } from './event';
 import { TempData } from './watcher-temp';
 

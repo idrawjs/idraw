@@ -2,7 +2,7 @@ import {
   TypeScreenPosition, TypeScreenSize, TypeScreenContext, TypePoint, TypePointCursor,
   TypeBoardOptions, TypeBoardSizeOptions, TypeContext, 
 } from '@idraw/types';
-import util from '@idraw/util';
+import { throttle, Context } from '@idraw/util';
 import { ScreenWatcher } from './lib/screen-watcher';
 import { setStyle } from './lib/style';
 import { TypeBoardEventArgMap } from './lib/event';
@@ -16,14 +16,11 @@ import {
   _screen, _tempData
 } from './names';
 
-const { Context } = util;
-const { throttle } = util.time;
-
 type PrivateOptions = TypeBoardOptions & {
   devicePixelRatio: number
 }
 
-class Board {
+export class Board {
 
   private [_hasRendered] = false;
 
@@ -342,5 +339,5 @@ class Board {
 
 }
 
-export default Board;
+ 
 
