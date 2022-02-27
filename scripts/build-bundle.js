@@ -20,7 +20,13 @@ async function main() {
   }
 
   await 
-  execa('rollup', [ '-c', './scripts/rollup.config.js', ], { stdio: 'inherit' });
+  execa(
+    'rollup',
+    [ 
+      '-c', 
+      './scripts/rollup.config.js',
+      `--target-pkg=${process.argv[2] || ''}`,
+    ], { stdio: 'inherit' });
 
 }
 

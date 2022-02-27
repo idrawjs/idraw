@@ -13,7 +13,7 @@ const stylePlugin = require('./util/style-plugin');
 const resolveFile = function(names = []) {
   return path.join(__dirname, '..', 'packages', ...names)
 }
-const targetMod = process.argv[5];
+const targetMod = process.argv[5] || process.argv[4];
 const packages = getTargetPackage(targetMod);
 
 const modules = [];
@@ -31,7 +31,7 @@ for(let i = 0; i < packages.length; i++) {
     // });
   } else {
     modules.push({
-      input: resolveFile([pkg.dirName, 'src', 'index.ts']),
+      input: resolveFile([pkg.dirName, 'src', 'default.ts']),
       output: resolveFile([pkg.dirName, 'dist', 'index.global.js']),
       name: pkg.globalName,
       format: 'iife',
@@ -45,7 +45,7 @@ for(let i = 0; i < packages.length; i++) {
     //   plugins: [],
     // });
     modules.push({
-      input: resolveFile([pkg.dirName, 'src', 'index.ts']),
+      input: resolveFile([pkg.dirName, 'src', 'default.ts']),
       output: resolveFile([pkg.dirName, 'dist', 'index.cjs.js']),
       name: pkg.globalName,
       format: 'cjs',
@@ -55,8 +55,8 @@ for(let i = 0; i < packages.length; i++) {
       external,
     });
     modules.push({
-      input: resolveFile([pkg.dirName, 'src', 'index.ts']),
-      output: resolveFile([pkg.dirName, 'dist', 'index.es.js']),
+      input: resolveFile([pkg.dirName, 'src', 'default.ts']),
+      output: resolveFile([pkg.dirName, 'dist', 'index.esm.js']),
       name: pkg.globalName,
       esModule: true,
       format: 'es',
@@ -115,7 +115,7 @@ function createConfigItem(params, opts = {}) {
 function createDevConfig(mods) {
   const configs = mods.map((mod) => {
     const cfg = createConfigItem(mod, {
-      minify: mod.output.endsWith('.mini.js'),
+      minify: mod.output.endsWith('.min.js'),
     });
     return cfg;
   });

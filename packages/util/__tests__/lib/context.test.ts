@@ -1,8 +1,6 @@
 import Context from './../../src/lib/context';
-import util from './../../src'
+import { deepClone } from './../../src/index'
 import { getData } from './data';
-
-const { deepClone } = util.data;
 
 describe('@idraw/board: src/lib/context', () => {
   const options = {
