@@ -4,7 +4,7 @@ import { getData } from './data/index.js';
  
 // const Context = util.Context;
 const Context = iDrawUtil.Context;
-const Renderer = window.iDrawRenderer;
+const { Renderer } = window.iDrawRenderer;
 const data = getData();
 const canvas = document.querySelector('#canvas');
 const opts = {

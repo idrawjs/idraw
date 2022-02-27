@@ -1,4 +1,4 @@
-import util from '@idraw/util';
+import { deepClone } from '@idraw/util';
 import { TypeElement, TypeElemDesc } from '@idraw/types';
 import iDraw from './../index';
 import { _tempData } from './../names';
@@ -7,7 +7,7 @@ export function copyElements(idraw: iDraw) {
   if (idraw[_tempData].get('isFocus') !== true) {
     return;
   }
-  const elems = util.data.deepClone(idraw.getSelectedElements());
+  const elems = deepClone(idraw.getSelectedElements());
   idraw[_tempData].set('clipboardElements', elems);
 }
 
@@ -29,7 +29,7 @@ export function cutElements(idraw: iDraw) {
   if (idraw[_tempData].get('isFocus') !== true) {
     return;
   }
-  const elems = util.data.deepClone(idraw.getSelectedElements());
+  const elems = deepClone(idraw.getSelectedElements());
   elems.forEach((elem: TypeElement<keyof TypeElemDesc>) => {
     idraw.deleteElement(elem.uuid);
   })
@@ -40,7 +40,7 @@ export function deleteElements(idraw: iDraw) {
   if (idraw[_tempData].get('isFocus') !== true) {
     return;
   }
-  const elems = util.data.deepClone(idraw.getSelectedElements());
+  const elems = deepClone(idraw.getSelectedElements());
   elems.forEach((elem: TypeElement<keyof TypeElemDesc>) => {
     idraw.deleteElement(elem.uuid);
   });
@@ -50,7 +50,7 @@ export function deleteElements(idraw: iDraw) {
 const keyArrowMoveDistance = 4;
 
 export function keyArrowUp(idraw: iDraw) {
-  const elems = util.data.deepClone(idraw.getSelectedElements());
+  const elems = deepClone(idraw.getSelectedElements());
   if (elems.length > 0) {
     elems.forEach((elem: TypeElement<keyof TypeElemDesc>) => {
       elem.y -= keyArrowMoveDistance;
@@ -63,7 +63,7 @@ export function keyArrowUp(idraw: iDraw) {
 }
 
 export function keyArrowDown(idraw: iDraw) {
-  const elems = util.data.deepClone(idraw.getSelectedElements());
+  const elems = deepClone(idraw.getSelectedElements());
   if (elems.length > 0) {
     elems.forEach((elem: TypeElement<keyof TypeElemDesc>) => {
       elem.y += keyArrowMoveDistance;
@@ -76,7 +76,7 @@ export function keyArrowDown(idraw: iDraw) {
 }
 
 export function keyArrowLeft(idraw: iDraw) {
-  const elems = util.data.deepClone(idraw.getSelectedElements());
+  const elems = deepClone(idraw.getSelectedElements());
   if (elems.length > 0) {
     elems.forEach((elem: TypeElement<keyof TypeElemDesc>) => {
       elem.x -= keyArrowMoveDistance;
@@ -89,7 +89,7 @@ export function keyArrowLeft(idraw: iDraw) {
 }
 
 export function keyArrowRight(idraw: iDraw) {
-  const elems = util.data.deepClone(idraw.getSelectedElements());
+  const elems = deepClone(idraw.getSelectedElements());
   if (elems.length > 0) {
     elems.forEach((elem: TypeElement<keyof TypeElemDesc>) => {
       elem.x += keyArrowMoveDistance;

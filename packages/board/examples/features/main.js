@@ -5,7 +5,7 @@ import { doScroll } from "./lib/scroll.js";
 import { initEvent } from "./lib/event.js";
 import { doCursor } from "./lib/action.js";
 
-const Board = window.iDrawBoard;
+const { Board } = window.iDrawBoard;
 
 const mount = document.querySelector("#mount");
 const board = new Board(mount, opts);

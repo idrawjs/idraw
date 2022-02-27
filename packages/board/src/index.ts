@@ -2,13 +2,16 @@ import {
   TypeScreenPosition, TypeScreenSize, TypeScreenContext, TypePoint, TypePointCursor,
   TypeBoardOptions, TypeBoardSizeOptions, TypeContext, 
 } from '@idraw/types';
-import { throttle, Context } from '@idraw/util';
+import util from '@idraw/util';
 import { ScreenWatcher } from './lib/screen-watcher';
 import { setStyle } from './lib/style';
 import { TypeBoardEventArgMap } from './lib/event';
 import { Scroller } from './lib/scroller';
 import { Screen } from './lib/screen';
 // import { TempData } from './lib/temp';
+
+const { throttle, Context } = util;
+
 import {
   _canvas, _displayCanvas, _mount, _opts, _hasRendered, _ctx,
   _watcher, _render, _parsePrivateOptions, _scroller, _helperCanvas, _helperCtx,

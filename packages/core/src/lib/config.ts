@@ -1,5 +1,5 @@
 import { TypeConfig, TypeConfigStrict } from '@idraw/types';
-import util from '@idraw/util';
+import { deepClone } from '@idraw/util';
 
 const defaultConfig: TypeConfigStrict = {
   elementWrapper: {
@@ -12,7 +12,7 @@ const defaultConfig: TypeConfigStrict = {
 };
 
 function mergeConfig(config?: TypeConfig): TypeConfigStrict {
-  const result = util.data.deepClone(defaultConfig);
+  const result = deepClone(defaultConfig);
   if (config) {
     if (config.elementWrapper) {
       result.elementWrapper = {...result.elementWrapper, ...config.elementWrapper};

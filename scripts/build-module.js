@@ -1,4 +1,6 @@
 const ts = require('typescript');
+const path = require('path');
+const fs = require('fs-extra');
 // const babel = require('@babel/core');
 const glob = require("glob");
 const { packages } = require('./config');
@@ -8,6 +10,9 @@ build();
 
 async function build() {
   packages.forEach(async (pkg) => {
+    const target = pkg.dirName;
+    const pkgDir = path.resolve(`packages/${target}`);
+    await fs.remove(`${pkgDir}/esm`);
     buildPackage(pkg.dirName);
   });
 }

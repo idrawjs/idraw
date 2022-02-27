@@ -1,4 +1,4 @@
-import Core from '@idraw/core';
+import { Core } from '@idraw/core';
 import { TypeData, TypeConfig, } from '@idraw/types';
 import { Options, PrivateOptions } from './types';
 import { defaultOptions } from './config';
@@ -15,7 +15,7 @@ import { copyElements, pasteElements, cutElements, deleteElements,
 } from './mixins/keyboard';
 // import { version } from './../package.json';
 
-class iDraw extends Core {
+export default class iDraw extends Core {
 
   private [_opts]: PrivateOptions;
   private [_hasInited] = false; 
@@ -96,5 +96,3 @@ class iDraw extends Core {
   }
 
 }
-
-export default iDraw;

@@ -3,11 +3,9 @@ import {
   // TypeElemDesc,
   TypeElement,
 } from '@idraw/types';
-import util from '@idraw/util';
+import { istype, isColorStr } from '@idraw/util';
 import { rotateElement } from './../transform';
 import is from './../is';
-
-const { istype, color } = util;
 
 export function clearContext(ctx: TypeContext) {
   // ctx.setFillStyle('rgb(0 0 0 / 100%)');
@@ -71,7 +69,7 @@ export function drawBoxBorder(
     }
     const bw = elem.desc.borderWidth;
     let borderColor = '#000000';
-    if (color.isColorStr(elem.desc.borderColor) === true) {
+    if (isColorStr(elem.desc.borderColor) === true) {
       borderColor = elem.desc.borderColor as string;
     }
     const x = elem.x - bw / 2;
@@ -85,7 +83,7 @@ export function drawBoxBorder(
       r = r + bw / 2;
     }
     const { desc } = elem;
-    if (desc.shadowColor !== undefined && util.color.isColorStr(desc.shadowColor)) {
+    if (desc.shadowColor !== undefined && isColorStr(desc.shadowColor)) {
       ctx.setShadowColor(desc.shadowColor);
     }
     if (desc.shadowOffsetX !== undefined && is.number(desc.shadowOffsetX)) {

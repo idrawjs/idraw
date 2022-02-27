@@ -4,7 +4,7 @@
   "scripts": {
     "start": "node ./scripts/dev-vite.js",
     "dev": "node ./scripts/dev-rollup.js",
-    "build": "npm run build:bundle && npm run build:min",
+    "build": "npm run build:mod && npm run build:bundle && npm run build:min",
     "build:bundle": "NODE_ENV=production BUILD_MODE=reset node ./scripts/build-bundle.js",
     "build:mod": "node ./scripts/build-module.js",
     "build:min": "node ./scripts/minify.js",

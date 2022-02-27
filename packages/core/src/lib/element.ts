@@ -6,13 +6,12 @@ import {
   TypeElement,
   TypeElemDesc,
 } from '@idraw/types';
-import util from '@idraw/util';
+import { createUUID } from '@idraw/util';
 import { rotateElement } from './transform';
 import { calcRadian, calcElementCenter, parseRadianToAngle } from './calculate';
 import { limitAngle, limitNum } from './value';
 import { LIMIT_QBLIQUE_ANGLE } from './../constant/element';
 
-const { createUUID } = util.uuid;
 const limitQbliqueAngle = LIMIT_QBLIQUE_ANGLE;
 
 export class Element {

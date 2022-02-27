@@ -1,3 +1,1 @@
-import { Renderer } from './index';
-
-export default Renderer;
+export * as default from './index';

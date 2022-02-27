@@ -1,3 +1,1 @@
-import { Board } from './index';
-
-export default Board;
+export * as default from './index';

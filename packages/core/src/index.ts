@@ -3,9 +3,9 @@ import {
   TypeConfig, TypeConfigStrict, TypeElementBase,
   TypeElement, TypeElemDesc, TypeContext, TypeCoreOptions,  TypeScreenContext, TypeScreenData,
 }  from '@idraw/types';
-import Board from '@idraw/board';
-import util from '@idraw/util';
-import Renderer from '@idraw/renderer';
+import { Board } from '@idraw/board';
+import { deepClone } from '@idraw/util';
+import { Renderer } from '@idraw/renderer';
 import is, { TypeIs } from './lib/is';
 import check, { TypeCheck } from './lib/check';
 import {
@@ -23,9 +23,8 @@ import { getSelectedElements, updateElement, selectElementByIndex, getElement, g
 // import { initEvent } from './mixins/event';
 import { Engine } from './lib/engine';
 import { drawElementWrapper, drawAreaWrapper, drawElementListWrappers } from './lib/draw/wrapper'
-const { deepClone } = util.data;
 
-class Core {
+export class Core {
 
   private [_board]: Board;
   private [_data]: TypeData;
@@ -264,5 +263,3 @@ class Core {
     }
   }
 }
-
-export default Core;
