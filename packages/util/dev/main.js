@@ -1,4 +1,4 @@
-import util from './../src/index';
+import util from './../src/default';
 
 console.log('util =', util)
 
