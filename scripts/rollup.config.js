@@ -55,7 +55,7 @@ for(let i = 0; i < packages.length; i++) {
       external,
     });
     modules.push({
-      input: resolveFile([pkg.dirName, 'src', 'default.ts']),
+      input: resolveFile([pkg.dirName, 'src', 'esm.ts']),
       output: resolveFile([pkg.dirName, 'dist', 'index.esm.js']),
       name: pkg.globalName,
       esModule: true,

@@ -28,34 +28,3 @@ export {
   deepClone,
   Context,
 }
-
-// export default {
-//   is,
-//   check,
-//   time: {
-//     delay,
-//     compose,
-//     throttle,
-//   },
-//   loader: {
-//     loadImage,
-//     loadSVG,
-//     loadHTML,
-//   },
-//   file: {
-//     downloadImageFromCanvas,
-//   },
-//   color: {
-//     toColorHexStr,
-//     toColorHexNum,
-//     isColorStr,
-//   },
-//   uuid: {
-//     createUUID
-//   },
-//   istype,
-//   data: {
-//     deepClone,
-//   },
-//   Context: Context,
-// };

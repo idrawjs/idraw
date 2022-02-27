@@ -3,12 +3,11 @@ import {
   TypeElemDescText, 
   TypeElement,
 } from '@idraw/types';
-import util from '@idraw/util';
+import { is, isColorStr } from '@idraw/util';
 import Loader from '../loader';
 import { clearContext, drawBox } from './base';
 import { rotateElement } from './../transform';
-
-const { is, color } = util;
+ 
 
 export function drawText(
   ctx: TypeContext,
@@ -86,7 +85,7 @@ export function drawText(
       if (lines.length * fontHeight < elem.h) {
         _y += ((elem.h - lines.length * fontHeight) / 2);
       }
-      if (desc.textShadowColor !== undefined && color.isColorStr(desc.textShadowColor)) {
+      if (desc.textShadowColor !== undefined && isColorStr(desc.textShadowColor)) {
         ctx.setShadowColor(desc.textShadowColor);
       }
       if (desc.textShadowOffsetX !== undefined && is.number(desc.textShadowOffsetX)) {
@@ -111,7 +110,7 @@ export function drawText(
     }
 
     // draw text stroke
-    if (color.isColorStr(desc.strokeColor) && desc.strokeWidth !== undefined && desc.strokeWidth > 0) {
+    if (isColorStr(desc.strokeColor) && desc.strokeWidth !== undefined && desc.strokeWidth > 0) {
       let _y = elem.y;
       if (lines.length * fontHeight < elem.h) {
         _y += ((elem.h - lines.length * fontHeight) / 2);
