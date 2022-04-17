@@ -1,5 +1,5 @@
 // import util from '@idraw/util';
-import Renderer from './../src/index';
+import { Renderer } from './../src/index';
 import { getData } from './data.js';
 
 const data = getData();
