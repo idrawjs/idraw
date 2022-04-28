@@ -17,7 +17,7 @@ async function main() {
       const { page, port } = ctx;
       console.log(`[${i+1}/${pageList.length}] Screen: ${p.path}`)
       await page.setViewport( { width: p.w, height: p.h } );
-      const pageUrl = `http://127.0.0.1:${port}/packages/${p.path || ''}`;
+      const pageUrl = `http://127.0.0.1:${port}/examples/${p.path || ''}`;
       const result = await page.goto(pageUrl);
       if (result.status() === 404) {
         console.error(`404 Not Found: ${pageUrl}`)

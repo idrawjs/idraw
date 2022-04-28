@@ -23,7 +23,7 @@ async function diff() {
       const height = p.h;
 
       await page.setViewport( { width: p.w, height: p.h } );
-      const pageUrl = `http://127.0.0.1:${port}/packages/${p.path || ''}`;
+      const pageUrl = `http://127.0.0.1:${port}/examples/${p.path || ''}`;
       await page.goto(pageUrl);
       await delay(p.delay || 100);
       const buf = await page.screenshot();
