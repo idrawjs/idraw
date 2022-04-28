@@ -1,4 +1,4 @@
-import Core from './../src/index';
+import { Core } from './../src/index';
 import { getData } from './data.js';
 
 console.log('Core =', Core)

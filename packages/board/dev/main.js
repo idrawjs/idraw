@@ -1,4 +1,4 @@
-import Board from './../src/index';
+import { Board } from './../src/esm';
 
 function drawBoard(board) {
   const ctx = board.getContext();
