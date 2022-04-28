@@ -5,7 +5,7 @@ const { terser } = require('rollup-plugin-terser');
 const cleanup = require('rollup-plugin-cleanup');
 const { nodeResolve } = require('@rollup/plugin-node-resolve');
 const json = require('@rollup/plugin-json');
-const { getTargetPackage } = require('./config');
+const { packages } = require('./config');
 const dtsPlugin = require('./util/dts-plugin');
 const stylePlugin = require('./util/style-plugin');
 // const cleanPlugin = require('./util/clean-plugin');
@@ -13,8 +13,6 @@ const stylePlugin = require('./util/style-plugin');
 const resolveFile = function(names = []) {
   return path.join(__dirname, '..', 'packages', ...names)
 }
-const targetMod = process.argv[5] || process.argv[4];
-const packages = getTargetPackage(targetMod);
 
 const modules = [];
 const external = [ '@idraw/types', '@idraw/util', '@idraw/board', '@idraw/core' ];
