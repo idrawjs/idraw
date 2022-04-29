@@ -1,5 +1,5 @@
 import { TypeData } from '@idraw/types';
-import Core from './../../src';
+import  { Core } from './../../src';
 import { getData } from './../data';
 import { Element } from './../../src/lib/element';
 

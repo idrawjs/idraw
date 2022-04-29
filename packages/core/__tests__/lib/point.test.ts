@@ -1,4 +1,4 @@
-import IDraw from '../../src';
+import  { Core } from '../../src';
 
 describe('@idraw/core', () => {
 
@@ -19,7 +19,7 @@ describe('@idraw/core', () => {
     scrollTop: 100,
   };
   const mount = document.querySelector('#mount') as HTMLDivElement;
-  const idraw = new IDraw(mount, opts);
+  const idraw = new Core(mount, opts);
 
   idraw.scale(transform.scale);
   idraw.scrollLeft(transform.scrollLeft);

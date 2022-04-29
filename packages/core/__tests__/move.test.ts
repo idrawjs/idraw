@@ -1,7 +1,7 @@
 import { requestAnimationFrameMock } from '../../../__tests__/polyfill/requestanimateframe';
 import '../../../__tests__/polyfill/image';
 
-import IDraw from '../src';
+import { Core } from '../src';
 import { getData } from './data';
 
 // function delay(time: number): Promise<void> {
@@ -30,7 +30,7 @@ describe("@idraw/core", () => {
       devicePixelRatio: 4
     }
     const mount = document.querySelector('#mount') as HTMLDivElement;
-    const idraw = new IDraw(mount, opts);
+    const idraw = new Core(mount, opts);
     const data = getData();
     idraw.setData(data);
     idraw.moveUpElement('image-003'); 
@@ -60,7 +60,7 @@ describe("@idraw/core", () => {
       devicePixelRatio: 4
     }
     const mount = document.querySelector('#mount') as HTMLDivElement;
-    const idraw = new IDraw(mount, opts);
+    const idraw = new Core(mount, opts);
     const data = getData();
     idraw.setData(data);
     idraw.moveDownElement('image-003'); 
