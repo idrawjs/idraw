@@ -1,4 +1,4 @@
-import Core from './../../src';
+import  { Core } from './../../src';
 
 describe("@idraw/core:static is", () => {
 

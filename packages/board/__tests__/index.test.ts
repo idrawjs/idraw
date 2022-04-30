@@ -1,4 +1,4 @@
-import Board from './../src';
+import { Board } from './../src';
 import { getData } from './data';
 
 

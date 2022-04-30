@@ -25,8 +25,8 @@ module.exports = {
   "modulePaths": [
     "<rootDir>"
   ],
-  // "testRegex": "(/packages/([^\/]{1,})/__tests__/.*)\\.test.ts$",
-  "testRegex": "(/packages/util/__tests__/.*)\\.test.ts$",
+  "testRegex": "(/packages/([^\/]{1,})/__tests__/.*)\\.test.ts$",
+  // "testRegex": "(/packages/idraw/__tests__/.*)\\.test.ts$",
   "setupFiles": [
     "jest-canvas-mock"
   ]

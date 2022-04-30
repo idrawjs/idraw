@@ -21,7 +21,12 @@ export async function loadSVG(svg: string): Promise<HTMLImageElement> {
 }
 
 
+function filterAmpersand(str: string): string {
+  return str.replace(/\&/ig, '&amp;');
+}
+
 export async function loadHTML(html: string, opts: { width: number, height: number }): Promise<HTMLImageElement> {
+  html = filterAmpersand(html);
   const dataURL = await parseHTMLToDataURL(html, opts);
   const image = await loadImage(dataURL);
   return image;
