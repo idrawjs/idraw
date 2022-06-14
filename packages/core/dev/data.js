@@ -58,6 +58,24 @@ const data = {
   ],
 };
 
+
+const data2 = {
+  bgColor: "#00000015",
+  elements: [
+    {
+      name: "rect-001",
+      x: 100,
+      y: 80,
+      w: 160,
+      h: 80,
+      angle: 30,
+      type: "image",
+      desc: {
+        src: './images/computer.png',
+      },
+    },
+  ],
+};
 export function getData() {
-  return data;
+  return data2;
 }

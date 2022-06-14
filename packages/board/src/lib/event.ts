@@ -1,15 +1,27 @@
 import { TypePoint } from '@idraw/types';
 
+interface TypeBoardEventBaseData {
+  currentPoint: TypePoint,
+}
+
+interface TypeBoardEventData extends TypeBoardEventBaseData {
+  startPoint: TypePoint | null,
+}
+
+interface TypeBoardWheelEventData {
+  current: number,
+}
+
 export interface TypeBoardEventArgMap {
-  'doubleClick': TypePoint;
-  'hover': TypePoint;
-  'leave': void;
-  'point': TypePoint;
-  'move': TypePoint;
-  'moveStart': TypePoint;
-  'moveEnd': TypePoint;
-  'wheelX': number;
-  'wheelY': number;
+  'doubleClick': TypeBoardEventBaseData;
+  'hover': TypeBoardEventBaseData;
+  'leave': TypeBoardEventBaseData;
+  'point': TypeBoardEventBaseData;
+  'move': TypeBoardEventData;
+  'moveStart': TypeBoardEventData;
+  'moveEnd': TypeBoardEventData;
+  'wheelX': TypeBoardWheelEventData;
+  'wheelY': TypeBoardWheelEventData;
 }
 
 export interface TypeBoardEvent {

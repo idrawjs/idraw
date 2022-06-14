@@ -10,7 +10,6 @@ import { diffElementResourceChange } from './../lib/diff';
 import { Core } from './../index';
 import { Mode } from './../constant/static';
 
- 
 
 export function getSelectedElements(core: Core): TypeElement<keyof TypeElemDesc>[] {
   const elems: TypeElement<keyof TypeElemDesc>[] = [];

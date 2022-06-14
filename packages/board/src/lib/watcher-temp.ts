@@ -1,7 +1,9 @@
-import { TypePoint } from '@idraw/types'
+import { TypePoint } from '@idraw/types';
+import { deepClone } from '@idraw/util';
 
 type TempDataDesc = {
-  prevClickPoint: TypePoint & { t: number } | null,
+  moveStartPoint: TypePoint & { t?: number } | null,
+  prevClickPoint: TypePoint & { t?: number } | null,
   isHoverCanvas: boolean;
   isDragCanvas: boolean;
   statusMap: {
@@ -14,6 +16,7 @@ type TempDataDesc = {
 
 function createTempData() {
   return {
+    moveStartPoint: null,
     prevClickPoint: null,
     isHoverCanvas: false,
     isDragCanvas: false,
@@ -38,7 +41,10 @@ export class TempData {
     this._temp[name] = value;
   }
 
-  get<T extends keyof TempDataDesc >(name: T): TempDataDesc[T] {
+  get<T extends keyof TempDataDesc >(name: T, opts?: { clone: boolean }): TempDataDesc[T] {
+    if (opts?.clone === true) {
+      return deepClone(this._temp[name]);
+    }
     return this._temp[name];
   }
 
