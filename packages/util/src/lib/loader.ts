@@ -4,7 +4,8 @@ const { Image } = window;
 export function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image;
-    img.setAttribute('crossOrigin', 'anonymous');
+    // img.setAttribute('crossOrigin', 'anonymous');
+    img.crossOrigin = 'anonymous';
     img.onload = function() {
       resolve(img);
     };
