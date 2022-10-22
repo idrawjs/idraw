@@ -48,7 +48,7 @@ export class Watcher {
     const p = this._getPosition(e);
     if (this._isVaildPoint(p)) {
       if (this._event.has('hover')) {
-        this._event.trigger('hover', { currentPoint: p });
+        this._event.trigger('hover', p);
       }
     }
     this._isMoving = true;
@@ -57,8 +57,7 @@ export class Watcher {
   _listenLeave(e: MouseEvent|TouchEvent): void {
     e.preventDefault();
     if (this._event.has('leave')) {
-      const p = this._getPosition(e);
-      this._event.trigger('leave', { currentPoint: p });
+      this._event.trigger('leave', undefined);
     }
   }
 
@@ -66,15 +65,11 @@ export class Watcher {
     e.preventDefault();
     const p = this._getPosition(e);
     if (this._isVaildPoint(p)) {
-      this._temp.set('moveStartPoint', p);
       if (this._event.has('point')) {
-        this._event.trigger('point', { currentPoint: p });
+        this._event.trigger('point', p);
       }
       if (this._event.has('moveStart')) {
-        this._event.trigger('moveStart', {
-          startPoint: this._temp.get('moveStartPoint', { clone: true }),
-          currentPoint: p,
-        });
+        this._event.trigger('moveStart', p);
       }
     }
     this._isMoving = true;
@@ -86,10 +81,7 @@ export class Watcher {
     if (this._event.has('move') && this._isMoving === true) {
       const p = this._getPosition(e);
       if (this._isVaildPoint(p)) {
-        this._event.trigger('move', {
-          startPoint: this._temp.get('moveStartPoint', { clone: true }),
-          currentPoint: p,
-        });
+        this._event.trigger('move', p);
       }
     }
   }
@@ -99,23 +91,19 @@ export class Watcher {
     if (this._event.has('moveEnd')) {
       const p = this._getPosition(e);
       if (this._isVaildPoint(p)) {
-        this._event.trigger('moveEnd', {
-          startPoint: this._temp.get('moveStartPoint', { clone: true }),
-          currentPoint: p,
-        });
+        this._event.trigger('moveEnd', p);
       }
     }
     this._isMoving = false;
-    this._temp.set('moveStartPoint', null);
   }
 
   _listenWheel(e: WheelEvent) {
     e.preventDefault();
     if (this._event.has('wheelX') && (e.deltaX > 0 || e.deltaX < 0)) {
-      this._event.trigger('wheelX', { current: e.deltaX });
+      this._event.trigger('wheelX', e.deltaX);
     }
     if (this._event.has('wheelY') && (e.deltaY > 0 || e.deltaY < 0)) {
-      this._event.trigger('wheelY', { current: e.deltaY });
+      this._event.trigger('wheelY', e.deltaY);
     }
   }
 
@@ -127,12 +115,12 @@ export class Watcher {
     if (this._isVaildPoint(p)) {
       const preClickPoint = this._temp.get('prevClickPoint');
       if (
-        preClickPoint &&  preClickPoint.t && (t - preClickPoint.t <= maxLimitTime)
+        preClickPoint && (t - preClickPoint.t <= maxLimitTime)
         && Math.abs(preClickPoint.x - p.x) <= 5
         && Math.abs(preClickPoint.y - p.y) <= 5
       ) {
         if (this._event.has('doubleClick')) {
-          this._event.trigger('doubleClick', { currentPoint: { x: p.x, y: p.y } });
+          this._event.trigger('doubleClick', { x: p.x, y: p.y });
         }
       } else {
         this._temp.set('prevClickPoint', {x: p.x, y: p.y, t, })

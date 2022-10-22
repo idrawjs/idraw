@@ -1,11 +1,13 @@
 import { Core } from './../src/index';
 import { getData } from './data.js';
 
+console.log('Core =', Core)
+
 var opts = {
-  width: 600,
-  height: 300,
-  contextWidth: 400,
-  contextHeight: 240,
+  width: 300,
+  height: 200,
+  contextWidth: 300,
+  contextHeight: 200,
   devicePixelRatio: 4,
 }
 // var config = {
@@ -19,8 +21,8 @@ const data = getData();
 const core = new Core(
   mount,
   Object.assign({}, opts, {
-    // contextWidth: 800,
-    // contextHeight: 600,
+    contextWidth: 500,
+    contextHeight: 400,
   }),
   {
     scrollWrapper: {
@@ -29,5 +31,3 @@ const core = new Core(
   }
 );
 core.setData(data);
-const currentData = core.getData();
-core.selectElement(currentData.elements[0].uuid)
