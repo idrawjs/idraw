@@ -1,6 +1,6 @@
 {
   "name": "@idraw/board",
-  "version": "0.3.0-alpha.3",
+  "version": "0.3.0-alpha.4",
   "description": "",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -26,10 +26,10 @@
   "author": "chenshenhai",
   "license": "MIT",
   "devDependencies": {
-    "@idraw/types": "^0.3.0-alpha.3"
+    "@idraw/types": "^0.3.0-alpha.4"
   },
   "dependencies": {
-    "@idraw/util": "^0.3.0-alpha.3"
+    "@idraw/util": "^0.3.0-alpha.4"
   },
   "publishConfig": {
     "access": "public"
