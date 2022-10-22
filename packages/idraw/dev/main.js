@@ -7,7 +7,8 @@ var opts = {
   contextWidth: 300,
   contextHeight: 200,
   devicePixelRatio: 4,
-}
+};
+
 // var config = {
 //   elementWrapper: {
 //     controllerSize: 4,
@@ -29,3 +30,16 @@ const idraw = new iDraw(
   }
 );
 idraw.setData(data);
+
+
+
+const btn = document.querySelector('#btn');
+btn.addEventListener('click', () => {
+  idraw.exportDataURL({type: "image/png"}).then((dataURL) => {
+    const preview = document.querySelector('#preview');
+    preview.innerHTML = `<img width="300" src="${dataURL}">`;
+  }).catch((err) => {
+    console.log(err);
+  });
+});
+

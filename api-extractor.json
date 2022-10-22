@@ -30,8 +30,10 @@
         "logLevel": "warning",
         "addToApiReportFile": true
       },
-
       "ae-missing-release-tag": {
+        "logLevel": "none"
+      },
+      "ae-wrong-input-file-type": {
         "logLevel": "none"
       }
     },
