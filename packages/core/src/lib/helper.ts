@@ -336,42 +336,42 @@ export class Helper implements TypeHelper {
         topLeft: {
           x: elem.x - controllerOffset - bw,
           y: elem.y - controllerOffset - bw,
-          invisible: hideObliqueDirection || elem?.operation?.disbaleScale === true,
+          invisible: hideObliqueDirection || elem?.operation?.disableScale === true,
         },
         top: {
           x: elem.x + elem.w / 2,
           y: elem.y - controllerOffset - bw,
-          invisible: elem?.operation?.disbaleScale === true,
+          invisible: elem?.operation?.disableScale === true,
         },
         topRight: {
           x: elem.x + elem.w + controllerOffset + bw,
           y: elem.y - controllerOffset - bw,
-          invisible: hideObliqueDirection || elem?.operation?.disbaleScale === true,
+          invisible: hideObliqueDirection || elem?.operation?.disableScale === true,
         },
         right: {
           x: elem.x + elem.w + controllerOffset + bw,
           y: elem.y + elem.h / 2,
-          invisible: elem?.operation?.disbaleScale === true
+          invisible: elem?.operation?.disableScale === true
         },
         bottomRight: {
           x: elem.x + elem.w + controllerOffset + bw,
           y: elem.y + elem.h + controllerOffset + bw,
-          invisible: hideObliqueDirection || elem?.operation?.disbaleScale === true,
+          invisible: hideObliqueDirection || elem?.operation?.disableScale === true,
         },
         bottom: {
           x: elem.x + elem.w / 2,
           y: elem.y + elem.h + controllerOffset + bw,
-          invisible: elem?.operation?.disbaleScale === true,
+          invisible: elem?.operation?.disableScale === true,
         },
         bottomLeft: {
           x: elem.x - controllerOffset - bw,
           y: elem.y + elem.h + controllerOffset + bw,
-          invisible: hideObliqueDirection || elem?.operation?.disbaleScale === true,
+          invisible: hideObliqueDirection || elem?.operation?.disableScale === true,
         },
         left: {
           x: elem.x - controllerOffset - bw,
           y: elem.y + elem.h / 2,
-          invisible: elem?.operation?.disbaleScale === true
+          invisible: elem?.operation?.disableScale === true
         },
         rotate: {
           x: elem.x + elem.w / 2,
