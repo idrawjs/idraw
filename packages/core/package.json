@@ -1,6 +1,6 @@
 {
   "name": "@idraw/core",
-  "version": "0.3.0-alpha.4",
+  "version": "0.3.0-alpha.6",
   "description": "",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -26,15 +26,15 @@
   "author": "chenshenhai",
   "license": "MIT",
   "devDependencies": {
-    "@idraw/types": "^0.3.0-alpha.4"
+    "@idraw/types": "^0.3.0-alpha.6"
   },
   "dependencies": {
-    "@idraw/board": "^0.3.0-alpha.4",
-    "@idraw/renderer": "^0.3.0-alpha.4",
-    "@idraw/util": "^0.3.0-alpha.4"
+    "@idraw/board": "^0.3.0-alpha.6",
+    "@idraw/renderer": "^0.3.0-alpha.6",
+    "@idraw/util": "^0.3.0-alpha.6"
   },
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "e2a434f40e0e7404bf3f1de612dfb3735b9ffc05"
+  "gitHead": "5cc462b9206ea0e4e70b5183771dfbf694402483"
 }
