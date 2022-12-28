@@ -32,6 +32,10 @@ const data = {
         borderWidth: 4,
         borderColor: "#ff5722",
       },
+      operation: {
+        disableScale: true,
+        disbaleRotate: true,
+      }
     },
     {
       name: "image-003",
