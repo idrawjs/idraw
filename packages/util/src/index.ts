@@ -7,8 +7,7 @@ import istype from './lib/istype';
 import { loadImage, loadSVG, loadHTML } from './lib/loader';
 import Context from './lib/context';
 import is from './lib/is';
-import check from './lib/check'; 
-
+import check from './lib/check';
 
 export {
   is,
@@ -26,5 +25,24 @@ export {
   createUUID,
   istype,
   deepClone,
-  Context,
-}
+  Context
+};
+
+export default {
+  is,
+  check,
+  delay,
+  compose,
+  throttle,
+  loadImage,
+  loadSVG,
+  loadHTML,
+  downloadImageFromCanvas,
+  toColorHexStr,
+  toColorHexNum,
+  isColorStr,
+  createUUID,
+  istype,
+  deepClone,
+  Context
+};

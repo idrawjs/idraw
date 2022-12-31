@@ -1,47 +1,64 @@
-import { Core } from '@idraw/core';
-import { TypeData, TypeConfig, } from '@idraw/types';
+import Core from '@idraw/core';
+import { TypeData, TypeConfig } from '@idraw/types';
 import { Options, PrivateOptions } from './types';
 import { defaultOptions } from './config';
 import { TempData } from './lib/temp';
 import { KeyboardWatcher } from './lib/keyboard-watcher';
 import {
-  _opts, _hasInited, _initEvent, _tempData,
-  _createOpts, _pushRecord, _keyboardWatcher,
+  _opts,
+  _hasInited,
+  _initEvent,
+  _tempData,
+  _createOpts,
+  _pushRecord,
+  _keyboardWatcher
 } from './names';
 import { redo, undo } from './mixins/record';
 import { exportDataURL, toDataURL } from './mixins/file';
-import { copyElements, pasteElements, cutElements, deleteElements,
-  keyArrowUp, keyArrowDown, keyArrowLeft, keyArrowRight, keyUndo,
+import {
+  copyElements,
+  pasteElements,
+  cutElements,
+  deleteElements,
+  keyArrowUp,
+  keyArrowDown,
+  keyArrowLeft,
+  keyArrowRight,
+  keyUndo
 } from './mixins/keyboard';
 // import { version } from './../package.json';
 
 export default class iDraw extends Core {
-
   private [_opts]: PrivateOptions;
-  private [_hasInited] = false; 
+  private [_hasInited] = false;
   private [_tempData] = new TempData();
   private [_keyboardWatcher] = new KeyboardWatcher();
 
   // static version = version;
 
   constructor(mount: HTMLDivElement, opts: Options, config?: TypeConfig) {
-    super(mount, {
-      width: opts.width || defaultOptions.width,
-      height: opts.height || defaultOptions.height,
-      contextWidth: opts.contextWidth || defaultOptions.contextWidth,
-      contextHeight: opts.contextHeight || defaultOptions.contextHeight,
-      devicePixelRatio: opts.devicePixelRatio || defaultOptions.devicePixelRatio,
-      onlyRender: opts.onlyRender || defaultOptions.onlyRender,
-    }, config || {});
+    super(
+      mount,
+      {
+        width: opts.width || defaultOptions.width,
+        height: opts.height || defaultOptions.height,
+        contextWidth: opts.contextWidth || defaultOptions.contextWidth,
+        contextHeight: opts.contextHeight || defaultOptions.contextHeight,
+        devicePixelRatio:
+          opts.devicePixelRatio || defaultOptions.devicePixelRatio,
+        onlyRender: opts.onlyRender || defaultOptions.onlyRender
+      },
+      config || {}
+    );
     this[_opts] = this[_createOpts](opts);
     this[_initEvent]();
   }
 
-  undo(): { doRecordCount: number, data: TypeData | null, } {
+  undo(): { doRecordCount: number; data: TypeData | null } {
     return undo(this);
   }
 
-  redo(): { undoRecordCount: number, data: TypeData | null, } {
+  redo(): { undoRecordCount: number; data: TypeData | null } {
     return redo(this);
   }
 
@@ -49,7 +66,10 @@ export default class iDraw extends Core {
     return toDataURL(this, type, quality);
   }
 
-  async exportDataURL(type: 'image/png' | 'image/jpeg', quality?: number ): Promise<string> {
+  async exportDataURL(
+    type: 'image/png' | 'image/jpeg',
+    quality?: number
+  ): Promise<string> {
     return exportDataURL(this, type, quality);
   }
 
@@ -94,5 +114,4 @@ export default class iDraw extends Core {
   private [_createOpts](opts: Options): PrivateOptions {
     return { ...{}, ...defaultOptions, ...opts };
   }
-
 }

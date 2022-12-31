@@ -1,14 +1,14 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
 function removeFullDir(dirPath) {
-  let files = [];
+  let files: string[] = [];
   if (fs.existsSync(dirPath)) {
     files = fs.readdirSync(dirPath);
     files.forEach((filename) => {
-      let curPath = path.join(dirPath, filename);
+      const curPath: string = path.join(dirPath, filename);
       const stat = fs.statSync(curPath);
-      if(stat.isDirectory()) {
+      if (stat.isDirectory()) {
         removeFullDir(curPath);
       } else if (stat.isFile()) {
         // fs.unlinkSync(curPath);
@@ -22,5 +22,5 @@ function removeFullDir(dirPath) {
 }
 
 module.exports = {
-  removeFullDir,
-}
+  removeFullDir
+};

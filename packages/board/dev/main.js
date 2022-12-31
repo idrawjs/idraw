@@ -1,4 +1,4 @@
-import { Board } from './../src/esm';
+import Board from './../src/esm';
 
 function drawBoard(board) {
   const ctx = board.getContext();
@@ -28,9 +28,9 @@ const opts = {
   contextWidth: 300,
   contextHeight: 200,
   devicePixelRatio: 4,
-  canScroll: true,
-}
-const board = new Board(mount, opts); 
+  canScroll: true
+};
+const board = new Board(mount, opts);
 drawBoard(board);
 board.draw();
 
@@ -39,7 +39,7 @@ board.resetSize({
   height: 180,
   contextWidth: 400,
   contextHeight: 320,
-  devicePixelRatio: 4,
+  devicePixelRatio: 4
 });
 drawBoard(board);
 board.draw();

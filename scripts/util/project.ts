@@ -1,28 +1,27 @@
-const path = require('path');
-const fs = require('fs');
+import fs from 'fs';
+import path from 'path';
 
-function resolvePackagePath() {
-  const pathList = Array.from(arguments);
+export function resolvePackagePath(...args: string[]) {
+  const pathList = Array.from(args);
   const baseDir = path.join(resolveProjectPath(), 'packages');
   return path.join(baseDir, ...pathList);
 }
 
-function resolveProjectPath() {
-  const pathList = Array.from(arguments);
+export function resolveProjectPath(...args: string[]) {
+  const pathList = Array.from(args);
   const baseDir = path.join(__dirname, '..', '..');
   return path.join(baseDir, ...pathList);
 }
 
-function getTsConfig() {
-  const configPath = resolveProjectPath('tsconfig.json')
+export function getTsConfig() {
+  const configPath = resolveProjectPath('tsconfig.json');
   const configStr = fs.readFileSync(configPath, { encoding: 'utf8' });
   const config = JSON.parse(configStr);
   return config;
 }
 
-
 module.exports = {
   resolveProjectPath,
   resolvePackagePath,
-  getTsConfig,
-}
+  getTsConfig
+};

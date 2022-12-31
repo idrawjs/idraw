@@ -1,9 +1,9 @@
-const jimp = require('jimp');
-const path = require('path');
-const { delay } = require('./util/time');
-const { createScreenshot } = require('./util/screen');
-const { removeFullDir } = require('./util/file');
-const { pageList } = require('./screen.config');
+import jimp from 'jimp';
+import path from 'path';
+import { delay } from './util/time';
+import { createScreenshot } from './util/screen';
+import { removeFullDir } from './util/file';
+import { pageList } from './screen.config';
 
 const snapshotDir = path.join(__dirname, '..', '__tests__', 'snapshot');
 
@@ -15,13 +15,13 @@ async function main() {
   pageList.forEach((p, i) => {
     middlewares.push(async (ctx = {}, next) => {
       const { page, port } = ctx;
-      console.log(`[${i+1}/${pageList.length}] Screen: ${p.path}`)
+      console.log(`[${i+1}/${pageList.length}] Screen: ${p.path}`);
       await page.setViewport( { width: p.w, height: p.h } );
       const pageUrl = `http://127.0.0.1:${port}/examples/${p.path || ''}`;
       const result = await page.goto(pageUrl);
       if (result.status() === 404) {
-        console.error(`404 Not Found: ${pageUrl}`)
-        throw Error('404 status code found in result')
+        console.error(`404 Not Found: ${pageUrl}`);
+        throw Error('404 status code found in result');
       }
       await delay(p.delay || 100);
       const buf = await page.screenshot();

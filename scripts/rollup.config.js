@@ -1,23 +1,24 @@
-const process = require('process');
-const path = require('path');
-const typescript = require('rollup-plugin-typescript2');
-const { terser } = require('rollup-plugin-terser');
-const cleanup = require('rollup-plugin-cleanup');
-const { nodeResolve } = require('@rollup/plugin-node-resolve');
-const json = require('@rollup/plugin-json');
-const { packages } = require('./config');
-const dtsPlugin = require('./util/dts-plugin');
-const stylePlugin = require('./util/style-plugin');
+import process from 'process';
+import path from 'path';
+import * as rollup from 'rollup';
+import typescript from 'rollup-plugin-typescript2';
+import { terser } from 'rollup-plugin-terser';
+import cleanup from 'rollup-plugin-cleanup';
+import { nodeResolve } from '@rollup/plugin-node-resolve';
+import json from '@rollup/plugin-json';
+import { packages } from './config';
+import dtsPlugin from './util/dts-plugin';
+import stylePlugin from './util/style-plugin';
 // const cleanPlugin = require('./util/clean-plugin');
 
-const resolveFile = function(names = []) {
-  return path.join(__dirname, '..', 'packages', ...names)
-}
+const resolveFile = function (names = []) {
+  return path.join(__dirname, '..', 'packages', ...names);
+};
 
 const modules = [];
-const external = [ '@idraw/types', '@idraw/util', '@idraw/board', '@idraw/core' ];
+const external = ['@idraw/types', '@idraw/util', '@idraw/board', '@idraw/core'];
 
-for(let i = 0; i < packages.length; i++) {
+for (let i = 0; i < packages.length; i++) {
   const pkg = packages[i];
   if (process.env.BUILD_MODE === 'mini') {
     // modules.push({
@@ -50,7 +51,7 @@ for(let i = 0; i < packages.length; i++) {
       exports: 'default',
       // plugins: [dtsPlugin(pkg.dirName),],
       plugins: [],
-      external,
+      external
     });
     modules.push({
       input: resolveFile([pkg.dirName, 'src', 'esm.ts']),
@@ -59,24 +60,41 @@ for(let i = 0; i < packages.length; i++) {
       esModule: true,
       format: 'es',
       external,
-      plugins: [dtsPlugin(pkg.dirName),]
+      plugins: [dtsPlugin(pkg.dirName)]
     });
   }
 }
 
-
 function createConfigItem(params, opts = {}) {
-  const { input, output, name, format, plugins = [], esModule, exports} = params;
+  const {
+    input,
+    output,
+    name,
+    format,
+    plugins = [],
+    esModule,
+    exports
+  } = params;
+  const prodMiniConfig = [
+    terser({
+      output: {
+        beautify: false,
+        comments: false,
+        indent_level: 2,
+        quote_style: 3
+      }
+    })
+  ];
   return {
     input: input,
     output: {
-      file:output,
+      file: output,
       format,
       name: name,
       esModule: esModule === true,
       // sourcemap: true,
       exports
-    }, 
+    },
     plugins: [
       ...[
         stylePlugin(),
@@ -85,7 +103,7 @@ function createConfigItem(params, opts = {}) {
           tsconfig: path.resolve(__dirname, '..', 'tsconfig.json'),
           tsconfigOverride: {}
         }),
-        json(),
+        json()
       ],
       ...plugins,
       ...[
@@ -93,38 +111,37 @@ function createConfigItem(params, opts = {}) {
         //   sourcemap: process.env.NODE_ENV === 'development',
         // }),
         cleanup({
-          comments: 'none',
-        }),
-      ],
-      ...(opts.minify === true ? [
-        terser({
-          output: {
-            beautify: false,
-            comments: false,
-            indent_level: 2,
-            quote_style: 3,
-          }
+          comments: 'none'
         })
-      ] : [])
-    ],
+      ],
+      ...(opts.minify === true ? prodMiniConfig : [])
+    ]
   };
 }
 
 function createDevConfig(mods) {
   const configs = mods.map((mod) => {
     const cfg = createConfigItem(mod, {
-      minify: mod.output.endsWith('.min.js'),
+      minify: mod.output.endsWith('.min.js')
     });
     return cfg;
   });
   return configs;
 }
 
-module.exports = createDevConfig(modules);
+export async function buildByRollup() {
+  const configs = createDevConfig(modules);
+  for (let i = 0; i < configs.length; i++) {
+    const config = configs[i];
+    const inputOptions = config;
+    const outputOptions = config.output;
+    // create a bundle
+    const bundle = await rollup.rollup(inputOptions);
 
-
-
-
-
-
-
+    console.log(`Start compile ${path.basename(inputOptions.input)}`);
+    await bundle.generate(outputOptions);
+    // or write the bundle to disk
+    await bundle.write(outputOptions);
+    console.log(`End compile ${path.basename(outputOptions.file)}`);
+  }
+}
