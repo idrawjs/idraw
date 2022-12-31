@@ -2,6 +2,7 @@
   "name": "root",
   "private": false,
   "scripts": {
+    "postinstall": "npm run build",
     "dev": "node ./scripts/dev.js",
     "dev:rollup": "node ./scripts/dev-rollup.js",
     "build": "npm run build:mod && npm run build:bundle && npm run build:min",
@@ -12,7 +13,7 @@
     "e2e": "mocha --exit ./__tests__/e2e.test.js",
     "init": "lerna bootstrap",
     "init:cnpm": "lerna bootstrap --npm-client=cnpm",
-    "clear": "rm -rf ./packages/*/dist/ && rm -rf ./packages/*/esm/ && rm -rf ./packages/*/node_modules/",
+    "clear": "rm -rf node_modules/ && rm -rf ./packages/*/dist/ && rm -rf ./packages/*/esm/ && rm -rf ./packages/*/node_modules/",
     "jest": "jest --config jest.config.js",
     "jest:update": "jest --update-snapshot --config jest.config.js",
     "cover": "jest --config jest.cover.js",
