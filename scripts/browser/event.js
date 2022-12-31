@@ -1,40 +1,38 @@
-function click(opts){
-  const { x,y } = opts;
+function click(opts) {
+  const { x, y } = opts;
   const event = new MouseEvent('click', {
     screenX: x,
     screenY: y,
     clientX: x,
-    clientY: y,
+    clientY: y
   });
-  const elem = document.elementFromPoint(x,y);
+  const elem = document.elementFromPoint(x, y);
   elem.dispatchEvent(event);
 }
 
-function mouseDown(opts){
-  const { x,y } = opts;
+function mouseDown(opts) {
+  const { x, y } = opts;
   const event = new MouseEvent('mousedown', {
     screenX: x,
     screenY: y,
     clientX: x,
-    clientY: y,
+    clientY: y
   });
-  const elem = document.elementFromPoint(x,y);
+  const elem = document.elementFromPoint(x, y);
   elem.dispatchEvent(event);
 }
 
-
-function mouseMove(opts){
-  const { x,y } = opts;
+function mouseMove(opts) {
+  const { x, y } = opts;
   const event = new MouseEvent('mousemove', {
     screenX: x,
     screenY: y,
     clientX: x,
-    clientY: y,
+    clientY: y
   });
-  const elem = document.elementFromPoint(x,y);
+  const elem = document.elementFromPoint(x, y);
   elem.dispatchEvent(event);
 }
-
 
 // function mouseOver(opts){
 //   const { x,y } = opts;
@@ -48,21 +46,19 @@ function mouseMove(opts){
 //   elem.dispatchEvent(event);
 // }
 
-
-function mouseUp(opts){
-  const { x,y } = opts;
+function mouseUp(opts) {
+  const { x, y } = opts;
   const event = new MouseEvent('mouseup', {
     screenX: x,
     screenY: y,
     clientX: x,
-    clientY: y,
+    clientY: y
   });
-  const elem = document.elementFromPoint(x,y);
+  const elem = document.elementFromPoint(x, y);
   elem.dispatchEvent(event);
 }
 
-
-function wheelX(x, opts = { clientX: 0, clientY: 0 }){
+function wheelX(x, opts = { clientX: 0, clientY: 0 }) {
   const event = new WheelEvent('wheel', {
     deltaX: x,
     deltaY: 0,
@@ -73,7 +69,7 @@ function wheelX(x, opts = { clientX: 0, clientY: 0 }){
   elem.dispatchEvent(event);
 }
 
-function wheelY(y, opts = { clientX: 0, clientY: 0 }){
+function wheelY(y, opts = { clientX: 0, clientY: 0 }) {
   const event = new WheelEvent('wheel', {
     deltaX: 0,
     deltaY: y,
@@ -84,7 +80,6 @@ function wheelY(y, opts = { clientX: 0, clientY: 0 }){
   elem.dispatchEvent(event);
 }
 
-
 export default {
   click,
   mouseDown,
@@ -92,5 +87,5 @@ export default {
   mouseMove,
   // mouseOver,
   wheelX,
-  wheelY,
-}
+  wheelY
+};

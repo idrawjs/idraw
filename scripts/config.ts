@@ -1,15 +1,17 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 const packages = [
   {
     dirName: 'util',
-    globalName: 'iDrawUtil',
+    globalName: 'iDrawUtil'
   },
   {
     dirName: 'board',
-    globalName: 'iDrawBoard',
+    globalName: 'iDrawBoard'
   },
   {
     dirName: 'renderer',
-    globalName: 'iDrawRenderer',
+    globalName: 'iDrawRenderer'
   },
   // {
   //   dirName: 'kernal',
@@ -17,22 +19,22 @@ const packages = [
   // },
   {
     dirName: 'core',
-    globalName: 'iDrawCore',
+    globalName: 'iDrawCore'
   },
   {
     dirName: 'idraw',
-    globalName: 'iDraw',
-  },
+    globalName: 'iDraw'
+  }
 ];
 
 function getTargetPackage(cmdTarget = '') {
   let target = '';
   if (typeof cmdTarget === 'string') {
-    target = cmdTarget.replace(/^--target-pkg\=/ig, '');
+    target = cmdTarget.replace(/^--target-pkg\=/gi, '');
   }
   let pkgs = [];
   let targetIndex = -1;
-  for (let i = 0; i < packages.length; i ++) {
+  for (let i = 0; i < packages.length; i++) {
     if (packages[i] && packages[i].dirName === target) {
       targetIndex = i;
       break;
@@ -43,10 +45,7 @@ function getTargetPackage(cmdTarget = '') {
   } else {
     pkgs = packages;
   }
-  return pkgs
+  return pkgs;
 }
 
-module.exports = {
-  packages,
-  getTargetPackage,
-}
+export { packages, getTargetPackage };

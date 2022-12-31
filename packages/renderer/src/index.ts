@@ -5,8 +5,14 @@ import { TypeLoadDataItem } from './lib/loader-event';
 import Loader from './lib/loader';
 import { RendererEvent } from './lib/renderer-event';
 import {
-  _queue, _ctx, _status, _loader, _opts, _freeze,
-  _drawFrame, _retainQueueOneItem
+  _queue,
+  _ctx,
+  _status,
+  _loader,
+  _opts,
+  _freeze,
+  _drawFrame,
+  _retainQueueOneItem
 } from './names';
 
 const { requestAnimationFrame } = window;
@@ -16,23 +22,22 @@ enum DrawStatus {
   NULL = 'null',
   FREE = 'free',
   DRAWING = 'drawing',
-  FREEZE = 'freeze',
+  FREEZE = 'freeze'
   // STOP = 'stop',
 }
 
 type Options = {
-  width: number,
-  height: number,
+  width: number;
+  height: number;
   contextWidth?: number;
   contextHeight?: number;
-  devicePixelRatio: number,
-}
+  devicePixelRatio: number;
+};
 
-export class Renderer extends RendererEvent {
-
+export default class Renderer extends RendererEvent {
   private [_queue]: QueueItem[] = [];
   private [_ctx]: TypeContext | null = null;
-  private [_status]: DrawStatus = DrawStatus.NULL; 
+  private [_status]: DrawStatus = DrawStatus.NULL;
   private [_loader]: Loader;
   private [_opts]?: Options;
 
@@ -50,20 +55,24 @@ export class Renderer extends RendererEvent {
       this.trigger('error', { element: res.element, error: res.error });
     });
     this[_loader].on('complete', () => {
-      this.trigger('loadComplete', { t: Date.now() })
+      this.trigger('loadComplete', { t: Date.now() });
     });
   }
 
-  render(target: HTMLCanvasElement | TypeContext, originData: TypeData, opts?: {
-    // forceUpdate?: boolean,
-    changeResourceUUIDs?: string[]
-  }): void { 
+  render(
+    target: HTMLCanvasElement | TypeContext,
+    originData: TypeData,
+    opts?: {
+      // forceUpdate?: boolean,
+      changeResourceUUIDs?: string[];
+    }
+  ): void {
     // if ([DrawStatus.STOP, DrawStatus.FREEZE].includes(this[_status])) {
     //   return;
     // }
     // this[_status] = DrawStatus.FREE;
 
-    const { changeResourceUUIDs = []} = opts || {};
+    const { changeResourceUUIDs = [] } = opts || {};
     this[_status] = DrawStatus.FREE;
 
     const data = deepClone(originData);
@@ -77,8 +86,12 @@ export class Renderer extends RendererEvent {
 
     if (!this[_ctx]) {
       // TODO
-      if (this[_opts] && Object.prototype.toString.call(target) === '[object HTMLCanvasElement]') {
-        const { width, height, contextWidth, contextHeight, devicePixelRatio } = this[_opts] as Options;
+      if (
+        this[_opts] &&
+        Object.prototype.toString.call(target) === '[object HTMLCanvasElement]'
+      ) {
+        const { width, height, contextWidth, contextHeight, devicePixelRatio } =
+          this[_opts] as Options;
         const canvas = target as HTMLCanvasElement;
         canvas.width = width * devicePixelRatio;
         canvas.height = height * devicePixelRatio;
@@ -89,17 +102,17 @@ export class Renderer extends RendererEvent {
           contextWidth: contextWidth || width,
           contextHeight: contextHeight || height,
           devicePixelRatio
-        })
+        });
       } else if (target) {
         // TODO
         this[_ctx] = target as TypeContext;
       }
     }
-    
+
     if ([DrawStatus.FREEZE].includes(this[_status])) {
       return;
     }
-    const _data: QueueItem = deepClone({ data, }) as QueueItem;
+    const _data: QueueItem = deepClone({ data }) as QueueItem;
     this[_queue].push(_data);
     // if (this[_status] !== DrawStatus.DRAWING) {
     //   this[_status] = DrawStatus.DRAWING;
@@ -110,7 +123,7 @@ export class Renderer extends RendererEvent {
   }
 
   getContext(): TypeContext | null {
-    return this[_ctx]
+    return this[_ctx];
   }
 
   thaw() {
@@ -130,7 +143,7 @@ export class Renderer extends RendererEvent {
         return;
       }
       const ctx = this[_ctx];
-      
+
       let item: QueueItem | undefined = this[_queue][0];
       let isLastFrame = false;
       if (this[_queue].length > 1) {
@@ -158,9 +171,13 @@ export class Renderer extends RendererEvent {
       } else {
         this[_status] = DrawStatus.FREE;
       }
-      this.trigger('drawFrame', { t: Date.now() })
+      this.trigger('drawFrame', { t: Date.now() });
 
-      if (this[_loader].isComplete() === true && this[_queue].length === 1 && this[_status] === DrawStatus.FREE) {
+      if (
+        this[_loader].isComplete() === true &&
+        this[_queue].length === 1 &&
+        this[_status] === DrawStatus.FREE
+      ) {
         if (ctx && this[_queue][0] && this[_queue][0].data) {
           drawContext(ctx, this[_queue][0].data, this[_loader]);
         }
@@ -177,7 +194,4 @@ export class Renderer extends RendererEvent {
     const lastOne = deepClone(this[_queue][this[_queue].length - 1]);
     this[_queue] = [lastOne];
   }
-
-  
 }
-

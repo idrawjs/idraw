@@ -1,0 +1,14 @@
+{
+  "editor.formatOnSave": true,
+  "eslint.format.enable": true,
+  "prettier.configPath": ".prettierrc.json",
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}

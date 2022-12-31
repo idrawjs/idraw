@@ -2,18 +2,13 @@
   "name": "idraw",
   "version": "0.3.0-alpha.6",
   "description": "",
-  "main": "dist/index.cjs.js",
-  "module": "dist/index.esm.js",
+  "main": "dist/esm/index.js",
+  "module": "dist/esm/index.js",
   "unpkg": "dist/index.global.js",
-  "types": "dist/index.d.ts",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "types": "dist/esm/index.d.ts",
   "files": [
-    "dist/*.ts",
-    "dist/*.js",
-    "esm/*.ts",
-    "esm/*.js"
+    "dist/**/*.ts",
+    "dist/**/*.js"
   ],
   "repository": {
     "type": "git",
