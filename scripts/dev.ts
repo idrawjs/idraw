@@ -3,7 +3,7 @@ import AutoComplete from 'enquirer/lib/prompts/autocomplete';
 import chalk from 'chalk';
 import { createServer } from 'vite';
 import type { UserConfig } from 'vite';
-import { resolvePackagePath } from './util/project';
+import { joinPackagePath } from './util/project';
 import { packages } from './config';
 
 dev();
@@ -23,8 +23,8 @@ async function dev() {
 
 function getViteConfig(pkgName: string): UserConfig {
   const viteConfig: UserConfig = {
-    root: resolvePackagePath(pkgName),
-    publicDir: resolvePackagePath(pkgName, 'demo', 'public'),
+    root: joinPackagePath(pkgName),
+    publicDir: joinPackagePath(pkgName, 'demo', 'public'),
     server: {
       port: 8080,
       host: '127.0.0.1'

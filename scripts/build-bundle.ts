@@ -1,12 +1,12 @@
 import { build } from 'vite';
 import type { InlineConfig } from 'vite';
-import { resolvePackagePath } from './util/project';
+import { joinPackagePath } from './util/project';
 import { packages } from './config';
 
 async function buildBundle(opts: { dirName: string; globalName: string }) {
   const { dirName, globalName } = opts;
-  const filePath = resolvePackagePath(dirName, 'src', 'index.ts');
-  const distDir = resolvePackagePath(dirName, 'dist');
+  const filePath = joinPackagePath(dirName, 'src', 'index.ts');
+  const distDir = joinPackagePath(dirName, 'dist');
   const config: InlineConfig = {
     plugins: [],
     build: {

@@ -3,7 +3,7 @@ import path from 'path';
 import fs from 'fs-extra';
 import glob from 'glob';
 import { packages } from './config';
-import { resolvePackagePath, getTsConfig } from './util/project';
+import { joinPackagePath, getTsConfig } from './util/project';
 
 build();
 
@@ -22,11 +22,11 @@ async function build() {
 
 function buildPackage(dirName) {
   const pattern = '**/*.ts';
-  const cwd = resolvePackagePath(dirName, 'src');
+  const cwd = joinPackagePath(dirName, 'src');
   const files = glob.sync(pattern, { cwd });
 
   const targetFiles = files.map((file) => {
-    return resolvePackagePath(dirName, 'src', file);
+    return joinPackagePath(dirName, 'src', file);
   });
 
   // build ts -> esm
@@ -36,8 +36,8 @@ function buildPackage(dirName) {
     compilerOptions.target = ts.ScriptTarget.ES2015;
     compilerOptions.moduleResolution = ts.ModuleResolutionKind.NodeJs;
     compilerOptions.declaration = true;
-    compilerOptions.outDir = resolvePackagePath(dirName, 'dist', 'esm');
-    compilerOptions.rootDir = resolvePackagePath(dirName, 'src');
+    compilerOptions.outDir = joinPackagePath(dirName, 'dist', 'esm');
+    compilerOptions.rootDir = joinPackagePath(dirName, 'src');
     const program = ts.createProgram(targetFiles, compilerOptions);
     program.emit();
   }
