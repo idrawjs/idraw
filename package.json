@@ -5,6 +5,7 @@
   "scripts": {
     "postinstall": "npm run build",
     "dev": "vite-node ./scripts/dev.ts",
+    "dev:mod": "vite-node ./scripts/dev-mod.ts",
     "build": "npm run build:mod && npm run build:bundle && npm run build:min",
     "build:bundle": "vite-node ./scripts/build-bundle.ts",
     "build:mod": "vite-node ./scripts/build-module.ts",
