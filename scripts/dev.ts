@@ -1,16 +1,13 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import AutoComplete from 'enquirer/lib/prompts/autocomplete';
 import chalk from 'chalk';
 import { createServer } from 'vite';
 import type { UserConfig } from 'vite';
 import { joinPackagePath } from './util/project';
-import { packages } from './config';
 
 dev();
 
 async function dev() {
-  const pkgName = await inputPackageName();
-  const viteConfig = getViteConfig(pkgName);
+  const viteConfig = getViteConfig();
   const server = await createServer({
     configFile: false,
     ...viteConfig
@@ -21,7 +18,8 @@ async function dev() {
   console.log(`Open: ` + chalk.green(`http://${host}:${port}/dev/index.html`));
 }
 
-function getViteConfig(pkgName: string): UserConfig {
+function getViteConfig(): UserConfig {
+  const pkgName = 'idraw';
   const viteConfig: UserConfig = {
     root: joinPackagePath(pkgName),
     publicDir: joinPackagePath(pkgName, 'demo', 'public'),
@@ -30,6 +28,15 @@ function getViteConfig(pkgName: string): UserConfig {
       host: '127.0.0.1'
     },
     plugins: [],
+    resolve: {
+      alias: {
+        '@idraw/types': joinPackagePath('types', 'src', 'index.ts'),
+        '@idraw/util': joinPackagePath('util', 'src', 'index.ts'),
+        '@idraw/renderer': joinPackagePath('renderer', 'src', 'index.ts'),
+        '@idraw/board': joinPackagePath('board', 'src', 'index.ts'),
+        '@idraw/core': joinPackagePath('core', 'src', 'index.ts')
+      }
+    },
     esbuild: {
       include: [/\.ts$/, /\.js$/],
       exclude: [/\.html$/]
@@ -37,20 +44,4 @@ function getViteConfig(pkgName: string): UserConfig {
     optimizeDeps: {}
   };
   return viteConfig;
-}
-
-async function inputPackageName() {
-  const choices = packages.map((pkg) => {
-    return pkg.dirName;
-  });
-  const prompt = new AutoComplete({
-    name: 'Package Name',
-    message: 'Pick your dev package',
-    limit: choices.length,
-    initial: 0,
-    choices: choices
-  });
-  // @ts-ignore
-  const pkgName = await prompt.run();
-  return pkgName;
 }
