@@ -1,26 +1,11 @@
 {
-  "compilerOptions": {
-    "declaration": true,
-    "sourceMap": false,
-    "target": "es5",
-    "module": "ES2015",
-    "moduleResolution": "node",
-    "allowJs": false,
-    "strict": true,
-    "noUnusedLocals": true,
-    "experimentalDecorators": true,
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "removeComments": true,
-    "lib": ["ESNext", "dom"]
-  },
-  "include": [
-    "packages/global.d.ts",
-    "packages/*/src",
-    "packages/*/__tests__",
-    "packages/*/dev"
-  ],
-  "exclude": [
-    "packages/*/examples"
+  "files": [],
+  "references": [
+    { 
+      "path": "./tsconfig.web.json"
+    },
+    { 
+      "path": "./tsconfig.node.json"
+    }
   ]
 }

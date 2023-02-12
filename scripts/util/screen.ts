@@ -9,14 +9,7 @@ const port = 3001;
 const width = 600;
 const height = 600;
 
-module.exports = {
-  createScreenshotBuffer,
-  createScreenshot,
-  width,
-  height
-};
-
-async function createScreenshotBuffer(pagePath) {
+async function createScreenshotBuffer(pagePath: string) {
   const middlewares = [];
   let buf;
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -35,7 +28,10 @@ async function createScreenshotBuffer(pagePath) {
   return buf;
 }
 
-async function createScreenshot(middlewares, opts: any = {}): Promise<void> {
+async function createScreenshot(
+  middlewares: any[],
+  opts: any = {}
+): Promise<void> {
   return new Promise((resolve) => {
     const server = http.createServer((req, res) =>
       serveHandler(req, res, {
@@ -59,3 +55,5 @@ async function createScreenshot(middlewares, opts: any = {}): Promise<void> {
     server.on('SIGINT', () => process.exit(1));
   });
 }
+
+export { createScreenshotBuffer, createScreenshot, width, height };

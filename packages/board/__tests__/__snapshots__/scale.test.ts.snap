@@ -1,15 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`@idraw/board scale 001 1`] = `
-Array [
-  Object {
-    "props": Object {
+[
+  {
+    "props": {
       "height": 1600,
       "width": 2400,
       "x": 0,
       "y": 0,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -19,14 +19,14 @@ Array [
     ],
     "type": "clearRect",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "height": 1600,
       "width": 2400,
       "x": 0,
       "y": 0,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -36,14 +36,14 @@ Array [
     ],
     "type": "fillRect",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "height": 480,
       "width": 800,
       "x": 40,
       "y": 40,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -53,14 +53,14 @@ Array [
     ],
     "type": "fillRect",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "height": 480,
       "width": 800,
       "x": 320,
       "y": 320,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -70,14 +70,14 @@ Array [
     ],
     "type": "fillRect",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "height": 480,
       "width": 800,
       "x": 640,
       "y": 640,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -87,14 +87,14 @@ Array [
     ],
     "type": "fillRect",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "height": 400,
       "width": 800,
       "x": 1560,
       "y": 1160,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -108,15 +108,15 @@ Array [
 `;
 
 exports[`@idraw/board scale 001 2`] = `
-Array [
-  Object {
-    "props": Object {
+[
+  {
+    "props": {
       "height": 1600,
       "width": 2400,
       "x": 0,
       "y": 0,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -126,14 +126,14 @@ Array [
     ],
     "type": "clearRect",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "height": 1600,
       "width": 2400,
       "x": 0,
       "y": 0,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -143,8 +143,8 @@ Array [
     ],
     "type": "clearRect",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "dHeight": 3600,
       "dWidth": 4000,
       "dx": 200,
@@ -158,7 +158,7 @@ Array [
       "sx": 0,
       "sy": 0,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -168,8 +168,8 @@ Array [
     ],
     "type": "drawImage",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "dHeight": 3600,
       "dWidth": 4000,
       "dx": 200,
@@ -183,7 +183,7 @@ Array [
       "sx": 0,
       "sy": 0,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -197,15 +197,15 @@ Array [
 `;
 
 exports[`@idraw/board scale 002 1`] = `
-Array [
-  Object {
-    "props": Object {
+[
+  {
+    "props": {
       "height": 1600,
       "width": 2400,
       "x": 0,
       "y": 0,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -215,14 +215,14 @@ Array [
     ],
     "type": "clearRect",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "height": 1600,
       "width": 2400,
       "x": 0,
       "y": 0,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -232,14 +232,14 @@ Array [
     ],
     "type": "fillRect",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "height": 480,
       "width": 800,
       "x": 40,
       "y": 40,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -249,14 +249,14 @@ Array [
     ],
     "type": "fillRect",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "height": 480,
       "width": 800,
       "x": 320,
       "y": 320,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -266,14 +266,14 @@ Array [
     ],
     "type": "fillRect",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "height": 480,
       "width": 800,
       "x": 640,
       "y": 640,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -283,14 +283,14 @@ Array [
     ],
     "type": "fillRect",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "height": 400,
       "width": 800,
       "x": 1560,
       "y": 1160,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -304,15 +304,15 @@ Array [
 `;
 
 exports[`@idraw/board scale 002 2`] = `
-Array [
-  Object {
-    "props": Object {
+[
+  {
+    "props": {
       "height": 1600,
       "width": 2400,
       "x": 0,
       "y": 0,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -322,14 +322,14 @@ Array [
     ],
     "type": "clearRect",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "height": 1600,
       "width": 2400,
       "x": 0,
       "y": 0,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -339,8 +339,8 @@ Array [
     ],
     "type": "clearRect",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "dHeight": 2400,
       "dWidth": 4800,
       "dx": 0,
@@ -354,7 +354,7 @@ Array [
       "sx": 0,
       "sy": 0,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -364,8 +364,8 @@ Array [
     ],
     "type": "drawImage",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "dHeight": 2400,
       "dWidth": 4800,
       "dx": 0,
@@ -379,7 +379,7 @@ Array [
       "sx": 0,
       "sy": 0,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -393,15 +393,15 @@ Array [
 `;
 
 exports[`@idraw/board scale 003 1`] = `
-Array [
-  Object {
-    "props": Object {
+[
+  {
+    "props": {
       "height": 1600,
       "width": 2400,
       "x": 0,
       "y": 0,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -411,14 +411,14 @@ Array [
     ],
     "type": "clearRect",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "height": 1600,
       "width": 2400,
       "x": 0,
       "y": 0,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -428,14 +428,14 @@ Array [
     ],
     "type": "fillRect",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "height": 480,
       "width": 800,
       "x": 40,
       "y": 40,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -445,14 +445,14 @@ Array [
     ],
     "type": "fillRect",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "height": 480,
       "width": 800,
       "x": 320,
       "y": 320,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -462,14 +462,14 @@ Array [
     ],
     "type": "fillRect",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "height": 480,
       "width": 800,
       "x": 640,
       "y": 640,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -479,14 +479,14 @@ Array [
     ],
     "type": "fillRect",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "height": 400,
       "width": 800,
       "x": 1560,
       "y": 1160,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -500,15 +500,15 @@ Array [
 `;
 
 exports[`@idraw/board scale 003 2`] = `
-Array [
-  Object {
-    "props": Object {
+[
+  {
+    "props": {
       "height": 1600,
       "width": 2400,
       "x": 0,
       "y": 0,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -518,14 +518,14 @@ Array [
     ],
     "type": "clearRect",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "height": 1600,
       "width": 2400,
       "x": 0,
       "y": 0,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -535,8 +535,8 @@ Array [
     ],
     "type": "clearRect",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "dHeight": 2400,
       "dWidth": 4000,
       "dx": 0,
@@ -550,7 +550,7 @@ Array [
       "sx": 0,
       "sy": 0,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -560,8 +560,8 @@ Array [
     ],
     "type": "drawImage",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "dHeight": 2400,
       "dWidth": 4000,
       "dx": 0,
@@ -575,7 +575,7 @@ Array [
       "sx": 0,
       "sy": 0,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -589,15 +589,15 @@ Array [
 `;
 
 exports[`@idraw/board scale 1`] = `
-Array [
-  Object {
-    "props": Object {
+[
+  {
+    "props": {
       "height": 1600,
       "width": 2400,
       "x": 0,
       "y": 0,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -607,14 +607,14 @@ Array [
     ],
     "type": "clearRect",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "height": 1600,
       "width": 2400,
       "x": 0,
       "y": 0,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -624,14 +624,14 @@ Array [
     ],
     "type": "fillRect",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "height": 480,
       "width": 800,
       "x": 40,
       "y": 40,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -641,14 +641,14 @@ Array [
     ],
     "type": "fillRect",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "height": 480,
       "width": 800,
       "x": 320,
       "y": 320,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -658,14 +658,14 @@ Array [
     ],
     "type": "fillRect",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "height": 480,
       "width": 800,
       "x": 640,
       "y": 640,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -675,14 +675,14 @@ Array [
     ],
     "type": "fillRect",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "height": 400,
       "width": 800,
       "x": 1560,
       "y": 1160,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -696,15 +696,15 @@ Array [
 `;
 
 exports[`@idraw/board scale 2`] = `
-Array [
-  Object {
-    "props": Object {
+[
+  {
+    "props": {
       "height": 1600,
       "width": 2400,
       "x": 0,
       "y": 0,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -714,14 +714,14 @@ Array [
     ],
     "type": "clearRect",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "height": 1600,
       "width": 2400,
       "x": 0,
       "y": 0,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -731,8 +731,8 @@ Array [
     ],
     "type": "clearRect",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "dHeight": 1600,
       "dWidth": 2400,
       "dx": 600,
@@ -746,7 +746,7 @@ Array [
       "sx": 0,
       "sy": 0,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -756,8 +756,8 @@ Array [
     ],
     "type": "drawImage",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "dHeight": 1600,
       "dWidth": 2400,
       "dx": 600,
@@ -771,7 +771,7 @@ Array [
       "sx": 0,
       "sy": 0,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,

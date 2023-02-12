@@ -1,5 +1,3 @@
-
-
 export function getData() {
   const data = {
     elements: [
@@ -10,7 +8,7 @@ export function getData() {
         h: 120,
         type: 'rect',
         desc: {
-          color: '#f0f0f0',
+          color: '#f0f0f0'
         }
       },
       {
@@ -20,7 +18,7 @@ export function getData() {
         h: 120,
         type: 'rect',
         desc: {
-          color: '#cccccc',
+          color: '#cccccc'
         }
       },
       {
@@ -30,7 +28,7 @@ export function getData() {
         h: 120,
         type: 'rect',
         desc: {
-          color: '#c0c0c0',
+          color: '#c0c0c0'
         }
       },
       {
@@ -40,10 +38,10 @@ export function getData() {
         h: 100,
         type: 'rect',
         desc: {
-          color: '#e0e0e0',
+          color: '#e0e0e0'
         }
       }
     ]
-  }
+  };
   return data;
-};
+}

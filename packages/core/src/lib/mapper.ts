@@ -1,5 +1,5 @@
 import { TypeData, TypePoint, TypePointCursor } from '@idraw/types';
-import { Board } from '@idraw/board';
+import Board from '@idraw/board';
 import { Helper } from './helper';
 import { Element } from './element';
 
@@ -11,11 +11,10 @@ const _opts = Symbol('_opts');
 type Options = {
   board: Board;
   element: Element;
-  helper: Helper
-}
+  helper: Helper;
+};
 
 export class Mapper {
-
   private [_opts]: Options;
   private [_board]: Board;
   private [_helper]: Helper;
@@ -31,60 +30,68 @@ export class Mapper {
   isEffectivePoint(p: TypePoint): boolean {
     const scrollLineWidth = this[_board].getScrollLineWidth();
     const screenInfo = this[_board].getScreenInfo();
-    if (p.x <= (screenInfo.width - scrollLineWidth) && p.y <= (screenInfo.height - scrollLineWidth)) {
+    if (
+      p.x <= screenInfo.width - scrollLineWidth &&
+      p.y <= screenInfo.height - scrollLineWidth
+    ) {
       return true;
     }
     return false;
   }
 
-  judgePointCursor(p: TypePoint, data: TypeData): {
-    cursor: TypePointCursor,
-    elementUUID: string | null,
+  judgePointCursor(
+    p: TypePoint,
+    data: TypeData
+  ): {
+    cursor: TypePointCursor;
+    elementUUID: string | null;
   } {
     let cursor: TypePointCursor = 'auto';
     let elementUUID: string | null = null;
     if (!this.isEffectivePoint(p)) {
-      return { cursor, elementUUID};
+      return { cursor, elementUUID };
     }
-    const { uuid, hoverControllerDirection }  = this[_helper].isPointInElementWrapperController(p, data);
+    const { uuid, hoverControllerDirection } = this[
+      _helper
+    ].isPointInElementWrapperController(p, data);
     const direction = hoverControllerDirection;
     if (uuid && direction) {
       switch (direction) {
-        case 'top-right' : {
+        case 'top-right': {
           cursor = 'ne-resize';
           break;
         }
 
-        case 'top-left' : {
+        case 'top-left': {
           cursor = 'nw-resize';
           break;
         }
-        case 'top' : {
+        case 'top': {
           cursor = 'n-resize';
           break;
         }
-        
-        case 'right' : {
+
+        case 'right': {
           cursor = 'e-resize';
           break;
         }
-        case 'bottom-right' : {
+        case 'bottom-right': {
           cursor = 'se-resize';
           break;
         }
-        case 'bottom' : {
+        case 'bottom': {
           cursor = 's-resize';
           break;
         }
-        case 'bottom-left' : {
+        case 'bottom-left': {
           cursor = 'sw-resize';
           break;
         }
-        case 'left' : {
+        case 'left': {
           cursor = 'w-resize';
           break;
         }
-        case 'rotate' : {
+        case 'rotate': {
           cursor = 'grab';
           break;
         }
@@ -106,8 +113,7 @@ export class Mapper {
     }
     return {
       cursor,
-      elementUUID,
+      elementUUID
     };
   }
-
 }

@@ -1,7 +1,6 @@
-import  { Core } from '../../src';
+import Core from '../../src';
 
 describe('@idraw/core', () => {
-
   document.body.innerHTML = `
     <div id="mount"></div>
   `;
@@ -11,12 +10,12 @@ describe('@idraw/core', () => {
     contextWidth: 600,
     contextHeight: 400,
     devicePixelRatio: 4,
-    canScroll: true,
+    canScroll: true
   };
   const transform = {
     scale: 2,
     scrollLeft: 200,
-    scrollTop: 100,
+    scrollTop: 100
   };
   const mount = document.querySelector('#mount') as HTMLDivElement;
   const idraw = new Core(mount, opts);
@@ -25,8 +24,8 @@ describe('@idraw/core', () => {
   idraw.scrollLeft(transform.scrollLeft);
   idraw.scrollTop(transform.scrollTop);
 
-  const p1 = {x: 400, y: 300};
-  const p2 = {x: 300, y: 200};
+  const p1 = { x: 400, y: 300 };
+  const p2 = { x: 300, y: 200 };
 
   test('pointScreenToContext', async () => {
     expect(idraw.pointScreenToContext(p1)).toStrictEqual(p2);
@@ -35,6 +34,4 @@ describe('@idraw/core', () => {
   test('pointContextToScreen', async () => {
     expect(idraw.pointContextToScreen(p2)).toStrictEqual(p1);
   });
-
 });
-

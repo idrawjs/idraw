@@ -1,7 +1,6 @@
-import  { Core } from './../../src';
+import Core from './../../src';
 
-describe("@idraw/core:static is", () => {
-
+describe('@idraw/core:static is', () => {
   test('Core.is.number', () => {
     expect(Core.is.number(0)).toStrictEqual(true);
     expect(Core.is.number(100)).toStrictEqual(true);
@@ -70,7 +69,9 @@ describe("@idraw/core:static is", () => {
     expect(Core.is.imageSrc('http://xxxxx')).toStrictEqual(true);
     expect(Core.is.imageSrc('./xxxxx/xxx')).toStrictEqual(true);
     expect(Core.is.imageSrc('/xxxxx/xxx')).toStrictEqual(true);
-    expect(Core.is.imageSrc('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOg')).toStrictEqual(true);
+    expect(
+      Core.is.imageSrc('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOg')
+    ).toStrictEqual(true);
     expect(Core.is.imageSrc('dafafsfsaffafa')).toStrictEqual(false);
   });
 
@@ -83,7 +84,9 @@ describe("@idraw/core:static is", () => {
   });
 
   test('Core.is.imageBase64', () => {
-    expect(Core.is.imageBase64('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOg')).toStrictEqual(true);
+    expect(
+      Core.is.imageBase64('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOg')
+    ).toStrictEqual(true);
     expect(Core.is.imageBase64('http://xxxxx')).toStrictEqual(false);
     expect(Core.is.imageBase64('./xxxxx/xxx')).toStrictEqual(false);
     expect(Core.is.imageBase64('/xxxxx/xxx')).toStrictEqual(false);
@@ -91,31 +94,39 @@ describe("@idraw/core:static is", () => {
   });
 
   test('Core.is.svg', () => {
-    expect(Core.is.svg(`
+    expect(
+      Core.is.svg(`
       <svg t="12231231">
         <g></g>
       </svg>
-      `)).toStrictEqual(true);
-      expect(Core.is.svg(`
+      `)
+    ).toStrictEqual(true);
+    expect(
+      Core.is.svg(`
       <svg>
         <g></g>
       </  svg>
-      `)).toStrictEqual(true);
+      `)
+    ).toStrictEqual(true);
     expect(Core.is.svg('./xxxxx/xxx')).toStrictEqual(false);
     expect(Core.is.svg('/xxxxx/xxx')).toStrictEqual(false);
     expect(Core.is.svg('dafafsfsaffafa')).toStrictEqual(false);
   });
 
   test('Core.is.html', () => {
-    expect(Core.is.html(`
+    expect(
+      Core.is.html(`
      <div>Hello World</div>
-      `)).toStrictEqual(true);
-      expect(Core.is.html(`
+      `)
+    ).toStrictEqual(true);
+    expect(
+      Core.is.html(`
       <style>
         .box { display: block }
       </style>
       <div class="box">Hello World</div>
-      `)).toStrictEqual(true);
+      `)
+    ).toStrictEqual(true);
     expect(Core.is.html('./xxxxx/xxx')).toStrictEqual(false);
     expect(Core.is.html('/xxxxx/xxx')).toStrictEqual(false);
     expect(Core.is.html('dafafsfsaffafa')).toStrictEqual(false);
@@ -146,7 +157,6 @@ describe("@idraw/core:static is", () => {
     expect(Core.is.textAlign('helloworld')).toStrictEqual(false);
   });
 
-
   test('Core.is.fontFamily', () => {
     expect(Core.is.fontFamily('yahei')).toStrictEqual(true);
     expect(Core.is.fontFamily('helloworld')).toStrictEqual(true);
@@ -158,5 +168,4 @@ describe("@idraw/core:static is", () => {
     expect(Core.is.fontWeight('xxxxxxx')).toStrictEqual(false);
     expect(Core.is.fontWeight('')).toStrictEqual(false);
   });
-
-})
+});
