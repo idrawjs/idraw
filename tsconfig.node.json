@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "ES6",
+    "lib": ["ES6", "DOM"],
+    "moduleResolution": "Node",
+    "strict": false,
+    "jsx": "preserve",
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "importHelpers": true,
+    "allowJs": true,
+    "composite": true
+  },
+  "include": [
+    "scripts/",
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

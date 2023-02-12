@@ -14,7 +14,7 @@ export function joinProjectPath(...args: string[]) {
 }
 
 export function getTsConfig() {
-  const configPath = joinProjectPath('tsconfig.json');
+  const configPath = joinProjectPath('tsconfig.web.json');
   const configStr = fs.readFileSync(configPath, { encoding: 'utf8' });
   const config = JSON.parse(configStr);
   return config;

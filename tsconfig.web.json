@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "sourceMap": false,
+    "target": "ES6",
+    "module": "ES2015",
+    "moduleResolution": "node",
+    "allowJs": false,
+    "strict": true,
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "removeComments": true,
+    "lib": ["ES2016", "DOM"]
+  },
+  "include": [
+    "packages/*/src",
+    "packages/*/__tests__",
+    "packages/*/dev"
+  ],
+  "exclude": [
+    "packages/*/examples"
+  ]
+}

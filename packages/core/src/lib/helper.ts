@@ -1,10 +1,17 @@
 import {
-  TypeData, TypeHelper, TypeHelperConfig, TypeHelperUpdateOpts,
-  TypeHelperWrapperControllerDirection, TypeElement,
-  TypeElemDesc, TypeContext, TypePoint, TypeConfigStrict,
+  TypeData,
+  TypeHelper,
+  TypeHelperConfig,
+  TypeHelperUpdateOpts,
+  TypeHelperWrapperControllerDirection,
+  TypeElement,
+  TypeElemDesc,
+  TypeContext,
+  TypePoint,
+  TypeConfigStrict,
   TypeHeplerSelectedElementWrapper
 } from '@idraw/types';
-import { Board } from '@idraw/board';
+import Board from '@idraw/board';
 import { deepClone } from '@idraw/util';
 import { parseAngleToRadian, calcElementCenter } from './calculate';
 import { rotateContext, rotateElement } from './transform';
@@ -12,9 +19,7 @@ import { LIMIT_QBLIQUE_ANGLE } from './../constant/element';
 
 const limitQbliqueAngle = LIMIT_QBLIQUE_ANGLE;
 
-
 export class Helper implements TypeHelper {
-
   private _helperConfig: TypeHelperConfig;
   private _coreConfig: TypeConfigStrict;
   private _ctx: TypeContext;
@@ -31,10 +36,7 @@ export class Helper implements TypeHelper {
     };
   }
 
-  updateConfig (
-    data: TypeData,
-    opts: TypeHelperUpdateOpts
-  ): void {
+  updateConfig(data: TypeData, opts: TypeHelperUpdateOpts): void {
     this._updateElementIndex(data);
     this._updateSelectedElementWrapper(data, opts);
     this._updateSelectedElementListWrapper(data, opts);
@@ -52,20 +54,29 @@ export class Helper implements TypeHelper {
     return null;
   }
 
-  isPointInElementWrapperController(p: TypePoint, data?: TypeData): 
-  {
-    uuid: string | null | undefined, 
-    selectedControllerDirection: TypeHelperWrapperControllerDirection | null,
-    hoverControllerDirection: TypeHelperWrapperControllerDirection | null,
-    directIndex: number | null,
+  isPointInElementWrapperController(
+    p: TypePoint,
+    data?: TypeData
+  ): {
+    uuid: string | null | undefined;
+    selectedControllerDirection: TypeHelperWrapperControllerDirection | null;
+    hoverControllerDirection: TypeHelperWrapperControllerDirection | null;
+    directIndex: number | null;
   } {
     const ctx = this._ctx;
     const uuid = this._helperConfig?.selectedElementWrapper?.uuid || null;
     let directIndex = null;
-    let selectedControllerDirection: TypeHelperWrapperControllerDirection | null = null;
-    let hoverControllerDirection: TypeHelperWrapperControllerDirection | null = null;
+    let selectedControllerDirection: TypeHelperWrapperControllerDirection | null =
+      null;
+    let hoverControllerDirection: TypeHelperWrapperControllerDirection | null =
+      null;
     if (!this._helperConfig.selectedElementWrapper) {
-      return {uuid, selectedControllerDirection, directIndex, hoverControllerDirection};
+      return {
+        uuid,
+        selectedControllerDirection,
+        directIndex,
+        hoverControllerDirection
+      };
     }
     const wrapper = this._helperConfig.selectedElementWrapper;
     const controllers = [
@@ -76,17 +87,17 @@ export class Helper implements TypeHelper {
       wrapper.controllers.left,
       wrapper.controllers.bottomLeft,
       wrapper.controllers.bottom,
-      wrapper.controllers.bottomRight,
+      wrapper.controllers.bottomRight
     ];
     let directionNames: TypeHelperWrapperControllerDirection[] = [
       'right',
       'top-right',
       'top',
       'top-left',
-      'left', 
+      'left',
       'bottom-left',
       'bottom',
-      'bottom-right',
+      'bottom-right'
     ];
     let hoverDirectionNames = deepClone(directionNames);
 
@@ -100,35 +111,43 @@ export class Helper implements TypeHelper {
           angle += 360;
         }
         if (angle < 45) {
-          angleMoveNum = 0
+          angleMoveNum = 0;
         } else if (angle < 90) {
-          angleMoveNum = 1
+          angleMoveNum = 1;
         } else if (angle < 135) {
-          angleMoveNum = 2
+          angleMoveNum = 2;
         } else if (angle < 180) {
-          angleMoveNum = 3
+          angleMoveNum = 3;
         } else if (angle < 225) {
-          angleMoveNum = 4
+          angleMoveNum = 4;
         } else if (angle < 270) {
-          angleMoveNum = 5
+          angleMoveNum = 5;
         } else if (angle < 315) {
-          angleMoveNum = 6
+          angleMoveNum = 6;
         }
       }
     }
     if (angleMoveNum > 0) {
-      hoverDirectionNames = hoverDirectionNames.slice(-angleMoveNum).concat(hoverDirectionNames.slice(0, -angleMoveNum))
+      hoverDirectionNames = hoverDirectionNames
+        .slice(-angleMoveNum)
+        .concat(hoverDirectionNames.slice(0, -angleMoveNum));
     }
 
     rotateContext(ctx, wrapper.translate, wrapper.radian || 0, () => {
-      for (let i = 0; i < controllers.length; i ++) {
+      for (let i = 0; i < controllers.length; i++) {
         const controller = controllers[i];
         if (controller.invisible === true) {
           continue;
         }
 
         ctx.beginPath();
-        ctx.arc(controller.x, controller.y, wrapper.controllerSize, 0, Math.PI * 2);
+        ctx.arc(
+          controller.x,
+          controller.y,
+          wrapper.controllerSize,
+          0,
+          Math.PI * 2
+        );
         ctx.closePath();
         if (ctx.isPointInPath(p.x, p.y)) {
           selectedControllerDirection = directionNames[i];
@@ -146,17 +165,28 @@ export class Helper implements TypeHelper {
       if (controller.invisible !== true) {
         rotateContext(ctx, wrapper.translate, wrapper.radian || 0, () => {
           ctx.beginPath();
-          ctx.arc(controller.x, controller.y, wrapper.controllerSize, 0, Math.PI * 2);
+          ctx.arc(
+            controller.x,
+            controller.y,
+            wrapper.controllerSize,
+            0,
+            Math.PI * 2
+          );
           ctx.closePath();
           if (ctx.isPointInPath(p.x, p.y)) {
             selectedControllerDirection = 'rotate';
-            hoverControllerDirection =  'rotate';
+            hoverControllerDirection = 'rotate';
           }
         });
       }
     }
-    
-    return {uuid, selectedControllerDirection, hoverControllerDirection, directIndex};
+
+    return {
+      uuid,
+      selectedControllerDirection,
+      hoverControllerDirection,
+      directIndex
+    };
   }
 
   isPointInElementList(p: TypePoint, data: TypeData): boolean {
@@ -211,8 +241,8 @@ export class Helper implements TypeHelper {
   }
 
   clearSelectedArea() {
-    this._areaStart = {x: 0, y: 0};
-    this._areaEnd = {x: 0, y: 0};
+    this._areaStart = { x: 0, y: 0 };
+    this._areaEnd = { x: 0, y: 0 };
     this._calcSelectedArea();
   }
 
@@ -256,19 +286,18 @@ export class Helper implements TypeHelper {
     const { scale = 1, scrollX = 0, scrollY = 0 } = transform;
     const elemWrapper = this._coreConfig.elementWrapper;
     const lineWidth = elemWrapper.lineWidth / scale;
-    const lineDash = elemWrapper.lineDash.map(n => (n / scale));
+    const lineDash = elemWrapper.lineDash.map((n) => n / scale);
 
-    
     this._helperConfig.selectedAreaWrapper = {
       x: (Math.min(start.x, end.x) - scrollX) / scale,
       y: (Math.min(start.y, end.y) - scrollY) / scale,
       w: Math.abs(end.x - start.x) / scale,
       h: Math.abs(end.y - start.y) / scale,
-      startPoint: {x: start.x, y: start.y},
-      endPoint: {x: end.x, y: end.y},
+      startPoint: { x: start.x, y: start.y },
+      endPoint: { x: end.x, y: end.y },
       lineWidth: lineWidth,
       lineDash: lineDash,
-      color: elemWrapper.color,
+      color: elemWrapper.color
     };
   }
 
@@ -279,9 +308,17 @@ export class Helper implements TypeHelper {
     });
   }
 
-  private _updateSelectedElementWrapper(data: TypeData, opts: TypeHelperUpdateOpts) {
+  private _updateSelectedElementWrapper(
+    data: TypeData,
+    opts: TypeHelperUpdateOpts
+  ) {
     const { selectedUUID: uuid } = opts;
-    if (!(typeof uuid === 'string' && this._helperConfig.elementIndexMap[uuid] >= 0)) {
+    if (
+      !(
+        typeof uuid === 'string' &&
+        this._helperConfig.elementIndexMap[uuid] >= 0
+      )
+    ) {
       delete this._helperConfig.selectedElementWrapper;
       return;
     }
@@ -294,7 +331,10 @@ export class Helper implements TypeHelper {
     this._helperConfig.selectedElementWrapper = wrapper;
   }
 
-  private _updateSelectedElementListWrapper(data: TypeData, opts: TypeHelperUpdateOpts) {
+  private _updateSelectedElementListWrapper(
+    data: TypeData,
+    opts: TypeHelperUpdateOpts
+  ) {
     const { selectedUUIDList } = opts;
     const wrapperList: TypeHeplerSelectedElementWrapper[] = [];
     data.elements.forEach((elem, i) => {
@@ -314,19 +354,22 @@ export class Helper implements TypeHelper {
     const elemWrapper = this._coreConfig.elementWrapper;
     const controllerSize = elemWrapper.controllerSize / scale;
     const lineWidth = elemWrapper.lineWidth / scale;
-    const lineDash = elemWrapper.lineDash.map(n => (n / scale));
+    const lineDash = elemWrapper.lineDash.map((n) => n / scale);
 
     const rotateLimit = 12;
     // @ts-ignore
-    const bw = elem.desc?.borderWidth || 0;  
+    const bw = elem.desc?.borderWidth || 0;
     let hideObliqueDirection = false;
-    if (typeof elem.angle === 'number' && Math.abs(elem.angle) > limitQbliqueAngle) {
+    if (
+      typeof elem.angle === 'number' &&
+      Math.abs(elem.angle) > limitQbliqueAngle
+    ) {
       hideObliqueDirection = true;
     }
     // TODO
     // const controllerOffset = controllerSize;
     const controllerOffset = lineWidth;
-    
+
     const wrapper: TypeHeplerSelectedElementWrapper = {
       uuid: elem.uuid,
       controllerSize: controllerSize,
@@ -336,17 +379,19 @@ export class Helper implements TypeHelper {
         topLeft: {
           x: elem.x - controllerOffset - bw,
           y: elem.y - controllerOffset - bw,
-          invisible: hideObliqueDirection || elem?.operation?.disableScale === true,
+          invisible:
+            hideObliqueDirection || elem?.operation?.disableScale === true
         },
         top: {
           x: elem.x + elem.w / 2,
           y: elem.y - controllerOffset - bw,
-          invisible: elem?.operation?.disableScale === true,
+          invisible: elem?.operation?.disableScale === true
         },
         topRight: {
           x: elem.x + elem.w + controllerOffset + bw,
           y: elem.y - controllerOffset - bw,
-          invisible: hideObliqueDirection || elem?.operation?.disableScale === true,
+          invisible:
+            hideObliqueDirection || elem?.operation?.disableScale === true
         },
         right: {
           x: elem.x + elem.w + controllerOffset + bw,
@@ -356,17 +401,19 @@ export class Helper implements TypeHelper {
         bottomRight: {
           x: elem.x + elem.w + controllerOffset + bw,
           y: elem.y + elem.h + controllerOffset + bw,
-          invisible: hideObliqueDirection || elem?.operation?.disableScale === true,
+          invisible:
+            hideObliqueDirection || elem?.operation?.disableScale === true
         },
         bottom: {
           x: elem.x + elem.w / 2,
           y: elem.y + elem.h + controllerOffset + bw,
-          invisible: elem?.operation?.disableScale === true,
+          invisible: elem?.operation?.disableScale === true
         },
         bottomLeft: {
           x: elem.x - controllerOffset - bw,
           y: elem.y + elem.h + controllerOffset + bw,
-          invisible: hideObliqueDirection || elem?.operation?.disableScale === true,
+          invisible:
+            hideObliqueDirection || elem?.operation?.disableScale === true
         },
         left: {
           x: elem.x - controllerOffset - bw,
@@ -381,7 +428,10 @@ export class Helper implements TypeHelper {
       },
       lineWidth: lineWidth,
       lineDash: lineDash,
-      color: elem?.operation?.lock === true ? elemWrapper.lockColor : elemWrapper.color,
+      color:
+        elem?.operation?.lock === true
+          ? elemWrapper.lockColor
+          : elemWrapper.color
     };
 
     if (typeof elem.angle === 'number' && (elem.angle > 0 || elem.angle < 0)) {
@@ -391,5 +441,4 @@ export class Helper implements TypeHelper {
 
     return wrapper;
   }
-  
 }
