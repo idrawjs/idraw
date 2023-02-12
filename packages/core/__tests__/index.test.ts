@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { requestAnimationFrameMock } from './../../../__tests__/polyfill/requestanimateframe';
 import './../../../__tests__/polyfill/image';
 

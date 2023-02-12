@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-ignore
 window.Image = class {
   constructor() {
@@ -9,4 +10,4 @@ window.Image = class {
       }
     }, 50);
   }
-}
+};

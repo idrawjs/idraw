@@ -32,7 +32,7 @@ async function diff() {
       await page.setViewport({ width: p.w, height: p.h });
       const pageUrl = `http://127.0.0.1:${port}/examples/${p.path || ''}`;
       await page.goto(pageUrl);
-      await delay(p.delay || 100);
+      await delay(p.delay || 200);
       const buf = await page.screenshot();
 
       const snapshotPicPath = parsePicPath(path.join(snapshotDir, p.path));
