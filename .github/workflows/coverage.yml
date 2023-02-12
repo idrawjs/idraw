@@ -27,8 +27,8 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm config set registry https://registry.yarnpkg.com/
     # - run: npm install
-    - run: npm install --global yarn
-    - run: yarn
+    - run: npm install --global pnpm
+    - run: pnpm i
     - run: npm run beforetest
     - run: npm run cover
     - name: Upload coverage to Codecov
