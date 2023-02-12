@@ -9,13 +9,6 @@ const port = 3001;
 const width = 600;
 const height = 600;
 
-module.exports = {
-  createScreenshotBuffer,
-  createScreenshot,
-  width,
-  height
-};
-
 async function createScreenshotBuffer(pagePath: string) {
   const middlewares = [];
   let buf;
@@ -62,3 +55,5 @@ async function createScreenshot(
     server.on('SIGINT', () => process.exit(1));
   });
 }
+
+export { createScreenshotBuffer, createScreenshot, width, height };

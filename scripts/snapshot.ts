@@ -14,9 +14,10 @@ async function main() {
   const middlewares = [];
   pageList.forEach((p, i) => {
     middlewares.push(async (ctx = {}, next) => {
-      const { page, port } = ctx;
-      console.log(`[${i+1}/${pageList.length}] Screen: ${p.path}`);
-      await page.setViewport( { width: p.w, height: p.h } );
+      const { page, port } = ctx as any;
+      console.log(`[${i + 1}/${pageList.length}] Screen: ${p.path}`);
+
+      await page.setViewport({ width: p.w, height: p.h });
       const pageUrl = `http://127.0.0.1:${port}/examples/${p.path || ''}`;
       const result = await page.goto(pageUrl);
       if (result.status() === 404) {
@@ -29,13 +30,11 @@ async function main() {
       await next();
     });
   });
-  await createScreenshot(middlewares, { baseDir: path.join(__dirname, '..') }); 
+  await createScreenshot(middlewares, { baseDir: path.join(__dirname, '..') });
 }
-
 
 function createPicPath(pagePath) {
   let picPath = path.join(snapshotDir, pagePath);
   picPath = picPath + '.jpg'; // picPath.replace(/\.html$/, '.jpg');
   return picPath;
 }
-

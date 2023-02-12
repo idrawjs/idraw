@@ -1,15 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`@idraw/board scroll 1`] = `
-Array [
-  Object {
-    "props": Object {
+[
+  {
+    "props": {
       "height": 1600,
       "width": 2400,
       "x": 0,
       "y": 0,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -19,14 +19,14 @@ Array [
     ],
     "type": "clearRect",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "height": 1600,
       "width": 2400,
       "x": 0,
       "y": 0,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -36,14 +36,14 @@ Array [
     ],
     "type": "fillRect",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "height": 480,
       "width": 800,
       "x": 40,
       "y": 40,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -53,14 +53,14 @@ Array [
     ],
     "type": "fillRect",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "height": 480,
       "width": 800,
       "x": 320,
       "y": 320,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -70,14 +70,14 @@ Array [
     ],
     "type": "fillRect",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "height": 480,
       "width": 800,
       "x": 640,
       "y": 640,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -87,14 +87,14 @@ Array [
     ],
     "type": "fillRect",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "height": 400,
       "width": 800,
       "x": 1560,
       "y": 1160,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -108,15 +108,15 @@ Array [
 `;
 
 exports[`@idraw/board scroll 2`] = `
-Array [
-  Object {
-    "props": Object {
+[
+  {
+    "props": {
       "height": 1600,
       "width": 2400,
       "x": 0,
       "y": 0,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -126,14 +126,14 @@ Array [
     ],
     "type": "clearRect",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "height": 1600,
       "width": 2400,
       "x": 0,
       "y": 0,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -143,8 +143,8 @@ Array [
     ],
     "type": "clearRect",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "dHeight": 1600,
       "dWidth": 2400,
       "dx": -2400,
@@ -158,7 +158,7 @@ Array [
       "sx": 0,
       "sy": 0,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -168,8 +168,8 @@ Array [
     ],
     "type": "drawImage",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "dHeight": 1600,
       "dWidth": 2400,
       "dx": -2400,
@@ -183,7 +183,7 @@ Array [
       "sx": 0,
       "sy": 0,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -193,14 +193,14 @@ Array [
     ],
     "type": "drawImage",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "height": 80,
       "width": 2400,
       "x": 0,
       "y": 1520,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -210,13 +210,13 @@ Array [
     ],
     "type": "fillRect",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "fillRule": "nonzero",
-      "path": Array [
-        Object {
-          "props": Object {},
-          "transform": Array [
+      "path": [
+        {
+          "props": {},
+          "transform": [
             1,
             0,
             0,
@@ -226,12 +226,12 @@ Array [
           ],
           "type": "beginPath",
         },
-        Object {
-          "props": Object {
+        {
+          "props": {
             "x": 2240,
             "y": 1520,
           },
-          "transform": Array [
+          "transform": [
             1,
             0,
             0,
@@ -241,15 +241,15 @@ Array [
           ],
           "type": "moveTo",
         },
-        Object {
-          "props": Object {
+        {
+          "props": {
             "cpx1": 2400,
             "cpx2": 2400,
             "cpy1": 1520,
             "cpy2": 1600,
             "radius": 40,
           },
-          "transform": Array [
+          "transform": [
             1,
             0,
             0,
@@ -259,15 +259,15 @@ Array [
           ],
           "type": "arcTo",
         },
-        Object {
-          "props": Object {
+        {
+          "props": {
             "cpx1": 2400,
             "cpx2": 2200,
             "cpy1": 1600,
             "cpy2": 1600,
             "radius": 40,
           },
-          "transform": Array [
+          "transform": [
             1,
             0,
             0,
@@ -277,15 +277,15 @@ Array [
           ],
           "type": "arcTo",
         },
-        Object {
-          "props": Object {
+        {
+          "props": {
             "cpx1": 2200,
             "cpx2": 2200,
             "cpy1": 1600,
             "cpy2": 1520,
             "radius": 40,
           },
-          "transform": Array [
+          "transform": [
             1,
             0,
             0,
@@ -295,15 +295,15 @@ Array [
           ],
           "type": "arcTo",
         },
-        Object {
-          "props": Object {
+        {
+          "props": {
             "cpx1": 2200,
             "cpx2": 2400,
             "cpy1": 1520,
             "cpy2": 1520,
             "radius": 40,
           },
-          "transform": Array [
+          "transform": [
             1,
             0,
             0,
@@ -313,9 +313,9 @@ Array [
           ],
           "type": "arcTo",
         },
-        Object {
-          "props": Object {},
-          "transform": Array [
+        {
+          "props": {},
+          "transform": [
             1,
             0,
             0,
@@ -327,7 +327,7 @@ Array [
         },
       ],
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -337,14 +337,14 @@ Array [
     ],
     "type": "fill",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "height": 1600,
       "width": 80,
       "x": 2320,
       "y": 0,
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,
@@ -354,13 +354,13 @@ Array [
     ],
     "type": "fillRect",
   },
-  Object {
-    "props": Object {
+  {
+    "props": {
       "fillRule": "nonzero",
-      "path": Array [
-        Object {
-          "props": Object {},
-          "transform": Array [
+      "path": [
+        {
+          "props": {},
+          "transform": [
             1,
             0,
             0,
@@ -370,12 +370,12 @@ Array [
           ],
           "type": "beginPath",
         },
-        Object {
-          "props": Object {
+        {
+          "props": {
             "x": 2360,
             "y": 1400,
           },
-          "transform": Array [
+          "transform": [
             1,
             0,
             0,
@@ -385,15 +385,15 @@ Array [
           ],
           "type": "moveTo",
         },
-        Object {
-          "props": Object {
+        {
+          "props": {
             "cpx1": 2400,
             "cpx2": 2400,
             "cpy1": 1400,
             "cpy2": 1600,
             "radius": 40,
           },
-          "transform": Array [
+          "transform": [
             1,
             0,
             0,
@@ -403,15 +403,15 @@ Array [
           ],
           "type": "arcTo",
         },
-        Object {
-          "props": Object {
+        {
+          "props": {
             "cpx1": 2400,
             "cpx2": 2320,
             "cpy1": 1600,
             "cpy2": 1600,
             "radius": 40,
           },
-          "transform": Array [
+          "transform": [
             1,
             0,
             0,
@@ -421,15 +421,15 @@ Array [
           ],
           "type": "arcTo",
         },
-        Object {
-          "props": Object {
+        {
+          "props": {
             "cpx1": 2320,
             "cpx2": 2320,
             "cpy1": 1600,
             "cpy2": 1400,
             "radius": 40,
           },
-          "transform": Array [
+          "transform": [
             1,
             0,
             0,
@@ -439,15 +439,15 @@ Array [
           ],
           "type": "arcTo",
         },
-        Object {
-          "props": Object {
+        {
+          "props": {
             "cpx1": 2320,
             "cpx2": 2400,
             "cpy1": 1400,
             "cpy2": 1400,
             "radius": 40,
           },
-          "transform": Array [
+          "transform": [
             1,
             0,
             0,
@@ -457,9 +457,9 @@ Array [
           ],
           "type": "arcTo",
         },
-        Object {
-          "props": Object {},
-          "transform": Array [
+        {
+          "props": {},
+          "transform": [
             1,
             0,
             0,
@@ -471,7 +471,7 @@ Array [
         },
       ],
     },
-    "transform": Array [
+    "transform": [
       1,
       0,
       0,

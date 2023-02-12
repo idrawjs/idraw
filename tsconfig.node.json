@@ -15,6 +15,7 @@
   },
   "include": [
     "scripts/",
+    "__tests__/e2e.test.ts",
   ],
   "exclude": [
     "node_modules"

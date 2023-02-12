@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`@idraw/board: src/lib/style getStyle 1`] = `
-Object {
+{
   "height": "20px",
   "margin-top": "123px",
   "overflow": "auto",
