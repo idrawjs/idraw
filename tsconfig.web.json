@@ -19,6 +19,7 @@
     "packages/*/dev"
   ],
   "exclude": [
-    "packages/*/examples"
+    "packages/*/dist",
+    "packages/*/node_modules"
   ]
 }
