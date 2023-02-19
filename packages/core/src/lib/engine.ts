@@ -208,6 +208,7 @@ export class Engine {
     const { drawFeekback } = this._opts;
     const helper = this.helper;
     if (this.temp.get('mode') === Mode.SELECT_ELEMENT_LIST) {
+      this.temp.set('hasChangedElement', true);
       this._dragElements(
         this.temp.get('selectedUUIDList'),
         point,
@@ -217,6 +218,7 @@ export class Engine {
       this.temp.set('cursorStatus', CursorStatus.DRAGGING);
     } else if (typeof this.temp.get('selectedUUID') === 'string') {
       if (this.temp.get('mode') === Mode.SELECT_ELEMENT) {
+        this.temp.set('hasChangedElement', true);
         this._dragElements(
           [this.temp.get('selectedUUID') as string],
           point,
@@ -332,7 +334,6 @@ export class Engine {
             angle: elem.angle || 0
           });
         }
-        emitChangeData();
       }
     } else if (this.temp.get('mode') === Mode.SELECT_AREA) {
       const uuids = helper.calcSelectedElements(data);
@@ -351,10 +352,15 @@ export class Engine {
     }
     this.temp.set('cursorStatus', CursorStatus.NULL);
     this.temp.set('mode', Mode.NULL);
+
+    if (this.temp.get('hasChangedElement') === true) {
+      emitChangeData();
+      this.temp.set('hasChangedElement', false);
+    }
   }
 
   private _handleHover(point: TypePoint): void {
-    let isMouseOverElement: boolean = false;
+    let isMouseOverElement = false;
     const { board, getDataFeekback, coreEvent } = this._opts;
     const data = getDataFeekback();
     const helper = this.helper;

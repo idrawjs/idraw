@@ -1,4 +1,5 @@
-import { TypePoint, TypeContext } from '@idraw/types'; 
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+import { TypePoint, TypeContext } from '@idraw/types';
 import { BoardEvent, TypeBoardEventArgMap } from './event';
 import { TempData } from './watcher-temp';
 
@@ -7,39 +8,44 @@ import { TempData } from './watcher-temp';
 // const isInIframe = window.self === window.top;
 
 export class ScreenWatcher {
-
   private _canvas: HTMLCanvasElement;
   private _isMoving = false;
   // private _onMove?: TypeWatchCallback;
   // private _onMoveStart?: TypeWatchCallback;
   // private _onMoveEnd?: TypeWatchCallback;
   private _event: BoardEvent;
-  private _temp: TempData = new TempData;
-  private _container: HTMLElement | Window  = window;
+  private _temp: TempData = new TempData();
+  private _container: HTMLElement | Window = window;
   // private _ctx: TypeContext;
 
   constructor(canvas: HTMLCanvasElement, ctx: TypeContext) {
     this._canvas = canvas;
     this._isMoving = false;
     this._initEvent();
-    this._event = new BoardEvent;
+    this._event = new BoardEvent();
     // this._ctx = ctx;
   }
 
   setStatusMap(statusMap: {
-    canScrollYPrev: boolean,
-    canScrollYNext: boolean,
-    canScrollXPrev: boolean,
-    canScrollXNext: boolean,
+    canScrollYPrev: boolean;
+    canScrollYNext: boolean;
+    canScrollXPrev: boolean;
+    canScrollXNext: boolean;
   }) {
     this._temp.set('statusMap', statusMap);
   }
 
-  on<T extends keyof TypeBoardEventArgMap >(name: T, callback: (p: TypeBoardEventArgMap[T]) => void): void {
+  on<T extends keyof TypeBoardEventArgMap>(
+    name: T,
+    callback: (p: TypeBoardEventArgMap[T]) => void
+  ): void {
     this._event.on(name, callback);
   }
 
-  off<T extends keyof TypeBoardEventArgMap >(name: T, callback: (p: TypeBoardEventArgMap[T]) => void): void {
+  off<T extends keyof TypeBoardEventArgMap>(
+    name: T,
+    callback: (p: TypeBoardEventArgMap[T]) => void
+  ): void {
     this._event.off(name, callback);
   }
 
@@ -48,22 +54,49 @@ export class ScreenWatcher {
     const container = this._container;
     // container.addEventListener('mousemove', this._listenWindowHover.bind(this), false);
     // container.addEventListener('mousedown', this._listenWindowMoveStart.bind(this), false);
-    container.addEventListener('mousemove', this._listenWindowMove.bind(this), false);
-    container.addEventListener('mouseup', this._listenWindowMoveEnd.bind(this), false);
+    container.addEventListener(
+      'mousemove',
+      this._listenWindowMove.bind(this),
+      false
+    );
+    container.addEventListener(
+      'mouseup',
+      this._listenWindowMoveEnd.bind(this),
+      false
+    );
 
     canvas.addEventListener('mousemove', this._listenHover.bind(this), false);
-    canvas.addEventListener('mousedown', this._listenMoveStart.bind(this), false);
+    canvas.addEventListener(
+      'mousedown',
+      this._listenMoveStart.bind(this),
+      false
+    );
     canvas.addEventListener('mousemove', this._listenMove.bind(this), false);
     canvas.addEventListener('mouseup', this._listenMoveEnd.bind(this), false);
 
     canvas.addEventListener('click', this._listenCanvasClick.bind(this), false);
     canvas.addEventListener('wheel', this._listenCanvasWheel.bind(this), false);
-    canvas.addEventListener('mousedown', this._listenCanvasMoveStart.bind(this), true);
-    canvas.addEventListener('mouseup', this._listenCanvasMoveEnd.bind(this), true);
-    canvas.addEventListener('mouseover', this._listenCanvasMoveOver.bind(this), true);
-    canvas.addEventListener('mouseleave', this._listenCanvasMoveLeave.bind(this), true);
+    canvas.addEventListener(
+      'mousedown',
+      this._listenCanvasMoveStart.bind(this),
+      true
+    );
+    canvas.addEventListener(
+      'mouseup',
+      this._listenCanvasMoveEnd.bind(this),
+      true
+    );
+    canvas.addEventListener(
+      'mouseover',
+      this._listenCanvasMoveOver.bind(this),
+      true
+    );
+    canvas.addEventListener(
+      'mouseleave',
+      this._listenCanvasMoveLeave.bind(this),
+      true
+    );
     this._initParentEvent();
-    
 
     // container.addEventListener('touchstart', this._listenMoveStart.bind(this), true);
     // container.addEventListener('touchmove', this._listenMove.bind(this), true);
@@ -71,23 +104,23 @@ export class ScreenWatcher {
   }
 
   _initParentEvent() {
-    
     try {
       let target = window;
-      let targetOrigin = target.origin;
+      const targetOrigin = target.origin;
       while (target.self !== target.top) {
         // If in iframe
         if (target.self !== target.parent) {
-          // If in same origin 
+          // If in same origin
           if (target.origin === targetOrigin) {
             // window.parent.window.addEventListener(
             //   'mousemove',
-            //   throttle(this._listSameOriginParentWindow.bind(this), 16), 
+            //   throttle(this._listSameOriginParentWindow.bind(this), 16),
             //   false);
             target.parent.window.addEventListener(
               'mousemove',
-              this._listSameOriginParentWindow.bind(this), 
-              false);
+              this._listSameOriginParentWindow.bind(this),
+              false
+            );
           }
         }
         // @ts-ignore
@@ -99,10 +132,9 @@ export class ScreenWatcher {
     } catch (err) {
       console.warn(err);
     }
-    
   }
 
-  _listenHover(e: MouseEvent|TouchEvent): void {
+  _listenHover(e: MouseEvent | TouchEvent): void {
     e.preventDefault();
     const p = this._getPosition(e);
     if (this._isVaildPoint(p)) {
@@ -120,7 +152,7 @@ export class ScreenWatcher {
   //   }
   // }
 
-  _listenMoveStart(e: MouseEvent|TouchEvent): void {
+  _listenMoveStart(e: MouseEvent | TouchEvent): void {
     e.preventDefault();
     const p = this._getPosition(e);
     if (this._isVaildPoint(p)) {
@@ -133,8 +165,8 @@ export class ScreenWatcher {
     }
     this._isMoving = true;
   }
-  
-  _listenMove(e: MouseEvent|TouchEvent): void {
+
+  _listenMove(e: MouseEvent | TouchEvent): void {
     e.preventDefault();
     e.stopPropagation();
     if (this._event.has('move') && this._isMoving === true) {
@@ -144,8 +176,8 @@ export class ScreenWatcher {
       }
     }
   }
-  
-  _listenMoveEnd(e: MouseEvent|TouchEvent): void {
+
+  _listenMoveEnd(e: MouseEvent | TouchEvent): void {
     e.preventDefault();
     if (this._event.has('moveEnd')) {
       const p = this._getPosition(e);
@@ -164,22 +196,22 @@ export class ScreenWatcher {
     }
     if (this._temp.get('isDragCanvas')) {
       if (this._event.has('moveEnd')) {
-        this._event.trigger('moveEnd', {x: NaN, y: NaN});
+        this._event.trigger('moveEnd', { x: NaN, y: NaN });
       }
     }
     this._isMoving = false;
     this._temp.set('isDragCanvas', false);
-    this._temp.set('isHoverCanvas', false)
+    this._temp.set('isHoverCanvas', false);
   }
 
   _listenCanvasMoveStart() {
     if (this._temp.get('isHoverCanvas')) {
       this._temp.set('isDragCanvas', true);
-    }  
+    }
   }
 
   _listenCanvasMoveEnd() {
-    this._temp.set('isDragCanvas', false); 
+    this._temp.set('isDragCanvas', false);
   }
 
   _listenCanvasMoveOver() {
@@ -223,33 +255,33 @@ export class ScreenWatcher {
   //   }
   //   this._isMoving = true;
   // }
-  
-  _listenWindowMove(e: MouseEvent|TouchEvent|Event): void {
+
+  _listenWindowMove(e: MouseEvent | TouchEvent | Event): void {
     if (this._temp.get('isDragCanvas') !== true) {
       return;
     }
     e.preventDefault();
     e.stopPropagation();
     if (this._event.has('move') && this._isMoving === true) {
-      const p = this._getPosition(e as MouseEvent|TouchEvent);
+      const p = this._getPosition(e as MouseEvent | TouchEvent);
       if (this._isVaildPoint(p)) {
         this._event.trigger('move', p);
       }
     }
   }
-  
-  _listenWindowMoveEnd(e: MouseEvent|TouchEvent|Event): void {
+
+  _listenWindowMoveEnd(e: MouseEvent | TouchEvent | Event): void {
     if (!this._temp.get('isDragCanvas') === true) {
       return;
     }
     e.preventDefault();
     if (this._event.has('moveEnd')) {
-      const p = this._getPosition(e as MouseEvent|TouchEvent);
+      const p = this._getPosition(e as MouseEvent | TouchEvent);
       if (this._isVaildPoint(p)) {
         this._event.trigger('moveEnd', p);
       }
     }
-    this._temp.set('isDragCanvas', false); 
+    this._temp.set('isDragCanvas', false);
     this._isMoving = false;
   }
 
@@ -263,10 +295,7 @@ export class ScreenWatcher {
     if (this._event.has('wheelY') && (e.deltaY > 0 || e.deltaY < 0)) {
       this._event.trigger('wheelY', e.deltaY);
     }
-    const {
-      canScrollYNext, canScrollYPrev
-    } = this._temp.get('statusMap');
-
+    const { canScrollYNext, canScrollYPrev } = this._temp.get('statusMap');
 
     if (e.deltaX > 0 && e.deltaX < 0) {
       e.preventDefault();
@@ -275,31 +304,31 @@ export class ScreenWatcher {
     } else if (e.deltaY < 0 && canScrollYPrev === true) {
       e.preventDefault();
     }
-
   }
 
-  _listenCanvasClick(e: MouseEvent|TouchEvent|Event) {
+  _listenCanvasClick(e: MouseEvent | TouchEvent | Event) {
     e.preventDefault();
     const maxLimitTime = 500;
-    const p = this._getPosition(e as MouseEvent|TouchEvent);
+    const p = this._getPosition(e as MouseEvent | TouchEvent);
     const t = Date.now();
     if (this._isVaildPoint(p)) {
       const preClickPoint = this._temp.get('prevClickPoint');
       if (
-        preClickPoint && (t - preClickPoint.t <= maxLimitTime)
-        && Math.abs(preClickPoint.x - p.x) <= 5
-        && Math.abs(preClickPoint.y - p.y) <= 5
+        preClickPoint &&
+        t - preClickPoint.t <= maxLimitTime &&
+        Math.abs(preClickPoint.x - p.x) <= 5 &&
+        Math.abs(preClickPoint.y - p.y) <= 5
       ) {
         if (this._event.has('doubleClick')) {
           this._event.trigger('doubleClick', { x: p.x, y: p.y });
         }
       } else {
-        this._temp.set('prevClickPoint', {x: p.x, y: p.y, t, })
+        this._temp.set('prevClickPoint', { x: p.x, y: p.y, t });
       }
     }
   }
 
-  _getPosition(e: MouseEvent|TouchEvent): TypePoint {
+  _getPosition(e: MouseEvent | TouchEvent): TypePoint {
     const canvas = this._canvas;
     let x = 0;
     let y = 0;
@@ -322,7 +351,7 @@ export class ScreenWatcher {
     const p = {
       x: x - canvas.getBoundingClientRect().left,
       y: y - canvas.getBoundingClientRect().top,
-      t: Date.now(),
+      t: Date.now()
     };
     return p;
   }
@@ -330,10 +359,8 @@ export class ScreenWatcher {
   private _isVaildPoint(p: TypePoint): boolean {
     return isAvailableNum(p.x) && isAvailableNum(p.y);
   }
-  
 }
 
-
 function isAvailableNum(num: any): boolean {
-  return (num > 0 || num < 0 || num === 0);
+  return num > 0 || num < 0 || num === 0;
 }
