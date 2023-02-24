@@ -219,51 +219,106 @@ function calcuScaleElemPosition(
       break;
     }
     case 'top': {
-      if (elem.angle === 0 || Math.abs(elem.angle) < limitQbliqueAngle) {
-        if (p.h - moveY > 0) {
-          p.y += moveY;
-          p.h -= moveY;
-        }
-      } else if (elem.angle > 0 || elem.angle < 0) {
-        const angle =
-          elem.angle > 0 ? elem.angle : Math.max(0, elem.angle + 360);
-        let moveDist = calcMoveDist(moveX, moveY);
-        let centerX = p.x + elem.w / 2;
-        let centerY = p.y + elem.h / 2;
-        if (angle < 90) {
-          moveDist = 0 - changeMoveDistDirect(moveDist, moveY);
-          const radian = parseRadian(angle);
-          const centerMoveDist = moveDist / 2;
-          centerX = centerX + centerMoveDist * Math.sin(radian);
-          centerY = centerY - centerMoveDist * Math.cos(radian);
-        } else if (angle < 180) {
-          moveDist = changeMoveDistDirect(moveDist, moveX);
-          const radian = parseRadian(angle - 90);
-          const centerMoveDist = moveDist / 2;
-          centerX = centerX + centerMoveDist * Math.cos(radian);
-          centerY = centerY + centerMoveDist * Math.sin(radian);
-        } else if (angle < 270) {
-          moveDist = changeMoveDistDirect(moveDist, moveY);
-          const radian = parseRadian(angle - 180);
-          const centerMoveDist = moveDist / 2;
-          centerX = centerX - centerMoveDist * Math.sin(radian);
-          centerY = centerY + centerMoveDist * Math.cos(radian);
-        } else if (angle < 360) {
-          moveDist = 0 - changeMoveDistDirect(moveDist, moveX);
-          const radian = parseRadian(angle - 270);
-          const centerMoveDist = moveDist / 2;
-          centerX = centerX - centerMoveDist * Math.cos(radian);
-          centerY = centerY - centerMoveDist * Math.sin(radian);
-        }
-        if (p.h + moveDist > 0) {
-          p.h = p.h + moveDist;
-          p.x = centerX - p.w / 2;
-          p.y = centerY - p.h / 2;
+      if (elem.operation?.limitRatio === true) {
+        if (elem.angle === 0 || Math.abs(elem.angle) < limitQbliqueAngle) {
+          if (p.h - moveY > 0) {
+            p.y += moveY;
+            p.h -= moveY;
+            p.x += ((moveY / elem.h) * elem.w) / 2;
+            p.w -= (moveY / elem.h) * elem.w;
+          }
+        } else if (elem.angle > 0 || elem.angle < 0) {
+          const angle =
+            elem.angle > 0 ? elem.angle : Math.max(0, elem.angle + 360);
+          let moveDist = calcMoveDist(moveX, moveY);
+          let centerX = p.x + elem.w / 2;
+          let centerY = p.y + elem.h / 2;
+          if (angle < 90) {
+            moveDist = 0 - changeMoveDistDirect(moveDist, moveY);
+            const radian = parseRadian(angle);
+            const centerMoveDist = moveDist / 2;
+            centerX = centerX + centerMoveDist * Math.sin(radian);
+            centerY = centerY - centerMoveDist * Math.cos(radian);
+          } else if (angle < 180) {
+            moveDist = changeMoveDistDirect(moveDist, moveX);
+            const radian = parseRadian(angle - 90);
+            const centerMoveDist = moveDist / 2;
+            centerX = centerX + centerMoveDist * Math.cos(radian);
+            centerY = centerY + centerMoveDist * Math.sin(radian);
+          } else if (angle < 270) {
+            moveDist = changeMoveDistDirect(moveDist, moveY);
+            const radian = parseRadian(angle - 180);
+            const centerMoveDist = moveDist / 2;
+            centerX = centerX - centerMoveDist * Math.sin(radian);
+            centerY = centerY + centerMoveDist * Math.cos(radian);
+          } else if (angle < 360) {
+            moveDist = 0 - changeMoveDistDirect(moveDist, moveX);
+            const radian = parseRadian(angle - 270);
+            const centerMoveDist = moveDist / 2;
+            centerX = centerX - centerMoveDist * Math.cos(radian);
+            centerY = centerY - centerMoveDist * Math.sin(radian);
+          }
+          if (p.h + moveDist > 0) {
+            p.h = p.h + moveDist;
+            p.w = p.w + (moveDist / elem.h) * elem.w;
+            p.x = centerX - p.w / 2;
+            p.y = centerY - p.h / 2;
+          }
+        } else {
+          if (p.h - moveY > 0) {
+            p.y += moveY;
+            p.h -= moveY;
+            p.x -= moveX / 2;
+            p.w += moveX;
+          }
         }
       } else {
-        if (p.h - moveY > 0) {
-          p.y += moveY;
-          p.h -= moveY;
+        if (elem.angle === 0 || Math.abs(elem.angle) < limitQbliqueAngle) {
+          if (p.h - moveY > 0) {
+            p.y += moveY;
+            p.h -= moveY;
+          }
+        } else if (elem.angle > 0 || elem.angle < 0) {
+          const angle =
+            elem.angle > 0 ? elem.angle : Math.max(0, elem.angle + 360);
+          let moveDist = calcMoveDist(moveX, moveY);
+          let centerX = p.x + elem.w / 2;
+          let centerY = p.y + elem.h / 2;
+          if (angle < 90) {
+            moveDist = 0 - changeMoveDistDirect(moveDist, moveY);
+            const radian = parseRadian(angle);
+            const centerMoveDist = moveDist / 2;
+            centerX = centerX + centerMoveDist * Math.sin(radian);
+            centerY = centerY - centerMoveDist * Math.cos(radian);
+          } else if (angle < 180) {
+            moveDist = changeMoveDistDirect(moveDist, moveX);
+            const radian = parseRadian(angle - 90);
+            const centerMoveDist = moveDist / 2;
+            centerX = centerX + centerMoveDist * Math.cos(radian);
+            centerY = centerY + centerMoveDist * Math.sin(radian);
+          } else if (angle < 270) {
+            moveDist = changeMoveDistDirect(moveDist, moveY);
+            const radian = parseRadian(angle - 180);
+            const centerMoveDist = moveDist / 2;
+            centerX = centerX - centerMoveDist * Math.sin(radian);
+            centerY = centerY + centerMoveDist * Math.cos(radian);
+          } else if (angle < 360) {
+            moveDist = 0 - changeMoveDistDirect(moveDist, moveX);
+            const radian = parseRadian(angle - 270);
+            const centerMoveDist = moveDist / 2;
+            centerX = centerX - centerMoveDist * Math.cos(radian);
+            centerY = centerY - centerMoveDist * Math.sin(radian);
+          }
+          if (p.h + moveDist > 0) {
+            p.h = p.h + moveDist;
+            p.x = centerX - p.w / 2;
+            p.y = centerY - p.h / 2;
+          }
+        } else {
+          if (p.h - moveY > 0) {
+            p.y += moveY;
+            p.h -= moveY;
+          }
         }
       }
       break;
@@ -353,50 +408,104 @@ function calcuScaleElemPosition(
       break;
     }
     case 'right': {
-      if (elem.angle === 0 || Math.abs(elem.angle) < limitQbliqueAngle) {
-        if (elem.w + moveX > 0) {
-          p.w += moveX;
-        }
-      } else if (elem.angle > 0 || elem.angle < 0) {
-        const angle =
-          elem.angle > 0 ? elem.angle : Math.max(0, elem.angle + 360);
-        let moveDist = calcMoveDist(moveX, moveY);
-        let centerX = p.x + elem.w / 2;
-        let centerY = p.y + elem.h / 2;
-        if (angle < 90) {
-          moveDist = changeMoveDistDirect(moveDist, moveY);
-          const radian = parseRadian(angle);
-          const centerMoveDist = moveDist / 2;
-          centerX = centerX + centerMoveDist * Math.cos(radian);
-          centerY = centerY + centerMoveDist * Math.sin(radian);
-        } else if (angle < 180) {
-          moveDist = changeMoveDistDirect(moveDist, moveY);
-          const radian = parseRadian(angle - 90);
-          const centerMoveDist = moveDist / 2;
-          centerX = centerX - centerMoveDist * Math.sin(radian);
-          centerY = centerY + centerMoveDist * Math.cos(radian);
-        } else if (angle < 270) {
-          moveDist = changeMoveDistDirect(moveDist, moveY);
-          const radian = parseRadian(angle - 180);
-          const centerMoveDist = moveDist / 2;
-          centerX = centerX + centerMoveDist * Math.cos(radian);
-          centerY = centerY + centerMoveDist * Math.sin(radian);
-          moveDist = 0 - moveDist;
-        } else if (angle < 360) {
-          moveDist = changeMoveDistDirect(moveDist, moveX);
-          const radian = parseRadian(angle - 270);
-          const centerMoveDist = moveDist / 2;
-          centerX = centerX + centerMoveDist * Math.sin(radian);
-          centerY = centerY - centerMoveDist * Math.cos(radian);
-        }
-        if (p.w + moveDist > 0) {
-          p.w = p.w + moveDist;
-          p.x = centerX - p.w / 2;
-          p.y = centerY - p.h / 2;
+      if (elem.operation?.limitRatio === true) {
+        if (elem.angle === 0 || Math.abs(elem.angle) < limitQbliqueAngle) {
+          if (elem.w + moveX > 0) {
+            p.w += moveX;
+            p.h += (moveX * elem.h) / elem.w;
+            p.y -= (moveX * elem.h) / elem.w / 2;
+          }
+        } else if (elem.angle > 0 || elem.angle < 0) {
+          const angle =
+            elem.angle > 0 ? elem.angle : Math.max(0, elem.angle + 360);
+          let moveDist = calcMoveDist(moveX, moveY);
+          let centerX = p.x + elem.w / 2;
+          let centerY = p.y + elem.h / 2;
+          if (angle < 90) {
+            moveDist = changeMoveDistDirect(moveDist, moveY);
+            const radian = parseRadian(angle);
+            const centerMoveDist = moveDist / 2;
+            centerX = centerX + centerMoveDist * Math.cos(radian);
+            centerY = centerY + centerMoveDist * Math.sin(radian);
+          } else if (angle < 180) {
+            moveDist = changeMoveDistDirect(moveDist, moveY);
+            const radian = parseRadian(angle - 90);
+            const centerMoveDist = moveDist / 2;
+            centerX = centerX - centerMoveDist * Math.sin(radian);
+            centerY = centerY + centerMoveDist * Math.cos(radian);
+          } else if (angle < 270) {
+            moveDist = changeMoveDistDirect(moveDist, moveY);
+            const radian = parseRadian(angle - 180);
+            const centerMoveDist = moveDist / 2;
+            centerX = centerX + centerMoveDist * Math.cos(radian);
+            centerY = centerY + centerMoveDist * Math.sin(radian);
+            moveDist = 0 - moveDist;
+          } else if (angle < 360) {
+            moveDist = changeMoveDistDirect(moveDist, moveX);
+            const radian = parseRadian(angle - 270);
+            const centerMoveDist = moveDist / 2;
+            centerX = centerX + centerMoveDist * Math.sin(radian);
+            centerY = centerY - centerMoveDist * Math.cos(radian);
+          }
+          if (p.w + moveDist > 0) {
+            p.w = p.w + moveDist;
+            p.h = p.h + (moveDist / elem.w) * elem.h;
+            p.x = centerX - p.w / 2;
+            p.y = centerY - p.h / 2;
+          }
+        } else {
+          if (elem.w + moveX > 0) {
+            p.w += moveX;
+            p.h += (moveX * elem.h) / elem.w;
+            p.y -= (moveX * elem.h) / elem.w / 2;
+          }
         }
       } else {
-        if (elem.w + moveX > 0) {
-          p.w += moveX;
+        if (elem.angle === 0 || Math.abs(elem.angle) < limitQbliqueAngle) {
+          if (elem.w + moveX > 0) {
+            p.w += moveX;
+          }
+        } else if (elem.angle > 0 || elem.angle < 0) {
+          const angle =
+            elem.angle > 0 ? elem.angle : Math.max(0, elem.angle + 360);
+          let moveDist = calcMoveDist(moveX, moveY);
+          let centerX = p.x + elem.w / 2;
+          let centerY = p.y + elem.h / 2;
+          if (angle < 90) {
+            moveDist = changeMoveDistDirect(moveDist, moveY);
+            const radian = parseRadian(angle);
+            const centerMoveDist = moveDist / 2;
+            centerX = centerX + centerMoveDist * Math.cos(radian);
+            centerY = centerY + centerMoveDist * Math.sin(radian);
+          } else if (angle < 180) {
+            moveDist = changeMoveDistDirect(moveDist, moveY);
+            const radian = parseRadian(angle - 90);
+            const centerMoveDist = moveDist / 2;
+            centerX = centerX - centerMoveDist * Math.sin(radian);
+            centerY = centerY + centerMoveDist * Math.cos(radian);
+          } else if (angle < 270) {
+            moveDist = changeMoveDistDirect(moveDist, moveY);
+            const radian = parseRadian(angle - 180);
+            const centerMoveDist = moveDist / 2;
+            centerX = centerX + centerMoveDist * Math.cos(radian);
+            centerY = centerY + centerMoveDist * Math.sin(radian);
+            moveDist = 0 - moveDist;
+          } else if (angle < 360) {
+            moveDist = changeMoveDistDirect(moveDist, moveX);
+            const radian = parseRadian(angle - 270);
+            const centerMoveDist = moveDist / 2;
+            centerX = centerX + centerMoveDist * Math.sin(radian);
+            centerY = centerY - centerMoveDist * Math.cos(radian);
+          }
+          if (p.w + moveDist > 0) {
+            p.w = p.w + moveDist;
+            p.x = centerX - p.w / 2;
+            p.y = centerY - p.h / 2;
+          }
+        } else {
+          if (elem.w + moveX > 0) {
+            p.w += moveX;
+          }
         }
       }
 
@@ -426,49 +535,102 @@ function calcuScaleElemPosition(
       break;
     }
     case 'bottom': {
-      if (elem.angle === 0 || Math.abs(elem.angle) < limitQbliqueAngle) {
-        if (elem.h + moveY > 0) {
-          p.h += moveY;
-        }
-      } else if (elem.angle > 0 || elem.angle < 0) {
-        const angle =
-          elem.angle > 0 ? elem.angle : Math.max(0, elem.angle + 360);
-        let moveDist = calcMoveDist(moveX, moveY);
-        let centerX = p.x + elem.w / 2;
-        let centerY = p.y + elem.h / 2;
-        if (angle < 90) {
-          moveDist = changeMoveDistDirect(moveDist, moveY);
-          const radian = parseRadian(angle);
-          const centerMoveDist = moveDist / 2;
-          centerX = centerX - centerMoveDist * Math.sin(radian);
-          centerY = centerY + centerMoveDist * Math.cos(radian);
-        } else if (angle < 180) {
-          moveDist = 0 - changeMoveDistDirect(moveDist, moveX);
-          const radian = parseRadian(angle - 90);
-          const centerMoveDist = moveDist / 2;
-          centerX = centerX - centerMoveDist * Math.cos(radian);
-          centerY = centerY - centerMoveDist * Math.sin(radian);
-        } else if (angle < 270) {
-          moveDist = changeMoveDistDirect(moveDist, moveX);
-          const radian = parseRadian(angle - 180);
-          const centerMoveDist = moveDist / 2;
-          centerX = centerX + centerMoveDist * Math.sin(radian);
-          centerY = centerY - centerMoveDist * Math.cos(radian);
-        } else if (angle < 360) {
-          moveDist = changeMoveDistDirect(moveDist, moveX);
-          const radian = parseRadian(angle - 270);
-          const centerMoveDist = moveDist / 2;
-          centerX = centerX + centerMoveDist * Math.cos(radian);
-          centerY = centerY + centerMoveDist * Math.sin(radian);
-        }
-        if (p.h + moveDist > 0) {
-          p.h = p.h + moveDist;
-          p.x = centerX - p.w / 2;
-          p.y = centerY - p.h / 2;
+      if (elem.operation?.limitRatio === true) {
+        if (elem.angle === 0 || Math.abs(elem.angle) < limitQbliqueAngle) {
+          if (elem.h + moveY > 0) {
+            p.h += moveY;
+            p.x -= ((moveY / elem.h) * elem.w) / 2;
+            p.w += (moveY / elem.h) * elem.w;
+          }
+        } else if (elem.angle > 0 || elem.angle < 0) {
+          const angle =
+            elem.angle > 0 ? elem.angle : Math.max(0, elem.angle + 360);
+          let moveDist = calcMoveDist(moveX, moveY);
+          let centerX = p.x + elem.w / 2;
+          let centerY = p.y + elem.h / 2;
+          if (angle < 90) {
+            moveDist = changeMoveDistDirect(moveDist, moveY);
+            const radian = parseRadian(angle);
+            const centerMoveDist = moveDist / 2;
+            centerX = centerX - centerMoveDist * Math.sin(radian);
+            centerY = centerY + centerMoveDist * Math.cos(radian);
+          } else if (angle < 180) {
+            moveDist = 0 - changeMoveDistDirect(moveDist, moveX);
+            const radian = parseRadian(angle - 90);
+            const centerMoveDist = moveDist / 2;
+            centerX = centerX - centerMoveDist * Math.cos(radian);
+            centerY = centerY - centerMoveDist * Math.sin(radian);
+          } else if (angle < 270) {
+            moveDist = changeMoveDistDirect(moveDist, moveX);
+            const radian = parseRadian(angle - 180);
+            const centerMoveDist = moveDist / 2;
+            centerX = centerX + centerMoveDist * Math.sin(radian);
+            centerY = centerY - centerMoveDist * Math.cos(radian);
+          } else if (angle < 360) {
+            moveDist = changeMoveDistDirect(moveDist, moveX);
+            const radian = parseRadian(angle - 270);
+            const centerMoveDist = moveDist / 2;
+            centerX = centerX + centerMoveDist * Math.cos(radian);
+            centerY = centerY + centerMoveDist * Math.sin(radian);
+          }
+          if (p.h + moveDist > 0) {
+            p.h = p.h + moveDist;
+            p.w = p.w + (moveDist / elem.h) * elem.w;
+            p.x = centerX - p.w / 2;
+            p.y = centerY - p.h / 2;
+          }
+        } else {
+          if (elem.h + moveY > 0) {
+            p.h += moveY;
+            p.x -= ((moveY / elem.h) * elem.w) / 2;
+            p.w += (moveY / elem.h) * elem.w;
+          }
         }
       } else {
-        if (elem.h + moveY > 0) {
-          p.h += moveY;
+        if (elem.angle === 0 || Math.abs(elem.angle) < limitQbliqueAngle) {
+          if (elem.h + moveY > 0) {
+            p.h += moveY;
+          }
+        } else if (elem.angle > 0 || elem.angle < 0) {
+          const angle =
+            elem.angle > 0 ? elem.angle : Math.max(0, elem.angle + 360);
+          let moveDist = calcMoveDist(moveX, moveY);
+          let centerX = p.x + elem.w / 2;
+          let centerY = p.y + elem.h / 2;
+          if (angle < 90) {
+            moveDist = changeMoveDistDirect(moveDist, moveY);
+            const radian = parseRadian(angle);
+            const centerMoveDist = moveDist / 2;
+            centerX = centerX - centerMoveDist * Math.sin(radian);
+            centerY = centerY + centerMoveDist * Math.cos(radian);
+          } else if (angle < 180) {
+            moveDist = 0 - changeMoveDistDirect(moveDist, moveX);
+            const radian = parseRadian(angle - 90);
+            const centerMoveDist = moveDist / 2;
+            centerX = centerX - centerMoveDist * Math.cos(radian);
+            centerY = centerY - centerMoveDist * Math.sin(radian);
+          } else if (angle < 270) {
+            moveDist = changeMoveDistDirect(moveDist, moveX);
+            const radian = parseRadian(angle - 180);
+            const centerMoveDist = moveDist / 2;
+            centerX = centerX + centerMoveDist * Math.sin(radian);
+            centerY = centerY - centerMoveDist * Math.cos(radian);
+          } else if (angle < 360) {
+            moveDist = changeMoveDistDirect(moveDist, moveX);
+            const radian = parseRadian(angle - 270);
+            const centerMoveDist = moveDist / 2;
+            centerX = centerX + centerMoveDist * Math.cos(radian);
+            centerY = centerY + centerMoveDist * Math.sin(radian);
+          }
+          if (p.h + moveDist > 0) {
+            p.h = p.h + moveDist;
+            p.x = centerX - p.w / 2;
+            p.y = centerY - p.h / 2;
+          }
+        } else {
+          if (elem.h + moveY > 0) {
+            p.h += moveY;
+          }
         }
       }
 
@@ -503,6 +665,8 @@ function calcuScaleElemPosition(
         if (elem.w - moveX > 0) {
           p.x += moveX;
           p.w -= moveX;
+          p.h -= (moveX / elem.w) * elem.h;
+          p.y += ((moveX / elem.w) * elem.h) / 2;
         }
       } else if (elem.angle > 0 || elem.angle < 0) {
         const angle =
@@ -537,6 +701,7 @@ function calcuScaleElemPosition(
         }
         if (p.w + moveDist > 0) {
           p.w = p.w + moveDist;
+          p.h = p.h + (moveDist / elem.w) * elem.h;
           p.x = centerX - p.w / 2;
           p.y = centerY - p.h / 2;
         }
@@ -544,6 +709,8 @@ function calcuScaleElemPosition(
         if (elem.w - moveX > 0) {
           p.x += moveX;
           p.w -= moveX;
+          p.h -= (moveX / elem.w) * elem.h;
+          p.y += ((moveX / elem.w) * elem.h) / 2;
         }
       }
       break;
