@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import {
   TypeData,
   TypeHelper,
@@ -89,7 +90,7 @@ export class Helper implements TypeHelper {
       wrapper.controllers.bottom,
       wrapper.controllers.bottomRight
     ];
-    let directionNames: TypeHelperWrapperControllerDirection[] = [
+    const directionNames: TypeHelperWrapperControllerDirection[] = [
       'right',
       'top-right',
       'top',
@@ -337,7 +338,7 @@ export class Helper implements TypeHelper {
   ) {
     const { selectedUUIDList } = opts;
     const wrapperList: TypeHeplerSelectedElementWrapper[] = [];
-    data.elements.forEach((elem, i) => {
+    data.elements.forEach((elem) => {
       if (selectedUUIDList?.includes(elem.uuid)) {
         const wrapper = this._createSelectedElementWrapper(elem, opts);
         wrapperList.push(wrapper);
@@ -423,7 +424,7 @@ export class Helper implements TypeHelper {
         rotate: {
           x: elem.x + elem.w / 2,
           y: elem.y - controllerSize - (controllerSize * 2 + rotateLimit) - bw,
-          invisible: elem?.operation?.disbaleRotate === true
+          invisible: elem?.operation?.disableRotate === true
         }
       },
       lineWidth: lineWidth,

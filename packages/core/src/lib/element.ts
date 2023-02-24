@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import {
   TypeContext,
   TypePoint,
   TypeData,
   TypeHelperWrapperControllerDirection,
   TypeElement,
-  TypeElemDesc,
+  TypeElemDesc
 } from '@idraw/types';
 import { createUUID } from '@idraw/util';
 import { rotateElement } from './transform';
@@ -21,7 +22,7 @@ export class Element {
     this._ctx = ctx;
   }
 
-  initData (data: TypeData): TypeData {
+  initData(data: TypeData): TypeData {
     data.elements.forEach((elem) => {
       if (!(elem.uuid && typeof elem.uuid === 'string')) {
         elem.uuid = createUUID();
@@ -65,15 +66,21 @@ export class Element {
     return [idx, uuid];
   }
 
-  dragElement(data: TypeData, uuid: string, point: TypePoint, prevPoint: TypePoint, scale: number): void {
+  dragElement(
+    data: TypeData,
+    uuid: string,
+    point: TypePoint,
+    prevPoint: TypePoint,
+    scale: number
+  ): void {
     const index = this.getElementIndex(data, uuid);
     if (!data.elements[index]) {
       return;
     }
     const moveX = point.x - prevPoint.x;
     const moveY = point.y - prevPoint.y;
-    data.elements[index].x += (moveX / scale);
-    data.elements[index].y += (moveY / scale);
+    data.elements[index].x += moveX / scale;
+    data.elements[index].y += moveY / scale;
     this.limitElementAttrs(data.elements[index]);
   }
 
@@ -85,9 +92,9 @@ export class Element {
     scale: number,
     direction: TypeHelperWrapperControllerDirection
   ): null | {
-    width: number,
-    height: number,
-    angle: number,
+    width: number;
+    height: number;
+    angle: number;
   } {
     const index = this.getElementIndex(data, uuid);
     if (!data.elements[index]) {
@@ -96,8 +103,8 @@ export class Element {
     if (data.elements[index]?.operation?.lock === true) {
       return null;
     }
-    let moveX = (point.x - prevPoint.x) / scale;
-    let moveY = (point.y - prevPoint.y) / scale;
+    const moveX = (point.x - prevPoint.x) / scale;
+    const moveY = (point.y - prevPoint.y) / scale;
     const elem = data.elements[index];
     // const { devicePixelRatio } = this._ctx.getSize();
 
@@ -105,10 +112,18 @@ export class Element {
     //   moveY = (point.y - prevPoint.y) / scale;
     // }
 
-    if ([
-      'top-left', 'top', 'top-right', 'right', 
-      'bottom-right', 'bottom', 'bottom-left', 'left'
-    ].includes(direction)) {
+    if (
+      [
+        'top-left',
+        'top',
+        'top-right',
+        'right',
+        'bottom-right',
+        'bottom',
+        'bottom-left',
+        'left'
+      ].includes(direction)
+    ) {
       const p = calcuScaleElemPosition(elem, moveX, moveY, direction, scale);
       elem.x = p.x;
       elem.y = p.y;
@@ -125,7 +140,7 @@ export class Element {
     return {
       width: limitNum(elem.w),
       height: limitNum(elem.h),
-      angle: limitAngle(elem.angle || 0),
+      angle: limitAngle(elem.angle || 0)
     };
   }
 
@@ -147,25 +162,34 @@ export class Element {
     elem.h = limitNum(elem.h);
     elem.angle = limitAngle(elem.angle || 0);
   }
-  
 }
-
 
 function calcuScaleElemPosition(
   elem: TypeElement<keyof TypeElemDesc>,
   moveX: number,
   moveY: number,
   direction: TypeHelperWrapperControllerDirection,
-  scale: number,
-): TypePoint & { w: number, h: number } {
+  scale: number
+): TypePoint & { w: number; h: number } {
   const p = { x: elem.x, y: elem.y, w: elem.w, h: elem.h };
   let angle = elem.angle;
   if (angle < 0) {
     angle = Math.max(0, 360 + angle);
   }
+  if (elem.operation?.limitRatio === true) {
+    if (
+      ['top-left', 'top-right', 'bottom-right', 'bottom-left'].includes(
+        direction
+      )
+    ) {
+      const maxDist = Math.max(Math.abs(moveX), Math.abs(moveY));
+      moveX = (moveX >= 0 ? 1 : -1) * maxDist;
+      moveY = (((moveY >= 0 ? 1 : -1) * maxDist) / elem.w) * elem.h;
+    }
+  }
+
   switch (direction) {
     case 'top-left': {
-
       // TODO
 
       // if (elem.angle === 0) {
@@ -184,15 +208,14 @@ function calcuScaleElemPosition(
       // } else {
       //   // TODO
       // }
-      
-      if (elem.w - moveX > 0 && elem.h - moveY > 0)  {
+
+      if (elem.w - moveX > 0 && elem.h - moveY > 0) {
         p.x += moveX;
         p.y += moveY;
         p.w -= moveX;
         p.h -= moveY;
       }
-      
-      
+
       break;
     }
     case 'top': {
@@ -202,7 +225,8 @@ function calcuScaleElemPosition(
           p.h -= moveY;
         }
       } else if (elem.angle > 0 || elem.angle < 0) {
-        const angle = elem.angle > 0 ? elem.angle : Math.max(0, elem.angle + 360);
+        const angle =
+          elem.angle > 0 ? elem.angle : Math.max(0, elem.angle + 360);
         let moveDist = calcMoveDist(moveX, moveY);
         let centerX = p.x + elem.w / 2;
         let centerY = p.y + elem.h / 2;
@@ -285,7 +309,7 @@ function calcuScaleElemPosition(
       //       centerX = centerX + centerMoveDist * Math.cos(radian);
       //       centerY = centerY + centerMoveDist * Math.sin(radian);
       //     }
-        
+
       //   } else if (angle < 180) {
       //     const radianDist = Math.atan(Math.tan(Math.abs(moveX)/Math.abs(moveY)))
       //     const radian = parseRadian(angle);
@@ -334,7 +358,8 @@ function calcuScaleElemPosition(
           p.w += moveX;
         }
       } else if (elem.angle > 0 || elem.angle < 0) {
-        const angle = elem.angle > 0 ? elem.angle : Math.max(0, elem.angle + 360);
+        const angle =
+          elem.angle > 0 ? elem.angle : Math.max(0, elem.angle + 360);
         let moveDist = calcMoveDist(moveX, moveY);
         let centerX = p.x + elem.w / 2;
         let centerY = p.y + elem.h / 2;
@@ -374,7 +399,7 @@ function calcuScaleElemPosition(
           p.w += moveX;
         }
       }
-      
+
       break;
     }
     case 'bottom-right': {
@@ -406,7 +431,8 @@ function calcuScaleElemPosition(
           p.h += moveY;
         }
       } else if (elem.angle > 0 || elem.angle < 0) {
-        const angle = elem.angle > 0 ? elem.angle : Math.max(0, elem.angle + 360);
+        const angle =
+          elem.angle > 0 ? elem.angle : Math.max(0, elem.angle + 360);
         let moveDist = calcMoveDist(moveX, moveY);
         let centerX = p.x + elem.w / 2;
         let centerY = p.y + elem.h / 2;
@@ -479,7 +505,8 @@ function calcuScaleElemPosition(
           p.w -= moveX;
         }
       } else if (elem.angle > 0 || elem.angle < 0) {
-        const angle = elem.angle > 0 ? elem.angle : Math.max(0, elem.angle + 360);
+        const angle =
+          elem.angle > 0 ? elem.angle : Math.max(0, elem.angle + 360);
         let moveDist = calcMoveDist(moveX, moveY);
         let centerX = p.x + elem.w / 2;
         let centerY = p.y + elem.h / 2;
@@ -529,7 +556,7 @@ function calcuScaleElemPosition(
 }
 
 function parseRadian(angle: number) {
-  return angle * Math.PI / 180;
+  return (angle * Math.PI) / 180;
 }
 
 function calcMoveDist(moveX: number, moveY: number) {
