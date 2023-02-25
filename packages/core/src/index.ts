@@ -36,7 +36,7 @@ import {
   _tempData,
   _draw,
   _coreEvent,
-  _mapper,
+  // _mapper,
   _emitChangeScreen,
   _emitChangeData,
   _engine
@@ -45,9 +45,11 @@ import {
   getSelectedElements,
   updateElement,
   selectElementByIndex,
+  selectElement,
+  cancelElementByIndex,
+  cancelElement,
   getElement,
   getElementByIndex,
-  selectElement,
   moveUpElement,
   moveDownElement,
   addElement,
@@ -112,10 +114,10 @@ export default class Core {
       drawElementListWrappers(helperCtx, helperConfig);
       this[_board].draw();
     };
-    this[_renderer].on('drawFrame', (e) => {
+    this[_renderer].on('drawFrame', () => {
       drawFrame();
     });
-    this[_renderer].on('drawFrameComplete', (e) => {
+    this[_renderer].on('drawFrameComplete', () => {
       drawFrame();
     });
     this[_element] = new Element(this[_board].getContext());
@@ -163,12 +165,20 @@ export default class Core {
     return getElementByIndex(this, index);
   }
 
-  selectElementByIndex(index: number, opts?: { useMode?: boolean }): void {
-    return selectElementByIndex(this, index, opts);
+  selectElementByIndex(index: number): void {
+    return selectElementByIndex(this, index);
   }
 
-  selectElement(uuid: string, opts?: { useMode?: boolean }): void {
-    return selectElement(this, uuid, opts);
+  selectElement(uuid: string): void {
+    return selectElement(this, uuid);
+  }
+
+  cancelElementByIndex(index: number, opts?: { useMode?: boolean }): void {
+    return cancelElementByIndex(this, index, opts);
+  }
+
+  cancelElement(uuid: string, opts?: { useMode?: boolean }): void {
+    return cancelElement(this, uuid, opts);
   }
 
   moveUpElement(uuid: string): void {

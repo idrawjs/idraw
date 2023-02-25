@@ -1,10 +1,11 @@
 import ts from 'typescript';
+import { Project } from 'ts-morph';
+import type { CompilerOptions } from 'ts-morph';
 import path from 'path';
 import glob from 'glob';
 import { packages } from './config';
-import { joinPackagePath, getTsConfig } from './util/project';
+import { joinPackagePath, joinProjectPath } from './util/project';
 import { removeFullDir } from './util/file';
-import type { CompilerOptions } from 'typescript';
 
 build();
 
@@ -52,14 +53,24 @@ function buildPackage(dirName: string) {
       rootDir: joinPackagePath(dirName, 'src'),
       skipLibCheck: true
     };
+    const project = new Project({
+      compilerOptions
+      // tsConfigFilePath: joinProjectPath('tsconfig.web.json')
+    });
+
     const program = ts.createProgram(targetFiles, compilerOptions);
 
-    const diagnostics = ts.getPreEmitDiagnostics(program);
-    if (diagnostics.length) {
-      // console.error(diagnostics);
-      for (const diagnostic of diagnostics) {
-        console.log(JSON.stringify(diagnostic.messageText, null, 2));
-      }
+    // const diagnostics = ts.getPreEmitDiagnostics(program);
+    // if (diagnostics.length) {
+    //   console.error(diagnostics);
+    //   for (const diagnostic of diagnostics) {
+    //     console.log(JSON.stringify(diagnostic.messageText, null, 2));
+    //   }
+    //   throw Error('TS build error!');
+    // }
+    const diagnostics = project.getPreEmitDiagnostics();
+    if (diagnostics.length > 0) {
+      console.error(project.formatDiagnosticsWithColorAndContext(diagnostics));
       throw Error('TS build error!');
     }
 

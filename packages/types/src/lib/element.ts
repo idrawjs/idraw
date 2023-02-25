@@ -7,31 +7,34 @@ type TypeElementAttrs = {
   h: number;
   angle: number;
   operation?: {
-    lock?: boolean,
-    invisible?: boolean,
-    disableScale?: boolean,
-    disbaleRotate?: boolean,
-  }
-  extension?: {[key: string]: any} | any;
-}
+    lock?: boolean;
+    invisible?: boolean;
+    disableScale?: boolean;
+    disableRotate?: boolean;
+    limitRatio?: boolean;
+  };
+  extension?: { [key: string]: any } | any;
+};
 
-type TypeElementBase <T extends keyof TypeElemDesc | TypeElemType> = TypeElementAttrs & {
-  name?: string;
-  uuid?: string;
-  type: T | TypeElemType;
-  desc: TypeElemDesc[T];
-}
+type TypeElementBase<T extends keyof TypeElemDesc | TypeElemType> =
+  TypeElementAttrs & {
+    name?: string;
+    uuid?: string;
+    type: T | TypeElemType;
+    desc: TypeElemDesc[T];
+  };
 
-type TypeElement<T extends keyof TypeElemDesc | TypeElemType> = TypeElementBase<T> & {
-  uuid: string;
-}
+type TypeElement<T extends keyof TypeElemDesc | TypeElemType> =
+  TypeElementBase<T> & {
+    uuid: string;
+  };
 
 type TypeElemDescBase = {
   shadowColor?: string;
   shadowOffsetX?: number;
   shadowOffsetY?: number;
   shadowBlur?: number;
-}
+};
 
 type TypeElemBoxDesc = {
   borderRadius?: number;
@@ -40,14 +43,14 @@ type TypeElemBoxDesc = {
 } & TypeElemDescBase;
 
 type TypeElemDesc = {
-  'text': TypeElemDescText,
-  'rect': TypeElemDescRect,
-  'circle': TypeElemDescCircle,
-  'image': TypeElemDescImage,
-  'svg': TypeElemDescSVG,
-  'html': TypeElemDescHTML,
+  text: TypeElemDescText;
+  rect: TypeElemDescRect;
+  circle: TypeElemDescCircle;
+  image: TypeElemDescImage;
+  svg: TypeElemDescSVG;
+  html: TypeElemDescHTML;
   // paint: TypeElemDescPaint,
-}
+};
 
 // enum TypeElemType {
 //   text = 'text',
@@ -62,7 +65,7 @@ type TypeElemType = 'text' | 'rect' | 'circle' | 'image' | 'svg' | 'html';
 
 type TypeElemDescRect = {
   bgColor?: string;
-} & TypeElemBoxDesc
+} & TypeElemBoxDesc;
 
 type TypeElemDescText = {
   text: string;
@@ -79,11 +82,11 @@ type TypeElemDescText = {
   textShadowOffsetX?: number;
   textShadowOffsetY?: number;
   textShadowBlur?: number;
-} & TypeElemBoxDesc
+} & TypeElemBoxDesc;
 
 type TypeElemDescCircle = {
   bgColor: string;
-} & TypeElemBoxDesc
+} & TypeElemBoxDesc;
 
 type TypeElemDescImage = {
   src: string;
@@ -91,13 +94,13 @@ type TypeElemDescImage = {
 
 type TypeElemDescSVG = {
   svg: string;
-}
+};
 
 type TypeElemDescHTML = {
   html: string;
   width: number;
   height: number;
-}
+};
 
 // type TypeElemDescPaint = TypePaintData
 
@@ -112,5 +115,5 @@ export {
   TypeElemDesc,
   TypeElemType,
   TypeElement,
-  TypeElementBase,
+  TypeElementBase
 };
