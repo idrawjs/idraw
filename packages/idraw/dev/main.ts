@@ -32,9 +32,18 @@ const idraw = new iDraw(
 );
 idraw.setData(data);
 
+const parseData = idraw.getData();
+
 idraw.on('changeData', (d) => {
   console.log('changeData ======', d);
 });
+
+idraw.selectElementByIndex(1);
+
+setTimeout(() => {
+  // idraw.cancelElementByIndex(1);
+  // idraw.cancelElement(parseData.elements[1].uuid);
+}, 2000);
 
 const btn = document.querySelector('#btn') as HTMLButtonElement;
 btn.addEventListener('click', () => {

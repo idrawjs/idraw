@@ -1,19 +1,6 @@
 import { TypeElement, TypeElemDesc, TypeElementBase } from '@idraw/types';
 import { deepClone, createUUID } from '@idraw/util';
-import {
-  _board,
-  _data,
-  _opts,
-  _config,
-  _renderer,
-  _element,
-  _engine,
-  _tempData,
-  _draw,
-  _coreEvent,
-  _emitChangeScreen,
-  _emitChangeData
-} from './../names';
+import { _data, _element, _engine, _draw, _emitChangeData } from './../names';
 import { diffElementResourceChange } from './../lib/diff';
 import Core from './../index';
 import { Mode } from './../constant/static';
@@ -83,18 +70,10 @@ export function updateElement(
   core[_draw]({ resourceChangeUUIDs });
 }
 
-export function selectElementByIndex(
-  core: Core,
-  index: number,
-  opts?: { useMode?: boolean }
-): void {
+export function selectElementByIndex(core: Core, index: number): void {
   if (core[_data].elements[index]) {
     const uuid = core[_data].elements[index].uuid;
-    if (opts?.useMode === true) {
-      core[_engine].temp.set('mode', Mode.SELECT_ELEMENT);
-    } else {
-      core[_engine].temp.set('mode', Mode.NULL);
-    }
+    core[_engine].temp.set('mode', Mode.NULL);
     if (typeof uuid === 'string') {
       core[_engine].temp.set('selectedUUID', uuid);
       core[_engine].temp.set('selectedUUIDList', []);
@@ -103,14 +82,34 @@ export function selectElementByIndex(
   }
 }
 
-export function selectElement(
+export function selectElement(core: Core, uuid: string): void {
+  const index = core[_engine].helper.getElementIndexByUUID(uuid);
+  if (typeof index === 'number' && index >= 0) {
+    core.selectElementByIndex(index);
+  }
+}
+
+export function cancelElementByIndex(core: Core, index: number): void {
+  if (core[_data].elements[index]) {
+    const uuid = core[_data].elements[index].uuid;
+    const selectedUUID = core[_engine].temp.get('selectedUUID');
+    if (typeof uuid === 'string' && uuid === selectedUUID) {
+      core[_engine].temp.set('mode', Mode.NULL);
+      core[_engine].temp.set('selectedUUID', null);
+      core[_engine].temp.set('selectedUUIDList', []);
+    }
+    core[_draw]();
+  }
+}
+
+export function cancelElement(
   core: Core,
   uuid: string,
   opts?: { useMode?: boolean }
 ): void {
   const index = core[_engine].helper.getElementIndexByUUID(uuid);
   if (typeof index === 'number' && index >= 0) {
-    core.selectElementByIndex(index, opts);
+    core.cancelElementByIndex(index, opts);
   }
 }
 
