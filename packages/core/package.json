@@ -1,6 +1,6 @@
 {
   "name": "@idraw/core",
-  "version": "0.3.0-alpha.7",
+  "version": "0.3.0-alpha.8",
   "description": "",
   "main": "dist/esm/index.js",
   "module": "dist/esm/index.js",
@@ -21,12 +21,12 @@
   "author": "chenshenhai",
   "license": "MIT",
   "devDependencies": {
-    "@idraw/types": "^0.3.0-alpha.7"
+    "@idraw/types": "^0.3.0-alpha.8"
   },
   "dependencies": {
-    "@idraw/board": "^0.3.0-alpha.7",
-    "@idraw/renderer": "^0.3.0-alpha.7",
-    "@idraw/util": "^0.3.0-alpha.7"
+    "@idraw/board": "^0.3.0-alpha.8",
+    "@idraw/renderer": "^0.3.0-alpha.8",
+    "@idraw/util": "^0.3.0-alpha.8"
   },
   "publishConfig": {
     "access": "public"

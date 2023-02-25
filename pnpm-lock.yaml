@@ -92,8 +92,8 @@ importers:
 
   packages/board:
     specifiers:
-      '@idraw/types': ^0.3.0-alpha.7
-      '@idraw/util': ^0.3.0-alpha.7
+      '@idraw/types': ^0.3.0-alpha.8
+      '@idraw/util': ^0.3.0-alpha.8
     dependencies:
       '@idraw/util': link:../util
     devDependencies:
@@ -101,10 +101,10 @@ importers:
 
   packages/core:
     specifiers:
-      '@idraw/board': ^0.3.0-alpha.7
-      '@idraw/renderer': ^0.3.0-alpha.7
-      '@idraw/types': ^0.3.0-alpha.7
-      '@idraw/util': ^0.3.0-alpha.7
+      '@idraw/board': ^0.3.0-alpha.8
+      '@idraw/renderer': ^0.3.0-alpha.8
+      '@idraw/types': ^0.3.0-alpha.8
+      '@idraw/util': ^0.3.0-alpha.8
     dependencies:
       '@idraw/board': link:../board
       '@idraw/renderer': link:../renderer
@@ -114,9 +114,9 @@ importers:
 
   packages/idraw:
     specifiers:
-      '@idraw/core': ^0.3.0-alpha.7
-      '@idraw/types': ^0.3.0-alpha.7
-      '@idraw/util': ^0.3.0-alpha.7
+      '@idraw/core': ^0.3.0-alpha.8
+      '@idraw/types': ^0.3.0-alpha.8
+      '@idraw/util': ^0.3.0-alpha.8
     dependencies:
       '@idraw/core': link:../core
       '@idraw/util': link:../util
@@ -125,8 +125,8 @@ importers:
 
   packages/renderer:
     specifiers:
-      '@idraw/types': ^0.3.0-alpha.7
-      '@idraw/util': ^0.3.0-alpha.7
+      '@idraw/types': ^0.3.0-alpha.8
+      '@idraw/util': ^0.3.0-alpha.8
     dependencies:
       '@idraw/util': link:../util
     devDependencies:
@@ -137,7 +137,7 @@ importers:
 
   packages/util:
     specifiers:
-      '@idraw/types': ^0.3.0-alpha.7
+      '@idraw/types': ^0.3.0-alpha.8
     devDependencies:
       '@idraw/types': link:../types
 
