@@ -36,8 +36,7 @@ import {
   _doScrollY,
   _doMoveScroll,
   _resetContext,
-  _screen,
-  _tempData
+  _screen
 } from './names';
 
 type PrivateOptions = TypeBoardOptions & {
@@ -237,6 +236,7 @@ export default class Board {
     width: number;
     height: number;
     devicePixelRatio: number;
+    // eslint-disable-next-line indent
   } {
     return this[_screen].calcScreen();
   }

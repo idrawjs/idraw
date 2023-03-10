@@ -1,4 +1,6 @@
-const data = {
+import type { TypeDataBase } from '@idraw/types';
+
+const data: TypeDataBase = {
   bgColor: '#ffffff',
   elements: [
     {
@@ -62,6 +64,27 @@ const data = {
       operation: {
         // disableRotate: true,
         limitRatio: true
+      }
+    },
+    {
+      name: 'text-002',
+      x: 200,
+      y: 200,
+      w: 300,
+      h: 100,
+      // angle: 30,
+      type: 'text',
+      desc: {
+        fontSize: 16,
+        // text: 'Hello Text Hello Text Hello Text Hello Text Hello Text Hello Text',
+        text: 'Hello Text',
+        fontWeight: 'bold',
+        color: '#666666',
+        borderRadius: 30,
+        borderWidth: 2,
+        borderColor: '#ff5722',
+        textAlign: 'center',
+        verticalAlign: 'middle'
       }
     }
   ]

@@ -5,7 +5,7 @@ type TypeElementAttrs = {
   y: number;
   w: number;
   h: number;
-  angle: number;
+  angle?: number;
   operation?: {
     lock?: boolean;
     invisible?: boolean;
@@ -75,6 +75,7 @@ type TypeElemDescText = {
   fontWeight?: 'bold' | '';
   fontFamily?: string;
   textAlign?: 'center' | 'left' | 'right';
+  verticalAlign?: 'middle' | 'top' | 'bottom';
   bgColor?: string;
   strokeColor?: string;
   strokeWidth?: number;
