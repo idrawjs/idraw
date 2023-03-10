@@ -1,28 +1,22 @@
-import {
-  TypeContext, 
-  TypeElemDescText, 
-  TypeElement,
-} from '@idraw/types';
+import { TypeContext, TypeElemDescText, TypeElement } from '@idraw/types';
 import { is, isColorStr } from '@idraw/util';
 import Loader from '../loader';
 import { clearContext, drawBox } from './base';
 import { rotateElement } from './../transform';
- 
 
 export function drawText(
   ctx: TypeContext,
   elem: TypeElement<'text'>,
-  loader: Loader,
+  loader: Loader
 ) {
   clearContext(ctx);
   drawBox(ctx, elem, elem.desc.bgColor || 'transparent');
   rotateElement(ctx, elem, () => {
-
     const desc: TypeElemDescText = {
       ...{
         fontSize: 12,
         fontFamily: 'sans-serif',
-        textAlign: 'center',
+        textAlign: 'center'
       },
       ...elem.desc
     };
@@ -33,26 +27,29 @@ export function drawText(
       fontSize: desc.fontSize,
       fontFamily: desc.fontFamily
     });
-    const descText = desc.text.replace(/\r\n/ig, '\n');
+    const descText = desc.text.replace(/\r\n/gi, '\n');
     const fontHeight = desc.lineHeight || desc.fontSize;
     const descTextList = descText.split('\n');
-    const lines: {text: string, width: number}[] = [];
-    
+    const lines: { text: string; width: number }[] = [];
+
     let lineNum = 0;
     descTextList.forEach((tempText: string, idx: number) => {
       let lineText = '';
-      
+
       if (tempText.length > 0) {
         for (let i = 0; i < tempText.length; i++) {
-          if (ctx.measureText(lineText + (tempText[i] || '')).width < ctx.calcDeviceNum(elem.w)) {
-            lineText += (tempText[i] || '');
+          if (
+            ctx.measureText(lineText + (tempText[i] || '')).width <
+            ctx.calcDeviceNum(elem.w)
+          ) {
+            lineText += tempText[i] || '';
           } else {
             lines.push({
               text: lineText,
-              width: ctx.calcScreenNum(ctx.measureText(lineText).width),
+              width: ctx.calcScreenNum(ctx.measureText(lineText).width)
             });
-            lineText = (tempText[i] || '');
-            lineNum ++;
+            lineText = tempText[i] || '';
+            lineNum++;
           }
           if ((lineNum + 1) * fontHeight > elem.h) {
             break;
@@ -61,10 +58,10 @@ export function drawText(
             if ((lineNum + 1) * fontHeight < elem.h) {
               lines.push({
                 text: lineText,
-                width: ctx.calcScreenNum(ctx.measureText(lineText).width),
+                width: ctx.calcScreenNum(ctx.measureText(lineText).width)
               });
-              if(idx < descTextList.length - 1){
-                lineNum ++
+              if (idx < descTextList.length - 1) {
+                lineNum++;
               }
               break;
             }
@@ -73,25 +70,42 @@ export function drawText(
       } else {
         lines.push({
           text: '',
-          width: 0,
+          width: 0
         });
       }
-      
     });
+
+    let startY = 0;
+    if (lines.length * fontHeight < elem.h) {
+      if (elem.desc.verticalAlign === 'top') {
+        startY = 0;
+      } else if (elem.desc.verticalAlign === 'bottom') {
+        startY += elem.h - lines.length * fontHeight;
+      } else {
+        // middle and default
+        startY += (elem.h - lines.length * fontHeight) / 2;
+      }
+    }
 
     // draw text lines
     {
-      let _y = elem.y;
-      if (lines.length * fontHeight < elem.h) {
-        _y += ((elem.h - lines.length * fontHeight) / 2);
-      }
-      if (desc.textShadowColor !== undefined && isColorStr(desc.textShadowColor)) {
+      const _y = elem.y + startY;
+      if (
+        desc.textShadowColor !== undefined &&
+        isColorStr(desc.textShadowColor)
+      ) {
         ctx.setShadowColor(desc.textShadowColor);
       }
-      if (desc.textShadowOffsetX !== undefined && is.number(desc.textShadowOffsetX)) {
+      if (
+        desc.textShadowOffsetX !== undefined &&
+        is.number(desc.textShadowOffsetX)
+      ) {
         ctx.setShadowOffsetX(desc.textShadowOffsetX);
       }
-      if (desc.textShadowOffsetY !== undefined && is.number(desc.textShadowOffsetY)) {
+      if (
+        desc.textShadowOffsetY !== undefined &&
+        is.number(desc.textShadowOffsetY)
+      ) {
         ctx.setShadowOffsetY(desc.textShadowOffsetY);
       }
       if (desc.textShadowBlur !== undefined && is.number(desc.textShadowBlur)) {
@@ -110,11 +124,12 @@ export function drawText(
     }
 
     // draw text stroke
-    if (isColorStr(desc.strokeColor) && desc.strokeWidth !== undefined && desc.strokeWidth > 0) {
-      let _y = elem.y;
-      if (lines.length * fontHeight < elem.h) {
-        _y += ((elem.h - lines.length * fontHeight) / 2);
-      }
+    if (
+      isColorStr(desc.strokeColor) &&
+      desc.strokeWidth !== undefined &&
+      desc.strokeWidth > 0
+    ) {
+      const _y = elem.y + startY;
       lines.forEach((line, i) => {
         let _x = elem.x;
         if (desc.textAlign === 'center') {
@@ -131,11 +146,8 @@ export function drawText(
         ctx.strokeText(line.text, _x, _y + fontHeight * i);
       });
     }
-
   });
 }
-
-
 
 // export function createTextSVG(elem: TypeElement<'text'>): string {
 //   const svg = `
@@ -149,5 +161,3 @@ export function drawText(
 //   `;
 //   return svg;
 // }
- 
-
