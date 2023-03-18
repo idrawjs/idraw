@@ -228,8 +228,8 @@ exports[`@idraw/board scroll 2`] = `
         },
         {
           "props": {
-            "x": 2240,
-            "y": 1520,
+            "x": 2220,
+            "y": 1541,
           },
           "transform": [
             1,
@@ -245,9 +245,9 @@ exports[`@idraw/board scroll 2`] = `
           "props": {
             "cpx1": 2400,
             "cpx2": 2400,
-            "cpy1": 1520,
-            "cpy2": 1600,
-            "radius": 40,
+            "cpy1": 1541,
+            "cpy2": 1581,
+            "radius": 20,
           },
           "transform": [
             1,
@@ -263,9 +263,9 @@ exports[`@idraw/board scroll 2`] = `
           "props": {
             "cpx1": 2400,
             "cpx2": 2200,
-            "cpy1": 1600,
-            "cpy2": 1600,
-            "radius": 40,
+            "cpy1": 1581,
+            "cpy2": 1581,
+            "radius": 20,
           },
           "transform": [
             1,
@@ -281,9 +281,9 @@ exports[`@idraw/board scroll 2`] = `
           "props": {
             "cpx1": 2200,
             "cpx2": 2200,
-            "cpy1": 1600,
-            "cpy2": 1520,
-            "radius": 40,
+            "cpy1": 1581,
+            "cpy2": 1541,
+            "radius": 20,
           },
           "transform": [
             1,
@@ -299,9 +299,9 @@ exports[`@idraw/board scroll 2`] = `
           "props": {
             "cpx1": 2200,
             "cpx2": 2400,
-            "cpy1": 1520,
-            "cpy2": 1520,
-            "radius": 40,
+            "cpy1": 1541,
+            "cpy2": 1541,
+            "radius": 20,
           },
           "transform": [
             1,
@@ -336,6 +336,132 @@ exports[`@idraw/board scroll 2`] = `
       0,
     ],
     "type": "fill",
+  },
+  {
+    "props": {
+      "path": [
+        {
+          "props": {},
+          "transform": [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+          ],
+          "type": "beginPath",
+        },
+        {
+          "props": {
+            "x": 2220,
+            "y": 1541,
+          },
+          "transform": [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+          ],
+          "type": "moveTo",
+        },
+        {
+          "props": {
+            "cpx1": 2400,
+            "cpx2": 2400,
+            "cpy1": 1541,
+            "cpy2": 1581,
+            "radius": 20,
+          },
+          "transform": [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+          ],
+          "type": "arcTo",
+        },
+        {
+          "props": {
+            "cpx1": 2400,
+            "cpx2": 2200,
+            "cpy1": 1581,
+            "cpy2": 1581,
+            "radius": 20,
+          },
+          "transform": [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+          ],
+          "type": "arcTo",
+        },
+        {
+          "props": {
+            "cpx1": 2200,
+            "cpx2": 2200,
+            "cpy1": 1581,
+            "cpy2": 1541,
+            "radius": 20,
+          },
+          "transform": [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+          ],
+          "type": "arcTo",
+        },
+        {
+          "props": {
+            "cpx1": 2200,
+            "cpx2": 2400,
+            "cpy1": 1541,
+            "cpy2": 1541,
+            "radius": 20,
+          },
+          "transform": [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+          ],
+          "type": "arcTo",
+        },
+        {
+          "props": {},
+          "transform": [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+          ],
+          "type": "closePath",
+        },
+      ],
+    },
+    "transform": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "stroke",
   },
   {
     "props": {
@@ -372,7 +498,7 @@ exports[`@idraw/board scroll 2`] = `
         },
         {
           "props": {
-            "x": 2360,
+            "x": 2361,
             "y": 1400,
           },
           "transform": [
@@ -387,11 +513,11 @@ exports[`@idraw/board scroll 2`] = `
         },
         {
           "props": {
-            "cpx1": 2400,
-            "cpx2": 2400,
+            "cpx1": 2381,
+            "cpx2": 2381,
             "cpy1": 1400,
             "cpy2": 1600,
-            "radius": 40,
+            "radius": 20,
           },
           "transform": [
             1,
@@ -405,11 +531,11 @@ exports[`@idraw/board scroll 2`] = `
         },
         {
           "props": {
-            "cpx1": 2400,
-            "cpx2": 2320,
+            "cpx1": 2381,
+            "cpx2": 2341,
             "cpy1": 1600,
             "cpy2": 1600,
-            "radius": 40,
+            "radius": 20,
           },
           "transform": [
             1,
@@ -423,11 +549,11 @@ exports[`@idraw/board scroll 2`] = `
         },
         {
           "props": {
-            "cpx1": 2320,
-            "cpx2": 2320,
+            "cpx1": 2341,
+            "cpx2": 2341,
             "cpy1": 1600,
             "cpy2": 1400,
-            "radius": 40,
+            "radius": 20,
           },
           "transform": [
             1,
@@ -441,11 +567,11 @@ exports[`@idraw/board scroll 2`] = `
         },
         {
           "props": {
-            "cpx1": 2320,
-            "cpx2": 2400,
+            "cpx1": 2341,
+            "cpx2": 2381,
             "cpy1": 1400,
             "cpy2": 1400,
-            "radius": 40,
+            "radius": 20,
           },
           "transform": [
             1,
@@ -480,6 +606,132 @@ exports[`@idraw/board scroll 2`] = `
       0,
     ],
     "type": "fill",
+  },
+  {
+    "props": {
+      "path": [
+        {
+          "props": {},
+          "transform": [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+          ],
+          "type": "beginPath",
+        },
+        {
+          "props": {
+            "x": 2361,
+            "y": 1400,
+          },
+          "transform": [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+          ],
+          "type": "moveTo",
+        },
+        {
+          "props": {
+            "cpx1": 2381,
+            "cpx2": 2381,
+            "cpy1": 1400,
+            "cpy2": 1600,
+            "radius": 20,
+          },
+          "transform": [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+          ],
+          "type": "arcTo",
+        },
+        {
+          "props": {
+            "cpx1": 2381,
+            "cpx2": 2341,
+            "cpy1": 1600,
+            "cpy2": 1600,
+            "radius": 20,
+          },
+          "transform": [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+          ],
+          "type": "arcTo",
+        },
+        {
+          "props": {
+            "cpx1": 2341,
+            "cpx2": 2341,
+            "cpy1": 1600,
+            "cpy2": 1400,
+            "radius": 20,
+          },
+          "transform": [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+          ],
+          "type": "arcTo",
+        },
+        {
+          "props": {
+            "cpx1": 2341,
+            "cpx2": 2381,
+            "cpy1": 1400,
+            "cpy2": 1400,
+            "radius": 20,
+          },
+          "transform": [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+          ],
+          "type": "arcTo",
+        },
+        {
+          "props": {},
+          "transform": [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+          ],
+          "type": "closePath",
+        },
+      ],
+    },
+    "transform": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+    ],
+    "type": "stroke",
   },
 ]
 `;

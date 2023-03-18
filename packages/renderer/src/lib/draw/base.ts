@@ -1,7 +1,7 @@
 import {
   TypeContext,
   // TypeElemDesc,
-  TypeElement,
+  TypeElement
 } from '@idraw/types';
 import { is, istype, isColorStr } from '@idraw/util';
 import { rotateElement } from './../transform';
@@ -14,7 +14,7 @@ export function clearContext(ctx: TypeContext) {
   ctx.setLineDash([]);
   ctx.setGlobalAlpha(1);
   ctx.setShadowColor('#00000000');
-  ctx.setShadowOffsetX(0)
+  ctx.setShadowOffsetX(0);
   ctx.setShadowOffsetY(0);
   ctx.setShadowBlur(0);
 }
@@ -28,7 +28,7 @@ export function drawBgColor(ctx: TypeContext, color: string) {
 export function drawBox(
   ctx: TypeContext,
   elem: TypeElement<'text' | 'rect'>,
-  pattern: string | CanvasPattern | null,
+  pattern: string | CanvasPattern | null
 ): void {
   clearContext(ctx);
   drawBoxBorder(ctx, elem);
@@ -46,20 +46,19 @@ export function drawBox(
     ctx.arcTo(x + w, y + h, x, y + h, r);
     ctx.arcTo(x, y + h, x, y, r);
     ctx.arcTo(x, y, x + w, y, r);
-    ctx.closePath();  
+    ctx.closePath();
     if (typeof pattern === 'string') {
-      ctx.setFillStyle(pattern);      
+      ctx.setFillStyle(pattern);
     } else if (['CanvasPattern'].includes(istype.type(pattern))) {
       ctx.setFillStyle(pattern as CanvasPattern);
     }
-    ctx.fill(); 
+    ctx.fill();
   });
 }
 
-
 export function drawBoxBorder(
   ctx: TypeContext,
-  elem: TypeElement<'text'|'rect'>,
+  elem: TypeElement<'text' | 'rect'>
 ): void {
   clearContext(ctx);
   rotateElement(ctx, elem, () => {
@@ -102,7 +101,7 @@ export function drawBoxBorder(
     ctx.arcTo(x + w, y + h, x, y + h, r);
     ctx.arcTo(x, y + h, x, y, r);
     ctx.arcTo(x, y, x + w, y, r);
-    ctx.closePath();  
-    ctx.stroke(); 
+    ctx.closePath();
+    ctx.stroke();
   });
-} 
+}

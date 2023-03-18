@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import Board from '../src';
 import { getData } from './data';
 
@@ -14,7 +15,7 @@ describe('@idraw/board', () => {
       devicePixelRatio: 4,
       canScroll: true,
       scrollConfig: {
-        lineWidth: 20,
+        width: 20,
         color: '#666666'
       }
     };
@@ -63,6 +64,6 @@ describe('@idraw/board', () => {
     expect(displayCalls).toMatchSnapshot();
 
     const scrollLineWidth = board.getScrollLineWidth();
-    expect(scrollLineWidth).toStrictEqual(opts.scrollConfig.lineWidth);
+    expect(scrollLineWidth).toStrictEqual(opts.scrollConfig.width);
   });
 });
