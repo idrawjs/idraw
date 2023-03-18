@@ -202,7 +202,6 @@ export class Scroller {
   }
 
   private _getOpts(opts: TypeOptions): TypePrivateOptions {
-    console.log('opts ====', opts);
     const options: TypePrivateOptions = {
       ...opts,
       ...{
