@@ -93,8 +93,9 @@ export default class Core {
       ...this[_opts],
       canScroll: config?.scrollWrapper?.use,
       scrollConfig: {
-        color: config?.scrollWrapper?.color || '#a0a0a0',
-        lineWidth: config?.scrollWrapper?.lineWidth || 12
+        color: config?.scrollWrapper?.color || '#000000',
+        width: config?.scrollWrapper?.width || 12,
+        ...(config?.scrollWrapper || {})
       }
     });
     this[_renderer] = new Renderer();
@@ -173,8 +174,8 @@ export default class Core {
     return selectElement(this, uuid);
   }
 
-  cancelElementByIndex(index: number, opts?: { useMode?: boolean }): void {
-    return cancelElementByIndex(this, index, opts);
+  cancelElementByIndex(index: number): void {
+    return cancelElementByIndex(this, index);
   }
 
   cancelElement(uuid: string, opts?: { useMode?: boolean }): void {

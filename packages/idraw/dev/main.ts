@@ -27,16 +27,20 @@ const idraw = new iDraw(
   {
     scrollWrapper: {
       use: true
+      // color: 'red'
+      // showBackground: false
     }
   }
 );
 idraw.setData(data);
 
-const parseData = idraw.getData();
+// const parseData = idraw.getData();
 
 idraw.on('changeData', (d) => {
   console.log('changeData ======', d);
 });
+
+idraw.scale(1.5);
 
 idraw.selectElementByIndex(1);
 
