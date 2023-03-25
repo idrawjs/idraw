@@ -107,7 +107,7 @@ export class Helper implements TypeHelper {
       const elemIdx = this.getElementIndexByUUID(uuid);
       if (elemIdx !== null && elemIdx >= 0) {
         const elem = data.elements[elemIdx];
-        let angle = elem.angle;
+        let angle = elem.angle || 0;
         if (angle < 0) {
           angle += 360;
         }
@@ -150,6 +150,7 @@ export class Helper implements TypeHelper {
           Math.PI * 2
         );
         ctx.closePath();
+
         if (ctx.isPointInPath(p.x, p.y)) {
           selectedControllerDirection = directionNames[i];
           hoverControllerDirection = hoverDirectionNames[i];
