@@ -1,4 +1,4 @@
-interface TypeContext {
+interface IDrawContext {
   getContext(): CanvasRenderingContext2D;
   setTransform(config: {
     scale?: number;
@@ -67,5 +67,5 @@ interface TypeContext {
 }
 
 export {
-  TypeContext
+  IDrawContext
 };

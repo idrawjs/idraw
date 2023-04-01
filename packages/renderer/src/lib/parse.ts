@@ -1,8 +1,8 @@
-import { TypeData, TypeElement, TypeElemDesc } from '@idraw/types';
+import { IDrawData, DataElement, DataElemDesc } from '@idraw/types';
 import { elementNames } from './../constant/element';
 
-export function parseData(data: any): TypeData {
-  const result: TypeData = {
+export function parseData(data: any): IDrawData {
+  const result: IDrawData = {
     elements: []
   };
   if (Array.isArray(data?.elements)) {
@@ -18,7 +18,7 @@ export function parseData(data: any): TypeData {
   return result;
 }
 
-function isElement(elem: TypeElement<keyof TypeElemDesc>): boolean {
+function isElement(elem: DataElement<keyof DataElemDesc>): boolean {
   if (
     !(
       isNumber(elem.x) &&

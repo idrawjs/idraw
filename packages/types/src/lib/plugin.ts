@@ -1,36 +1,39 @@
-import { TypeData } from './data';
-import { TypeElemDesc, TypeElement } from './element';
-import { TypeContext } from './context';
-import { TypePoint, TypePointCursor } from './board';
+import { IDrawData } from './data';
+import { DataElemDesc, DataElement } from './element';
+import { IDrawContext } from './context';
+import { Point, PointCursor } from './board';
 
-export type TypeHelperPluginEventDetail = {
-  controller: string | null,
-  point: TypePoint,
-  selectedElement: TypeElement<keyof TypeElemDesc> | null,
-  data: TypeData, 
-  helperCtx:TypeContext,
-}
+export type HelperPluginEventDetail = {
+  controller: string | null;
+  point: Point;
+  selectedElement: DataElement<keyof DataElemDesc> | null;
+  data: IDrawData;
+  helperCtx: IDrawContext;
+};
 
-export type TypeHelperPluginEventResult = {
-  cursor?: TypePointCursor,
+export type HelperPluginEventResult = {
+  cursor?: PointCursor;
   beController?: boolean;
-}
+};
 
 export interface InterfaceHelperPlugin {
-
   readonly name?: string;
 
   readonly uuid?: string;
- 
-  onHover?: (detail: TypeHelperPluginEventDetail) => void | TypeHelperPluginEventResult;
 
-  onPoint?: (detail: TypeHelperPluginEventDetail) => void | TypeHelperPluginEventResult;
+  onHover?: (detail: HelperPluginEventDetail) => void | HelperPluginEventResult;
 
-  onClick?: (detail: TypeHelperPluginEventDetail) => void | TypeHelperPluginEventResult;
+  onPoint?: (detail: HelperPluginEventDetail) => void | HelperPluginEventResult;
 
-  onMoveStart?: (detail: TypeHelperPluginEventDetail) => void | TypeHelperPluginEventResult;
+  onClick?: (detail: HelperPluginEventDetail) => void | HelperPluginEventResult;
 
-  onMove?: (detail: TypeHelperPluginEventDetail) => void | TypeHelperPluginEventResult;
+  onMoveStart?: (
+    detail: HelperPluginEventDetail
+  ) => void | HelperPluginEventResult;
 
-  onMoveEnd?: (detail: TypeHelperPluginEventDetail) => void | TypeHelperPluginEventResult;
+  onMove?: (detail: HelperPluginEventDetail) => void | HelperPluginEventResult;
+
+  onMoveEnd?: (
+    detail: HelperPluginEventDetail
+  ) => void | HelperPluginEventResult;
 }

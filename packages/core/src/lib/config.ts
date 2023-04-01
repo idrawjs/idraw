@@ -1,7 +1,7 @@
-import { TypeConfig, TypeConfigStrict } from '@idraw/types';
+import { IDrawConfig, IDrawConfigStrict } from '@idraw/types';
 import { deepClone } from '@idraw/util';
 
-const defaultConfig: TypeConfigStrict = {
+const defaultConfig: IDrawConfigStrict = {
   elementWrapper: {
     color: '#0d85da',
     lockColor: '#aaaaaa',
@@ -11,7 +11,7 @@ const defaultConfig: TypeConfigStrict = {
   }
 };
 
-function mergeConfig(config?: TypeConfig): TypeConfigStrict {
+function mergeConfig(config?: IDrawConfig): IDrawConfigStrict {
   const result = deepClone(defaultConfig);
   if (config) {
     if (config.elementWrapper) {

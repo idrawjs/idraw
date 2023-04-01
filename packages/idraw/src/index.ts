@@ -1,5 +1,5 @@
 import Core from '@idraw/core';
-import { TypeData, TypeConfig } from '@idraw/types';
+import { IDrawData, IDrawConfig } from '@idraw/types';
 import { Options, PrivateOptions } from './types';
 import { defaultOptions } from './config';
 import { TempData } from './lib/temp';
@@ -36,7 +36,7 @@ export default class iDraw extends Core {
 
   // static version = version;
 
-  constructor(mount: HTMLDivElement, opts: Options, config?: TypeConfig) {
+  constructor(mount: HTMLDivElement, opts: Options, config?: IDrawConfig) {
     super(
       mount,
       {
@@ -54,11 +54,11 @@ export default class iDraw extends Core {
     this[_initEvent]();
   }
 
-  undo(): { doRecordCount: number; data: TypeData | null } {
+  undo(): { doRecordCount: number; data: IDrawData | null } {
     return undo(this);
   }
 
-  redo(): { undoRecordCount: number; data: TypeData | null } {
+  redo(): { undoRecordCount: number; data: IDrawData | null } {
     return redo(this);
   }
 
@@ -77,7 +77,7 @@ export default class iDraw extends Core {
     if (this[_hasInited] === true) {
       return;
     }
-    this.on('changeData', (data: TypeData) => {
+    this.on('changeData', (data: IDrawData) => {
       this[_pushRecord](data);
     });
     this.on('mouseLeaveScreen', () => {
@@ -101,7 +101,7 @@ export default class iDraw extends Core {
     this[_hasInited] = true;
   }
 
-  private [_pushRecord](data: TypeData) {
+  private [_pushRecord](data: IDrawData) {
     const doRecords = this[_tempData].get('doRecords');
     if (doRecords.length >= this[_opts].maxRecords) {
       doRecords.shift();

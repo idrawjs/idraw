@@ -1,4 +1,4 @@
-type TypeConfig = {
+type IDrawConfig = {
   elementWrapper?: {
     color?: string;
     controllerSize?: number;
@@ -13,7 +13,7 @@ type TypeConfig = {
   };
 };
 
-type TypeConfigStrict = TypeConfig & {
+type IDrawConfigStrict = IDrawConfig & {
   elementWrapper: {
     color: string;
     lockColor: string;
@@ -23,4 +23,4 @@ type TypeConfigStrict = TypeConfig & {
   };
 };
 
-export { TypeConfig, TypeConfigStrict };
+export { IDrawConfig, IDrawConfigStrict };

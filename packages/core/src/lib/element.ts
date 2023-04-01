@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import {
-  TypeContext,
-  TypePoint,
-  TypeData,
-  TypeHelperWrapperControllerDirection,
-  TypeElement,
-  TypeElemDesc
+  IDrawContext,
+  Point,
+  IDrawData,
+  HelperWrapperControllerDirection,
+  DataElement,
+  DataElemDesc
 } from '@idraw/types';
 import { createUUID } from '@idraw/util';
 import { rotateElement } from './transform';
@@ -16,13 +16,13 @@ import { LIMIT_QBLIQUE_ANGLE } from './../constant/element';
 const limitQbliqueAngle = LIMIT_QBLIQUE_ANGLE;
 
 export class Element {
-  private _ctx: TypeContext;
+  private _ctx: IDrawContext;
 
-  constructor(ctx: TypeContext) {
+  constructor(ctx: IDrawContext) {
     this._ctx = ctx;
   }
 
-  initData(data: TypeData): TypeData {
+  initData(data: IDrawData): IDrawData {
     data.elements.forEach((elem) => {
       if (!(elem.uuid && typeof elem.uuid === 'string')) {
         elem.uuid = createUUID();
@@ -31,7 +31,7 @@ export class Element {
     return data;
   }
 
-  isPointInElement(p: TypePoint, data: TypeData): [number, string | null] {
+  isPointInElement(p: Point, data: IDrawData): [number, string | null] {
     const ctx = this._ctx;
     let idx = -1;
     let uuid = null;
@@ -67,10 +67,10 @@ export class Element {
   }
 
   dragElement(
-    data: TypeData,
+    data: IDrawData,
     uuid: string,
-    point: TypePoint,
-    prevPoint: TypePoint,
+    point: Point,
+    prevPoint: Point,
     scale: number
   ): void {
     const index = this.getElementIndex(data, uuid);
@@ -85,12 +85,12 @@ export class Element {
   }
 
   transformElement(
-    data: TypeData,
+    data: IDrawData,
     uuid: string,
-    point: TypePoint,
-    prevPoint: TypePoint,
+    point: Point,
+    prevPoint: Point,
     scale: number,
-    direction: TypeHelperWrapperControllerDirection
+    direction: HelperWrapperControllerDirection
   ): null | {
     width: number;
     height: number;
@@ -144,7 +144,7 @@ export class Element {
     };
   }
 
-  getElementIndex(data: TypeData, uuid: string): number {
+  getElementIndex(data: IDrawData, uuid: string): number {
     let idx = -1;
     for (let i = 0; i < data.elements.length; i++) {
       if (data.elements[i].uuid === uuid) {
@@ -155,7 +155,7 @@ export class Element {
     return idx;
   }
 
-  limitElementAttrs(elem: TypeElement<keyof TypeElemDesc>) {
+  limitElementAttrs(elem: DataElement<keyof DataElemDesc>) {
     elem.x = limitNum(elem.x);
     elem.y = limitNum(elem.y);
     elem.w = limitNum(elem.w);
@@ -165,12 +165,12 @@ export class Element {
 }
 
 function calcuScaleElemPosition(
-  elem: TypeElement<keyof TypeElemDesc>,
+  elem: DataElement<keyof DataElemDesc>,
   moveX: number,
   moveY: number,
-  direction: TypeHelperWrapperControllerDirection,
+  direction: HelperWrapperControllerDirection,
   scale: number
-): TypePoint & { w: number; h: number } {
+): Point & { w: number; h: number } {
   const p = { x: elem.x, y: elem.y, w: elem.w, h: elem.h };
   let angle = elem.angle;
   if (angle < 0) {

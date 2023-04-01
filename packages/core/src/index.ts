@@ -1,22 +1,22 @@
 import {
-  TypeData,
-  TypePoint,
-  TypeBoardSizeOptions,
-  TypeConfig,
-  TypeConfigStrict,
-  TypeElementBase,
-  TypeElement,
-  TypeElemDesc,
-  TypeContext,
-  TypeCoreOptions,
-  TypeScreenContext,
-  TypeScreenData
+  IDrawData,
+  Point,
+  BoardSizeOptions,
+  IDrawConfig,
+  IDrawConfigStrict,
+  DataElementBase,
+  DataElement,
+  DataElemDesc,
+  IDrawContext,
+  CoreOptions,
+  ScreenContext,
+  ScreenData
 } from '@idraw/types';
 import Board from '@idraw/board';
 import { deepClone } from '@idraw/util';
 import Renderer from '@idraw/renderer';
-import is, { TypeIs } from './lib/is';
-import check, { TypeCheck } from './lib/check';
+import is, { IsTypeUtil } from './lib/is';
+import check, { CheckTypeUtil } from './lib/check';
 import {
   Element,
   mergeConfig,
@@ -69,23 +69,19 @@ import {
 
 export default class Core {
   private [_board]: Board;
-  private [_data]: TypeData;
-  private [_opts]: TypeCoreOptions;
-  private [_config]: TypeConfigStrict;
+  private [_data]: IDrawData;
+  private [_opts]: CoreOptions;
+  private [_config]: IDrawConfigStrict;
   private [_renderer]: Renderer;
   private [_element]: Element;
   private [_coreEvent]: CoreEvent = new CoreEvent();
   private [_tempData]: TempData = new TempData();
   private [_engine]: Engine;
 
-  static is: TypeIs = is;
-  static check: TypeCheck = check;
+  static is: IsTypeUtil = is;
+  static check: CheckTypeUtil = check;
 
-  constructor(
-    mount: HTMLDivElement,
-    opts: TypeCoreOptions,
-    config?: TypeConfig
-  ) {
+  constructor(mount: HTMLDivElement, opts: CoreOptions, config?: IDrawConfig) {
     this[_data] = { elements: [] };
     this[_opts] = opts;
     this[_config] = mergeConfig(config || {});
@@ -190,11 +186,11 @@ export default class Core {
     return moveDownElement(this, uuid);
   }
 
-  updateElement(elem: TypeElement<keyof TypeElemDesc>) {
+  updateElement(elem: DataElement<keyof DataElemDesc>) {
     return updateElement(this, elem);
   }
 
-  addElement(elem: TypeElementBase<keyof TypeElemDesc>): string | null {
+  addElement(elem: DataElementBase<keyof DataElemDesc>): string | null {
     return addElement(this, elem);
   }
 
@@ -203,14 +199,14 @@ export default class Core {
   }
 
   insertElementBefore(
-    elem: TypeElementBase<keyof TypeElemDesc>,
+    elem: DataElementBase<keyof DataElemDesc>,
     beforeUUID: string
   ) {
     return insertElementBefore(this, elem, beforeUUID);
   }
 
   insertElementBeforeIndex(
-    elem: TypeElementBase<keyof TypeElemDesc>,
+    elem: DataElementBase<keyof DataElemDesc>,
     index: number
   ) {
     return insertElementBeforeIndex(this, elem, index);
@@ -221,47 +217,47 @@ export default class Core {
   }
 
   insertElementAfter(
-    elem: TypeElementBase<keyof TypeElemDesc>,
+    elem: DataElementBase<keyof DataElemDesc>,
     beforeUUID: string
   ) {
     return insertElementAfter(this, elem, beforeUUID);
   }
 
   insertElementAfterIndex(
-    elem: TypeElementBase<keyof TypeElemDesc>,
+    elem: DataElementBase<keyof DataElemDesc>,
     index: number
   ) {
     return insertElementAfterIndex(this, elem, index);
   }
 
-  resetSize(opts: TypeBoardSizeOptions) {
+  resetSize(opts: BoardSizeOptions) {
     this[_opts] = { ...this[_opts], ...opts };
     this[_board].resetSize(opts);
     this[_draw]();
   }
 
-  scale(ratio: number): TypeScreenContext {
+  scale(ratio: number): ScreenContext {
     const screen = this[_board].scale(ratio);
     this[_draw]();
     this[_emitChangeScreen]();
     return screen;
   }
 
-  scrollLeft(left: number): TypeScreenContext {
+  scrollLeft(left: number): ScreenContext {
     const screen = this[_board].scrollX(0 - left);
     this[_draw]();
     this[_emitChangeScreen]();
     return screen;
   }
 
-  scrollTop(top: number): TypeScreenContext {
+  scrollTop(top: number): ScreenContext {
     const screen = this[_board].scrollY(0 - top);
     this[_draw]();
     this[_emitChangeScreen]();
     return screen;
   }
 
-  getScreenTransform(): TypeScreenData {
+  getScreenTransform(): ScreenData {
     const transform = this[_board].getTransform();
     return {
       scale: transform.scale,
@@ -270,11 +266,11 @@ export default class Core {
     };
   }
 
-  getData(): TypeData {
+  getData(): IDrawData {
     return deepClone(this[_data]);
   }
 
-  setData(data: any | TypeData, opts?: { triggerChangeEvent: boolean }): void {
+  setData(data: any | IDrawData, opts?: { triggerChangeEvent: boolean }): void {
     const resourceChangeUUIDs = diffElementResourceChangeList(
       this[_data],
       data
@@ -305,15 +301,15 @@ export default class Core {
     this[_coreEvent].off(key, callback);
   }
 
-  pointScreenToContext(p: TypePoint) {
+  pointScreenToContext(p: Point) {
     return this[_board].pointScreenToContext(p);
   }
 
-  pointContextToScreen(p: TypePoint) {
+  pointContextToScreen(p: Point) {
     return this[_board].pointContextToScreen(p);
   }
 
-  __getBoardContext(): TypeContext {
+  __getBoardContext(): IDrawContext {
     return this[_board].getContext();
   }
 

@@ -1,12 +1,12 @@
 import {
-  TypeScreenPosition,
-  TypeScreenSize,
-  TypeScreenContext,
-  TypePoint,
-  TypePointCursor,
-  TypeBoardOptions,
-  TypeBoardSizeOptions,
-  TypeContext
+  ScreenPosition,
+  ScreenSize,
+  ScreenContext,
+  Point,
+  PointCursor,
+  BoardOptions,
+  BoardSizeOptions,
+  IDrawContext
 } from '@idraw/types';
 import util from '@idraw/util';
 import { ScreenWatcher } from './lib/screen-watcher';
@@ -39,7 +39,7 @@ import {
   _screen
 } from './names';
 
-type PrivateOptions = TypeBoardOptions & {
+type PrivateOptions = BoardOptions & {
   devicePixelRatio: number;
 };
 
@@ -51,15 +51,15 @@ export default class Board {
   private [_displayCanvas]: HTMLCanvasElement;
   private [_mount]: HTMLDivElement;
   private [_opts]: PrivateOptions;
-  private [_ctx]: TypeContext;
-  private [_helperCtx]: TypeContext;
+  private [_ctx]: IDrawContext;
+  private [_helperCtx]: IDrawContext;
   // private [_watcher]: Watcher;
   private [_watcher]: ScreenWatcher;
   private [_scroller]: Scroller;
   private [_screen]: Screen;
   // private [_tempData]: TempData;
 
-  constructor(mount: HTMLDivElement, opts: TypeBoardOptions) {
+  constructor(mount: HTMLDivElement, opts: BoardOptions) {
     // this[_tempData] = new TempData(opts);
 
     this[_mount] = mount;
@@ -104,15 +104,15 @@ export default class Board {
     return this[_helperCtx].getContext();
   }
 
-  getContext(): TypeContext {
+  getContext(): IDrawContext {
     return this[_ctx];
   }
 
-  getHelperContext(): TypeContext {
+  getHelperContext(): IDrawContext {
     return this[_helperCtx];
   }
 
-  scale(scaleRatio: number): TypeScreenContext {
+  scale(scaleRatio: number): ScreenContext {
     if (scaleRatio > 0) {
       this[_ctx].setTransform({ scale: scaleRatio });
       this[_helperCtx].setTransform({ scale: scaleRatio });
@@ -149,7 +149,7 @@ export default class Board {
     return { position, size };
   }
 
-  scrollY(y: number): TypeScreenContext {
+  scrollY(y: number): ScreenContext {
     this[_watcher].setStatusMap({
       canScrollYPrev: true,
       canScrollYNext: true,
@@ -181,7 +181,7 @@ export default class Board {
     return this[_ctx].getTransform();
   }
 
-  draw(): TypeScreenContext {
+  draw(): ScreenContext {
     this.clear();
     const { position, deviceSize, size } = this[_screen].calcScreen();
     const displayCtx = this[_displayCanvas].getContext('2d');
@@ -230,9 +230,9 @@ export default class Board {
   }
 
   getScreenInfo(): {
-    size: TypeScreenSize;
-    position: TypeScreenPosition;
-    deviceSize: TypeScreenSize;
+    size: ScreenSize;
+    position: ScreenPosition;
+    deviceSize: ScreenSize;
     width: number;
     height: number;
     devicePixelRatio: number;
@@ -241,7 +241,7 @@ export default class Board {
     return this[_screen].calcScreen();
   }
 
-  setCursor(cursor: TypePointCursor) {
+  setCursor(cursor: PointCursor) {
     this[_displayCanvas].style.cursor = cursor;
   }
 
@@ -249,7 +249,7 @@ export default class Board {
     this[_displayCanvas].style.cursor = 'auto';
   }
 
-  resetSize(opts: TypeBoardSizeOptions) {
+  resetSize(opts: BoardSizeOptions) {
     this[_opts] = { ...this[_opts], ...opts };
     this[_resetContext]();
     this[_ctx].resetSize(opts);
@@ -271,7 +271,7 @@ export default class Board {
     return lineWidth;
   }
 
-  pointScreenToContext(screenPoint: TypePoint): TypePoint {
+  pointScreenToContext(screenPoint: Point): Point {
     const { scrollX, scrollY, scale } = this.getTransform();
     const ctxPoint = {
       x: (screenPoint.x - scrollX) / scale,
@@ -280,7 +280,7 @@ export default class Board {
     return ctxPoint;
   }
 
-  pointContextToScreen(ctxPoint: TypePoint): TypePoint {
+  pointContextToScreen(ctxPoint: Point): Point {
     const { scrollX, scrollY, scale } = this.getTransform();
     const screenPoint = {
       x: ctxPoint.x * scale + scrollX,
@@ -316,7 +316,7 @@ export default class Board {
     });
   }
 
-  private [_parsePrivateOptions](opts: TypeBoardOptions): PrivateOptions {
+  private [_parsePrivateOptions](opts: BoardOptions): PrivateOptions {
     const defaultOpts = {
       devicePixelRatio: 1
     };
@@ -344,7 +344,7 @@ export default class Board {
       let scrollType: 'x' | 'y' | null = null;
       this.on(
         'moveStart',
-        throttle((p: TypePoint) => {
+        throttle((p: Point) => {
           if (this[_scroller].isPointAtScrollX(p)) {
             scrollType = 'x';
           } else if (this[_scroller].isPointAtScrollY(p)) {
@@ -355,7 +355,7 @@ export default class Board {
 
       this.on(
         'move',
-        throttle((p: TypePoint) => {
+        throttle((p: Point) => {
           if (scrollType) {
             this[_doMoveScroll](scrollType, p);
           }
@@ -364,7 +364,7 @@ export default class Board {
 
       this.on(
         'moveEnd',
-        throttle((p: TypePoint) => {
+        throttle((p: Point) => {
           if (scrollType) {
             this[_doMoveScroll](scrollType, p);
           }
@@ -372,7 +372,7 @@ export default class Board {
         }, 16)
       );
 
-      // this.on('doubleClick', (p: TypePoint) => {})
+      // this.on('doubleClick', (p: Point) => {})
     }
   }
 
@@ -414,7 +414,7 @@ export default class Board {
     this.draw();
   }
 
-  private [_doMoveScroll](scrollType: 'x' | 'y', point: TypePoint) {
+  private [_doMoveScroll](scrollType: 'x' | 'y', point: Point) {
     if (!scrollType) {
       return;
     }

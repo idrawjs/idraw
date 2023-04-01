@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import {
-  TypeData,
-  TypeHelper,
-  TypeHelperConfig,
-  TypeHelperUpdateOpts,
-  TypeHelperWrapperControllerDirection,
-  TypeElement,
-  TypeElemDesc,
-  TypeContext,
-  TypePoint,
-  TypeConfigStrict,
-  TypeHeplerSelectedElementWrapper
+  IDrawData,
+  Helper,
+  HelperConfig,
+  HelperUpdateOpts,
+  HelperWrapperControllerDirection,
+  DataElement,
+  DataElemDesc,
+  IDrawContext,
+  Point,
+  IDrawConfigStrict,
+  HeplerSelectedElementWrapper
 } from '@idraw/types';
 import Board from '@idraw/board';
 import { deepClone } from '@idraw/util';
@@ -20,15 +20,15 @@ import { LIMIT_QBLIQUE_ANGLE } from './../constant/element';
 
 const limitQbliqueAngle = LIMIT_QBLIQUE_ANGLE;
 
-export class Helper implements TypeHelper {
-  private _helperConfig: TypeHelperConfig;
-  private _coreConfig: TypeConfigStrict;
-  private _ctx: TypeContext;
+export class Helper implements Helper {
+  private _helperConfig: HelperConfig;
+  private _coreConfig: IDrawConfigStrict;
+  private _ctx: IDrawContext;
   private _board: Board;
-  private _areaStart: TypePoint = { x: 0, y: 0 };
-  private _areaEnd: TypePoint = { x: 0, y: 0 };
+  private _areaStart: Point = { x: 0, y: 0 };
+  private _areaEnd: Point = { x: 0, y: 0 };
 
-  constructor(board: Board, config: TypeConfigStrict) {
+  constructor(board: Board, config: IDrawConfigStrict) {
     this._board = board;
     this._ctx = this._board.getContext();
     this._coreConfig = config;
@@ -37,13 +37,13 @@ export class Helper implements TypeHelper {
     };
   }
 
-  updateConfig(data: TypeData, opts: TypeHelperUpdateOpts): void {
+  updateConfig(data: IDrawData, opts: HelperUpdateOpts): void {
     this._updateElementIndex(data);
     this._updateSelectedElementWrapper(data, opts);
     this._updateSelectedElementListWrapper(data, opts);
   }
 
-  getConfig(): TypeHelperConfig {
+  getConfig(): HelperConfig {
     return deepClone(this._helperConfig);
   }
 
@@ -56,20 +56,20 @@ export class Helper implements TypeHelper {
   }
 
   isPointInElementWrapperController(
-    p: TypePoint,
-    data?: TypeData
+    p: Point,
+    data?: IDrawData
   ): {
     uuid: string | null | undefined;
-    selectedControllerDirection: TypeHelperWrapperControllerDirection | null;
-    hoverControllerDirection: TypeHelperWrapperControllerDirection | null;
+    selectedControllerDirection: HelperWrapperControllerDirection | null;
+    hoverControllerDirection: HelperWrapperControllerDirection | null;
     directIndex: number | null;
   } {
     const ctx = this._ctx;
     const uuid = this._helperConfig?.selectedElementWrapper?.uuid || null;
     let directIndex = null;
-    let selectedControllerDirection: TypeHelperWrapperControllerDirection | null =
+    let selectedControllerDirection: HelperWrapperControllerDirection | null =
       null;
-    let hoverControllerDirection: TypeHelperWrapperControllerDirection | null =
+    let hoverControllerDirection: HelperWrapperControllerDirection | null =
       null;
     if (!this._helperConfig.selectedElementWrapper) {
       return {
@@ -90,7 +90,7 @@ export class Helper implements TypeHelper {
       wrapper.controllers.bottom,
       wrapper.controllers.bottomRight
     ];
-    const directionNames: TypeHelperWrapperControllerDirection[] = [
+    const directionNames: HelperWrapperControllerDirection[] = [
       'right',
       'top-right',
       'top',
@@ -191,7 +191,7 @@ export class Helper implements TypeHelper {
     };
   }
 
-  isPointInElementList(p: TypePoint, data: TypeData): boolean {
+  isPointInElementList(p: Point, data: IDrawData): boolean {
     const ctx = this._ctx;
     let idx = -1;
     let uuid = null;
@@ -232,12 +232,12 @@ export class Helper implements TypeHelper {
     }
   }
 
-  startSelectArea(p: TypePoint) {
+  startSelectArea(p: Point) {
     this._areaStart = p;
     this._areaEnd = p;
   }
 
-  changeSelectArea(p: TypePoint) {
+  changeSelectArea(p: Point) {
     this._areaEnd = p;
     this._calcSelectedArea();
   }
@@ -248,7 +248,7 @@ export class Helper implements TypeHelper {
     this._calcSelectedArea();
   }
 
-  calcSelectedElements(data: TypeData) {
+  calcSelectedElements(data: IDrawData) {
     const transform = this._ctx.getTransform();
     const { scale = 1, scrollX = 0, scrollY = 0 } = transform;
     const start = this._areaStart;
@@ -303,16 +303,16 @@ export class Helper implements TypeHelper {
     };
   }
 
-  private _updateElementIndex(data: TypeData) {
+  private _updateElementIndex(data: IDrawData) {
     this._helperConfig.elementIndexMap = {};
-    data.elements.forEach((elem: TypeElement<keyof TypeElemDesc>, i) => {
+    data.elements.forEach((elem: DataElement<keyof DataElemDesc>, i) => {
       this._helperConfig.elementIndexMap[elem.uuid] = i;
     });
   }
 
   private _updateSelectedElementWrapper(
-    data: TypeData,
-    opts: TypeHelperUpdateOpts
+    data: IDrawData,
+    opts: HelperUpdateOpts
   ) {
     const { selectedUUID: uuid } = opts;
     if (
@@ -334,11 +334,11 @@ export class Helper implements TypeHelper {
   }
 
   private _updateSelectedElementListWrapper(
-    data: TypeData,
-    opts: TypeHelperUpdateOpts
+    data: IDrawData,
+    opts: HelperUpdateOpts
   ) {
     const { selectedUUIDList } = opts;
-    const wrapperList: TypeHeplerSelectedElementWrapper[] = [];
+    const wrapperList: HeplerSelectedElementWrapper[] = [];
     data.elements.forEach((elem) => {
       if (selectedUUIDList?.includes(elem.uuid)) {
         const wrapper = this._createSelectedElementWrapper(elem, opts);
@@ -349,9 +349,9 @@ export class Helper implements TypeHelper {
   }
 
   private _createSelectedElementWrapper(
-    elem: TypeElement<keyof TypeElemDesc>,
-    opts: TypeHelperUpdateOpts
-  ): TypeHeplerSelectedElementWrapper {
+    elem: DataElement<keyof DataElemDesc>,
+    opts: HelperUpdateOpts
+  ): HeplerSelectedElementWrapper {
     const { scale } = opts;
     const elemWrapper = this._coreConfig.elementWrapper;
     const controllerSize = elemWrapper.controllerSize / scale;
@@ -372,7 +372,7 @@ export class Helper implements TypeHelper {
     // const controllerOffset = controllerSize;
     const controllerOffset = lineWidth;
 
-    const wrapper: TypeHeplerSelectedElementWrapper = {
+    const wrapper: HeplerSelectedElementWrapper = {
       uuid: elem.uuid,
       controllerSize: controllerSize,
       controllerOffset: controllerOffset,

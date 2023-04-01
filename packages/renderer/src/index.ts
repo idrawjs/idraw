@@ -1,4 +1,9 @@
-import { TypeData, TypeContext, TypeElement, TypeElemDesc } from '@idraw/types';
+import {
+  IDrawData,
+  IDrawContext,
+  DataElement,
+  DataElemDesc
+} from '@idraw/types';
 import { createUUID, deepClone, Context } from '@idraw/util';
 import { drawContext } from './lib/draw';
 import { TypeLoadDataItem } from './lib/loader-event';
@@ -17,7 +22,7 @@ import {
 
 const { requestAnimationFrame } = window;
 
-type QueueItem = { data: TypeData };
+type QueueItem = { data: IDrawData };
 enum DrawStatus {
   NULL = 'null',
   FREE = 'free',
@@ -36,7 +41,7 @@ type Options = {
 
 export default class Renderer extends RendererEvent {
   private [_queue]: QueueItem[] = [];
-  private [_ctx]: TypeContext | null = null;
+  private [_ctx]: IDrawContext | null = null;
   private [_status]: DrawStatus = DrawStatus.NULL;
   private [_loader]: Loader;
   private [_opts]?: Options;
@@ -60,8 +65,8 @@ export default class Renderer extends RendererEvent {
   }
 
   render(
-    target: HTMLCanvasElement | TypeContext,
-    originData: TypeData,
+    target: HTMLCanvasElement | IDrawContext,
+    originData: IDrawData,
     opts?: {
       // forceUpdate?: boolean,
       changeResourceUUIDs?: string[];
@@ -77,7 +82,7 @@ export default class Renderer extends RendererEvent {
 
     const data = deepClone(originData);
     if (Array.isArray(data.elements)) {
-      data.elements.forEach((elem: TypeElement<keyof TypeElemDesc>) => {
+      data.elements.forEach((elem: DataElement<keyof DataElemDesc>) => {
         if (!(typeof elem.uuid === 'string' && elem.uuid)) {
           elem.uuid = createUUID();
         }
@@ -105,7 +110,7 @@ export default class Renderer extends RendererEvent {
         });
       } else if (target) {
         // TODO
-        this[_ctx] = target as TypeContext;
+        this[_ctx] = target as IDrawContext;
       }
     }
 
@@ -122,7 +127,7 @@ export default class Renderer extends RendererEvent {
     this[_loader].load(data, changeResourceUUIDs || []);
   }
 
-  getContext(): TypeContext | null {
+  getContext(): IDrawContext | null {
     return this[_ctx];
   }
 

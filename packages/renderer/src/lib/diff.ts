@@ -1,65 +1,64 @@
-import { TypeElement, TypeData, TypeElemDesc } from '@idraw/types';
+import { DataElement, IDrawData, DataElemDesc } from '@idraw/types';
 
-type TypeElementMap = {
-  [uuid: string]: TypeElement<keyof TypeElemDesc>
-}
-
+type DataElementMap = {
+  [uuid: string]: DataElement<keyof DataElemDesc>;
+};
 
 export function isChangeImageElementResource(
-  before: TypeElement<'image'>,
-  after: TypeElement<'image'>,
+  before: DataElement<'image'>,
+  after: DataElement<'image'>
 ): boolean {
-  return (before?.desc?.src !== after?.desc?.src);
+  return before?.desc?.src !== after?.desc?.src;
 }
 
-
 export function isChangeSVGElementResource(
-  before: TypeElement<'svg'>,
-  after: TypeElement<'svg'>,
+  before: DataElement<'svg'>,
+  after: DataElement<'svg'>
 ): boolean {
-  return (before?.desc?.svg !== after?.desc?.svg);
+  return before?.desc?.svg !== after?.desc?.svg;
 }
 
 export function isChangeHTMLElementResource(
-  before: TypeElement<'html'>,
-  after: TypeElement<'html'>,
+  before: DataElement<'html'>,
+  after: DataElement<'html'>
 ): boolean {
   return (
-    before?.desc?.html !== after?.desc?.html
-    || before?.desc?.width !== after?.desc?.width
-    || before?.desc?.height !== after?.desc?.height
+    before?.desc?.html !== after?.desc?.html ||
+    before?.desc?.width !== after?.desc?.width ||
+    before?.desc?.height !== after?.desc?.height
   );
 }
 
 export function diffElementResourceChange(
-  before: TypeElement<keyof TypeElemDesc>,
-  after: TypeElement<keyof TypeElemDesc>,
+  before: DataElement<keyof DataElemDesc>,
+  after: DataElement<keyof DataElemDesc>
 ): string | null {
   let result = null;
   let isChange = false;
   switch (after.type) {
     case 'image': {
       isChange = isChangeImageElementResource(
-        before as TypeElement<'image'>,
-        after as TypeElement<'image'>
+        before as DataElement<'image'>,
+        after as DataElement<'image'>
       );
       break;
     }
     case 'svg': {
       isChange = isChangeSVGElementResource(
-        before as TypeElement<'svg'>,
-        after as TypeElement<'svg'>
+        before as DataElement<'svg'>,
+        after as DataElement<'svg'>
       );
       break;
     }
     case 'html': {
       isChange = isChangeHTMLElementResource(
-        before as TypeElement<'html'>,
-        after as TypeElement<'html'>
+        before as DataElement<'html'>,
+        after as DataElement<'html'>
       );
       break;
     }
-    default: break;
+    default:
+      break;
   }
   if (isChange === true) {
     result = after.uuid;
@@ -68,8 +67,8 @@ export function diffElementResourceChange(
 }
 
 export function diffElementResourceChangeList(
-  before: TypeData,
-  after: TypeData,
+  before: IDrawData,
+  after: IDrawData
 ): string[] {
   const uuids: string[] = [];
   const beforeMap = parseDataElementMap(before);
@@ -83,26 +82,27 @@ export function diffElementResourceChangeList(
       switch (beforeMap[uuid].type) {
         case 'image': {
           isChange = isChangeImageElementResource(
-            beforeMap[uuid] as TypeElement<'image'>,
-            afterMap[uuid] as TypeElement<'image'>
+            beforeMap[uuid] as DataElement<'image'>,
+            afterMap[uuid] as DataElement<'image'>
           );
           break;
         }
         case 'svg': {
           isChange = isChangeSVGElementResource(
-            beforeMap[uuid] as TypeElement<'svg'>,
-            afterMap[uuid] as TypeElement<'svg'>
+            beforeMap[uuid] as DataElement<'svg'>,
+            afterMap[uuid] as DataElement<'svg'>
           );
           break;
         }
         case 'html': {
           isChange = isChangeHTMLElementResource(
-            beforeMap[uuid] as TypeElement<'html'>,
-            afterMap[uuid] as TypeElement<'html'>
+            beforeMap[uuid] as DataElement<'html'>,
+            afterMap[uuid] as DataElement<'html'>
           );
           break;
         }
-        default: break;
+        default:
+          break;
       }
       if (isChange === true) {
         uuids.push(uuid);
@@ -114,11 +114,10 @@ export function diffElementResourceChangeList(
   return uuids;
 }
 
-
-function parseDataElementMap(data: TypeData): TypeElementMap {
-  const elemMap: TypeElementMap = {};
+function parseDataElementMap(data: IDrawData): DataElementMap {
+  const elemMap: DataElementMap = {};
   data.elements.forEach((elem) => {
     elemMap[elem.uuid] = elem;
-  })
+  });
   return elemMap;
 }

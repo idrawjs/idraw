@@ -1,12 +1,12 @@
 import {
-  TypeContext,
-  // TypeElemDesc,
-  TypeElement
+  IDrawContext,
+  // DataElemDesc,
+  DataElement
 } from '@idraw/types';
 import { is, istype, isColorStr } from '@idraw/util';
 import { rotateElement } from './../transform';
 
-export function clearContext(ctx: TypeContext) {
+export function clearContext(ctx: IDrawContext) {
   // ctx.setFillStyle('rgb(0 0 0 / 100%)');
   // ctx.setStrokeStyle('rgb(0 0 0 / 100%)');
   ctx.setFillStyle('#000000');
@@ -19,15 +19,15 @@ export function clearContext(ctx: TypeContext) {
   ctx.setShadowBlur(0);
 }
 
-export function drawBgColor(ctx: TypeContext, color: string) {
+export function drawBgColor(ctx: IDrawContext, color: string) {
   const size = ctx.getSize();
   ctx.setFillStyle(color);
   ctx.fillRect(0, 0, size.contextWidth, size.contextHeight);
 }
 
 export function drawBox(
-  ctx: TypeContext,
-  elem: TypeElement<'text' | 'rect'>,
+  ctx: IDrawContext,
+  elem: DataElement<'text' | 'rect'>,
   pattern: string | CanvasPattern | null
 ): void {
   clearContext(ctx);
@@ -57,8 +57,8 @@ export function drawBox(
 }
 
 export function drawBoxBorder(
-  ctx: TypeContext,
-  elem: TypeElement<'text' | 'rect'>
+  ctx: IDrawContext,
+  elem: DataElement<'text' | 'rect'>
 ): void {
   clearContext(ctx);
   rotateElement(ctx, elem, () => {

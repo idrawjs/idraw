@@ -1,23 +1,23 @@
-export type TypePaintData = {
-  brushMap: {[name: string]: TypePaintBrush},
-  paths: TypePaintPath[],
-}
+export type PaintData = {
+  brushMap: { [name: string]: PaintBrush };
+  paths: PaintPath[];
+};
 
-export type TypePaintBrush = {
+export type PaintBrush = {
   name: string;
   src: string;
-}
+};
 
-export type TypePaintPath = {
-  brush: string,
+export type PaintPath = {
+  brush: string;
   size: number;
-  positions: TypePaintPosition[],
+  positions: PaintPosition[];
   color: string;
   pressure: number;
-}
+};
 
-export type TypePaintPosition = {
-  x: number,
-  y: number,
-  t: number,
-}
+export type PaintPosition = {
+  x: number;
+  y: number;
+  t: number;
+};

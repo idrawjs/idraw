@@ -1,4 +1,4 @@
-import { TypeElement, TypeElemDesc, TypeElementBase } from '@idraw/types';
+import { DataElement, DataElemDesc, DataElementBase } from '@idraw/types';
 import { deepClone, createUUID } from '@idraw/util';
 import { _data, _element, _engine, _draw, _emitChangeData } from './../names';
 import { diffElementResourceChange } from './../lib/diff';
@@ -7,8 +7,8 @@ import { Mode } from './../constant/static';
 
 export function getSelectedElements(
   core: Core
-): TypeElement<keyof TypeElemDesc>[] {
-  const elems: TypeElement<keyof TypeElemDesc>[] = [];
+): DataElement<keyof DataElemDesc>[] {
+  const elems: DataElement<keyof DataElemDesc>[] = [];
   let list: string[] = [];
   const uuid = core[_engine].temp.get('selectedUUID');
   if (typeof uuid === 'string' && uuid) {
@@ -29,8 +29,8 @@ export function getSelectedElements(
 export function getElement(
   core: Core,
   uuid: string
-): TypeElement<keyof TypeElemDesc> | null {
-  let elem: TypeElement<keyof TypeElemDesc> | null = null;
+): DataElement<keyof DataElemDesc> | null {
+  let elem: DataElement<keyof DataElemDesc> | null = null;
   const index = core[_engine].helper.getElementIndexByUUID(uuid);
   if (index !== null && core[_data].elements[index]) {
     elem = deepClone(core[_data].elements[index]);
@@ -41,8 +41,8 @@ export function getElement(
 export function getElementByIndex(
   core: Core,
   index: number
-): TypeElement<keyof TypeElemDesc> | null {
-  let elem: TypeElement<keyof TypeElemDesc> | null = null;
+): DataElement<keyof DataElemDesc> | null {
+  let elem: DataElement<keyof DataElemDesc> | null = null;
   if (index >= 0 && core[_data].elements[index]) {
     elem = deepClone(core[_data].elements[index]);
   }
@@ -51,9 +51,9 @@ export function getElementByIndex(
 
 export function updateElement(
   core: Core,
-  elem: TypeElement<keyof TypeElemDesc>
+  elem: DataElement<keyof DataElemDesc>
 ) {
-  const _elem = deepClone(elem) as TypeElement<keyof TypeElemDesc>;
+  const _elem = deepClone(elem) as DataElement<keyof DataElemDesc>;
   const data = core[_data];
   const resourceChangeUUIDs: string[] = [];
   for (let i = 0; i < data.elements.length; i++) {
@@ -145,7 +145,7 @@ export function moveDownElement(core: Core, uuid: string): void {
 
 export function addElement(
   core: Core,
-  elem: TypeElementBase<keyof TypeElemDesc>
+  elem: DataElementBase<keyof DataElemDesc>
 ): string | null {
   const _elem = deepClone(elem);
   _elem.uuid = createUUID();
@@ -166,7 +166,7 @@ export function deleteElement(core: Core, uuid: string) {
 
 export function insertElementBefore(
   core: Core,
-  elem: TypeElementBase<keyof TypeElemDesc>,
+  elem: DataElementBase<keyof DataElemDesc>,
   beforeUUID: string
 ) {
   const index = core[_engine].helper.getElementIndexByUUID(beforeUUID);
@@ -178,7 +178,7 @@ export function insertElementBefore(
 
 export function insertElementBeforeIndex(
   core: Core,
-  elem: TypeElementBase<keyof TypeElemDesc>,
+  elem: DataElementBase<keyof DataElemDesc>,
   index: number
 ) {
   const _elem = deepClone(elem);
@@ -194,7 +194,7 @@ export function insertElementBeforeIndex(
 
 export function insertElementAfter(
   core: Core,
-  elem: TypeElementBase<keyof TypeElemDesc>,
+  elem: DataElementBase<keyof DataElemDesc>,
   beforeUUID: string
 ) {
   const index = core[_engine].helper.getElementIndexByUUID(beforeUUID);
@@ -206,7 +206,7 @@ export function insertElementAfter(
 
 export function insertElementAfterIndex(
   core: Core,
-  elem: TypeElementBase<keyof TypeElemDesc>,
+  elem: DataElementBase<keyof DataElemDesc>,
   index: number
 ) {
   const _elem = deepClone(elem);

@@ -1,6 +1,6 @@
-import type { TypeDataBase } from '@idraw/types';
+import type { IDrawDataBase } from '@idraw/types';
 
-const data: TypeDataBase = {
+const data: IDrawDataBase = {
   bgColor: '#ffffff',
   elements: [
     {

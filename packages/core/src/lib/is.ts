@@ -100,7 +100,7 @@ function fontWeight(value: any) {
   return ['bold'].includes(value);
 }
 
-const is: TypeIs = {
+const is: IsTypeUtil = {
   x,
   y,
   w,
@@ -124,7 +124,7 @@ const is: TypeIs = {
   strokeWidth
 };
 
-type TypeIs = {
+type IsTypeUtil = {
   x: (value: any) => boolean;
   y: (value: any) => boolean;
   w: (value: any) => boolean;
@@ -150,4 +150,4 @@ type TypeIs = {
 
 export default is;
 
-export { TypeIs };
+export { IsTypeUtil };

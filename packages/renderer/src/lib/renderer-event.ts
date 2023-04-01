@@ -1,30 +1,39 @@
-import { TypeElement, TypeElemDesc } from '@idraw/types';
-
+import { DataElement, DataElemDesc } from '@idraw/types';
 
 export type TypeRendererEventArgMap = {
-  'drawFrame': { t: number };
-  'drawFrameComplete': { t: number };
-  'load': { element: TypeElement<keyof TypeElemDesc> },
-  'loadComplete': { t: number },
-  'error': { element: TypeElement<keyof TypeElemDesc>, error: any }
-}
- 
-export interface TypeRendererEvent {
-  on<T extends keyof TypeRendererEventArgMap >(key: T, callback: (p: TypeRendererEventArgMap[T]) => void): void
-  off<T extends keyof TypeRendererEventArgMap >(key: T, callback: (p: TypeRendererEventArgMap[T]) => void): void
-  trigger<T extends keyof TypeRendererEventArgMap >(key: T, p: TypeRendererEventArgMap[T]): void
-}
+  drawFrame: { t: number };
+  drawFrameComplete: { t: number };
+  load: { element: DataElement<keyof DataElemDesc> };
+  loadComplete: { t: number };
+  error: { element: DataElement<keyof DataElemDesc>; error: any };
+};
 
+export interface TypeRendererEvent {
+  on<T extends keyof TypeRendererEventArgMap>(
+    key: T,
+    callback: (p: TypeRendererEventArgMap[T]) => void
+  ): void;
+  off<T extends keyof TypeRendererEventArgMap>(
+    key: T,
+    callback: (p: TypeRendererEventArgMap[T]) => void
+  ): void;
+  trigger<T extends keyof TypeRendererEventArgMap>(
+    key: T,
+    p: TypeRendererEventArgMap[T]
+  ): void;
+}
 
 export class RendererEvent implements TypeRendererEvent {
-
   private _listeners: Map<string, ((p: any) => void)[]>;
 
   constructor() {
     this._listeners = new Map();
   }
 
-  on<T extends keyof TypeRendererEventArgMap >(eventKey: T, callback: (p: TypeRendererEventArgMap[T]) => void) {
+  on<T extends keyof TypeRendererEventArgMap>(
+    eventKey: T,
+    callback: (p: TypeRendererEventArgMap[T]) => void
+  ) {
     if (this._listeners.has(eventKey)) {
       const callbacks = this._listeners.get(eventKey);
       callbacks?.push(callback);
@@ -33,8 +42,11 @@ export class RendererEvent implements TypeRendererEvent {
       this._listeners.set(eventKey, [callback]);
     }
   }
-  
-  off<T extends keyof TypeRendererEventArgMap >(eventKey: T, callback: (p: TypeRendererEventArgMap[T]) => void) {
+
+  off<T extends keyof TypeRendererEventArgMap>(
+    eventKey: T,
+    callback: (p: TypeRendererEventArgMap[T]) => void
+  ) {
     if (this._listeners.has(eventKey)) {
       const callbacks = this._listeners.get(eventKey);
       if (Array.isArray(callbacks)) {
@@ -49,7 +61,10 @@ export class RendererEvent implements TypeRendererEvent {
     }
   }
 
-  trigger<T extends keyof TypeRendererEventArgMap >(eventKey: T, arg: TypeRendererEventArgMap[T]) {
+  trigger<T extends keyof TypeRendererEventArgMap>(
+    eventKey: T,
+    arg: TypeRendererEventArgMap[T]
+  ) {
     const callbacks = this._listeners.get(eventKey);
     if (Array.isArray(callbacks)) {
       callbacks.forEach((cb) => {
@@ -61,14 +76,14 @@ export class RendererEvent implements TypeRendererEvent {
     }
   }
 
-  has<T extends keyof TypeRendererEventArgMap> (name: string) {
+  has<T extends keyof TypeRendererEventArgMap>(name: string) {
     if (this._listeners.has(name)) {
-      const list: ((p: TypeRendererEventArgMap[T]) => void)[] | undefined = this._listeners.get(name);
+      const list: ((p: TypeRendererEventArgMap[T]) => void)[] | undefined =
+        this._listeners.get(name);
       if (Array.isArray(list) && list.length > 0) {
         return true;
       }
     }
     return false;
   }
-
 }
