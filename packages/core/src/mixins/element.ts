@@ -65,8 +65,8 @@ export function updateElement(
       break;
     }
   }
-  core.__emitChangeData();
-  core.__draw({ resourceChangeUUIDs });
+  core.$emitChangeData();
+  core.$draw({ resourceChangeUUIDs });
 }
 
 export function selectElementByIndex(core: Core, index: number): void {
@@ -77,7 +77,7 @@ export function selectElementByIndex(core: Core, index: number): void {
       core.getEngine().temp.set('selectedUUID', uuid);
       core.getEngine().temp.set('selectedUUIDList', []);
     }
-    core.__draw();
+    core.$draw();
   }
 }
 
@@ -97,7 +97,7 @@ export function cancelElementByIndex(core: Core, index: number): void {
       core.getEngine().temp.set('selectedUUID', null);
       core.getEngine().temp.set('selectedUUIDList', []);
     }
-    core.__draw();
+    core.$draw();
   }
 }
 
@@ -119,8 +119,8 @@ export function moveUpElement(core: Core, uuid: string): void {
     core.getData().elements[index] = core.getData().elements[index + 1];
     core.getData().elements[index + 1] = temp;
   }
-  core.__emitChangeData();
-  core.__draw();
+  core.$emitChangeData();
+  core.$draw();
 }
 
 export function moveDownElement(core: Core, uuid: string): void {
@@ -134,8 +134,8 @@ export function moveDownElement(core: Core, uuid: string): void {
     core.getData().elements[index] = core.getData().elements[index - 1];
     core.getData().elements[index - 1] = temp;
   }
-  core.__emitChangeData();
-  core.__draw();
+  core.$emitChangeData();
+  core.$draw();
 }
 
 export function addElement(
@@ -145,19 +145,17 @@ export function addElement(
   const _elem = deepClone(elem);
   _elem.uuid = createUUID();
   core.getData().elements.push(_elem);
-  core.__emitChangeData();
-  core.__draw();
+  core.$emitChangeData();
+  core.$draw();
   return _elem.uuid;
 }
 
 export function deleteElement(core: Core, uuid: string) {
-  const index = core
-    .__getElementHandler()
-    .getElementIndex(core.getData(), uuid);
+  const index = core.$getElementHandler().getElementIndex(core.getData(), uuid);
   if (index >= 0) {
     core.getData().elements.splice(index, 1);
-    core.__emitChangeData();
-    core.__draw();
+    core.$emitChangeData();
+    core.$draw();
   }
 }
 
@@ -182,8 +180,8 @@ export function insertElementBeforeIndex(
   _elem.uuid = createUUID();
   if (index >= 0) {
     core.getData().elements.splice(index, 0, _elem);
-    core.__emitChangeData();
-    core.__draw();
+    core.$emitChangeData();
+    core.$draw();
     return _elem.uuid;
   }
   return null;
@@ -210,8 +208,8 @@ export function insertElementAfterIndex(
   _elem.uuid = createUUID();
   if (index >= 0) {
     core.getData().elements.splice(index + 1, 0, _elem);
-    core.__emitChangeData();
-    core.__draw();
+    core.$emitChangeData();
+    core.$draw();
     return _elem.uuid;
   }
   return null;

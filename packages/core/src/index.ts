@@ -108,11 +108,11 @@ export default class Core {
       board: this._board,
       element: this._elementHandler,
       config: this._config,
-      drawFeekback: this.__draw.bind(this),
+      drawFeekback: this.$draw.bind(this),
       getDataFeekback: () => this._data,
       selectElementByIndex: this.selectElementByIndex.bind(this),
       emitChangeScreen: this._emitChangeScreen.bind(this),
-      emitChangeData: this.__emitChangeData.bind(this)
+      emitChangeData: this.$emitChangeData.bind(this)
     });
     this._engine.init();
 
@@ -134,7 +134,7 @@ export default class Core {
     }
   }
 
-  __draw(opts?: { resourceChangeUUIDs?: string[] }): void {
+  $draw(opts?: { resourceChangeUUIDs?: string[] }): void {
     this._engine.updateHelperConfig({
       width: this._opts.width,
       height: this._opts.height,
@@ -226,26 +226,26 @@ export default class Core {
   resetSize(opts: BoardSizeOptions) {
     this._opts = { ...this._opts, ...opts };
     this._board.resetSize(opts);
-    this.__draw();
+    this.$draw();
   }
 
   scale(ratio: number): ScreenContext {
     const screen = this._board.scale(ratio);
-    this.__draw();
+    this.$draw();
     this._emitChangeScreen();
     return screen;
   }
 
   scrollLeft(left: number): ScreenContext {
     const screen = this._board.scrollX(0 - left);
-    this.__draw();
+    this.$draw();
     this._emitChangeScreen();
     return screen;
   }
 
   scrollTop(top: number): ScreenContext {
     const screen = this._board.scrollY(0 - top);
-    this.__draw();
+    this.$draw();
     this._emitChangeScreen();
     return screen;
   }
@@ -267,14 +267,14 @@ export default class Core {
     const resourceChangeUUIDs = diffElementResourceChangeList(this._data, data);
     this._data = this._elementHandler.initData(deepClone(parseData(data)));
     if (opts && opts.triggerChangeEvent === true) {
-      this.__emitChangeData();
+      this.$emitChangeData();
     }
-    this.__draw({ resourceChangeUUIDs });
+    this.$draw({ resourceChangeUUIDs });
   }
 
   clearOperation() {
     this._tempData.clear();
-    this.__draw();
+    this.$draw();
   }
 
   on<T extends keyof TypeCoreEventArgMap>(
@@ -303,25 +303,25 @@ export default class Core {
     return this._board.pointContextToScreen(p);
   }
 
-  __getBoardContext(): IDrawContext {
+  $getBoardContext(): IDrawContext {
     return this._board.getContext();
   }
 
-  __getDisplayContext2D(): CanvasRenderingContext2D {
+  $getDisplayContext2D(): CanvasRenderingContext2D {
     return this._board.getDisplayContext2D();
   }
 
-  __getOriginContext2D(): CanvasRenderingContext2D {
+  $getOriginContext2D(): CanvasRenderingContext2D {
     return this._board.getOriginContext2D();
   }
 
-  __emitChangeData() {
+  $emitChangeData() {
     if (this._coreEvent.has('changeData')) {
       this._coreEvent.trigger('changeData', deepClone(this._data));
     }
   }
 
-  __getElementHandler() {
+  $getElementHandler() {
     return this._elementHandler;
   }
 }
