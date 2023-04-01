@@ -61,10 +61,10 @@ type HelperUpdateOpts = {
   scrollY: number;
 };
 
-interface Helper {
-  updateConfig(data: IDrawData, opts: HelperUpdateOpts): void;
-  getConfig(): HelperConfig;
-}
+// interface Helper {
+//   updateConfig(data: IDrawData, opts: HelperUpdateOpts): void;
+//   getConfig(): HelperConfig;
+// }
 
 type HelperWrapperControllerDirection =
   | 'top-left'
@@ -78,7 +78,7 @@ type HelperWrapperControllerDirection =
   | 'rotate';
 
 export {
-  Helper,
+  // Helper,
   HelperConfig,
   HelperUpdateOpts,
   HelperWrapperControllerDirection,

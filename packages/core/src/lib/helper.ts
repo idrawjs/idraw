@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import {
   IDrawData,
-  Helper,
   HelperConfig,
   HelperUpdateOpts,
   HelperWrapperControllerDirection,
@@ -20,7 +19,7 @@ import { LIMIT_QBLIQUE_ANGLE } from './../constant/element';
 
 const limitQbliqueAngle = LIMIT_QBLIQUE_ANGLE;
 
-export class Helper implements Helper {
+export class Helper {
   private _helperConfig: HelperConfig;
   private _coreConfig: IDrawConfigStrict;
   private _ctx: IDrawContext;

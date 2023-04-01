@@ -4,15 +4,7 @@ import { Options, PrivateOptions } from './types';
 import { defaultOptions } from './config';
 import { TempData } from './lib/temp';
 import { KeyboardWatcher } from './lib/keyboard-watcher';
-import {
-  _opts,
-  _hasInited,
-  _initEvent,
-  _tempData,
-  _createOpts,
-  _pushRecord,
-  _keyboardWatcher
-} from './names';
+
 import { redo, undo } from './mixins/record';
 import { exportDataURL, toDataURL } from './mixins/file';
 import {
@@ -29,10 +21,10 @@ import {
 // import { version } from './../package.json';
 
 export default class iDraw extends Core {
-  private [_opts]: PrivateOptions;
-  private [_hasInited] = false;
-  private [_tempData] = new TempData();
-  private [_keyboardWatcher] = new KeyboardWatcher();
+  private _opts: PrivateOptions;
+  private _hasInited = false;
+  private _tempData = new TempData();
+  private _keyboardWatcher = new KeyboardWatcher();
 
   // static version = version;
 
@@ -50,8 +42,8 @@ export default class iDraw extends Core {
       },
       config || {}
     );
-    this[_opts] = this[_createOpts](opts);
-    this[_initEvent]();
+    this._opts = this._createOpts(opts);
+    this._initEvent();
   }
 
   undo(): { doRecordCount: number; data: IDrawData | null } {
@@ -66,6 +58,10 @@ export default class iDraw extends Core {
     return toDataURL(this, type, quality);
   }
 
+  getTempData() {
+    return this._tempData;
+  }
+
   async exportDataURL(
     type: 'image/png' | 'image/jpeg',
     quality?: number
@@ -73,21 +69,21 @@ export default class iDraw extends Core {
     return exportDataURL(this, type, quality);
   }
 
-  private [_initEvent]() {
-    if (this[_hasInited] === true) {
+  private _initEvent() {
+    if (this._hasInited === true) {
       return;
     }
     this.on('changeData', (data: IDrawData) => {
-      this[_pushRecord](data);
+      this._pushRecord(data);
     });
     this.on('mouseLeaveScreen', () => {
-      this[_tempData].set('isFocus', false);
+      this._tempData.set('isFocus', false);
     });
     this.on('mouseOverScreen', () => {
-      this[_tempData].set('isFocus', true);
+      this._tempData.set('isFocus', true);
     });
-    if (this[_opts].disableKeyboard === false) {
-      this[_keyboardWatcher]
+    if (this._opts.disableKeyboard === false) {
+      this._keyboardWatcher
         .on('keyboardCopy', () => copyElements(this))
         .on('keyboardPaste', () => pasteElements(this))
         .on('keyboardCut', () => cutElements(this))
@@ -98,20 +94,20 @@ export default class iDraw extends Core {
         .on('keyboardArrowRight', () => keyArrowRight(this))
         .on('keyboardUndo', () => keyUndo(this));
     }
-    this[_hasInited] = true;
+    this._hasInited = true;
   }
 
-  private [_pushRecord](data: IDrawData) {
-    const doRecords = this[_tempData].get('doRecords');
-    if (doRecords.length >= this[_opts].maxRecords) {
+  private _pushRecord(data: IDrawData) {
+    const doRecords = this._tempData.get('doRecords');
+    if (doRecords.length >= this._opts.maxRecords) {
       doRecords.shift();
     }
     doRecords.push({ data, time: Date.now() });
-    this[_tempData].set('doRecords', doRecords);
-    this[_tempData].set('unDoRecords', []);
+    this._tempData.set('doRecords', doRecords);
+    this._tempData.set('unDoRecords', []);
   }
 
-  private [_createOpts](opts: Options): PrivateOptions {
+  private _createOpts(opts: Options): PrivateOptions {
     return { ...{}, ...defaultOptions, ...opts };
   }
 }

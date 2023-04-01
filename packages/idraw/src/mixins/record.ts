@@ -1,13 +1,12 @@
 import { IDrawData } from '@idraw/types';
 import iDraw from './../index';
-import { _tempData } from './../names';
 
 export function undo(idraw: iDraw): {
   doRecordCount: number;
   data: IDrawData | null;
 } {
-  const doRecords = idraw[_tempData].get('doRecords');
-  const unDoRecords = idraw[_tempData].get('unDoRecords');
+  const doRecords = idraw.getTempData().get('doRecords');
+  const unDoRecords = idraw.getTempData().get('unDoRecords');
   if (!(doRecords.length > 1)) {
     return {
       doRecordCount: doRecords.length,
@@ -22,8 +21,8 @@ export function undo(idraw: iDraw): {
   if (record?.data) {
     idraw.setData(record.data);
   }
-  idraw[_tempData].set('doRecords', doRecords);
-  idraw[_tempData].set('unDoRecords', unDoRecords);
+  idraw.getTempData().set('doRecords', doRecords);
+  idraw.getTempData().set('unDoRecords', unDoRecords);
   return {
     doRecordCount: doRecords.length,
     data: record?.data || null
@@ -34,7 +33,7 @@ export function redo(idraw: iDraw): {
   undoRecordCount: number;
   data: IDrawData | null;
 } {
-  const unDoRecords = idraw[_tempData].get('unDoRecords');
+  const unDoRecords = idraw.getTempData().get('unDoRecords');
   if (!(unDoRecords.length > 0)) {
     return {
       undoRecordCount: unDoRecords.length,
@@ -45,7 +44,7 @@ export function redo(idraw: iDraw): {
   if (record?.data) {
     idraw.setData(record.data);
   }
-  idraw[_tempData].set('unDoRecords', unDoRecords);
+  idraw.getTempData().set('unDoRecords', unDoRecords);
   return {
     undoRecordCount: unDoRecords.length,
     data: record?.data || null

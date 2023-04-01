@@ -124,7 +124,7 @@ export class Element {
         'left'
       ].includes(direction)
     ) {
-      const p = calcuScaleElemPosition(elem, moveX, moveY, direction, scale);
+      const p = calcuScaleElemPosition(elem, moveX, moveY, direction);
       elem.x = p.x;
       elem.y = p.y;
       elem.w = p.w;
@@ -168,11 +168,11 @@ function calcuScaleElemPosition(
   elem: DataElement<keyof DataElemDesc>,
   moveX: number,
   moveY: number,
-  direction: HelperWrapperControllerDirection,
-  scale: number
+  direction: HelperWrapperControllerDirection
+  // scale: number
 ): Point & { w: number; h: number } {
   const p = { x: elem.x, y: elem.y, w: elem.w, h: elem.h };
-  let angle = elem.angle;
+  let angle = elem.angle || 0;
   if (angle < 0) {
     angle = Math.max(0, 360 + angle);
   }
@@ -219,7 +219,7 @@ function calcuScaleElemPosition(
       break;
     }
     case 'top': {
-      if (elem.angle === 0 || Math.abs(elem.angle) < limitQbliqueAngle) {
+      if (elem.angle === 0 || Math.abs(elem.angle || 0) < limitQbliqueAngle) {
         if (p.h - moveY > 0) {
           p.y += moveY;
           p.h -= moveY;
@@ -228,7 +228,10 @@ function calcuScaleElemPosition(
             p.w -= (moveY / elem.h) * elem.w;
           }
         }
-      } else if (elem.angle > 0 || elem.angle < 0) {
+      } else if (
+        elem.angle !== undefined &&
+        (elem.angle > 0 || elem.angle < 0)
+      ) {
         const angle =
           elem.angle > 0 ? elem.angle : Math.max(0, elem.angle + 360);
         let moveDist = calcMoveDist(moveX, moveY);
@@ -364,7 +367,7 @@ function calcuScaleElemPosition(
       break;
     }
     case 'right': {
-      if (elem.angle === 0 || Math.abs(elem.angle) < limitQbliqueAngle) {
+      if (elem.angle === 0 || Math.abs(elem.angle || 0) < limitQbliqueAngle) {
         if (elem.w + moveX > 0) {
           p.w += moveX;
           if (elem.operation?.limitRatio === true) {
@@ -372,7 +375,10 @@ function calcuScaleElemPosition(
             p.h += (moveX * elem.h) / elem.w;
           }
         }
-      } else if (elem.angle > 0 || elem.angle < 0) {
+      } else if (
+        elem.angle !== undefined &&
+        (elem.angle > 0 || elem.angle < 0)
+      ) {
         const angle =
           elem.angle > 0 ? elem.angle : Math.max(0, elem.angle + 360);
         let moveDist = calcMoveDist(moveX, moveY);
@@ -447,7 +453,7 @@ function calcuScaleElemPosition(
       break;
     }
     case 'bottom': {
-      if (elem.angle === 0 || Math.abs(elem.angle) < limitQbliqueAngle) {
+      if (elem.angle === 0 || Math.abs(elem.angle || 0) < limitQbliqueAngle) {
         if (elem.h + moveY > 0) {
           p.h += moveY;
           if (elem.operation?.limitRatio === true) {
@@ -455,7 +461,10 @@ function calcuScaleElemPosition(
             p.w += (moveY / elem.h) * elem.w;
           }
         }
-      } else if (elem.angle > 0 || elem.angle < 0) {
+      } else if (
+        elem.angle !== undefined &&
+        (elem.angle > 0 || elem.angle < 0)
+      ) {
         const angle =
           elem.angle > 0 ? elem.angle : Math.max(0, elem.angle + 360);
         let moveDist = calcMoveDist(moveX, moveY);
@@ -530,7 +539,7 @@ function calcuScaleElemPosition(
       break;
     }
     case 'left': {
-      if (elem.angle === 0 || Math.abs(elem.angle) < limitQbliqueAngle) {
+      if (elem.angle === 0 || Math.abs(elem.angle || 0) < limitQbliqueAngle) {
         if (elem.w - moveX > 0) {
           p.x += moveX;
           p.w -= moveX;
@@ -539,7 +548,10 @@ function calcuScaleElemPosition(
             p.y += ((moveX / elem.w) * elem.h) / 2;
           }
         }
-      } else if (elem.angle > 0 || elem.angle < 0) {
+      } else if (
+        elem.angle !== undefined &&
+        (elem.angle > 0 || elem.angle < 0)
+      ) {
         const angle =
           elem.angle > 0 ? elem.angle : Math.max(0, elem.angle + 360);
         let moveDist = calcMoveDist(moveX, moveY);

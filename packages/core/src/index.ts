@@ -27,21 +27,6 @@ import {
   diffElementResourceChangeList
 } from './lib';
 import {
-  _board,
-  _data,
-  _opts,
-  _config,
-  _renderer,
-  _element,
-  _tempData,
-  _draw,
-  _coreEvent,
-  // _mapper,
-  _emitChangeScreen,
-  _emitChangeData,
-  _engine
-} from './names';
-import {
   getSelectedElements,
   updateElement,
   selectElementByIndex,
@@ -68,25 +53,25 @@ import {
 } from './lib/draw/wrapper';
 
 export default class Core {
-  private [_board]: Board;
-  private [_data]: IDrawData;
-  private [_opts]: CoreOptions;
-  private [_config]: IDrawConfigStrict;
-  private [_renderer]: Renderer;
-  private [_element]: Element;
-  private [_coreEvent]: CoreEvent = new CoreEvent();
-  private [_tempData]: TempData = new TempData();
-  private [_engine]: Engine;
+  private _board: Board;
+  private _data: IDrawData;
+  private _opts: CoreOptions;
+  private _config: IDrawConfigStrict;
+  private _renderer: Renderer;
+  private _elementHandler: Element;
+  private _coreEvent: CoreEvent = new CoreEvent();
+  private _tempData: TempData = new TempData();
+  private _engine: Engine;
 
   static is: IsTypeUtil = is;
   static check: CheckTypeUtil = check;
 
   constructor(mount: HTMLDivElement, opts: CoreOptions, config?: IDrawConfig) {
-    this[_data] = { elements: [] };
-    this[_opts] = opts;
-    this[_config] = mergeConfig(config || {});
-    this[_board] = new Board(mount, {
-      ...this[_opts],
+    this._data = { elements: [] };
+    this._opts = opts;
+    this._config = mergeConfig(config || {});
+    this._board = new Board(mount, {
+      ...this._opts,
       canScroll: config?.scrollWrapper?.use,
       scrollConfig: {
         color: config?.scrollWrapper?.color || '#000000',
@@ -94,12 +79,12 @@ export default class Core {
         ...(config?.scrollWrapper || {})
       }
     });
-    this[_renderer] = new Renderer();
+    this._renderer = new Renderer();
     const drawFrame = () => {
-      const helperCtx = this[_board].getHelperContext();
-      const helperConfig = this[_engine].getHelperConfig();
-      this[_board].clear();
-      const { contextWidth, contextHeight, devicePixelRatio } = this[_opts];
+      const helperCtx = this._board.getHelperContext();
+      const helperConfig = this._engine.getHelperConfig();
+      this._board.clear();
+      const { contextWidth, contextHeight, devicePixelRatio } = this._opts;
       helperCtx.clearRect(
         0,
         0,
@@ -109,47 +94,55 @@ export default class Core {
       drawElementWrapper(helperCtx, helperConfig);
       drawAreaWrapper(helperCtx, helperConfig);
       drawElementListWrappers(helperCtx, helperConfig);
-      this[_board].draw();
+      this._board.draw();
     };
-    this[_renderer].on('drawFrame', () => {
+    this._renderer.on('drawFrame', () => {
       drawFrame();
     });
-    this[_renderer].on('drawFrameComplete', () => {
+    this._renderer.on('drawFrameComplete', () => {
       drawFrame();
     });
-    this[_element] = new Element(this[_board].getContext());
-    this[_engine] = new Engine({
-      coreEvent: this[_coreEvent],
-      board: this[_board],
-      element: this[_element],
-      config: this[_config],
-      drawFeekback: this[_draw].bind(this),
-      getDataFeekback: () => this[_data],
+    this._elementHandler = new Element(this._board.getContext());
+    this._engine = new Engine({
+      coreEvent: this._coreEvent,
+      board: this._board,
+      element: this._elementHandler,
+      config: this._config,
+      drawFeekback: this.__draw.bind(this),
+      getDataFeekback: () => this._data,
       selectElementByIndex: this.selectElementByIndex.bind(this),
-      emitChangeScreen: this[_emitChangeScreen].bind(this),
-      emitChangeData: this[_emitChangeData].bind(this)
+      emitChangeScreen: this._emitChangeScreen.bind(this),
+      emitChangeData: this.__emitChangeData.bind(this)
     });
-    this[_engine].init();
+    this._engine.init();
 
-    this[_renderer].on('drawFrame', () => {
-      this[_coreEvent].trigger('drawFrame', undefined);
+    this._renderer.on('drawFrame', () => {
+      this._coreEvent.trigger('drawFrame', undefined);
     });
-    this[_renderer].on('drawFrameComplete', () => {
-      this[_coreEvent].trigger('drawFrameComplete', undefined);
+    this._renderer.on('drawFrameComplete', () => {
+      this._coreEvent.trigger('drawFrameComplete', undefined);
     });
 
-    this[_tempData].set('hasInited', true);
+    this._tempData.set('hasInited', true);
   }
 
-  [_draw](opts?: { resourceChangeUUIDs?: string[] }): void {
-    this[_engine].updateHelperConfig({
-      width: this[_opts].width,
-      height: this[_opts].height,
-      devicePixelRatio: this[_opts].devicePixelRatio
+  private _emitChangeScreen() {
+    if (this._coreEvent.has('changeScreen')) {
+      this._coreEvent.trigger('changeScreen', {
+        ...this.getScreenTransform()
+      });
+    }
+  }
+
+  __draw(opts?: { resourceChangeUUIDs?: string[] }): void {
+    this._engine.updateHelperConfig({
+      width: this._opts.width,
+      height: this._opts.height,
+      devicePixelRatio: this._opts.devicePixelRatio
     });
 
-    this[_renderer].thaw();
-    this[_renderer].render(this[_board].getContext(), this[_data], {
+    this._renderer.thaw();
+    this._renderer.render(this._board.getContext(), this._data, {
       changeResourceUUIDs: opts?.resourceChangeUUIDs || []
     });
   }
@@ -174,8 +167,8 @@ export default class Core {
     return cancelElementByIndex(this, index);
   }
 
-  cancelElement(uuid: string, opts?: { useMode?: boolean }): void {
-    return cancelElement(this, uuid, opts);
+  cancelElement(uuid: string): void {
+    return cancelElement(this, uuid);
   }
 
   moveUpElement(uuid: string): void {
@@ -231,34 +224,34 @@ export default class Core {
   }
 
   resetSize(opts: BoardSizeOptions) {
-    this[_opts] = { ...this[_opts], ...opts };
-    this[_board].resetSize(opts);
-    this[_draw]();
+    this._opts = { ...this._opts, ...opts };
+    this._board.resetSize(opts);
+    this.__draw();
   }
 
   scale(ratio: number): ScreenContext {
-    const screen = this[_board].scale(ratio);
-    this[_draw]();
-    this[_emitChangeScreen]();
+    const screen = this._board.scale(ratio);
+    this.__draw();
+    this._emitChangeScreen();
     return screen;
   }
 
   scrollLeft(left: number): ScreenContext {
-    const screen = this[_board].scrollX(0 - left);
-    this[_draw]();
-    this[_emitChangeScreen]();
+    const screen = this._board.scrollX(0 - left);
+    this.__draw();
+    this._emitChangeScreen();
     return screen;
   }
 
   scrollTop(top: number): ScreenContext {
-    const screen = this[_board].scrollY(0 - top);
-    this[_draw]();
-    this[_emitChangeScreen]();
+    const screen = this._board.scrollY(0 - top);
+    this.__draw();
+    this._emitChangeScreen();
     return screen;
   }
 
   getScreenTransform(): ScreenData {
-    const transform = this[_board].getTransform();
+    const transform = this._board.getTransform();
     return {
       scale: transform.scale,
       scrollTop: Math.max(0, 0 - transform.scrollY),
@@ -267,71 +260,68 @@ export default class Core {
   }
 
   getData(): IDrawData {
-    return deepClone(this[_data]);
+    return this._data;
   }
 
   setData(data: any | IDrawData, opts?: { triggerChangeEvent: boolean }): void {
-    const resourceChangeUUIDs = diffElementResourceChangeList(
-      this[_data],
-      data
-    );
-    this[_data] = this[_element].initData(deepClone(parseData(data)));
+    const resourceChangeUUIDs = diffElementResourceChangeList(this._data, data);
+    this._data = this._elementHandler.initData(deepClone(parseData(data)));
     if (opts && opts.triggerChangeEvent === true) {
-      this[_emitChangeData]();
+      this.__emitChangeData();
     }
-    this[_draw]({ resourceChangeUUIDs });
+    this.__draw({ resourceChangeUUIDs });
   }
 
   clearOperation() {
-    this[_tempData].clear();
-    this[_draw]();
+    this._tempData.clear();
+    this.__draw();
   }
 
   on<T extends keyof TypeCoreEventArgMap>(
     key: T,
     callback: (p: TypeCoreEventArgMap[T]) => void
   ) {
-    this[_coreEvent].on(key, callback);
+    this._coreEvent.on(key, callback);
   }
 
   off<T extends keyof TypeCoreEventArgMap>(
     key: T,
     callback: (p: TypeCoreEventArgMap[T]) => void
   ) {
-    this[_coreEvent].off(key, callback);
+    this._coreEvent.off(key, callback);
+  }
+
+  getEngine() {
+    return this._engine;
   }
 
   pointScreenToContext(p: Point) {
-    return this[_board].pointScreenToContext(p);
+    return this._board.pointScreenToContext(p);
   }
 
   pointContextToScreen(p: Point) {
-    return this[_board].pointContextToScreen(p);
+    return this._board.pointContextToScreen(p);
   }
 
   __getBoardContext(): IDrawContext {
-    return this[_board].getContext();
+    return this._board.getContext();
   }
 
   __getDisplayContext2D(): CanvasRenderingContext2D {
-    return this[_board].getDisplayContext2D();
+    return this._board.getDisplayContext2D();
   }
 
   __getOriginContext2D(): CanvasRenderingContext2D {
-    return this[_board].getOriginContext2D();
+    return this._board.getOriginContext2D();
   }
 
-  private [_emitChangeScreen]() {
-    if (this[_coreEvent].has('changeScreen')) {
-      this[_coreEvent].trigger('changeScreen', {
-        ...this.getScreenTransform()
-      });
+  __emitChangeData() {
+    if (this._coreEvent.has('changeData')) {
+      this._coreEvent.trigger('changeData', deepClone(this._data));
     }
   }
 
-  private [_emitChangeData]() {
-    if (this[_coreEvent].has('changeData')) {
-      this[_coreEvent].trigger('changeData', deepClone(this[_data]));
-    }
+  __getElementHandler() {
+    return this._elementHandler;
   }
 }
