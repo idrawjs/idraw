@@ -1,17 +1,13 @@
-import {
-  TypeContext, 
-  TypeElement,
-} from '@idraw/types';
+import { IDrawContext, DataElement } from '@idraw/types';
 import { rotateElement } from '../transform';
 import Loader from '../loader';
- 
 
-export function drawSVG (
-  ctx: TypeContext,
-  elem: TypeElement<'svg'>,
-  loader: Loader,
+export function drawSVG(
+  ctx: IDrawContext,
+  elem: DataElement<'svg'>,
+  loader: Loader
 ) {
-  // const desc = elem.desc as TypeElemDesc['rect'];
+  // const desc = elem.desc as DataElemDesc['rect'];
   const content = loader.getContent(elem.uuid);
   rotateElement(ctx, elem, () => {
     // ctx.setFillStyle(desc.color);
@@ -24,24 +20,21 @@ export function drawSVG (
 }
 
 // import {
-//   TypeContext, 
-//   TypeElement,
-//   TypeHelperConfig,
+//   IDrawContext,
+//   DataElement,
+//   HelperConfig,
 // } from '@idraw/types';
 // import Loader from '../loader';
 // import { drawBox } from './base';
 
 // export function drawSVG(
-//   ctx: TypeContext,
-//   elem: TypeElement<'svg'>,
+//   ctx: IDrawContext,
+//   elem: DataElement<'svg'>,
 //   loader: Loader,
-//   helperConfig: TypeHelperConfig
+//   helperConfig: HelperConfig
 // ) {
 //   const content = loader.getPattern(elem, {
 //     forceUpdate: helperConfig?.selectedElementWrapper?.uuid === elem.uuid
 //   });
 //   drawBox(ctx, elem, content);
 // }
-
- 
-

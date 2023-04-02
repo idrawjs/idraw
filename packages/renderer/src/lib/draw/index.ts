@@ -1,8 +1,8 @@
 import {
-  TypeContext,
-  TypeData,
-  TypeElement,
-  // TypePoint,
+  IDrawContext,
+  IDrawData,
+  DataElement
+  // Point,
 } from '@idraw/types';
 import { isColorStr } from '@idraw/util';
 import Loader from '../loader';
@@ -15,9 +15,9 @@ import { drawText } from './text';
 import { drawCircle } from './circle';
 
 export function drawContext(
-  ctx: TypeContext,
-  data: TypeData,
-  loader: Loader,
+  ctx: IDrawContext,
+  data: IDrawData,
+  loader: Loader
 ): void {
   clearContext(ctx);
   const size = ctx.getSize();
@@ -37,27 +37,27 @@ export function drawContext(
     }
     switch (elem.type) {
       case 'rect': {
-        drawRect(ctx, elem as TypeElement<'rect'>);
+        drawRect(ctx, elem as DataElement<'rect'>);
         break;
       }
       case 'text': {
-        drawText(ctx, elem as TypeElement<'text'>, loader);
+        drawText(ctx, elem as DataElement<'text'>, loader);
         break;
       }
       case 'image': {
-        drawImage(ctx, elem as TypeElement<'image'>, loader);
+        drawImage(ctx, elem as DataElement<'image'>, loader);
         break;
       }
       case 'svg': {
-        drawSVG(ctx, elem as TypeElement<'svg'>, loader);
+        drawSVG(ctx, elem as DataElement<'svg'>, loader);
         break;
       }
       case 'html': {
-        drawHTML(ctx, elem as TypeElement<'html'>, loader);
+        drawHTML(ctx, elem as DataElement<'html'>, loader);
         break;
       }
       case 'circle': {
-        drawCircle(ctx, elem as TypeElement<'circle'>);
+        drawCircle(ctx, elem as DataElement<'circle'>);
         break;
       }
       default: {
@@ -66,6 +66,4 @@ export function drawContext(
       }
     }
   }
-  
 }
-

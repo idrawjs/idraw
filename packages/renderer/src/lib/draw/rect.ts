@@ -1,13 +1,6 @@
-import {
-  TypeContext,
-  TypeElement,
-} from '@idraw/types';
+import { IDrawContext, DataElement } from '@idraw/types';
 import { drawBox } from './base';
- 
-export function drawRect(ctx: TypeContext, elem: TypeElement<'rect'>) {
+
+export function drawRect(ctx: IDrawContext, elem: DataElement<'rect'>) {
   drawBox(ctx, elem, elem.desc.bgColor as string);
 }
-
- 
-
- 

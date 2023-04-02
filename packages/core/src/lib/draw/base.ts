@@ -1,13 +1,13 @@
 import {
-  TypeContext,
-  // TypeElemDesc,
-  TypeElement,
+  IDrawContext,
+  // DataElemDesc,
+  DataElement
 } from '@idraw/types';
 import { istype, isColorStr } from '@idraw/util';
 import { rotateElement } from './../transform';
 import is from './../is';
 
-export function clearContext(ctx: TypeContext) {
+export function clearContext(ctx: IDrawContext) {
   // ctx.setFillStyle('rgb(0 0 0 / 100%)');
   // ctx.setStrokeStyle('rgb(0 0 0 / 100%)');
   ctx.setFillStyle('#000000');
@@ -15,21 +15,21 @@ export function clearContext(ctx: TypeContext) {
   ctx.setLineDash([]);
   ctx.setGlobalAlpha(1);
   ctx.setShadowColor('#00000000');
-  ctx.setShadowOffsetX(0)
+  ctx.setShadowOffsetX(0);
   ctx.setShadowOffsetY(0);
   ctx.setShadowBlur(0);
 }
 
-export function drawBgColor(ctx: TypeContext, color: string) {
+export function drawBgColor(ctx: IDrawContext, color: string) {
   const size = ctx.getSize();
   ctx.setFillStyle(color);
   ctx.fillRect(0, 0, size.contextWidth, size.contextHeight);
 }
 
 export function drawBox(
-  ctx: TypeContext,
-  elem: TypeElement<'text' | 'rect'>,
-  pattern: string | CanvasPattern | null,
+  ctx: IDrawContext,
+  elem: DataElement<'text' | 'rect'>,
+  pattern: string | CanvasPattern | null
 ): void {
   clearContext(ctx);
   drawBoxBorder(ctx, elem);
@@ -47,20 +47,19 @@ export function drawBox(
     ctx.arcTo(x + w, y + h, x, y + h, r);
     ctx.arcTo(x, y + h, x, y, r);
     ctx.arcTo(x, y, x + w, y, r);
-    ctx.closePath();  
+    ctx.closePath();
     if (typeof pattern === 'string') {
-      ctx.setFillStyle(pattern);      
+      ctx.setFillStyle(pattern);
     } else if (['CanvasPattern'].includes(istype.type(pattern))) {
       ctx.setFillStyle(pattern as CanvasPattern);
     }
-    ctx.fill(); 
+    ctx.fill();
   });
 }
 
-
 export function drawBoxBorder(
-  ctx: TypeContext,
-  elem: TypeElement<'text'|'rect'>,
+  ctx: IDrawContext,
+  elem: DataElement<'text' | 'rect'>
 ): void {
   clearContext(ctx);
   rotateElement(ctx, elem, () => {
@@ -103,7 +102,7 @@ export function drawBoxBorder(
     ctx.arcTo(x + w, y + h, x, y + h, r);
     ctx.arcTo(x, y + h, x, y, r);
     ctx.arcTo(x, y, x + w, y, r);
-    ctx.closePath();  
-    ctx.stroke(); 
+    ctx.closePath();
+    ctx.stroke();
   });
-} 
+}

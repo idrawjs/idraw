@@ -1,10 +1,10 @@
 import {
-  TypePoint,
-  TypeHelperWrapperControllerDirection,
+  Point,
+  HelperWrapperControllerDirection,
   InterfaceHelperPlugin,
-  TypeConfigStrict,
-  TypeData,
-  TypeHelperConfig
+  IDrawConfigStrict,
+  IDrawData,
+  HelperConfig
 } from '@idraw/types';
 import { deepClone, throttle } from '@idraw/util';
 import Board from '@idraw/board';
@@ -19,9 +19,9 @@ type Options = {
   coreEvent: CoreEvent;
   board: Board;
   element: Element;
-  config: TypeConfigStrict;
+  config: IDrawConfigStrict;
   drawFeekback: () => void;
-  getDataFeekback: () => TypeData;
+  getDataFeekback: () => IDrawData;
   selectElementByIndex: (index: number, opts?: { useMode?: boolean }) => void;
   emitChangeScreen: () => void;
   emitChangeData: () => void;
@@ -48,7 +48,7 @@ export class Engine {
     this._plugins.push(plugin);
   }
 
-  getHelperConfig(): TypeHelperConfig {
+  getHelperConfig(): HelperConfig {
     return this.helper.getConfig();
   }
 
@@ -93,7 +93,7 @@ export class Engine {
     board.on('moveEnd', this._handleMoveEnd.bind(this));
   }
 
-  private _handleDoubleClick(point: TypePoint) {
+  private _handleDoubleClick(point: Point) {
     const { element, getDataFeekback, drawFeekback, coreEvent } = this._opts;
     const data = getDataFeekback();
     const [index, uuid] = element.isPointInElement(point, data);
@@ -110,7 +110,7 @@ export class Engine {
     drawFeekback();
   }
 
-  _handlePoint(point: TypePoint): void {
+  _handlePoint(point: Point): void {
     if (!this._mapper.isEffectivePoint(point)) {
       return;
     }
@@ -166,7 +166,7 @@ export class Engine {
     drawFeekback();
   }
 
-  private _handleClick(point: TypePoint): void {
+  private _handleClick(point: Point): void {
     const { element, getDataFeekback, coreEvent, drawFeekback } = this._opts;
     const data = getDataFeekback();
     const [index, uuid] = element.isPointInElement(point, data);
@@ -180,7 +180,7 @@ export class Engine {
     drawFeekback();
   }
 
-  private _handleMoveStart(point: TypePoint): void {
+  private _handleMoveStart(point: Point): void {
     const { element, getDataFeekback, coreEvent } = this._opts;
     const data = getDataFeekback();
     const helper = this.helper;
@@ -204,7 +204,7 @@ export class Engine {
     }
   }
 
-  private _handleMove(point: TypePoint): void {
+  private _handleMove(point: Point): void {
     const { drawFeekback } = this._opts;
     const helper = this.helper;
     if (this.temp.get('mode') === Mode.SELECT_ELEMENT_LIST) {
@@ -236,7 +236,7 @@ export class Engine {
           this.temp.get('prevPoint'),
           this.temp.get(
             'selectedControllerDirection'
-          ) as TypeHelperWrapperControllerDirection
+          ) as HelperWrapperControllerDirection
         );
         this.temp.set('cursorStatus', CursorStatus.DRAGGING);
       }
@@ -249,8 +249,8 @@ export class Engine {
 
   private _dragElements(
     uuids: string[],
-    point: TypePoint,
-    prevPoint: TypePoint | null
+    point: Point,
+    prevPoint: Point | null
   ): void {
     if (!prevPoint) {
       return;
@@ -280,9 +280,9 @@ export class Engine {
 
   private _transfromElement(
     uuid: string,
-    point: TypePoint,
-    prevPoint: TypePoint | null,
-    direction: TypeHelperWrapperControllerDirection
+    point: Point,
+    prevPoint: Point | null,
+    direction: HelperWrapperControllerDirection
   ): null | { width: number; height: number; angle: number } {
     if (!prevPoint) {
       return null;
@@ -301,7 +301,7 @@ export class Engine {
     return result;
   }
 
-  private _handleMoveEnd(point: TypePoint): void {
+  private _handleMoveEnd(point: Point): void {
     const {
       element,
       getDataFeekback,
@@ -359,7 +359,7 @@ export class Engine {
     }
   }
 
-  private _handleHover(point: TypePoint): void {
+  private _handleHover(point: Point): void {
     let isMouseOverElement = false;
     const { board, getDataFeekback, coreEvent } = this._opts;
     const data = getDataFeekback();

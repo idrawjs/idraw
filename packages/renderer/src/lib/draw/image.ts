@@ -1,17 +1,13 @@
-import {
-  TypeContext,
-  TypeElement,
-} from '@idraw/types';
+import { IDrawContext, DataElement } from '@idraw/types';
 import { rotateElement } from '../transform';
 import Loader from '../loader';
- 
 
-export function drawImage (
-  ctx: TypeContext,
-  elem: TypeElement<'image'>,
-  loader: Loader,
+export function drawImage(
+  ctx: IDrawContext,
+  elem: DataElement<'image'>,
+  loader: Loader
 ) {
-  // const desc = elem.desc as TypeElemDesc['rect'];
+  // const desc = elem.desc as DataElemDesc['rect'];
   const content = loader.getContent(elem.uuid);
   rotateElement(ctx, elem, () => {
     // ctx.setFillStyle(desc.color);
@@ -23,31 +19,23 @@ export function drawImage (
   });
 }
 
-
-
 // import {
-//   TypeContext, 
-//   TypeElement,
-//   TypeHelperConfig,
-//   TypeElemDesc,
+//   IDrawContext,
+//   DataElement,
+//   HelperConfig,
+//   DataElemDesc,
 // } from '@idraw/types';
 // import Loader from '../loader';
 // import { drawBox } from './base';
 
 // export function drawImage(
-//   ctx: TypeContext,
-//   elem: TypeElement<'image'>,
+//   ctx: IDrawContext,
+//   elem: DataElement<'image'>,
 //   loader: Loader,
-//   helperConfig: TypeHelperConfig
+//   helperConfig: HelperConfig
 // ) {
 //   const content = loader.getPattern(elem, {
 //     forceUpdate: helperConfig?.selectedElementWrapper?.uuid === elem.uuid
 //   });
 //   drawBox(ctx, elem, content);
 // }
-
-
-
-
- 
-

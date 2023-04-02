@@ -1,18 +1,18 @@
-import { TypeContext, TypeElemDescText, TypeElement } from '@idraw/types';
+import { IDrawContext, DataElemDescText, DataElement } from '@idraw/types';
 import { is, isColorStr } from '@idraw/util';
 import Loader from '../loader';
 import { clearContext, drawBox } from './base';
 import { rotateElement } from './../transform';
 
 export function drawText(
-  ctx: TypeContext,
-  elem: TypeElement<'text'>,
+  ctx: IDrawContext,
+  elem: DataElement<'text'>,
   loader: Loader
 ) {
   clearContext(ctx);
   drawBox(ctx, elem, elem.desc.bgColor || 'transparent');
   rotateElement(ctx, elem, () => {
-    const desc: TypeElemDescText = {
+    const desc: DataElemDescText = {
       ...{
         fontSize: 12,
         fontFamily: 'sans-serif',
@@ -149,7 +149,7 @@ export function drawText(
   });
 }
 
-// export function createTextSVG(elem: TypeElement<'text'>): string {
+// export function createTextSVG(elem: DataElement<'text'>): string {
 //   const svg = `
 //   <svg xmlns="http://www.w3.org/2000/svg" width="${elem.w}" height = "${elem.h}">
 //     <foreignObject width="100%" height="100%">

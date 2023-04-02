@@ -1,6 +1,6 @@
-// import { TypePaintData } from './paint';
+// import { PaintData } from './paint';
 
-type TypeElementAttrs = {
+type DataElementAttrs = {
   x: number;
   y: number;
   w: number;
@@ -16,43 +16,43 @@ type TypeElementAttrs = {
   extension?: { [key: string]: any } | any;
 };
 
-type TypeElementBase<T extends keyof TypeElemDesc | TypeElemType> =
-  TypeElementAttrs & {
+type DataElementBase<T extends keyof DataElemDesc | DataElemType> =
+  DataElementAttrs & {
     name?: string;
     uuid?: string;
-    type: T | TypeElemType;
-    desc: TypeElemDesc[T];
+    type: T | DataElemType;
+    desc: DataElemDesc[T];
   };
 
-type TypeElement<T extends keyof TypeElemDesc | TypeElemType> =
-  TypeElementBase<T> & {
+type DataElement<T extends keyof DataElemDesc | DataElemType> =
+  DataElementBase<T> & {
     uuid: string;
   };
 
-type TypeElemDescBase = {
+type DataElemDescBase = {
   shadowColor?: string;
   shadowOffsetX?: number;
   shadowOffsetY?: number;
   shadowBlur?: number;
 };
 
-type TypeElemBoxDesc = {
+type DataElemBoxDesc = {
   borderRadius?: number;
   borderWidth?: number;
   borderColor?: string;
-} & TypeElemDescBase;
+} & DataElemDescBase;
 
-type TypeElemDesc = {
-  text: TypeElemDescText;
-  rect: TypeElemDescRect;
-  circle: TypeElemDescCircle;
-  image: TypeElemDescImage;
-  svg: TypeElemDescSVG;
-  html: TypeElemDescHTML;
-  // paint: TypeElemDescPaint,
+type DataElemDesc = {
+  text: DataElemDescText;
+  rect: DataElemDescRect;
+  circle: DataElemDescCircle;
+  image: DataElemDescImage;
+  svg: DataElemDescSVG;
+  html: DataElemDescHTML;
+  // paint: DataElemDescPaint,
 };
 
-// enum TypeElemType {
+// enum DataElemType {
 //   text = 'text',
 //   rect = 'rect',
 //   circle = 'circle',
@@ -61,13 +61,13 @@ type TypeElemDesc = {
 //   html = 'html',
 // }
 
-type TypeElemType = 'text' | 'rect' | 'circle' | 'image' | 'svg' | 'html';
+type DataElemType = 'text' | 'rect' | 'circle' | 'image' | 'svg' | 'html';
 
-type TypeElemDescRect = {
+type DataElemDescRect = {
   bgColor?: string;
-} & TypeElemBoxDesc;
+} & DataElemBoxDesc;
 
-type TypeElemDescText = {
+type DataElemDescText = {
   text: string;
   color: string;
   fontSize: number;
@@ -83,38 +83,38 @@ type TypeElemDescText = {
   textShadowOffsetX?: number;
   textShadowOffsetY?: number;
   textShadowBlur?: number;
-} & TypeElemBoxDesc;
+} & DataElemBoxDesc;
 
-type TypeElemDescCircle = {
+type DataElemDescCircle = {
   bgColor: string;
-} & TypeElemBoxDesc;
+} & DataElemBoxDesc;
 
-type TypeElemDescImage = {
+type DataElemDescImage = {
   src: string;
-} & TypeElemDescBase;
+} & DataElemDescBase;
 
-type TypeElemDescSVG = {
+type DataElemDescSVG = {
   svg: string;
 };
 
-type TypeElemDescHTML = {
+type DataElemDescHTML = {
   html: string;
   width: number;
   height: number;
 };
 
-// type TypeElemDescPaint = TypePaintData
+// type DataElemDescPaint = PaintData
 
 export {
-  TypeElementAttrs,
-  TypeElemDescText,
-  TypeElemDescRect,
-  TypeElemDescCircle,
-  TypeElemDescImage,
-  TypeElemDescSVG,
-  TypeElemDescHTML,
-  TypeElemDesc,
-  TypeElemType,
-  TypeElement,
-  TypeElementBase
+  DataElementAttrs,
+  DataElemDescText,
+  DataElemDescRect,
+  DataElemDescCircle,
+  DataElemDescImage,
+  DataElemDescSVG,
+  DataElemDescHTML,
+  DataElemDesc,
+  DataElemType,
+  DataElement,
+  DataElementBase
 };

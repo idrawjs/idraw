@@ -1,10 +1,8 @@
-type TypeDeviceSize = {
+type DeviceSize = {
   x: number;
   y: number;
   w: number;
   h: number;
-}
-
-export {
-  TypeDeviceSize,
 };
+
+export { DeviceSize };

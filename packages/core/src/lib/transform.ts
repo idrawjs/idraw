@@ -1,44 +1,35 @@
-import {
-  TypeContext,
-  TypePoint,
-  TypeElement,
-  TypeElemDesc,
-} from '@idraw/types';
+import { IDrawContext, Point, DataElement, DataElemDesc } from '@idraw/types';
 import { calcElementCenter, parseAngleToRadian } from './calculate';
 
 function rotateElement(
-  ctx: TypeContext,
-  elem: TypeElement<keyof TypeElemDesc>,
-  callback: (ctx: TypeContext) => void
+  ctx: IDrawContext,
+  elem: DataElement<keyof DataElemDesc>,
+  callback: (ctx: IDrawContext) => void
 ): void {
-  const center: TypePoint = calcElementCenter(elem);
+  const center: Point = calcElementCenter(elem);
   const radian = parseAngleToRadian(elem.angle || 0);
   return rotateContext(ctx, center, radian || 0, callback);
 }
 
-
 function rotateContext(
-  ctx: TypeContext,
-  center: TypePoint | undefined,
+  ctx: IDrawContext,
+  center: Point | undefined,
   radian: number,
-  callback: (ctx: TypeContext) => void
+  callback: (ctx: IDrawContext) => void
 ): void {
   if (center && (radian > 0 || radian < 0)) {
     ctx.translate(center.x, center.y);
     ctx.rotate(radian);
-    ctx.translate(- center.x, - center.y);
+    ctx.translate(-center.x, -center.y);
   }
 
   callback(ctx);
 
   if (center && (radian > 0 || radian < 0)) {
     ctx.translate(center.x, center.y);
-    ctx.rotate(- radian);
-    ctx.translate(- center.x, - center.y);
+    ctx.rotate(-radian);
+    ctx.translate(-center.x, -center.y);
   }
 }
 
-export {
-  rotateContext,
-  rotateElement,
-};
+export { rotateContext, rotateElement };

@@ -1,8 +1,8 @@
-import { TypeContext, TypeHelperConfig } from '@idraw/types';
+import { IDrawContext, HelperConfig } from '@idraw/types';
 import { rotateContext } from './../transform';
 import { clearContext } from './base';
 
-export function drawElementWrapper(ctx: TypeContext, config: TypeHelperConfig) {
+export function drawElementWrapper(ctx: IDrawContext, config: HelperConfig) {
   if (!config?.selectedElementWrapper) {
     return;
   }
@@ -151,7 +151,7 @@ export function drawElementWrapper(ctx: TypeContext, config: TypeHelperConfig) {
   });
 }
 
-export function drawAreaWrapper(ctx: TypeContext, config: TypeHelperConfig) {
+export function drawAreaWrapper(ctx: IDrawContext, config: HelperConfig) {
   if (!config?.selectedAreaWrapper) {
     return;
   }
@@ -178,8 +178,8 @@ export function drawAreaWrapper(ctx: TypeContext, config: TypeHelperConfig) {
 }
 
 export function drawElementListWrappers(
-  ctx: TypeContext,
-  config: TypeHelperConfig
+  ctx: IDrawContext,
+  config: HelperConfig
 ) {
   if (!Array.isArray(config?.selectedElementListWrappers)) {
     return;

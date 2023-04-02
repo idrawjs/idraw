@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { TypePoint } from '@idraw/types';
+import { Point } from '@idraw/types';
 import { BoardEvent, TypeBoardEventArgMap } from './event';
 import { TempData } from './watcher-temp';
 
@@ -143,7 +143,7 @@ export class Watcher {
     }
   }
 
-  _getPosition(e: MouseEvent | TouchEvent): TypePoint {
+  _getPosition(e: MouseEvent | TouchEvent): Point {
     const canvas = this._canvas;
     let x = 0;
     let y = 0;
@@ -171,7 +171,7 @@ export class Watcher {
     return p;
   }
 
-  private _isVaildPoint(p: TypePoint): boolean {
+  private _isVaildPoint(p: Point): boolean {
     return p.x > 0 && p.y > 0;
   }
 }

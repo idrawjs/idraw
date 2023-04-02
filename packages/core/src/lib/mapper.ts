@@ -1,4 +1,4 @@
-import { TypeData, TypePoint, TypePointCursor } from '@idraw/types';
+import { IDrawData, Point, PointCursor } from '@idraw/types';
 import Board from '@idraw/board';
 import { Helper } from './helper';
 import { Element } from './element';
@@ -27,7 +27,7 @@ export class Mapper {
     this[_helper] = this[_opts].helper;
   }
 
-  isEffectivePoint(p: TypePoint): boolean {
+  isEffectivePoint(p: Point): boolean {
     const scrollLineWidth = this[_board].getScrollLineWidth();
     const screenInfo = this[_board].getScreenInfo();
     if (
@@ -40,13 +40,13 @@ export class Mapper {
   }
 
   judgePointCursor(
-    p: TypePoint,
-    data: TypeData
+    p: Point,
+    data: IDrawData
   ): {
-    cursor: TypePointCursor;
+    cursor: PointCursor;
     elementUUID: string | null;
   } {
-    let cursor: TypePointCursor = 'auto';
+    let cursor: PointCursor = 'auto';
     let elementUUID: string | null = null;
     if (!this.isEffectivePoint(p)) {
       return { cursor, elementUUID };

@@ -1,4 +1,3 @@
-import { _tempData } from '../names';
 import iDraw from './../index';
 
 export async function exportDataURL(
@@ -6,17 +5,17 @@ export async function exportDataURL(
   type: 'image/png' | 'image/jpeg',
   quality?: number
 ): Promise<string> {
-  if (idraw[_tempData].get('isDownloading') === true) {
+  if (idraw.getTempData().get('isDownloading') === true) {
     return Promise.reject('Busy!');
   }
 
-  idraw[_tempData].set('isDownloading', true);
+  idraw.getTempData().set('isDownloading', true);
   return new Promise((resolve, reject) => {
-    let dataURL: string = '';
+    let dataURL = '';
     function listenRenderFrameComplete() {
       idraw.off('drawFrameComplete', listenRenderFrameComplete);
-      idraw[_tempData].set('isDownloading', false);
-      const ctx = idraw.__getOriginContext2D();
+      idraw.getTempData().set('isDownloading', false);
+      const ctx = idraw.$getOriginContext2D();
       const canvas = ctx.canvas;
       dataURL = canvas.toDataURL(type, quality);
       resolve(dataURL);
@@ -30,14 +29,12 @@ export async function exportDataURL(
   });
 }
 
-
-
 export function toDataURL(
   idraw: iDraw,
   type: 'image/png' | 'image/jpeg',
   quality?: number
 ): string {
-  const ctx = idraw.__getOriginContext2D();
+  const ctx = idraw.$getOriginContext2D();
   const canvas = ctx.canvas;
   const dataURL: string = canvas.toDataURL(type, quality);
   return dataURL;

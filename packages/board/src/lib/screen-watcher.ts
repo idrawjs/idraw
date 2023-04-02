@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { TypePoint, TypeContext } from '@idraw/types';
+import { Point, IDrawContext } from '@idraw/types';
 import { BoardEvent, TypeBoardEventArgMap } from './event';
 import { TempData } from './watcher-temp';
 
@@ -16,9 +16,9 @@ export class ScreenWatcher {
   private _event: BoardEvent;
   private _temp: TempData = new TempData();
   private _container: HTMLElement | Window = window;
-  // private _ctx: TypeContext;
+  // private _ctx: IDrawContext;
 
-  constructor(canvas: HTMLCanvasElement, ctx: TypeContext) {
+  constructor(canvas: HTMLCanvasElement, ctx: IDrawContext) {
     this._canvas = canvas;
     this._isMoving = false;
     this._initEvent();
@@ -328,7 +328,7 @@ export class ScreenWatcher {
     }
   }
 
-  _getPosition(e: MouseEvent | TouchEvent): TypePoint {
+  _getPosition(e: MouseEvent | TouchEvent): Point {
     const canvas = this._canvas;
     let x = 0;
     let y = 0;
@@ -356,7 +356,7 @@ export class ScreenWatcher {
     return p;
   }
 
-  private _isVaildPoint(p: TypePoint): boolean {
+  private _isVaildPoint(p: Point): boolean {
     return isAvailableNum(p.x) && isAvailableNum(p.y);
   }
 }

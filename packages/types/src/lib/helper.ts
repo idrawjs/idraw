@@ -1,56 +1,55 @@
-import { TypeData } from './data';
-import { TypePoint } from './board';
+import { IDrawData } from './data';
+import { Point } from './board';
 
-// type test = {[uuid string]: TypeElement}
+// type test = {[uuid string]: DataElement}
 
-type TypeController =  TypePoint & {
+type HelperController = Point & {
   invisible?: boolean;
 };
 
-type TypeHeplerSelectedElementWrapper = {
+type HeplerSelectedElementWrapper = {
   uuid: string;
   controllerSize: number;
   controllerOffset: number;
   lock: boolean;
   controllers: {
-    topLeft: TypeController,
-    top: TypeController,
-    topRight: TypeController,
-    right: TypeController,
-    bottomRight: TypeController,
-    bottom: TypeController,
-    bottomLeft: TypeController,
-    left: TypeController,
-    rotate: TypeController,
-  },
+    topLeft: HelperController;
+    top: HelperController;
+    topRight: HelperController;
+    right: HelperController;
+    bottomRight: HelperController;
+    bottom: HelperController;
+    bottomLeft: HelperController;
+    left: HelperController;
+    rotate: HelperController;
+  };
   lineDash: number[];
   lineWidth: number;
   color: string;
   radian?: number;
-  translate?: TypePoint;
-}
+  translate?: Point;
+};
 
-type TypeHeplerSelectedAreaWrapper = {
+type HeplerSelectedAreaWrapper = {
   x: number;
   y: number;
   w: number;
   h: number;
-  startPoint: TypePoint;
-  endPoint: TypePoint;
+  startPoint: Point;
+  endPoint: Point;
   lineWidth: number;
   lineDash: number[];
   color: string;
-}
+};
 
-type TypeHelperConfig = {
-  elementIndexMap: {[key: string]: number},
-  selectedAreaWrapper?: TypeHeplerSelectedAreaWrapper;
-  selectedElementWrapper?: TypeHeplerSelectedElementWrapper,
-  selectedElementListWrappers?: Array<TypeHeplerSelectedElementWrapper>;
-}
+type HelperConfig = {
+  elementIndexMap: { [key: string]: number };
+  selectedAreaWrapper?: HeplerSelectedAreaWrapper;
+  selectedElementWrapper?: HeplerSelectedElementWrapper;
+  selectedElementListWrappers?: Array<HeplerSelectedElementWrapper>;
+};
 
-
-type TypeHelperUpdateOpts = {
+type HelperUpdateOpts = {
   width: number;
   height: number;
   selectedUUID?: string | null;
@@ -60,26 +59,29 @@ type TypeHelperUpdateOpts = {
   canScroll: boolean;
   scrollX: number;
   scrollY: number;
-}
+};
 
-interface TypeHelper {
-  updateConfig(
-    data: TypeData,
-    opts: TypeHelperUpdateOpts
-  ): void;
-  getConfig(): TypeHelperConfig;
-}
+// interface Helper {
+//   updateConfig(data: IDrawData, opts: HelperUpdateOpts): void;
+//   getConfig(): HelperConfig;
+// }
 
-type TypeHelperWrapperControllerDirection 
-= 'top-left' | 'top' | 'top-right' | 'right'
-| 'bottom-right' | 'bottom' | 'bottom-left' | 'left'
-| 'rotate';
+type HelperWrapperControllerDirection =
+  | 'top-left'
+  | 'top'
+  | 'top-right'
+  | 'right'
+  | 'bottom-right'
+  | 'bottom'
+  | 'bottom-left'
+  | 'left'
+  | 'rotate';
 
 export {
-  TypeHelper,
-  TypeHelperConfig,
-  TypeHelperUpdateOpts,
-  TypeHelperWrapperControllerDirection,
-  TypeHeplerSelectedElementWrapper,
-  TypeHeplerSelectedAreaWrapper,
+  // Helper,
+  HelperConfig,
+  HelperUpdateOpts,
+  HelperWrapperControllerDirection,
+  HeplerSelectedElementWrapper,
+  HeplerSelectedAreaWrapper
 };

@@ -8,17 +8,16 @@ function delay(time: number): Promise<void> {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve();
-    }, time)
+    }, time);
   });
 }
 
-describe("idraw", () => {
-
+describe('idraw', () => {
   beforeEach(() => {
     requestAnimationFrameMock.reset();
-  })
+  });
 
-  test('context', async () => {  
+  test('context', async () => {
     document.body.innerHTML = `
       <div id="mount"></div>
     `;
@@ -28,26 +27,26 @@ describe("idraw", () => {
       contextWidth: 600,
       contextHeight: 400,
       devicePixelRatio: 4
-    }
+    };
     const mount = document.querySelector('#mount') as HTMLDivElement;
     const idraw = new IDraw(mount, opts);
     const data = getData();
     idraw.setData(data, { triggerChangeEvent: true });
 
     requestAnimationFrameMock.triggerNextAnimationFrame();
-  
-    const originCtx = idraw.__getOriginContext2D();
+
+    const originCtx = idraw.$getOriginContext2D();
     // @ts-ignore;
     const originCalls = originCtx.__getDrawCalls();
     expect(originCalls).toMatchSnapshot();
-  
-    const displayCtx = idraw.__getDisplayContext2D();
+
+    const displayCtx = idraw.$getDisplayContext2D();
     // @ts-ignore;
     const displayCalls = displayCtx.__getDrawCalls();
     expect(displayCalls).toMatchSnapshot();
   });
 
-  test('undo/redo', async () => {  
+  test('undo/redo', async () => {
     document.body.innerHTML = `
       <div id="mount"></div>
     `;
@@ -57,7 +56,7 @@ describe("idraw", () => {
       contextWidth: 600,
       contextHeight: 400,
       devicePixelRatio: 4
-    }
+    };
     const mount = document.querySelector('#mount') as HTMLDivElement;
     const idraw = new IDraw(mount, opts);
     const data = getData();
@@ -69,7 +68,6 @@ describe("idraw", () => {
     const undo1 = idraw.undo();
     expect(undo1.doRecordCount).toBe(2);
     expect(undo1.data?.elements?.length).toBe(4);
-    
 
     const undo2 = idraw.undo();
     expect(undo2.doRecordCount).toBe(1);
@@ -86,20 +84,15 @@ describe("idraw", () => {
     expect(redo2.data).toBe(null);
 
     requestAnimationFrameMock.triggerNextAnimationFrame();
-  
-    const originCtx = idraw.__getOriginContext2D();
+
+    const originCtx = idraw.$getOriginContext2D();
     // @ts-ignore;
     const originCalls = originCtx.__getDrawCalls();
     expect(originCalls).toMatchSnapshot();
-  
-    const displayCtx = idraw.__getDisplayContext2D();
+
+    const displayCtx = idraw.$getDisplayContext2D();
     // @ts-ignore;
     const displayCalls = displayCtx.__getDrawCalls();
     expect(displayCalls).toMatchSnapshot();
   });
-  
 });
-
-
-
-

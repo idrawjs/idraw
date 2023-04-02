@@ -1,15 +1,15 @@
-import { TypeContext, TypeElement, } from '@idraw/types';
+import { IDrawContext, DataElement } from '@idraw/types';
 import { rotateElement } from './../transform';
 import { clearContext } from './base';
 
-export function drawCircle(ctx: TypeContext, elem: TypeElement<'circle'>) {
+export function drawCircle(ctx: IDrawContext, elem: DataElement<'circle'>) {
   clearContext(ctx);
   rotateElement(ctx, elem, (ctx) => {
     const { x, y, w, h, desc } = elem;
     const {
       bgColor = '#000000',
       borderColor = '#000000',
-      borderWidth = 0,
+      borderWidth = 0
     } = desc;
 
     const a = w / 2;
@@ -19,14 +19,13 @@ export function drawCircle(ctx: TypeContext, elem: TypeElement<'circle'>) {
 
     // draw border
     if (borderWidth && borderWidth > 0) {
-
       const ba = borderWidth / 2 + a;
       const bb = borderWidth / 2 + b;
       ctx.beginPath();
       ctx.setStrokeStyle(borderColor);
       ctx.setLineWidth(borderWidth);
-      ctx.ellipse(centerX, centerY, ba, bb, 0,  0, 2 * Math.PI)
-      
+      ctx.ellipse(centerX, centerY, ba, bb, 0, 0, 2 * Math.PI);
+
       ctx.closePath();
       ctx.stroke();
     }
@@ -34,10 +33,10 @@ export function drawCircle(ctx: TypeContext, elem: TypeElement<'circle'>) {
     // draw content
     ctx.beginPath();
     ctx.setFillStyle(bgColor);
-    ctx.ellipse(centerX, centerY, a, b, 0,  0, 2 * Math.PI)
+    ctx.ellipse(centerX, centerY, a, b, 0, 0, 2 * Math.PI);
     ctx.closePath();
     ctx.fill();
-    
+
     // // draw shadow
     // clearContext(ctx);
     // if ((desc.shadowOffsetX !== undefined && is.number(desc.shadowOffsetX)) || desc.shadowOffsetY !== undefined && is.number(desc.shadowOffsetY)) {
@@ -70,6 +69,5 @@ export function drawCircle(ctx: TypeContext, elem: TypeElement<'circle'>) {
     //   ctx.closePath();
     //   ctx.fill();
     // }
-
-  })
+  });
 }

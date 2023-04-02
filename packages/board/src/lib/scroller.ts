@@ -1,26 +1,22 @@
-import {
-  TypePoint,
-  TypeScreenPosition,
-  TypeBoardScrollConfig
-} from '@idraw/types';
+import { Point, ScreenPosition, BoardScrollConfig } from '@idraw/types';
 import { isColorStr } from '@idraw/util';
 
 type TypeOptions = {
   width: number;
   height: number;
   devicePixelRatio: number;
-  scrollConfig?: TypeBoardScrollConfig;
+  scrollConfig?: BoardScrollConfig;
 };
 
 type TypePrivateOptions = Required<
-  TypeOptions & { scrollConfig: Required<TypeBoardScrollConfig> }
+  TypeOptions & { scrollConfig: Required<BoardScrollConfig> }
 >;
 
 const minScrollerWidth = 12;
 const scrollerAlpha = 0.12;
 const scrollerThumbAlpha = 0.36;
 
-const defaultScrollConfig: Partial<TypeBoardScrollConfig> & {
+const defaultScrollConfig: Partial<BoardScrollConfig> & {
   width: number;
   color: string;
 } = {
@@ -38,7 +34,7 @@ export class Scroller {
     this._opts = this._getOpts(opts);
   }
 
-  draw(position: TypeScreenPosition) {
+  draw(position: ScreenPosition) {
     const { width, height, scrollConfig } = this._opts;
     const wrapper = this.calc(position);
     const ctx = this._displayCtx;
@@ -102,7 +98,7 @@ export class Scroller {
     this._opts = { ...this._opts, ...opts };
   }
 
-  isPointAtScrollY(p: TypePoint): boolean {
+  isPointAtScrollY(p: Point): boolean {
     const { width, height, scrollConfig } = this._opts;
     const ctx = this._displayCtx;
     ctx.beginPath();
@@ -119,7 +115,7 @@ export class Scroller {
     return false;
   }
 
-  isPointAtScrollX(p: TypePoint): boolean {
+  isPointAtScrollX(p: Point): boolean {
     const { width, height, scrollConfig } = this._opts;
     const ctx = this._displayCtx;
     ctx.beginPath();
@@ -141,7 +137,7 @@ export class Scroller {
     return lineWidth;
   }
 
-  calc(position: TypeScreenPosition) {
+  calc(position: ScreenPosition) {
     const { width, height, scrollConfig } = this._opts;
     const sliderMinSize = scrollConfig.width * 2.5;
     const lineSize = scrollConfig.width;

@@ -1,6 +1,4 @@
 module.exports = {
-  // "collectCoverage": true,
-  testEnvironment: 'jsdom',
   testTimeout: 2 * 60 * 1000,
   moduleFileExtensions: ['js', 'ts'],
   modulePaths: ['<rootDir>'],
