@@ -16,7 +16,7 @@ describe('@idraw/core: lib/element', () => {
   };
   const mount = document.querySelector('#mount') as HTMLDivElement;
   const core = new Core(mount, opts);
-  const ctx = core.__getBoardContext();
+  const ctx = core.$getBoardContext();
   const data = getData();
 
   test('initData', async () => {

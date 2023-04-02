@@ -53,8 +53,8 @@ import {
 } from './lib/draw/wrapper';
 
 export default class Core {
+  $data: IDrawData;
   private _board: Board;
-  private _data: IDrawData;
   private _opts: CoreOptions;
   private _config: IDrawConfigStrict;
   private _renderer: Renderer;
@@ -67,7 +67,7 @@ export default class Core {
   static check: CheckTypeUtil = check;
 
   constructor(mount: HTMLDivElement, opts: CoreOptions, config?: IDrawConfig) {
-    this._data = { elements: [] };
+    this.$data = { elements: [] };
     this._opts = opts;
     this._config = mergeConfig(config || {});
     this._board = new Board(mount, {
@@ -109,7 +109,7 @@ export default class Core {
       element: this._elementHandler,
       config: this._config,
       drawFeekback: this.$draw.bind(this),
-      getDataFeekback: () => this._data,
+      getDataFeekback: () => this.$data,
       selectElementByIndex: this.selectElementByIndex.bind(this),
       emitChangeScreen: this._emitChangeScreen.bind(this),
       emitChangeData: this.$emitChangeData.bind(this)
@@ -142,7 +142,7 @@ export default class Core {
     });
 
     this._renderer.thaw();
-    this._renderer.render(this._board.getContext(), this._data, {
+    this._renderer.render(this._board.getContext(), this.$data, {
       changeResourceUUIDs: opts?.resourceChangeUUIDs || []
     });
   }
@@ -260,12 +260,12 @@ export default class Core {
   }
 
   getData(): IDrawData {
-    return this._data;
+    return deepClone(this.$data);
   }
 
   setData(data: any | IDrawData, opts?: { triggerChangeEvent: boolean }): void {
-    const resourceChangeUUIDs = diffElementResourceChangeList(this._data, data);
-    this._data = this._elementHandler.initData(deepClone(parseData(data)));
+    const resourceChangeUUIDs = diffElementResourceChangeList(this.$data, data);
+    this.$data = this._elementHandler.initData(deepClone(parseData(data)));
     if (opts && opts.triggerChangeEvent === true) {
       this.$emitChangeData();
     }
@@ -317,7 +317,7 @@ export default class Core {
 
   $emitChangeData() {
     if (this._coreEvent.has('changeData')) {
-      this._coreEvent.trigger('changeData', deepClone(this._data));
+      this._coreEvent.trigger('changeData', deepClone(this.$data));
     }
   }
 

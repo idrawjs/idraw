@@ -18,7 +18,7 @@ export function getSelectedElements(
   list.forEach((uuid) => {
     const index = core.getEngine().helper.getElementIndexByUUID(uuid);
     if (index !== null && index >= 0) {
-      const elem = core.getData().elements[index];
+      const elem = core.$data.elements[index];
       if (elem) elems.push(elem);
     }
   });
@@ -31,8 +31,8 @@ export function getElement(
 ): DataElement<keyof DataElemDesc> | null {
   let elem: DataElement<keyof DataElemDesc> | null = null;
   const index = core.getEngine().helper.getElementIndexByUUID(uuid);
-  if (index !== null && core.getData().elements[index]) {
-    elem = deepClone(core.getData().elements[index]);
+  if (index !== null && core.$data.elements[index]) {
+    elem = deepClone(core.$data.elements[index]);
   }
   return elem;
 }
@@ -42,8 +42,8 @@ export function getElementByIndex(
   index: number
 ): DataElement<keyof DataElemDesc> | null {
   let elem: DataElement<keyof DataElemDesc> | null = null;
-  if (index >= 0 && core.getData().elements[index]) {
-    elem = deepClone(core.getData().elements[index]);
+  if (index >= 0 && core.$data.elements[index]) {
+    elem = deepClone(core.$data.elements[index]);
   }
   return elem;
 }
@@ -70,8 +70,8 @@ export function updateElement(
 }
 
 export function selectElementByIndex(core: Core, index: number): void {
-  if (core.getData().elements[index]) {
-    const uuid = core.getData().elements[index].uuid;
+  if (core.$data.elements[index]) {
+    const uuid = core.$data.elements[index].uuid;
     core.getEngine().temp.set('mode', Mode.NULL);
     if (typeof uuid === 'string') {
       core.getEngine().temp.set('selectedUUID', uuid);
@@ -89,8 +89,8 @@ export function selectElement(core: Core, uuid: string): void {
 }
 
 export function cancelElementByIndex(core: Core, index: number): void {
-  if (core.getData().elements[index]) {
-    const uuid = core.getData().elements[index].uuid;
+  if (core.$data.elements[index]) {
+    const uuid = core.$data.elements[index].uuid;
     const selectedUUID = core.getEngine().temp.get('selectedUUID');
     if (typeof uuid === 'string' && uuid === selectedUUID) {
       core.getEngine().temp.set('mode', Mode.NULL);
@@ -113,11 +113,11 @@ export function moveUpElement(core: Core, uuid: string): void {
   if (
     typeof index === 'number' &&
     index >= 0 &&
-    index < core.getData().elements.length - 1
+    index < core.$data.elements.length - 1
   ) {
-    const temp = core.getData().elements[index];
-    core.getData().elements[index] = core.getData().elements[index + 1];
-    core.getData().elements[index + 1] = temp;
+    const temp = core.$data.elements[index];
+    core.$data.elements[index] = core.$data.elements[index + 1];
+    core.$data.elements[index + 1] = temp;
   }
   core.$emitChangeData();
   core.$draw();
@@ -128,11 +128,11 @@ export function moveDownElement(core: Core, uuid: string): void {
   if (
     typeof index === 'number' &&
     index > 0 &&
-    index < core.getData().elements.length
+    index < core.$data.elements.length
   ) {
-    const temp = core.getData().elements[index];
-    core.getData().elements[index] = core.getData().elements[index - 1];
-    core.getData().elements[index - 1] = temp;
+    const temp = core.$data.elements[index];
+    core.$data.elements[index] = core.$data.elements[index - 1];
+    core.$data.elements[index - 1] = temp;
   }
   core.$emitChangeData();
   core.$draw();
@@ -144,7 +144,7 @@ export function addElement(
 ): string | null {
   const _elem = deepClone(elem);
   _elem.uuid = createUUID();
-  core.getData().elements.push(_elem);
+  core.$data.elements.push(_elem);
   core.$emitChangeData();
   core.$draw();
   return _elem.uuid;
@@ -153,7 +153,7 @@ export function addElement(
 export function deleteElement(core: Core, uuid: string) {
   const index = core.$getElementHandler().getElementIndex(core.getData(), uuid);
   if (index >= 0) {
-    core.getData().elements.splice(index, 1);
+    core.$data.elements.splice(index, 1);
     core.$emitChangeData();
     core.$draw();
   }
@@ -179,7 +179,7 @@ export function insertElementBeforeIndex(
   const _elem = deepClone(elem);
   _elem.uuid = createUUID();
   if (index >= 0) {
-    core.getData().elements.splice(index, 0, _elem);
+    core.$data.elements.splice(index, 0, _elem);
     core.$emitChangeData();
     core.$draw();
     return _elem.uuid;
@@ -207,7 +207,7 @@ export function insertElementAfterIndex(
   const _elem = deepClone(elem);
   _elem.uuid = createUUID();
   if (index >= 0) {
-    core.getData().elements.splice(index + 1, 0, _elem);
+    core.$data.elements.splice(index + 1, 0, _elem);
     core.$emitChangeData();
     core.$draw();
     return _elem.uuid;
