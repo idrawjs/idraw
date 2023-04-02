@@ -134,50 +134,50 @@ importers:
   packages/board:
     dependencies:
       '@idraw/util':
-        specifier: ^0.3.0-beta.6
+        specifier: ^0.3.0-beta.7
         version: link:../util
     devDependencies:
       '@idraw/types':
-        specifier: ^0.3.0-beta.6
+        specifier: ^0.3.0-beta.7
         version: link:../types
 
   packages/core:
     dependencies:
       '@idraw/board':
-        specifier: ^0.3.0-beta.6
+        specifier: ^0.3.0-beta.7
         version: link:../board
       '@idraw/renderer':
-        specifier: ^0.3.0-beta.6
+        specifier: ^0.3.0-beta.7
         version: link:../renderer
       '@idraw/util':
-        specifier: ^0.3.0-beta.6
+        specifier: ^0.3.0-beta.7
         version: link:../util
     devDependencies:
       '@idraw/types':
-        specifier: ^0.3.0-beta.6
+        specifier: ^0.3.0-beta.7
         version: link:../types
 
   packages/idraw:
     dependencies:
       '@idraw/core':
-        specifier: ^0.3.0-beta.6
+        specifier: ^0.3.0-beta.7
         version: link:../core
       '@idraw/util':
-        specifier: ^0.3.0-beta.6
+        specifier: ^0.3.0-beta.7
         version: link:../util
     devDependencies:
       '@idraw/types':
-        specifier: ^0.3.0-beta.6
+        specifier: ^0.3.0-beta.7
         version: link:../types
 
   packages/renderer:
     dependencies:
       '@idraw/util':
-        specifier: ^0.3.0-beta.6
+        specifier: ^0.3.0-beta.7
         version: link:../util
     devDependencies:
       '@idraw/types':
-        specifier: ^0.3.0-beta.6
+        specifier: ^0.3.0-beta.7
         version: link:../types
 
   packages/types: {}
@@ -185,7 +185,7 @@ importers:
   packages/util:
     devDependencies:
       '@idraw/types':
-        specifier: ^0.3.0-beta.6
+        specifier: ^0.3.0-beta.7
         version: link:../types
 
 packages:
