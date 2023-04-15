@@ -19,4 +19,12 @@ export class iDraw {
   scale(num: number) {
     this._core.scale(num);
   }
+
+  scrollX(num: number) {
+    this._core.scrollX(num);
+  }
+
+  scrollY(num: number) {
+    this._core.scrollY(num);
+  }
 }

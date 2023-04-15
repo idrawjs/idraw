@@ -40,4 +40,12 @@ export class Core {
   scale(num: number) {
     this._board.scale(num);
   }
+
+  scrollX(num: number) {
+    this._board.scrollX(num);
+  }
+
+  scrollY(num: number) {
+    this._board.scrollY(num);
+  }
 }

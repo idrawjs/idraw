@@ -21,6 +21,8 @@ const idraw = new iDraw(
 );
 idraw.setData(data);
 idraw.scale(2);
+idraw.scrollX(-100);
+idraw.scrollY(-100);
 
 const mount2 = document.querySelector('#mount') as HTMLDivElement;
 const data2 = getData();

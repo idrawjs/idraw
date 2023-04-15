@@ -137,20 +137,30 @@ export class Board {
   }
 
   scale(num: number) {
-    const { _viewer: viewer, _sharer: share, _renderer: renderer, _calculator: calculator } = this;
-    const prevScaleInfo: ViewScaleInfo = share.getActiveScaleInfo();
-    const viewSizeInfo: ViewSizeInfo = share.getActiveViewSizeInfo();
+    const { _viewer: viewer, _sharer: sharer, _renderer: renderer, _calculator: calculator } = this;
+    const prevScaleInfo: ViewScaleInfo = sharer.getActiveScaleInfo();
+    const viewSizeInfo: ViewSizeInfo = sharer.getActiveViewSizeInfo();
     const scaleInfo = calculator.viewScale(num, prevScaleInfo, viewSizeInfo);
-    share.setActiveScaleInfo(scaleInfo);
+    sharer.setActiveScaleInfo(scaleInfo);
     renderer.scale(num);
     viewer.drawFrame();
   }
 
   scrollX(num: number) {
-    // TODO
+    const { _viewer: viewer, _sharer: sharer, _calculator: calculator } = this;
+    const prevScaleInfo: ViewScaleInfo = sharer.getActiveScaleInfo();
+    const viewSizeInfo: ViewSizeInfo = sharer.getActiveViewSizeInfo();
+    const scaleInfo = calculator.viewScroll({ moveX: num - (prevScaleInfo.offsetLeft || 0) }, prevScaleInfo, viewSizeInfo);
+    sharer.setActiveScaleInfo(scaleInfo);
+    viewer.drawFrame();
   }
 
   scrollY(num: number) {
-    // TODO
+    const { _viewer: viewer, _sharer: sharer, _calculator: calculator } = this;
+    const prevScaleInfo: ViewScaleInfo = sharer.getActiveScaleInfo();
+    const viewSizeInfo: ViewSizeInfo = sharer.getActiveViewSizeInfo();
+    const scaleInfo = calculator.viewScroll({ moveY: num - (prevScaleInfo.offsetTop || 0) }, prevScaleInfo, viewSizeInfo);
+    sharer.setActiveScaleInfo(scaleInfo);
+    viewer.drawFrame();
   }
 }
