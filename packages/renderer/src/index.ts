@@ -1,192 +1,77 @@
-import {
-  IDrawData,
-  IDrawContext,
-  DataElement,
-  DataElemDesc
-} from '@idraw/types';
-import { createUUID, deepClone, Context } from '@idraw/util';
-import { drawContext } from './lib/draw';
-import { TypeLoadDataItem } from './lib/loader-event';
-import Loader from './lib/loader';
-import { RendererEvent } from './lib/renderer-event';
+import { EventEmitter, createOffscreenContext2D } from '@idraw/util';
+import { drawElementList } from './draw';
+import { Loader } from './loader';
+import type { Data, BoardRenderer, RendererOptions, RendererEventMap, RendererDrawOptions } from '@idraw/types';
 
-const { requestAnimationFrame } = window;
+export class Renderer extends EventEmitter<RendererEventMap> implements BoardRenderer {
+  private _opts: RendererOptions;
+  private _loader: Loader = new Loader();
+  private _draftContextTop: CanvasRenderingContext2D;
+  private _draftContextMiddle: CanvasRenderingContext2D;
+  private _draftContextBottom: CanvasRenderingContext2D;
 
-type QueueItem = { data: IDrawData };
-enum DrawStatus {
-  NULL = 'null',
-  FREE = 'free',
-  DRAWING = 'drawing',
-  FREEZE = 'freeze'
-  // STOP = 'stop',
-}
-
-type Options = {
-  width: number;
-  height: number;
-  contextWidth?: number;
-  contextHeight?: number;
-  devicePixelRatio: number;
-};
-
-export default class Renderer extends RendererEvent {
-  private _queue: QueueItem[] = [];
-  private _ctx: IDrawContext | null = null;
-  private _status: DrawStatus = DrawStatus.NULL;
-  private _loader: Loader;
-  private _opts?: Options;
-
-  constructor(opts?: Options) {
+  constructor(opts: RendererOptions) {
     super();
     this._opts = opts;
-    this._loader = new Loader({
-      maxParallelNum: 6
+    const { width, height } = this._opts.viewContent.viewContext.canvas;
+    this._draftContextTop = createOffscreenContext2D({ width, height }) as CanvasRenderingContext2D;
+    this._draftContextMiddle = createOffscreenContext2D({ width, height }) as CanvasRenderingContext2D;
+    this._draftContextBottom = createOffscreenContext2D({ width, height }) as CanvasRenderingContext2D;
+
+    this._init();
+  }
+
+  private _init() {
+    const { _loader: loader } = this;
+    loader.on('load', (e) => {
+      this.trigger('load', e);
     });
-    this._loader.on('load', (res: TypeLoadDataItem) => {
-      this._drawFrame();
-      this.trigger('load', { element: res.element });
-    });
-    this._loader.on('error', (res: TypeLoadDataItem) => {
-      this.trigger('error', { element: res.element, error: res.error });
-    });
-    this._loader.on('complete', () => {
-      this.trigger('loadComplete', { t: Date.now() });
+    loader.on('error', () => {
+      // TODO
     });
   }
 
-  render(
-    target: HTMLCanvasElement | IDrawContext,
-    originData: IDrawData,
-    opts?: {
-      // forceUpdate?: boolean,
-      changeResourceUUIDs?: string[];
-    }
-  ): void {
-    // if ([DrawStatus.STOP, DrawStatus.FREEZE].includes(this._status)) {
-    //   return;
-    // }
-    // this._status = DrawStatus.FREE;
+  updateOptions(opts: RendererOptions) {
+    this._opts = opts;
+  }
 
-    const { changeResourceUUIDs = [] } = opts || {};
-    this._status = DrawStatus.FREE;
+  drawData(data: Data, opts: RendererDrawOptions) {
+    const { _loader: loader } = this;
+    const { calculator } = this._opts;
+    const { viewContext } = this._opts.viewContent;
+    viewContext.clearRect(0, 0, viewContext.canvas.width, viewContext.canvas.height);
+    drawElementList(viewContext, data.elements, { loader, calculator, ...opts });
+  }
 
-    const data = deepClone(originData);
-    if (Array.isArray(data.elements)) {
-      data.elements.forEach((elem: DataElement<keyof DataElemDesc>) => {
-        if (!(typeof elem.uuid === 'string' && elem.uuid)) {
-          elem.uuid = createUUID();
-        }
+  scale(num: number) {
+    const { sharer } = this._opts;
+    const { data, offsetTop, offsetBottom, offsetLeft, offsetRight } = sharer.getActiveStoreSnapshot();
+    // TODO calc offset data
+    if (data) {
+      this.drawData(data, {
+        scale: num,
+        offsetTop,
+        offsetBottom,
+        offsetLeft,
+        offsetRight
       });
     }
+    sharer.setActiveStorage('scale', num);
+  }
 
-    if (!this._ctx) {
-      // TODO
-      if (
-        this._opts &&
-        Object.prototype.toString.call(target) === '[object HTMLCanvasElement]'
-      ) {
-        const { width, height, contextWidth, contextHeight, devicePixelRatio } =
-          this._opts as Options;
-        const canvas = target as HTMLCanvasElement;
-        canvas.width = width * devicePixelRatio;
-        canvas.height = height * devicePixelRatio;
-        const ctx2d = canvas.getContext('2d') as CanvasRenderingContext2D;
-        this._ctx = new Context(ctx2d, {
-          width,
-          height,
-          contextWidth: contextWidth || width,
-          contextHeight: contextHeight || height,
-          devicePixelRatio
-        });
-      } else if (target) {
-        // TODO
-        this._ctx = target as IDrawContext;
-      }
+  scroll(opts: { offsetTop?: number; offsetLeft?: number }) {
+    const { sharer } = this._opts;
+    const { data, scale, offsetTop, offsetBottom, offsetLeft, offsetRight } = sharer.getActiveStoreSnapshot();
+    // TODO calc offset data
+    if (data) {
+      this.drawData(data, {
+        scale,
+        offsetTop,
+        offsetBottom,
+        offsetLeft,
+        offsetRight
+      });
     }
-
-    if ([DrawStatus.FREEZE].includes(this._status)) {
-      return;
-    }
-    const _data: QueueItem = deepClone({ data }) as QueueItem;
-    this._queue.push(_data);
-    // if (this._status !== DrawStatus.DRAWING) {
-    //   this._status = DrawStatus.DRAWING;
-    //   this._drawFrame();
-    // }
-    this._drawFrame();
-    this._loader.load(data, changeResourceUUIDs || []);
-  }
-
-  getContext(): IDrawContext | null {
-    return this._ctx;
-  }
-
-  thaw() {
-    this._status = DrawStatus.FREE;
-  }
-
-  private _freeze() {
-    this._status = DrawStatus.FREEZE;
-  }
-
-  private _drawFrame() {
-    if (this._status === DrawStatus.FREEZE) {
-      return;
-    }
-    requestAnimationFrame(() => {
-      if (this._status === DrawStatus.FREEZE) {
-        return;
-      }
-      const ctx = this._ctx;
-
-      let item: QueueItem | undefined = this._queue[0];
-      let isLastFrame = false;
-      if (this._queue.length > 1) {
-        item = this._queue.shift();
-      } else {
-        isLastFrame = true;
-      }
-      if (this._loader.isComplete() !== true) {
-        this._drawFrame();
-        if (item && ctx) {
-          drawContext(ctx, item.data, this._loader);
-          // this._board.draw();
-          // this.trigger('drawFrame', { t: Date.now() })
-        }
-      } else if (item && ctx) {
-        drawContext(ctx, item.data, this._loader);
-        // this._board.draw();
-        // this.trigger('drawFrame', { t: Date.now() })
-        this._retainQueueOneItem();
-        if (!isLastFrame) {
-          this._drawFrame();
-        } else {
-          this._status = DrawStatus.FREE;
-        }
-      } else {
-        this._status = DrawStatus.FREE;
-      }
-      this.trigger('drawFrame', { t: Date.now() });
-
-      if (
-        this._loader.isComplete() === true &&
-        this._queue.length === 1 &&
-        this._status === DrawStatus.FREE
-      ) {
-        if (ctx && this._queue[0] && this._queue[0].data) {
-          drawContext(ctx, this._queue[0].data, this._loader);
-        }
-        this.trigger('drawFrameComplete', { t: Date.now() });
-        this._freeze();
-      }
-    });
-  }
-
-  private _retainQueueOneItem() {
-    if (this._queue.length <= 1) {
-      return;
-    }
-    const lastOne = deepClone(this._queue[this._queue.length - 1]);
-    this._queue = [lastOne];
+    // sharer.setActiveStorage('scale', num);
   }
 }

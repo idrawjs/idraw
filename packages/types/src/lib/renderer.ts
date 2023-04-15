@@ -23,7 +23,7 @@ export interface RendererLoader extends UtilEventEmitter<LoaderEventMap> {
   getContent(uuid: string): LoadContent | null;
 }
 
-export interface RendererDrawOptions extends ViewScaleInfo {}
+export type RendererDrawOptions = ViewScaleInfo;
 
 export interface RendererDrawElementOptions extends RendererDrawOptions {
   loader: RendererLoader;

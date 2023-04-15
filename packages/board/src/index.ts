@@ -1,408 +1,148 @@
-import {
-  ScreenPosition,
-  ScreenSize,
-  ScreenContext,
-  Point,
-  PointCursor,
-  BoardOptions,
-  BoardSizeOptions,
-  IDrawContext
-} from '@idraw/types';
-import util from '@idraw/util';
-import { ScreenWatcher } from './lib/screen-watcher';
-import { setStyle } from './lib/style';
-import { TypeBoardEventArgMap } from './lib/event';
-import { Scroller } from './lib/scroller';
-import { Screen } from './lib/screen';
-// import { TempData } from './lib/temp';
+import { Renderer } from '@idraw/renderer';
+import { throttle } from '@idraw/util';
+import type { Data, BoardMode, BoardOptions, BoardMiddleware, BoardMiddlewareObject, BoardWatcherEventMap } from '@idraw/types';
+import { Calculator } from './lib/calculator';
+import { BoardWatcher } from './lib/watcher';
+import { Sharer } from './lib/sharer';
+import { Viewer } from './lib/viewer';
 
-const { throttle, Context } = util;
+const frameTime = 16; // ms
 
-type PrivateOptions = BoardOptions & {
-  devicePixelRatio: number;
-};
+const LOCK_MODES: BoardMode[] = ['RULER'];
 
-export default class Board {
-  private _hasRendered = false;
-
-  private _canvas: HTMLCanvasElement;
-  private _helperCanvas: HTMLCanvasElement;
-  private _displayCanvas: HTMLCanvasElement;
-  private _mount: HTMLDivElement;
-  private _opts: PrivateOptions;
-  private _ctx: IDrawContext;
-  private _helperCtx: IDrawContext;
-  // private _watcher: Watcher;
-  private _watcher: ScreenWatcher;
-  private _scroller: Scroller;
-  private _screen: Screen;
-  // private _tempData: TempData;
-
-  constructor(mount: HTMLDivElement, opts: BoardOptions) {
-    // this._tempData = new TempData(opts);
-
-    this._mount = mount;
-    this._canvas = document.createElement('canvas');
-    this._helperCanvas = document.createElement('canvas');
-    this._displayCanvas = document.createElement('canvas');
-    this._mount.appendChild(this._displayCanvas);
-    this._opts = this._parsePrivateOptions(opts);
-
-    const originCtx2d = this._canvas.getContext(
-      '2d'
-    ) as CanvasRenderingContext2D;
-    const displayCtx2d = this._displayCanvas.getContext(
-      '2d'
-    ) as CanvasRenderingContext2D;
-    const helperCtx2d = this._helperCanvas.getContext(
-      '2d'
-    ) as CanvasRenderingContext2D;
-    this._ctx = new Context(originCtx2d, this._opts);
-    this._helperCtx = new Context(helperCtx2d, this._opts);
-    this._screen = new Screen(this._ctx, this._opts);
-    // this._watcher = new Watcher(this._displayCanvas);
-    this._watcher = new ScreenWatcher(this._displayCanvas, this._ctx);
-    this._scroller = new Scroller(displayCtx2d, {
-      width: opts.width,
-      height: opts.height,
-      devicePixelRatio: opts.devicePixelRatio || 1,
-      scrollConfig: opts.scrollConfig
+export class Board {
+  private _opts: BoardOptions;
+  private _middlewares: BoardMiddleware[] = [];
+  private _middlewareObjs: BoardMiddlewareObject[] = [];
+  private _activeMiddlewareObjs: BoardMiddlewareObject[] = [];
+  private _watcher: BoardWatcher;
+  private _sharer: Sharer;
+  private _renderer: Renderer;
+  private _viewer: Viewer;
+  private _calculator: Calculator;
+  private _activeMode: BoardMode = 'SELECT';
+  constructor(opts: BoardOptions) {
+    const { viewContent } = opts;
+    const sharer = new Sharer();
+    const calculator = new Calculator({ viewContent });
+    const watcher = new BoardWatcher({
+      viewContent
     });
-    this._render();
-  }
-
-  getDisplayContext2D(): CanvasRenderingContext2D {
-    return this._displayCanvas.getContext('2d') as CanvasRenderingContext2D;
-  }
-
-  getOriginContext2D(): CanvasRenderingContext2D {
-    return this._ctx.getContext();
-  }
-
-  getHelperContext2D(): CanvasRenderingContext2D {
-    return this._helperCtx.getContext();
-  }
-
-  getContext(): IDrawContext {
-    return this._ctx;
-  }
-
-  getHelperContext(): IDrawContext {
-    return this._helperCtx;
-  }
-
-  scale(scaleRatio: number): ScreenContext {
-    if (scaleRatio > 0) {
-      this._ctx.setTransform({ scale: scaleRatio });
-      this._helperCtx.setTransform({ scale: scaleRatio });
-    }
-    const { position, size } = this._screen.calcScreen();
-    return { position, size };
-  }
-
-  scrollX(x: number) {
-    this._watcher.setStatusMap({
-      canScrollYPrev: true,
-      canScrollYNext: true,
-      canScrollXPrev: true,
-      canScrollXNext: true
+    const renderer = new Renderer({
+      viewContent,
+      sharer,
+      calculator
     });
-    if (x >= 0 || x < 0) {
-      this._ctx.setTransform({ scrollX: x });
-      this._helperCtx.setTransform({ scrollX: x });
-    }
-    const {
-      position,
-      size,
-      canScrollXNext,
-      canScrollYNext,
-      canScrollXPrev,
-      canScrollYPrev
-    } = this._screen.calcScreen();
-    this._watcher.setStatusMap({
-      canScrollYPrev,
-      canScrollYNext,
-      canScrollXPrev,
-      canScrollXNext
+
+    this._opts = opts;
+    this._sharer = sharer;
+    this._renderer = renderer;
+    this._watcher = watcher;
+    this._calculator = calculator;
+    this._viewer = new Viewer({
+      viewContent: opts.viewContent,
+      sharer,
+      renderer,
+      beforeDrawFrame: (e) => {
+        this._handleBeforeDrawFrame(e);
+      },
+      afterDrawFrame: (e) => {
+        this._handleAfterDrawFrame(e);
+      }
     });
-    return { position, size };
+    this._init();
+    this._resetActiveMiddlewareObjs();
   }
 
-  scrollY(y: number): ScreenContext {
-    this._watcher.setStatusMap({
-      canScrollYPrev: true,
-      canScrollYNext: true,
-      canScrollXPrev: true,
-      canScrollXNext: true
-    });
-    if (y >= 0 || y < 0) {
-      this._ctx.setTransform({ scrollY: y });
-      this._helperCtx.setTransform({ scrollY: y });
-    }
-    const {
-      position,
-      size,
-      canScrollXNext,
-      canScrollYNext,
-      canScrollXPrev,
-      canScrollYPrev
-    } = this._screen.calcScreen();
-    this._watcher.setStatusMap({
-      canScrollYPrev,
-      canScrollYNext,
-      canScrollXPrev,
-      canScrollXNext
-    });
-    return { position, size };
-  }
-
-  getTransform() {
-    return this._ctx.getTransform();
-  }
-
-  draw(): ScreenContext {
-    this.clear();
-    const { position, deviceSize, size } = this._screen.calcScreen();
-    const displayCtx = this._displayCanvas.getContext('2d');
-    displayCtx?.drawImage(
-      this._canvas,
-      deviceSize.x,
-      deviceSize.y,
-      deviceSize.w,
-      deviceSize.h
+  private _init() {
+    this._watcher.on('pointStart', this._handlePointStart.bind(this));
+    this._watcher.on('pointEnd', this._handlePointEnd.bind(this));
+    this._watcher.on(
+      'pointMove',
+      throttle((e) => {
+        this._handlePointMove(e);
+      }, frameTime)
     );
-    displayCtx?.drawImage(
-      this._helperCanvas,
-      deviceSize.x,
-      deviceSize.y,
-      deviceSize.w,
-      deviceSize.h
-    );
-    if (this._opts.canScroll === true) {
-      this._scroller.draw(position);
-    }
-    return { position, size };
-  }
-
-  clear() {
-    const displayCtx = this._displayCanvas.getContext('2d');
-    displayCtx?.clearRect(
-      0,
-      0,
-      this._displayCanvas.width,
-      this._displayCanvas.height
+    this._watcher.on(
+      'hover',
+      throttle((e) => {
+        this._handleHover(e);
+      }, frameTime)
     );
   }
 
-  on<T extends keyof TypeBoardEventArgMap>(
-    name: T,
-    callback: (p: TypeBoardEventArgMap[T]) => void
-  ) {
-    this._watcher.on(name, callback);
-  }
-
-  off<T extends keyof TypeBoardEventArgMap>(
-    name: T,
-    callback: (p: TypeBoardEventArgMap[T]) => void
-  ) {
-    this._watcher.off(name, callback);
-  }
-
-  getScreenInfo(): {
-    size: ScreenSize;
-    position: ScreenPosition;
-    deviceSize: ScreenSize;
-    width: number;
-    height: number;
-    devicePixelRatio: number;
-    // eslint-disable-next-line indent
-  } {
-    return this._screen.calcScreen();
-  }
-
-  setCursor(cursor: PointCursor) {
-    this._displayCanvas.style.cursor = cursor;
-  }
-
-  resetCursor() {
-    this._displayCanvas.style.cursor = 'auto';
-  }
-
-  resetSize(opts: BoardSizeOptions) {
-    this._opts = { ...this._opts, ...opts };
-    this._resetContext();
-    this._ctx.resetSize(opts);
-    this._helperCtx.resetSize(opts);
-    this._screen.resetSize(opts);
-    this._scroller.resetSize({
-      width: this._opts.width,
-      height: this._opts.height,
-      devicePixelRatio: this._opts.devicePixelRatio
-    });
-    this.draw();
-  }
-
-  getScrollLineWidth(): number {
-    let lineWidth = 0;
-    if (this._opts.canScroll === true) {
-      lineWidth = this._scroller.getLineWidth();
-    }
-    return lineWidth;
-  }
-
-  pointScreenToContext(screenPoint: Point): Point {
-    const { scrollX, scrollY, scale } = this.getTransform();
-    const ctxPoint = {
-      x: (screenPoint.x - scrollX) / scale,
-      y: (screenPoint.y - scrollY) / scale
-    };
-    return ctxPoint;
-  }
-
-  pointContextToScreen(ctxPoint: Point): Point {
-    const { scrollX, scrollY, scale } = this.getTransform();
-    const screenPoint = {
-      x: ctxPoint.x * scale + scrollX,
-      y: ctxPoint.y * scale + scrollY
-    };
-    return screenPoint;
-  }
-
-  private _render() {
-    if (this._hasRendered === true) {
-      return;
-    }
-    this._resetContext();
-    this._initEvent();
-    this._hasRendered = true;
-  }
-
-  private _resetContext() {
-    const { width, height, contextWidth, contextHeight, devicePixelRatio } =
-      this._opts;
-    this._canvas.width = contextWidth * devicePixelRatio;
-    this._canvas.height = contextHeight * devicePixelRatio;
-
-    this._helperCanvas.width = contextWidth * devicePixelRatio;
-    this._helperCanvas.height = contextHeight * devicePixelRatio;
-
-    this._displayCanvas.width = width * devicePixelRatio;
-    this._displayCanvas.height = height * devicePixelRatio;
-
-    setStyle(this._displayCanvas, {
-      width: `${width}px`,
-      height: `${height}px`
+  private _handlePointStart(e: BoardWatcherEventMap['pointStart']) {
+    this._activeMiddlewareObjs.forEach((obj) => {
+      obj?.pointStart?.(e);
     });
   }
 
-  private _parsePrivateOptions(opts: BoardOptions): PrivateOptions {
-    const defaultOpts = {
-      devicePixelRatio: 1
-    };
-    return { ...defaultOpts, ...opts };
+  private _handlePointEnd(e: BoardWatcherEventMap['pointEnd']) {
+    this._activeMiddlewareObjs.forEach((obj) => {
+      obj?.pointEnd?.(e);
+    });
   }
 
-  private _initEvent() {
-    if (this._hasRendered === true) {
-      return;
-    }
-    if (this._opts.canScroll === true) {
-      this.on(
-        'wheelX',
-        throttle((deltaX) => {
-          this._doScrollX(deltaX);
-        }, 16)
-      );
-      this.on(
-        'wheelY',
-        throttle((deltaY: number) => {
-          this._doScrollY(deltaY);
-        }, 16)
-      );
-
-      let scrollType: 'x' | 'y' | null = null;
-      this.on(
-        'moveStart',
-        throttle((p: Point) => {
-          if (this._scroller.isPointAtScrollX(p)) {
-            scrollType = 'x';
-          } else if (this._scroller.isPointAtScrollY(p)) {
-            scrollType = 'y';
-          }
-        }, 16)
-      );
-
-      this.on(
-        'move',
-        throttle((p: Point) => {
-          if (scrollType) {
-            this._doMoveScroll(scrollType, p);
-          }
-        }, 16)
-      );
-
-      this.on(
-        'moveEnd',
-        throttle((p: Point) => {
-          if (scrollType) {
-            this._doMoveScroll(scrollType, p);
-          }
-          scrollType = null;
-        }, 16)
-      );
-
-      // this.on('doubleClick', (p: Point) => {})
-    }
+  private _handlePointMove(e: BoardWatcherEventMap['pointMove']) {
+    this._activeMiddlewareObjs.forEach((obj) => {
+      obj?.pointMove?.(e);
+    });
   }
 
-  private _doScrollX(dx: number, prevScrollX?: number) {
-    const { width } = this._opts;
-    let scrollX = prevScrollX;
-    if (!(typeof scrollX === 'number' && (scrollX > 0 || scrollX <= 0))) {
-      scrollX = this._ctx.getTransform().scrollX;
-    }
-    const { position } = this._screen.calcScreen();
-    const { xSize } = this._scroller.calc(position);
-    const moveX = this._screen.calcScreenScroll(
-      position.left,
-      position.right,
-      xSize,
-      width,
-      dx
-    );
-    this.scrollX(scrollX + moveX);
-    this.draw();
+  private _handleHover(e: BoardWatcherEventMap['hover']) {
+    this._activeMiddlewareObjs.forEach((obj) => {
+      obj?.hover?.(e);
+    });
   }
 
-  private _doScrollY(dy: number, prevScrollY?: number) {
-    const { height } = this._opts;
-    let scrollY = prevScrollY;
-    if (!(typeof scrollY === 'number' && (scrollY > 0 || scrollY <= 0))) {
-      scrollY = this._ctx.getTransform().scrollY;
-    }
-    const { position } = this._screen.calcScreen();
-    const { ySize } = this._scroller.calc(position);
-    const moveY = this._screen.calcScreenScroll(
-      position.top,
-      position.bottom,
-      ySize,
-      height,
-      dy
-    );
-    this.scrollY(scrollY + moveY);
-    this.draw();
+  private _handleBeforeDrawFrame(e: BoardWatcherEventMap['beforeDrawFrame']) {
+    this._activeMiddlewareObjs.forEach((obj) => {
+      obj?.beforeDrawFrame?.(e);
+    });
   }
 
-  private _doMoveScroll(scrollType: 'x' | 'y', point: Point) {
-    if (!scrollType) {
-      return;
-    }
-    const { position } = this._screen.calcScreen();
-    const { xSize, ySize } = this._scroller.calc(position);
-    if (scrollType === 'x') {
-      this._doScrollX(point.x - xSize / 2, 0);
-    } else if (scrollType === 'y') {
-      this._doScrollY(point.y - ySize / 2, 0);
-    }
+  private _handleAfterDrawFrame(e: BoardWatcherEventMap['afterDrawFrame']) {
+    this._activeMiddlewareObjs.forEach((obj) => {
+      obj?.afterDrawFrame?.(e);
+    });
+  }
+
+  private _resetActiveMiddlewareObjs() {
+    const { _activeMode: activeMode } = this;
+    const modes: BoardMode[] = [...LOCK_MODES, activeMode];
+    const activeMiddlewareObjs: BoardMiddlewareObject[] = [];
+    this._middlewareObjs.forEach((m) => {
+      if (modes.includes(m.mode)) {
+        activeMiddlewareObjs.push(m);
+      }
+    });
+    this._activeMiddlewareObjs = activeMiddlewareObjs;
+  }
+
+  setData(data: Data) {
+    this._sharer.setActiveStorage('data', data);
+    this._viewer.drawFrame();
+  }
+
+  use(middleware: BoardMiddleware) {
+    const { viewContent } = this._opts;
+    const { _sharer: sharer, _viewer: viewer, _calculator: calculator } = this;
+    const obj = middleware({ viewContent, sharer, viewer, calculator });
+    this._middlewares.push(middleware);
+    this._activeMiddlewareObjs.push(obj);
+  }
+
+  scale(num: number) {
+    const { _viewer: viewer, _renderer: renderer } = this;
+    renderer.scale(num);
+    viewer.drawFrame();
+  }
+
+  scrollX(num: number) {
+    // TODO
+  }
+
+  scrollY(num: number) {
+    // TODO
   }
 }

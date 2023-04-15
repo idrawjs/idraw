@@ -7,11 +7,19 @@
     "moduleResolution": "node",
     "allowJs": false,
     "strict": true,
+    "strictNullChecks": true,
     "experimentalDecorators": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "removeComments": true,
-    "lib": ["ES2016", "DOM"]
+    "lib": ["ES2016", "DOM"],
+    "paths": {
+      "@idraw/types": ["./packages/types/src/index.ts"],
+      "@idraw/util": ["./packages/util/src/index.ts"],
+      "@idraw/renderer": ["./packages/renderer/src/index.ts"],
+      "@idraw/board": ["./packages/board/src/index.ts"],
+      "@idraw/core": ["./packages/core/src/index.ts"]
+    }
   },
   "include": [
     "packages/*/src",

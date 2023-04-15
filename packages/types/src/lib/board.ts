@@ -1,8 +1,9 @@
 import type { Point } from './point';
 import type { ViewContent, ViewCalculator } from './view';
 import type { UtilEventEmitter } from './util';
-import type { Renderer } from '../renderer';
 import type { ActiveStore, StoreSharer } from './store';
+import type { RendererEventMap, RendererOptions, RendererDrawOptions } from './renderer';
+import type { Data } from './data';
 
 interface BoardWatcherPointEvent {
   point: Point;
@@ -64,12 +65,13 @@ export interface BoardViewerFrameSnapshot {
 }
 
 export interface BoardViewerEventMap {
+  // eslint-disable-next-line @typescript-eslint/ban-types
   drawFrame: {};
 }
 
 export interface BoardViewerOptions {
   sharer: StoreSharer;
-  renderer: Renderer;
+  renderer: BoardRenderer;
   viewContent: ViewContent;
   beforeDrawFrame: (e: { snapshot: BoardViewerFrameSnapshot }) => void;
   afterDrawFrame: (e: { snapshot: BoardViewerFrameSnapshot }) => void;
@@ -77,4 +79,10 @@ export interface BoardViewerOptions {
 
 export interface BoardViewer extends UtilEventEmitter<BoardViewerEventMap> {
   drawFrame(): void;
+}
+
+export interface BoardRenderer extends UtilEventEmitter<RendererEventMap> {
+  updateOptions(opts: RendererOptions): void;
+  drawData(data: Data, opts: RendererDrawOptions): void;
+  scale(num: number): void;
 }

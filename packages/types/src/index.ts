@@ -7,3 +7,6 @@ export * from './lib/board';
 export * from './lib/renderer';
 export * from './lib/loader';
 export * from './lib/store';
+export * from './lib/watcher';
+export * from './lib/core';
+export * from './lib/idraw';
