@@ -136,8 +136,8 @@ export class Calculator implements ViewCalculator {
     // const vvp1: PointSize = { x: offsetLeft + width, y: offsetTop };
     // const vvp2: PointSize = { x: offsetLeft + width, y: offsetTop + height };
     // const vvp3: PointSize = { x: offsetLeft, y: offsetTop + height };
-    const vvpStart: PointSize = { x: offsetLeft, y: offsetTop };
-    const vvpEnd: PointSize = { x: offsetLeft + width, y: offsetTop + height };
+    const vvpStart: PointSize = { x: 0 - offsetLeft, y: 0 - offsetTop };
+    const vvpEnd: PointSize = { x: 0 - offsetLeft + width, y: Math.abs(offsetTop) + height };
 
     // Virtual Element Point
     const vep0: PointSize = { x: elem.x * scale, y: elem.y * scale };
@@ -160,8 +160,8 @@ export class Calculator implements ViewCalculator {
     const { scale = 1, offsetTop = 0, offsetLeft = 0 } = scaleInfo;
     // Virtual Point
     const vp: PointSize = {
-      x: p.x + offsetLeft,
-      y: p.y + offsetTop
+      x: p.x - offsetLeft,
+      y: p.y - offsetTop
     };
 
     // Virtual Element Point

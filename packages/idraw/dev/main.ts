@@ -20,7 +20,7 @@ const idraw = new iDraw(
   })
 );
 idraw.setData(data);
-idraw.scale(2);
+idraw.scale(0.5);
 idraw.scrollX(-100);
 idraw.scrollY(-100);
 
