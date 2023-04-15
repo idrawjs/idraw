@@ -1,5 +1,5 @@
 // import { DataElementAttrs } from '@idraw/types';
-import is from './is';
+import { is } from './is';
 
 function attrs(attrs: any): boolean {
   const { x, y, w, h, angle } = attrs;
@@ -125,7 +125,7 @@ function textDesc(desc: any): boolean {
   return true;
 }
 
-const check = {
+export const check = {
   attrs,
   textDesc,
   rectDesc,
@@ -134,5 +134,3 @@ const check = {
   svgDesc,
   htmlDesc
 };
-
-export default check;

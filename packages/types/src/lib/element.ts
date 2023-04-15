@@ -11,7 +11,25 @@ interface ElementRectDesc {
   borderRadius?: number;
 }
 
-interface ElementEllipseDesc {
+interface ElemenTextDesc {
+  text: string;
+  color: string;
+  fontSize: number;
+  lineHeight?: number;
+  fontWeight?: 'bold' | '';
+  fontFamily?: string;
+  textAlign?: 'center' | 'left' | 'right';
+  verticalAlign?: 'middle' | 'top' | 'bottom';
+  bgColor?: string;
+  strokeColor?: string;
+  strokeWidth?: number;
+  textShadowColor?: string;
+  textShadowOffsetX?: number;
+  textShadowOffsetY?: number;
+  textShadowBlur?: number;
+}
+
+interface ElementCircleDesc {
   radius: number;
   bgColor?: string;
   borderWidth?: number;
@@ -19,7 +37,10 @@ interface ElementEllipseDesc {
 }
 
 interface ElementBaseDesc {
-  // TODO
+  shadowColor?: string;
+  shadowOffsetX?: number;
+  shadowOffsetY?: number;
+  shadowBlur?: number;
 }
 
 interface ElementHTMLDesc extends ElementBaseDesc {
@@ -38,16 +59,14 @@ interface ElementSVGDesc extends ElementBaseDesc {
 
 interface ElementDescMap {
   rect: ElementRectDesc;
-  ellipse: ElementEllipseDesc;
-  polygon: ElementBaseDesc; // TODO
-  paint: ElementBaseDesc; // TODO
-  pen: ElementBaseDesc; // TODO
+  circle: ElementCircleDesc;
+  text: ElemenTextDesc;
   image: ElementImageDesc;
   html: ElementHTMLDesc;
   svg: ElementSVGDesc;
 }
 
-export type ElementType = 'rect' | 'ellipse' | 'polygon' | 'paint' | 'pen' | 'image' | 'html' | 'svg'; // TODO
+export type ElementType = 'text' | 'rect' | 'circle' | 'image' | 'svg' | 'html';
 
 export interface ElementOperation {
   lock?: boolean;

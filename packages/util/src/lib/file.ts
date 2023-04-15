@@ -1,9 +1,8 @@
-
 type ImageType = 'image/jpeg' | 'image/png';
 
-export function downloadImageFromCanvas (
-  canvas: HTMLCanvasElement, 
-  opts: { filename: string, type: ImageType }
+export function downloadImageFromCanvas(
+  canvas: HTMLCanvasElement,
+  opts: { filename: string; type: ImageType }
 ): void {
   const { filename, type = 'image/jpeg' } = opts;
   const stream = canvas.toDataURL(type);
