@@ -1,120 +1,70 @@
-// import { PaintData } from './paint';
-
-type DataElementAttrs = {
+export interface ElementSize {
   x: number;
   y: number;
   w: number;
   h: number;
-  angle?: number;
-  operation?: {
-    lock?: boolean;
-    invisible?: boolean;
-    disableScale?: boolean;
-    disableRotate?: boolean;
-    limitRatio?: boolean;
-  };
-  extension?: { [key: string]: any } | any;
-};
+}
 
-type DataElementBase<T extends keyof DataElemDesc | DataElemType> =
-  DataElementAttrs & {
-    name?: string;
-    uuid?: string;
-    type: T | DataElemType;
-    desc: DataElemDesc[T];
-  };
-
-type DataElement<T extends keyof DataElemDesc | DataElemType> =
-  DataElementBase<T> & {
-    uuid: string;
-  };
-
-type DataElemDescBase = {
-  shadowColor?: string;
-  shadowOffsetX?: number;
-  shadowOffsetY?: number;
-  shadowBlur?: number;
-};
-
-type DataElemBoxDesc = {
+interface ElementRectDesc {
+  color?: string;
+  bgColor?: string;
   borderRadius?: number;
+}
+
+interface ElementEllipseDesc {
+  radius: number;
+  bgColor?: string;
   borderWidth?: number;
   borderColor?: string;
-} & DataElemDescBase;
+}
 
-type DataElemDesc = {
-  text: DataElemDescText;
-  rect: DataElemDescRect;
-  circle: DataElemDescCircle;
-  image: DataElemDescImage;
-  svg: DataElemDescSVG;
-  html: DataElemDescHTML;
-  // paint: DataElemDescPaint,
-};
+interface ElementBaseDesc {
+  // TODO
+}
 
-// enum DataElemType {
-//   text = 'text',
-//   rect = 'rect',
-//   circle = 'circle',
-//   image = 'image',
-//   svg = 'svg',
-//   html = 'html',
-// }
-
-type DataElemType = 'text' | 'rect' | 'circle' | 'image' | 'svg' | 'html';
-
-type DataElemDescRect = {
-  bgColor?: string;
-} & DataElemBoxDesc;
-
-type DataElemDescText = {
-  text: string;
-  color: string;
-  fontSize: number;
-  lineHeight?: number;
-  fontWeight?: 'bold' | '';
-  fontFamily?: string;
-  textAlign?: 'center' | 'left' | 'right';
-  verticalAlign?: 'middle' | 'top' | 'bottom';
-  bgColor?: string;
-  strokeColor?: string;
-  strokeWidth?: number;
-  textShadowColor?: string;
-  textShadowOffsetX?: number;
-  textShadowOffsetY?: number;
-  textShadowBlur?: number;
-} & DataElemBoxDesc;
-
-type DataElemDescCircle = {
-  bgColor: string;
-} & DataElemBoxDesc;
-
-type DataElemDescImage = {
-  src: string;
-} & DataElemDescBase;
-
-type DataElemDescSVG = {
-  svg: string;
-};
-
-type DataElemDescHTML = {
+interface ElementHTMLDesc extends ElementBaseDesc {
   html: string;
   width: number;
   height: number;
-};
+}
 
-// type DataElemDescPaint = PaintData
+interface ElementImageDesc extends ElementBaseDesc {
+  src: string;
+}
 
-export {
-  DataElementAttrs,
-  DataElemDescText,
-  DataElemDescRect,
-  DataElemDescCircle,
-  DataElemDescImage,
-  DataElemDescSVG,
-  DataElemDescHTML,
-  DataElemDesc,
-  DataElemType,
-  DataElement,
-  DataElementBase
-};
+interface ElementSVGDesc extends ElementBaseDesc {
+  svg: string;
+}
+
+interface ElementDescMap {
+  rect: ElementRectDesc;
+  ellipse: ElementEllipseDesc;
+  polygon: ElementBaseDesc; // TODO
+  paint: ElementBaseDesc; // TODO
+  pen: ElementBaseDesc; // TODO
+  image: ElementImageDesc;
+  html: ElementHTMLDesc;
+  svg: ElementSVGDesc;
+}
+
+export type ElementType = 'rect' | 'ellipse' | 'polygon' | 'paint' | 'pen' | 'image' | 'html' | 'svg'; // TODO
+
+export interface ElementOperation {
+  lock?: boolean;
+  invisible?: boolean;
+  disableScale?: boolean;
+  disableRotate?: boolean;
+  limitRatio?: boolean;
+  lastModified?: number;
+}
+
+export interface Element<T extends ElementType> {
+  uuid: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  type: T;
+  desc: ElementDescMap[T];
+  operation?: ElementOperation;
+}

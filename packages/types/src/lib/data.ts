@@ -1,13 +1,5 @@
-import { DataElemDesc, DataElement, DataElementBase } from './element';
+import type { Element, ElementType } from './element';
 
-type IDrawDataBase = {
-  elements: DataElementBase<keyof DataElemDesc>[];
-  bgColor?: string;
-};
-
-type IDrawData = {
-  elements: DataElement<keyof DataElemDesc>[];
-  bgColor?: string;
-};
-
-export { IDrawData, IDrawDataBase };
+export interface Data {
+  elements: Element<ElementType>[];
+}
