@@ -1,4 +1,15 @@
-import type { Data, PointSize, Point, Element, ElementType, ViewCalculator, ViewCalculatorOptions, ViewScaleInfo, ElementSize } from '../types';
+import type {
+  Data,
+  PointSize,
+  Point,
+  Element,
+  ElementType,
+  ViewCalculator,
+  ViewCalculatorOptions,
+  ViewScaleInfo,
+  ElementSize,
+  ViewSizeInfo
+} from '@idraw/types';
 
 export class Calculator implements ViewCalculator {
   private _opts: ViewCalculatorOptions;
@@ -14,8 +25,94 @@ export class Calculator implements ViewCalculator {
     };
   }
 
-  viewScale(num: number, prevScaleInfo?: ViewScaleInfo): ViewScaleInfo {
-    // TODO
+  viewScale(num: number, prevScaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): ViewScaleInfo {
+    const scale = num;
+    let offsetLeft = 0;
+    let offsetRight = 0;
+    let offsetTop = 0;
+    let offsetBottom = 0;
+    const { width, height, contextWidth, contextHeight } = viewSizeInfo;
+
+    if (contextWidth * scale < width) {
+      offsetLeft = offsetRight = (width - contextWidth * scale) / 2;
+    } else if (contextWidth * scale > width) {
+      if (prevScaleInfo.offsetLeft < 0) {
+        offsetLeft = (prevScaleInfo.offsetLeft / prevScaleInfo.scale) * scale;
+        offsetRight = 0 - (contextWidth * scale - width - Math.abs(offsetLeft));
+      }
+    }
+
+    if (contextHeight * scale < height) {
+      offsetTop = offsetBottom = (height - contextHeight * scale) / 2;
+    } else if (contextHeight * scale > height) {
+      if (prevScaleInfo.offsetTop < 0) {
+        offsetTop = (prevScaleInfo.offsetTop / prevScaleInfo.scale) * scale;
+        offsetBottom = 0 - (contextHeight * scale - height - Math.abs(offsetTop));
+      }
+    }
+
+    return {
+      scale,
+      offsetTop,
+      offsetLeft,
+      offsetRight,
+      offsetBottom
+    };
+  }
+
+  viewScroll(opts: { moveX?: number; moveY?: number }, scaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): ViewScaleInfo {
+    const scale = scaleInfo.scale;
+    const { moveX, moveY } = opts;
+    let offsetLeft = scaleInfo.offsetLeft;
+    let offsetRight = scaleInfo.offsetRight;
+    let offsetTop = scaleInfo.offsetTop;
+    let offsetBottom = scaleInfo.offsetBottom;
+    const { width, height, contextWidth, contextHeight } = viewSizeInfo;
+    if (moveX !== undefined && (moveX > 0 || moveX <= 0)) {
+      if (contextWidth * scale < width) {
+        offsetLeft = offsetRight = (width - contextWidth * scale) / 2;
+      } else if (contextWidth * scale > width) {
+        if (offsetLeft + moveX >= 0) {
+          offsetLeft = 0;
+          offsetRight = width - contextWidth * scale;
+        } else if (offsetLeft + moveX < width - contextWidth * scale) {
+          offsetLeft = width - contextWidth * scale;
+          offsetRight = 0;
+        } else {
+          offsetLeft += moveX;
+          offsetRight = width - contextWidth * scale - offsetLeft;
+        }
+      } else {
+        offsetLeft = offsetRight = 0;
+      }
+    }
+
+    if (moveY !== undefined && (moveY > 0 || moveY <= 0)) {
+      if (contextHeight * scale < height) {
+        offsetTop = offsetBottom = (height - contextHeight * scale) / 2;
+      } else if (contextHeight * scale > height) {
+        if (offsetTop + moveY >= 0) {
+          offsetTop = 0;
+          offsetBottom = height - contextHeight * scale;
+        } else if (offsetTop + moveY < height - contextHeight * scale) {
+          offsetTop = height - contextHeight * scale;
+          offsetBottom = 0;
+        } else {
+          offsetTop += moveY;
+          offsetBottom = height - contextHeight * scale - offsetTop;
+        }
+      } else {
+        offsetTop = offsetBottom = 0;
+      }
+    }
+
+    return {
+      scale,
+      offsetTop,
+      offsetLeft,
+      offsetRight,
+      offsetBottom
+    };
   }
 
   elementSize(size: ElementSize, scaleInfo: ViewScaleInfo): ElementSize {

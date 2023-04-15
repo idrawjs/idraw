@@ -1,6 +1,6 @@
 import { Renderer } from '@idraw/renderer';
 import { throttle } from '@idraw/util';
-import type { Data, BoardMode, BoardOptions, BoardMiddleware, BoardMiddlewareObject, BoardWatcherEventMap } from '@idraw/types';
+import type { Data, BoardMode, BoardOptions, BoardMiddleware, BoardMiddlewareObject, BoardWatcherEventMap, ViewSizeInfo, ViewScaleInfo } from '@idraw/types';
 import { Calculator } from './lib/calculator';
 import { BoardWatcher } from './lib/watcher';
 import { Sharer } from './lib/sharer';
@@ -119,6 +119,10 @@ export class Board {
     this._activeMiddlewareObjs = activeMiddlewareObjs;
   }
 
+  getSharer() {
+    return this._sharer;
+  }
+
   setData(data: Data) {
     this._sharer.setActiveStorage('data', data);
     this._viewer.drawFrame();
@@ -133,7 +137,11 @@ export class Board {
   }
 
   scale(num: number) {
-    const { _viewer: viewer, _renderer: renderer } = this;
+    const { _viewer: viewer, _sharer: share, _renderer: renderer, _calculator: calculator } = this;
+    const prevScaleInfo: ViewScaleInfo = share.getActiveScaleInfo();
+    const viewSizeInfo: ViewSizeInfo = share.getActiveViewSizeInfo();
+    const scaleInfo = calculator.viewScale(num, prevScaleInfo, viewSizeInfo);
+    share.setActiveScaleInfo(scaleInfo);
     renderer.scale(num);
     viewer.drawFrame();
   }

@@ -10,6 +10,13 @@ export interface ViewScaleInfo {
   offsetRight: number;
 }
 
+export interface ViewSizeInfo {
+  width: number;
+  height: number;
+  contextWidth: number;
+  contextHeight: number;
+}
+
 export interface ViewContent {
   viewContext: CanvasRenderingContext2D;
   helperContext: CanvasRenderingContext2D;
@@ -21,7 +28,7 @@ export interface ViewCalculatorOptions {
 }
 
 export interface ViewCalculator {
-  viewScale(num: number, prevScaleInfo?: ViewScaleInfo): ViewScaleInfo;
+  viewScale(num: number, prevScaleInfo: ViewScaleInfo, viewSize: ViewSizeInfo): ViewScaleInfo;
   isElementInView(elem: Element<ElementType>, scaleInfo: ViewScaleInfo): boolean;
   isPointInElement(p: Point, elem: Element<ElementType>, scaleInfo: ViewScaleInfo): boolean;
   pointToViewPoint(p: Point): Point;

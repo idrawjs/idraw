@@ -1,18 +1,12 @@
 import { Data } from './data';
-import { ViewScaleInfo } from './view';
+import { ViewScaleInfo, ViewSizeInfo } from './view';
 
-export type ActiveStore = ViewScaleInfo & {
-  contextWidth: number;
-  contextHeight: number;
-  data: Data | null;
-  selectedIndexs: number[];
-  selectedUUIDs: string[];
-  // scale: number;
-  // offsetLeft: number;
-  // offsetRight: number;
-  // offsetTop: number;
-  // offsetBottom: number;
-};
+export type ActiveStore = ViewSizeInfo &
+  ViewScaleInfo & {
+    data: Data | null;
+    selectedIndexs: number[];
+    selectedUUIDs: string[];
+  };
 
 export interface StoreSharer {
   getActiveStorage<T extends keyof ActiveStore>(key: T): ActiveStore[T];

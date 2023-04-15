@@ -56,7 +56,6 @@ export class Renderer extends EventEmitter<RendererEventMap> implements BoardRen
         offsetRight
       });
     }
-    sharer.setActiveStorage('scale', num);
   }
 
   scroll(opts: { offsetTop?: number; offsetLeft?: number }) {

@@ -101,7 +101,7 @@ const data: Data = {
       w: 100,
       h: 100,
       desc: {
-        src: './images/lena-404.png'
+        src: './images/lena.png'
       }
     },
     {

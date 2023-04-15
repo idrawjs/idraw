@@ -19,6 +19,13 @@ export class Core {
     const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
     const viewContent = createBoardContexts(ctx);
     const board = new Board({ viewContent });
+    const sharer = board.getSharer();
+    sharer.setActiveViewSizeInfo({
+      width: opts.width,
+      height: opts.height,
+      contextWidth: opts.contextWidth || opts.width,
+      contextHeight: opts.contextHeight || opts.height
+    });
     this._board = board;
   }
 
