@@ -1,4 +1,5 @@
 import type { Data } from '@idraw/types';
+import { deepClone } from '@idraw/util';
 
 // const data: Data = {
 //   bgColor: '#ffffff',
@@ -100,7 +101,7 @@ const data: Data = {
       w: 100,
       h: 100,
       desc: {
-        src: './images/lena.png'
+        src: './images/lena-404.png'
       }
     },
     {
@@ -184,5 +185,5 @@ const data: Data = {
 };
 
 export function getData() {
-  return data;
+  return deepClone(data);
 }

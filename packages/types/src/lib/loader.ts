@@ -9,6 +9,7 @@ export interface LoadItem {
   startTime: number;
   endTime: number;
   error?: any;
+  source: string | null;
 }
 
 export interface LoaderEvent extends LoadItem {

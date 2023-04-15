@@ -1,5 +1,6 @@
 import type { RendererLoader, LoaderEventMap, LoadFunc, LoadContent, LoadItem, LoadElementType, Element } from '@idraw/types';
 import { loadImage, loadHTML, loadSVG, EventEmitter } from '@idraw/util';
+import { deepClone } from '@idraw/util';
 
 interface LoadItemMap {
   [uuid: string]: LoadItem;
@@ -45,6 +46,18 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
     this._loadFuncMap[type] = func;
   }
 
+  private _getLoadElementSource(element: Element<LoadElementType>): null | string {
+    let source: string | null = null;
+    if (element.type === 'image') {
+      source = (element as Element<'image'>)?.desc?.src || null;
+    } else if (element.type === 'svg') {
+      source = (element as Element<'svg'>)?.desc?.svg || null;
+    } else if (element.type === 'html') {
+      source = (element as Element<'html'>)?.desc?.html || null;
+    }
+    return source;
+  }
+
   private _createLoadItem(element: Element<LoadElementType>): LoadItem {
     return {
       element,
@@ -52,7 +65,8 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
       content: null,
       error: null,
       startTime: -1,
-      endTime: -1
+      endTime: -1,
+      source: this._getLoadElementSource(element)
     };
   }
 
@@ -106,9 +120,21 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
     }
   }
 
+  private _isExistingErrorStorage(element: Element<LoadElementType>) {
+    const existItem = this._currentLoadItemMap?.[element?.uuid];
+    if (existItem && existItem.status === 'error' && existItem.source && existItem.source === this._getLoadElementSource(element)) {
+      return true;
+    }
+    return false;
+  }
+
   load(element: Element<LoadElementType>) {
+    if (this._isExistingErrorStorage(element)) {
+      return;
+    }
     if (supportElementTypes.includes(element.type)) {
-      this._loadResource(element);
+      const elem = deepClone(element);
+      this._loadResource(elem);
     }
   }
 

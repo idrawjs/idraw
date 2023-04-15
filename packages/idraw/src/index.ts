@@ -15,4 +15,8 @@ export class iDraw {
   setData(data: Data) {
     this._core.setData(data);
   }
+
+  scale(num: number) {
+    this._core.scale(num);
+  }
 }

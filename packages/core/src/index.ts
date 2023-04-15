@@ -29,4 +29,8 @@ export class Core {
   setData(data: Data) {
     this._board.setData(data);
   }
+
+  scale(num: number) {
+    this._board.scale(num);
+  }
 }
