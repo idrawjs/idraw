@@ -1,4 +1,4 @@
-import type { BoardViewerFrameSnapshot, ViewScaleInfo, ViewSizeInfo } from '@idraw/types';
+import type { Point, BoardViewerFrameSnapshot, ViewScaleInfo, ViewSizeInfo } from '@idraw/types';
 import { getViewScaleInfoFromSnapshot, getViewSizeInfoFromSnapshot } from '@idraw/util';
 
 const minScrollerWidth = 12;
@@ -10,6 +10,40 @@ const scrollConfig = {
   color: '#000000',
   showBackground: true
 };
+
+function isPointAtScrollbarY(helperContext: CanvasRenderingContext2D, p: Point, sizeInfo: ViewSizeInfo): boolean {
+  const { width, height } = sizeInfo;
+  const ctx = helperContext;
+  ctx.beginPath();
+  ctx.rect(width - scrollConfig.width, 0, scrollConfig.width, height);
+  ctx.closePath();
+  if (ctx.isPointInPath(p.x, p.y)) {
+    return true;
+  }
+  return false;
+}
+
+function isPointAtScrollbarX(helperContext: CanvasRenderingContext2D, p: Point, sizeInfo: ViewSizeInfo): boolean {
+  const { width, height } = sizeInfo;
+  const ctx = helperContext;
+  ctx.beginPath();
+  ctx.rect(0, height - scrollConfig.width, width - scrollConfig.width, scrollConfig.width);
+  ctx.closePath();
+  if (ctx.isPointInPath(p.x, p.y)) {
+    return true;
+  }
+  return false;
+}
+
+export function isPointInScrollbar(helperContext: CanvasRenderingContext2D, p: Point, sizeInfo: ViewSizeInfo): 'X' | 'Y' | null {
+  let thumbType: 'X' | 'Y' | null = null;
+  if (isPointAtScrollbarX(helperContext, p, sizeInfo)) {
+    thumbType = 'X';
+  } else if (isPointAtScrollbarY(helperContext, p, sizeInfo)) {
+    thumbType = 'Y';
+  }
+  return thumbType;
+}
 
 function calcScrollerInfo(scaleInfo: ViewScaleInfo, sizeInfo: ViewSizeInfo) {
   const { width, height } = sizeInfo;
@@ -101,7 +135,8 @@ function drawScrollerThumb(
   ctx.stroke();
 }
 
-function drawScrollerInfo(ctx: CanvasRenderingContext2D, opts: { scaleInfo: ViewScaleInfo; sizeInfo: ViewSizeInfo }) {
+function drawScrollerInfo(helperContext: CanvasRenderingContext2D, opts: { scaleInfo: ViewScaleInfo; sizeInfo: ViewSizeInfo }) {
+  const ctx = helperContext;
   const { scaleInfo, sizeInfo } = opts;
   const { width, height } = sizeInfo;
   const wrapper = calcScrollerInfo(scaleInfo, sizeInfo);

@@ -15,4 +15,8 @@ export interface StoreSharer {
   getSharedStorage(key: string): any;
   setSharedStorage(key: string, storage: any): void;
   getSharedStoreSnapshot(): Record<string, any>;
+  getActiveScaleInfo(): ViewScaleInfo;
+  setActiveScaleInfo(scaleInfo: ViewScaleInfo): void;
+  setActiveViewSizeInfo(size: ViewSizeInfo): void;
+  getActiveViewSizeInfo(): ViewSizeInfo;
 }

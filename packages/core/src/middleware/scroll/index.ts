@@ -1,17 +1,28 @@
-import type { BoardMiddleware } from '@idraw/types';
-import { drawScroller } from './scroller';
+import type { BoardMiddleware, PointWatcherEvent } from '@idraw/types';
+import { drawScroller, isPointInScrollbar } from './scroller';
 
 export const MiddlewareScroller: BoardMiddleware = (opts) => {
-  const { viewer, viewContent } = opts;
-  const { helperContext } = viewContent;
-
   const key = 'SCROLL';
-
+  const { viewer, viewContent, sharer } = opts;
+  const { helperContext } = viewContent;
   viewer.drawFrame();
 
   return {
     mode: key,
-    // pointStart: (e: PointWatcherEvent) => {},
+    hover: (e: PointWatcherEvent) => {
+      const { point } = e;
+      const thumbType = isPointInScrollbar(helperContext, point, sharer.getActiveViewSizeInfo());
+      if (thumbType === 'X' || thumbType === 'Y') {
+        return false;
+      }
+    },
+    pointStart: (e: PointWatcherEvent) => {
+      const { point } = e;
+      const thumbType = isPointInScrollbar(helperContext, point, sharer.getActiveViewSizeInfo());
+      if (thumbType === 'X' || thumbType === 'Y') {
+        return false;
+      }
+    },
     // pointMove: (e: PointWatcherEvent) => {},
     // pointEnd: (e: PointWatcherEvent) => {},
     beforeDrawFrame({ snapshot }) {
