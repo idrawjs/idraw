@@ -5,16 +5,18 @@ import type { ActiveStore, StoreSharer } from './store';
 import type { RendererEventMap, RendererOptions, RendererDrawOptions } from './renderer';
 import type { Data } from './data';
 
-interface BoardWatcherPointEvent {
+export interface BoardWatcherPointEvent {
   point: Point;
 }
 
-interface BoardWatherWheelEvent {
+export interface BoardWatherWheelXEvent {
   deltaX: number;
+}
+export interface BoardWatherWheelYEvent {
   deltaY: number;
 }
 
-interface BoardWatherDrawFrameEvent {
+export interface BoardWatherDrawFrameEvent {
   snapshot: BoardViewerFrameSnapshot;
 }
 
@@ -25,7 +27,8 @@ export interface BoardWatcherEventMap {
   pointEnd: BoardWatcherPointEvent;
   pointLeave: BoardWatcherPointEvent;
   doubleClick: BoardWatcherPointEvent;
-  wheel: BoardWatherWheelEvent;
+  wheelX: BoardWatherWheelXEvent;
+  wheelY: BoardWatherWheelYEvent;
   beforeDrawFrame: BoardWatherDrawFrameEvent;
   afterDrawFrame: BoardWatherDrawFrameEvent;
 }
@@ -42,7 +45,8 @@ export interface BoardMiddlewareObject {
   pointEnd?: (e: BoardWatcherEventMap['pointEnd']) => void | boolean;
   pointLeave?: (e: BoardWatcherEventMap['pointLeave']) => void | boolean;
   doubleClick?: (e: BoardWatcherEventMap['doubleClick']) => void | boolean;
-  wheel?: (e: BoardWatcherEventMap['wheel']) => void | boolean;
+  wheelX?: (e: BoardWatcherEventMap['wheelX']) => void | boolean;
+  wheelY?: (e: BoardWatcherEventMap['wheelY']) => void | boolean;
   beforeDrawFrame?(e: BoardWatcherEventMap['beforeDrawFrame']): void | boolean;
   afterDrawFrame?(e: BoardWatcherEventMap['afterDrawFrame']): void | boolean;
 }
@@ -73,6 +77,7 @@ export interface BoardViewerEventMap {
 export interface BoardViewerOptions {
   sharer: StoreSharer;
   renderer: BoardRenderer;
+  calculator: ViewCalculator;
   viewContent: ViewContent;
   beforeDrawFrame: (e: { snapshot: BoardViewerFrameSnapshot }) => void;
   afterDrawFrame: (e: { snapshot: BoardViewerFrameSnapshot }) => void;
@@ -80,6 +85,9 @@ export interface BoardViewerOptions {
 
 export interface BoardViewer extends UtilEventEmitter<BoardViewerEventMap> {
   drawFrame(): void;
+  scale(num: number): void;
+  scrollX(num: number): void;
+  scrollY(num: number): void;
 }
 
 export interface BoardRenderer extends UtilEventEmitter<RendererEventMap> {

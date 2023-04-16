@@ -1,6 +1,6 @@
 import { Renderer } from '@idraw/renderer';
 import { throttle } from '@idraw/util';
-import type { Data, BoardMode, BoardOptions, BoardMiddleware, BoardMiddlewareObject, BoardWatcherEventMap, ViewSizeInfo, ViewScaleInfo } from '@idraw/types';
+import type { Data, BoardMode, BoardOptions, BoardMiddleware, BoardMiddlewareObject, BoardWatcherEventMap } from '@idraw/types';
 import { Calculator } from './lib/calculator';
 import { BoardWatcher } from './lib/watcher';
 import { Sharer } from './lib/sharer';
@@ -43,6 +43,7 @@ export class Board {
       viewContent: opts.viewContent,
       sharer,
       renderer,
+      calculator,
       beforeDrawFrame: (e) => {
         this._handleBeforeDrawFrame(e);
       },
@@ -67,6 +68,18 @@ export class Board {
       'hover',
       throttle((e) => {
         this._handleHover(e);
+      }, frameTime)
+    );
+    this._watcher.on(
+      'wheelX',
+      throttle((e) => {
+        this._handleWheelX(e);
+      }, frameTime)
+    );
+    this._watcher.on(
+      'wheelY',
+      throttle((e) => {
+        this._handleWheelY(e);
       }, frameTime)
     );
   }
@@ -105,6 +118,26 @@ export class Board {
     for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
       const obj = this._activeMiddlewareObjs[i];
       const result = obj?.hover?.(e);
+      if (result === false) {
+        return;
+      }
+    }
+  }
+
+  private _handleWheelX(e: BoardWatcherEventMap['wheelX']) {
+    for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
+      const obj = this._activeMiddlewareObjs[i];
+      const result = obj?.wheelX?.(e);
+      if (result === false) {
+        return;
+      }
+    }
+  }
+
+  private _handleWheelY(e: BoardWatcherEventMap['wheelY']) {
+    for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
+      const obj = this._activeMiddlewareObjs[i];
+      const result = obj?.wheelY?.(e);
       if (result === false) {
         return;
       }
@@ -163,30 +196,17 @@ export class Board {
   }
 
   scale(num: number) {
-    const { _viewer: viewer, _sharer: sharer, _renderer: renderer, _calculator: calculator } = this;
-    const prevScaleInfo: ViewScaleInfo = sharer.getActiveScaleInfo();
-    const viewSizeInfo: ViewSizeInfo = sharer.getActiveViewSizeInfo();
-    const scaleInfo = calculator.viewScale(num, prevScaleInfo, viewSizeInfo);
-    sharer.setActiveScaleInfo(scaleInfo);
-    renderer.scale(num);
-    viewer.drawFrame();
+    this._viewer.scale(num);
+    this._viewer.drawFrame();
   }
 
   scrollX(num: number) {
-    const { _viewer: viewer, _sharer: sharer, _calculator: calculator } = this;
-    const prevScaleInfo: ViewScaleInfo = sharer.getActiveScaleInfo();
-    const viewSizeInfo: ViewSizeInfo = sharer.getActiveViewSizeInfo();
-    const scaleInfo = calculator.viewScroll({ moveX: num - (prevScaleInfo.offsetLeft || 0) }, prevScaleInfo, viewSizeInfo);
-    sharer.setActiveScaleInfo(scaleInfo);
-    viewer.drawFrame();
+    this._viewer.scrollX(num);
+    this._viewer.drawFrame();
   }
 
   scrollY(num: number) {
-    const { _viewer: viewer, _sharer: sharer, _calculator: calculator } = this;
-    const prevScaleInfo: ViewScaleInfo = sharer.getActiveScaleInfo();
-    const viewSizeInfo: ViewSizeInfo = sharer.getActiveViewSizeInfo();
-    const scaleInfo = calculator.viewScroll({ moveY: num - (prevScaleInfo.offsetTop || 0) }, prevScaleInfo, viewSizeInfo);
-    sharer.setActiveScaleInfo(scaleInfo);
-    viewer.drawFrame();
+    this._viewer.scrollY(num);
+    this._viewer.drawFrame();
   }
 }

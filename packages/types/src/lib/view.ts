@@ -34,5 +34,6 @@ export interface ViewCalculator {
   pointToViewPoint(p: Point): Point;
   elementSize(size: ElementSize, scaleInfo: ViewScaleInfo): ElementSize;
   getPointElement(p: Point, data: Data, scaleInfo: ViewScaleInfo): { index: number; element: null | Element<ElementType> };
+  viewScroll(opts: { moveX?: number; moveY?: number }, scaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): ViewScaleInfo;
   // TODO
 }

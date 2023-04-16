@@ -1,5 +1,5 @@
 import { EventEmitter } from '@idraw/util';
-import type { BoardViewer, BoardViewerEventMap, BoardViewerOptions, ActiveStore, BoardViewerFrameSnapshot } from '@idraw/types';
+import type { BoardViewer, BoardViewerEventMap, BoardViewerOptions, ActiveStore, BoardViewerFrameSnapshot, ViewScaleInfo, ViewSizeInfo } from '@idraw/types';
 
 const { requestAnimationFrame } = window;
 
@@ -73,5 +73,30 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
       sharedStore
     });
     this._drawAnimationFrame();
+  }
+
+  scale(num: number) {
+    const { sharer, renderer, calculator } = this._opts;
+    const prevScaleInfo: ViewScaleInfo = sharer.getActiveScaleInfo();
+    const viewSizeInfo: ViewSizeInfo = sharer.getActiveViewSizeInfo();
+    const scaleInfo = calculator.viewScale(num, prevScaleInfo, viewSizeInfo);
+    sharer.setActiveScaleInfo(scaleInfo);
+    renderer.scale(num);
+  }
+
+  scrollX(num: number) {
+    const { sharer, calculator } = this._opts;
+    const prevScaleInfo: ViewScaleInfo = sharer.getActiveScaleInfo();
+    const viewSizeInfo: ViewSizeInfo = sharer.getActiveViewSizeInfo();
+    const scaleInfo = calculator.viewScroll({ moveX: num - (prevScaleInfo.offsetLeft || 0) }, prevScaleInfo, viewSizeInfo);
+    sharer.setActiveScaleInfo(scaleInfo);
+  }
+
+  scrollY(num: number) {
+    const { sharer, calculator } = this._opts;
+    const prevScaleInfo: ViewScaleInfo = sharer.getActiveScaleInfo();
+    const viewSizeInfo: ViewSizeInfo = sharer.getActiveViewSizeInfo();
+    const scaleInfo = calculator.viewScroll({ moveY: num - (prevScaleInfo.offsetTop || 0) }, prevScaleInfo, viewSizeInfo);
+    sharer.setActiveScaleInfo(scaleInfo);
   }
 }

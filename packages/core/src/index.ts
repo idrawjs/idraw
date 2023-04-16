@@ -1,4 +1,4 @@
-import type { Data, BoardOptions, CoreOptions, BoardMiddleware } from '@idraw/types';
+import type { Data, CoreOptions, BoardMiddleware } from '@idraw/types';
 import { Board } from '@idraw/board';
 import { createBoardContexts } from '@idraw/util';
 

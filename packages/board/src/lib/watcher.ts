@@ -14,24 +14,38 @@ export class BoardWatcher extends EventEmitter<BoardWatcherEventMap> {
   private _init() {
     const boardCanvas = this._opts.viewContent.boardContext.canvas;
     boardCanvas.addEventListener('mousemove', (e: MouseEvent) => {
+      e.preventDefault();
       const point = this._getPoint(e);
       this.trigger('hover', { point });
     });
     boardCanvas.addEventListener('mousedown', (e: MouseEvent) => {
+      e.preventDefault();
       const point = this._getPoint(e);
       this.trigger('pointStart', { point });
     });
     boardCanvas.addEventListener('mousemove', (e: MouseEvent) => {
+      e.preventDefault();
       const point = this._getPoint(e);
       this.trigger('pointMove', { point });
     });
     boardCanvas.addEventListener('mouseup', (e: MouseEvent) => {
+      e.preventDefault();
       const point = this._getPoint(e);
       this.trigger('pointEnd', { point });
     });
     boardCanvas.addEventListener('mouseleave', (e: MouseEvent) => {
+      e.preventDefault();
       const point = this._getPoint(e);
       this.trigger('pointLeave', { point });
+    });
+    boardCanvas.addEventListener('wheel', (e: WheelEvent) => {
+      e.preventDefault();
+      if (this.has('wheelX') && (e.deltaX > 0 || e.deltaX < 0)) {
+        this.trigger('wheelX', { deltaX: e.deltaX });
+      }
+      if (this.has('wheelY') && (e.deltaY > 0 || e.deltaY < 0)) {
+        this.trigger('wheelY', { deltaY: e.deltaY });
+      }
     });
   }
 

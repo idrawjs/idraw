@@ -5,6 +5,8 @@ const minScrollerWidth = 12;
 const scrollerAlpha = 0.12;
 const scrollerThumbAlpha = 0.36;
 
+export type ScrollbarThumbType = 'X' | 'Y';
+
 const scrollConfig = {
   width: minScrollerWidth,
   color: '#000000',
@@ -35,8 +37,8 @@ function isPointAtScrollbarX(helperContext: CanvasRenderingContext2D, p: Point, 
   return false;
 }
 
-export function isPointInScrollbar(helperContext: CanvasRenderingContext2D, p: Point, sizeInfo: ViewSizeInfo): 'X' | 'Y' | null {
-  let thumbType: 'X' | 'Y' | null = null;
+export function isPointInScrollbar(helperContext: CanvasRenderingContext2D, p: Point, sizeInfo: ViewSizeInfo): ScrollbarThumbType | null {
+  let thumbType: ScrollbarThumbType | null = null;
   if (isPointAtScrollbarX(helperContext, p, sizeInfo)) {
     thumbType = 'X';
   } else if (isPointAtScrollbarY(helperContext, p, sizeInfo)) {
@@ -45,7 +47,7 @@ export function isPointInScrollbar(helperContext: CanvasRenderingContext2D, p: P
   return thumbType;
 }
 
-function calcScrollerInfo(scaleInfo: ViewScaleInfo, sizeInfo: ViewSizeInfo) {
+export function calcScrollerInfo(scaleInfo: ViewScaleInfo, sizeInfo: ViewSizeInfo) {
   const { width, height } = sizeInfo;
   const { offsetTop, offsetBottom, offsetLeft, offsetRight } = scaleInfo;
   const sliderMinSize = 10 * 2.5;
@@ -86,7 +88,7 @@ function calcScrollerInfo(scaleInfo: ViewScaleInfo, sizeInfo: ViewSizeInfo) {
 function drawScrollerThumb(
   ctx: CanvasRenderingContext2D,
   opts: {
-    axis: 'X' | 'Y';
+    axis: ScrollbarThumbType;
     x: number;
     y: number;
     w: number;
