@@ -1,5 +1,4 @@
 import type { Point, PointWatcherEvent, BoardMiddleware } from '@idraw/types';
-import { createBoardContexts } from '@idraw/util';
 import { drawPointWrapper, drawHoverWrapper } from './draw-wrapper';
 
 export const MiddlewareSelector: BoardMiddleware = (opts) => {

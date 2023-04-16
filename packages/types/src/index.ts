@@ -10,3 +10,4 @@ export * from './lib/store';
 export * from './lib/watcher';
 export * from './lib/core';
 export * from './lib/idraw';
+export * from './lib/middleware';

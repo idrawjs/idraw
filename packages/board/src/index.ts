@@ -72,39 +72,63 @@ export class Board {
   }
 
   private _handlePointStart(e: BoardWatcherEventMap['pointStart']) {
-    this._activeMiddlewareObjs.forEach((obj) => {
-      obj?.pointStart?.(e);
-    });
+    for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
+      const obj = this._activeMiddlewareObjs[i];
+      const result = obj?.pointStart?.(e);
+      if (result === false) {
+        return;
+      }
+    }
   }
 
   private _handlePointEnd(e: BoardWatcherEventMap['pointEnd']) {
-    this._activeMiddlewareObjs.forEach((obj) => {
-      obj?.pointEnd?.(e);
-    });
+    for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
+      const obj = this._activeMiddlewareObjs[i];
+      const result = obj?.pointEnd?.(e);
+      if (result === false) {
+        return;
+      }
+    }
   }
 
   private _handlePointMove(e: BoardWatcherEventMap['pointMove']) {
-    this._activeMiddlewareObjs.forEach((obj) => {
-      obj?.pointMove?.(e);
-    });
+    for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
+      const obj = this._activeMiddlewareObjs[i];
+      const result = obj?.pointMove?.(e);
+      if (result === false) {
+        return;
+      }
+    }
   }
 
   private _handleHover(e: BoardWatcherEventMap['hover']) {
-    this._activeMiddlewareObjs.forEach((obj) => {
-      obj?.hover?.(e);
-    });
+    for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
+      const obj = this._activeMiddlewareObjs[i];
+      const result = obj?.hover?.(e);
+      if (result === false) {
+        return;
+      }
+    }
   }
 
   private _handleBeforeDrawFrame(e: BoardWatcherEventMap['beforeDrawFrame']) {
-    this._activeMiddlewareObjs.forEach((obj) => {
-      obj?.beforeDrawFrame?.(e);
-    });
+    for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
+      const obj = this._activeMiddlewareObjs[i];
+      const result = obj?.beforeDrawFrame?.(e);
+      if (result === false) {
+        return;
+      }
+    }
   }
 
   private _handleAfterDrawFrame(e: BoardWatcherEventMap['afterDrawFrame']) {
-    this._activeMiddlewareObjs.forEach((obj) => {
-      obj?.afterDrawFrame?.(e);
-    });
+    for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
+      const obj = this._activeMiddlewareObjs[i];
+      const result = obj?.afterDrawFrame?.(e);
+      if (result === false) {
+        return;
+      }
+    }
   }
 
   private _resetActiveMiddlewareObjs() {
@@ -112,7 +136,9 @@ export class Board {
     const modes: BoardMode[] = [...LOCK_MODES, activeMode];
     const activeMiddlewareObjs: BoardMiddlewareObject[] = [];
     this._middlewareObjs.forEach((m) => {
-      if (modes.includes(m.mode)) {
+      if (m.isDefault === true) {
+        activeMiddlewareObjs.push(m);
+      } else if (modes.includes(m.mode)) {
         activeMiddlewareObjs.push(m);
       }
     });

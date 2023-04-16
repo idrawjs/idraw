@@ -180,6 +180,28 @@ const data: Data = {
       desc: {
         bgColor: '#4caf50'
       }
+    },
+    {
+      uuid: 'xxxx-0009',
+      x: 0,
+      y: 150,
+      w: 100,
+      h: 100,
+      type: 'circle',
+      desc: {
+        bgColor: '#ff9800'
+      }
+    },
+    {
+      uuid: 'xxxx-0010',
+      x: 150,
+      y: 50,
+      w: 100,
+      h: 100,
+      type: 'circle',
+      desc: {
+        bgColor: '#cddc39'
+      }
     }
   ]
 };

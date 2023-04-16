@@ -11,3 +11,4 @@ export { createBoardContexts, createContext2D, createOffscreenContext2D } from '
 export { EventEmitter } from './lib/event';
 export { calcDistance, calcSpeed, equalPoint, equalTouchPoint, vaildPoint, vaildTouchPoint } from './lib/point';
 export { Store } from './lib/store';
+export { getViewScaleInfoFromSnapshot, getViewSizeInfoFromSnapshot } from './lib/middleware';

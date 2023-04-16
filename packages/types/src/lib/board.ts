@@ -30,20 +30,21 @@ export interface BoardWatcherEventMap {
   afterDrawFrame: BoardWatherDrawFrameEvent;
 }
 
-export type BoardMode = 'SELECT' | 'RULER' | 'CONNECT' | 'PENCIL' | 'PEN';
+export type BoardMode = 'SELECT' | 'SCROLL' | 'RULER' | 'CONNECT' | 'PENCIL' | 'PEN' | string;
 
 export interface BoardMiddlewareObject {
   mode: BoardMode;
+  isDefault?: boolean;
   created?: () => void;
-  hover?: (e: BoardWatcherEventMap['hover']) => void;
-  pointStart?: (e: BoardWatcherEventMap['pointStart']) => void;
-  pointMove?: (e: BoardWatcherEventMap['pointMove']) => void;
-  pointEnd?: (e: BoardWatcherEventMap['pointEnd']) => void;
-  pointLeave?: (e: BoardWatcherEventMap['pointLeave']) => void;
-  doubleClick?: (e: BoardWatcherEventMap['doubleClick']) => void;
-  wheel?: (e: BoardWatcherEventMap['wheel']) => void;
-  beforeDrawFrame?(e: BoardWatcherEventMap['beforeDrawFrame']): void;
-  afterDrawFrame?(e: BoardWatcherEventMap['afterDrawFrame']): void;
+  hover?: (e: BoardWatcherEventMap['hover']) => void | boolean;
+  pointStart?: (e: BoardWatcherEventMap['pointStart']) => void | boolean;
+  pointMove?: (e: BoardWatcherEventMap['pointMove']) => void | boolean;
+  pointEnd?: (e: BoardWatcherEventMap['pointEnd']) => void | boolean;
+  pointLeave?: (e: BoardWatcherEventMap['pointLeave']) => void | boolean;
+  doubleClick?: (e: BoardWatcherEventMap['doubleClick']) => void | boolean;
+  wheel?: (e: BoardWatcherEventMap['wheel']) => void | boolean;
+  beforeDrawFrame?(e: BoardWatcherEventMap['beforeDrawFrame']): void | boolean;
+  afterDrawFrame?(e: BoardWatcherEventMap['afterDrawFrame']): void | boolean;
 }
 
 export interface BoardMiddlewareOptions {

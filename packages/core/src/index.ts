@@ -3,6 +3,7 @@ import { Board } from '@idraw/board';
 import { createBoardContexts } from '@idraw/util';
 
 export { MiddlewareSelector } from './middleware/select';
+export { MiddlewareScroller } from './middleware/scroll';
 
 export class Core {
   private _board: Board;
