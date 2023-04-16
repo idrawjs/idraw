@@ -1,4 +1,4 @@
-import type { BoardMiddleware, PointWatcherEvent, BoardWatherWheelXEvent, BoardWatherWheelYEvent } from '@idraw/types';
+import type { Point, BoardMiddleware, PointWatcherEvent, BoardWatherWheelXEvent, BoardWatherWheelYEvent } from '@idraw/types';
 import { drawScroller, isPointInScrollbar, calcScrollerInfo } from './scroller';
 import type { ScrollbarThumbType } from './scroller';
 
@@ -9,6 +9,22 @@ export const MiddlewareScroller: BoardMiddleware = (opts) => {
   viewer.drawFrame();
 
   let activeThumbType: ScrollbarThumbType | null = null;
+
+  const scrollX = (p: Point) => {
+    const scrollerInfo = calcScrollerInfo(sharer.getActiveScaleInfo(), sharer.getActiveViewSizeInfo());
+    const offsetLeft = sharer.getActiveStorage('offsetLeft');
+    const moveX = p.x - (scrollerInfo.translateX + scrollerInfo.xSize / 2);
+    viewer.scrollX(offsetLeft - moveX);
+    viewer.drawFrame();
+  };
+
+  const scrollY = (p: Point) => {
+    const scrollerInfo = calcScrollerInfo(sharer.getActiveScaleInfo(), sharer.getActiveViewSizeInfo());
+    const offsetTop = sharer.getActiveStorage('offsetTop');
+    const moveY = p.y - (scrollerInfo.translateY + scrollerInfo.ySize / 2);
+    viewer.scrollY(offsetTop - moveY);
+    viewer.drawFrame();
+  };
 
   return {
     mode: key,
@@ -38,25 +54,35 @@ export const MiddlewareScroller: BoardMiddleware = (opts) => {
       const thumbType = isPointInScrollbar(helperContext, point, sharer.getActiveViewSizeInfo());
       if (thumbType === 'X' || thumbType === 'Y') {
         activeThumbType = thumbType;
-        // TODO
+        if (thumbType === 'X') {
+          scrollX(point);
+        } else if (thumbType === 'Y') {
+          scrollY(point);
+        }
         return false;
       }
     },
     pointMove: (e: PointWatcherEvent) => {
+      const { point } = e;
       if (activeThumbType === 'X' || activeThumbType === 'Y') {
-        const scrollerInfo = calcScrollerInfo(sharer.getActiveScaleInfo(), sharer.getActiveViewSizeInfo());
-        const { xSize, ySize } = scrollerInfo;
         if (activeThumbType === 'X') {
-          // TODO
+          scrollX(point);
         } else if (activeThumbType === 'Y') {
-          // TODO
+          scrollY(point);
         }
         return false;
       }
     },
     pointEnd: (e: PointWatcherEvent) => {
-      if (!activeThumbType) {
+      const { point } = e;
+      if (activeThumbType === 'X' || activeThumbType === 'Y') {
+        if (activeThumbType === 'X') {
+          scrollX(point);
+        } else if (activeThumbType === 'Y') {
+          scrollY(point);
+        }
         activeThumbType = null;
+        return false;
       }
     },
     beforeDrawFrame({ snapshot }) {
