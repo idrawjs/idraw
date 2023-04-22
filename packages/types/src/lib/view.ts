@@ -41,7 +41,7 @@ export interface ViewCalculator {
     data: Data,
     scaleInfo: ViewScaleInfo
   ): { index: number; element: null | Element<ElementType> };
-  rotateElementSize(elemSize: ElementSize): PointSize[];
+  // rotateElementSize(elemSize: ElementSize): PointSize[];
   // pointToViewPoint(  p: Point): Point;
   // TODO
 }

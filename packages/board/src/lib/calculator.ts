@@ -11,7 +11,7 @@ import type {
   ViewSizeInfo,
   ViewContext2D
 } from '@idraw/types';
-import {} from '@idraw/util';
+import { rotateElementVertexes } from '@idraw/util';
 
 export class Calculator implements ViewCalculator {
   private _opts: ViewCalculatorOptions;
@@ -134,21 +134,25 @@ export class Calculator implements ViewCalculator {
     const { width, height } = this._getBoardSize();
     const { scale = 1, offsetTop = 0, offsetLeft = 0 } = scaleInfo;
 
+    const { angle = 0 } = elem;
+    const { x, y, w, h } = this.elementSize(elem, scaleInfo);
+    const vertexes = rotateElementVertexes({ x, y, w, h, angle });
+
     // Virtual View Point
-    // const vvp0: PointSize = { x: offsetLeft, y: offsetTop };
-    // const vvp1: PointSize = { x: offsetLeft + width, y: offsetTop };
-    // const vvp2: PointSize = { x: offsetLeft + width, y: offsetTop + height };
-    // const vvp3: PointSize = { x: offsetLeft, y: offsetTop + height };
-    const vvpStart: PointSize = { x: 0 - offsetLeft, y: 0 - offsetTop };
-    const vvpEnd: PointSize = { x: 0 - offsetLeft + width, y: Math.abs(offsetTop) + height };
+    const vvpStart: PointSize = {
+      x: Math.min(vertexes[0].x, vertexes[1].x, vertexes[2].x, vertexes[3].x),
+      y: Math.min(vertexes[0].y, vertexes[1].y, vertexes[2].y, vertexes[3].y)
+    };
+    const vvpEnd: PointSize = {
+      x: Math.max(vertexes[0].x, vertexes[1].x, vertexes[2].x, vertexes[3].x),
+      y: Math.max(vertexes[0].y, vertexes[1].y, vertexes[2].y, vertexes[3].y)
+    };
 
     // Virtual Element Point
     const vep0: PointSize = { x: elem.x * scale, y: elem.y * scale };
     const vep1: PointSize = { x: (elem.x + elem.w) * scale, y: elem.y * scale };
     const vep2: PointSize = { x: (elem.x + elem.w) * scale, y: (elem.y + elem.h) * scale };
     const vep3: PointSize = { x: elem.x * scale, y: (elem.y + elem.h) * scale };
-    // const vepStart: PointSize = { x: elem.x * scale, y: elem.y * scale };
-    // const vepEnd: PointSize = { x: (elem.x + elem.w) * scale, y: (elem.y + elem.w) * scale };
 
     const isPointInRect = (p: PointSize) => {
       return p.x >= vvpStart.x && p.x <= vvpEnd.x && p.y >= vvpStart.y && p.y <= vvpEnd.y;
@@ -160,17 +164,18 @@ export class Calculator implements ViewCalculator {
   }
 
   isPointInElement(ctx: ViewContext2D, p: Point, elem: Element<ElementType>, scaleInfo: ViewScaleInfo): boolean {
-    const { scale = 1, offsetTop = 0, offsetLeft = 0 } = scaleInfo;
-    // Virtual Point
-    const vp: PointSize = {
-      x: p.x - offsetLeft,
-      y: p.y - offsetTop
-    };
-
-    // Virtual Element Point
-    const vepStart: PointSize = { x: elem.x * scale, y: elem.y * scale };
-    const vepEnd: PointSize = { x: (elem.x + elem.w) * scale, y: (elem.y + elem.w) * scale };
-    if (vp.x >= vepStart.x && vp.x <= vepEnd.x && vp.y >= vepStart.y && vp.y <= vepEnd.y) {
+    const { angle = 0 } = elem;
+    const { x, y, w, h } = this.elementSize(elem, scaleInfo);
+    const vertexes = rotateElementVertexes({ x, y, w, h, angle });
+    if (vertexes.length >= 2) {
+      ctx.beginPath();
+      ctx.moveTo(vertexes[0].x, vertexes[0].y);
+      for (let i = 1; i < vertexes.length; i++) {
+        ctx.lineTo(vertexes[i].x, vertexes[i].y);
+      }
+      ctx.closePath();
+    }
+    if (ctx.isPointInPath(p.x, p.y)) {
       return true;
     }
     return false;
@@ -192,12 +197,11 @@ export class Calculator implements ViewCalculator {
     return result;
   }
 
-  rotateElementSize(elemSize: ElementSize): PointSize[] {
-    // const { x, y, w, h, angle = 0 } = elemSize;
-    // const pointSizes: PointSize[] = [];
-
-    return [];
-  }
+  // rotateElementSize(elemSize: ElementSize): PointSize[] {
+  //   // const { x, y, w, h, angle = 0 } = elemSize;
+  //   // const pointSizes: PointSize[] = [];
+  //   return [];
+  // }
 
   // pointToViewPoint(p: Point): Point {
   //   // TODO
