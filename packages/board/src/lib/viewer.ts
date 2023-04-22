@@ -86,28 +86,53 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
     this._drawAnimationFrame();
   }
 
-  scale(num: number) {
+  scale(num: number): ViewScaleInfo {
     const { sharer, renderer, calculator } = this._opts;
     const prevScaleInfo: ViewScaleInfo = sharer.getActiveScaleInfo();
     const viewSizeInfo: ViewSizeInfo = sharer.getActiveViewSizeInfo();
     const scaleInfo = calculator.viewScale(num, prevScaleInfo, viewSizeInfo);
     sharer.setActiveScaleInfo(scaleInfo);
     renderer.scale(num);
+    return scaleInfo;
   }
 
-  scrollX(num: number) {
+  scrollX(num: number): ViewScaleInfo {
     const { sharer, calculator } = this._opts;
     const prevScaleInfo: ViewScaleInfo = sharer.getActiveScaleInfo();
     const viewSizeInfo: ViewSizeInfo = sharer.getActiveViewSizeInfo();
     const scaleInfo = calculator.viewScroll({ moveX: num - (prevScaleInfo.offsetLeft || 0) }, prevScaleInfo, viewSizeInfo);
     sharer.setActiveScaleInfo(scaleInfo);
+    return scaleInfo;
   }
 
-  scrollY(num: number) {
+  scrollY(num: number): ViewScaleInfo {
     const { sharer, calculator } = this._opts;
     const prevScaleInfo: ViewScaleInfo = sharer.getActiveScaleInfo();
     const viewSizeInfo: ViewSizeInfo = sharer.getActiveViewSizeInfo();
     const scaleInfo = calculator.viewScroll({ moveY: num - (prevScaleInfo.offsetTop || 0) }, prevScaleInfo, viewSizeInfo);
     sharer.setActiveScaleInfo(scaleInfo);
+    return scaleInfo;
+  }
+
+  resize(viewSize: Partial<ViewSizeInfo> = {}): ViewSizeInfo {
+    const { sharer } = this._opts;
+    const originViewSize = sharer.getActiveViewSizeInfo();
+    const newViewSize = { ...originViewSize, ...viewSize };
+
+    const { width, height, devicePixelRatio } = newViewSize;
+    const { boardContext, helperContext, viewContext } = this._opts.viewContent;
+    boardContext.canvas.width = width * devicePixelRatio;
+    boardContext.canvas.height = height * devicePixelRatio;
+    boardContext.canvas.style.width = `${width}px`;
+    boardContext.canvas.style.height = `${height}px`;
+
+    helperContext.canvas.width = width * devicePixelRatio;
+    helperContext.canvas.height = height * devicePixelRatio;
+
+    viewContext.canvas.width = width * devicePixelRatio;
+    viewContext.canvas.height = height * devicePixelRatio;
+
+    sharer.setActiveViewSizeInfo(newViewSize);
+    return newViewSize;
   }
 }

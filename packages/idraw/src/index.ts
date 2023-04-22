@@ -1,4 +1,4 @@
-import { Core, MiddlewareSelector, MiddlewareScroller } from '@idraw/core';
+import { Core, MiddlewareSelector, MiddlewareScroller, MiddlewareRuler } from '@idraw/core';
 import type { IDrawOptions, Data } from '@idraw/types';
 
 export class iDraw {
@@ -11,6 +11,7 @@ export class iDraw {
     this._opts = opts;
     core.use(MiddlewareScroller);
     core.use(MiddlewareSelector);
+    core.use(MiddlewareRuler);
   }
 
   setData(data: Data) {
