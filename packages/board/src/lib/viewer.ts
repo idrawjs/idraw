@@ -34,13 +34,24 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
 
     if (snapshot) {
       const { viewContext, helperContext, boardContext } = viewContent;
+
       if (snapshot?.activeStore.data) {
+        const { scale, offsetTop, offsetBottom, offsetLeft, offsetRight, width, height, contextHeight, contextWidth, devicePixelRatio } = snapshot.activeStore;
         renderer.drawData(snapshot.activeStore.data, {
-          scale: snapshot?.activeStore.scale,
-          offsetTop: snapshot?.activeStore.offsetTop,
-          offsetBottom: snapshot?.activeStore.offsetBottom,
-          offsetLeft: snapshot?.activeStore.offsetLeft,
-          offsetRight: snapshot?.activeStore.offsetRight
+          scaleInfo: {
+            scale,
+            offsetTop,
+            offsetBottom,
+            offsetLeft,
+            offsetRight
+          },
+          viewSize: {
+            width,
+            height,
+            contextHeight,
+            contextWidth,
+            devicePixelRatio
+          }
         });
       }
       beforeDrawFrame({ snapshot });

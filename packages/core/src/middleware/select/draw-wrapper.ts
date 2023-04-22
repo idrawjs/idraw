@@ -12,7 +12,7 @@ export function drawPointWrapper(ctx: CanvasRenderingContext2D | ViewContext2D, 
 
   if (opts?.calculator) {
     const { calculator } = opts;
-    const size = calculator.elementSize({ x, y, w, h }, opts);
+    const size = calculator.elementSize({ x, y, w, h }, opts.scaleInfo);
     x = size.x;
     y = size.y;
     w = size.w;
@@ -41,7 +41,7 @@ export function drawHoverWrapper(ctx: CanvasRenderingContext2D | ViewContext2D, 
   const { angle = 0 } = elem;
   if (opts?.calculator) {
     const { calculator } = opts;
-    const size = calculator.elementSize({ x, y, w, h }, opts);
+    const size = calculator.elementSize({ x, y, w, h }, opts.scaleInfo);
     x = size.x;
     y = size.y;
     w = size.w;
@@ -93,7 +93,7 @@ export function drawElementControllers(
 
   if (opts?.calculator) {
     const { calculator } = opts;
-    const size = calculator.elementSize({ x, y, w, h }, opts);
+    const size = calculator.elementSize({ x, y, w, h }, opts.scaleInfo);
     x = size.x;
     y = size.y;
     w = size.w;
@@ -133,15 +133,13 @@ export function drawElementListShadows(
     const { angle = 0 } = elem;
     if (opts?.calculator) {
       const { calculator } = opts;
-      const size = calculator.elementSize({ x, y, w, h }, opts);
+      const size = calculator.elementSize({ x, y, w, h }, opts.scaleInfo);
       x = size.x;
       y = size.y;
       w = size.w;
       h = size.h;
     }
-
     const vertexes = rotateElementVertexes({ x, y, w, h, angle });
-
     if (vertexes.length >= 2) {
       ctx.setLineDash([]);
       ctx.lineWidth = 1;
