@@ -4,7 +4,8 @@ import { rotateElement } from '@idraw/util';
 export function drawCircle(ctx: ViewContext2D, elem: Element<'circle'>, opts: RendererDrawElementOptions) {
   const { desc, angle } = elem;
   const { bgColor = '#000000', borderColor = '#000000', borderWidth = 0 } = desc;
-  const { calculator, scale, offsetTop, offsetBottom, offsetLeft, offsetRight } = opts;
+  const { calculator, scaleInfo } = opts;
+  const { scale, offsetTop, offsetBottom, offsetLeft, offsetRight } = scaleInfo;
   const { x, y, w, h } = calculator.elementSize({ x: elem.x, y: elem.y, w: elem.w, h: elem.h }, { scale, offsetTop, offsetBottom, offsetLeft, offsetRight });
   rotateElement(ctx, { x, y, w, h, angle }, () => {
     const a = w / 2;

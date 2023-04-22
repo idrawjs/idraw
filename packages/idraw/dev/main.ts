@@ -21,20 +21,20 @@ const idraw = new iDraw(
 );
 idraw.setData(data);
 // idraw.scale(0.5);
-idraw.scale(1.5);
+idraw.scale(2);
 idraw.scrollX(-80);
 idraw.scrollY(-80);
 
-const mount2 = document.querySelector('#mount') as HTMLDivElement;
-const data2 = getData();
-const idraw2 = new iDraw(
-  mount2,
-  Object.assign({}, opts, {
-    // contextWidth: 500,
-    // contextHeight: 400
-  })
-);
-idraw2.setData(data2);
+// const mount2 = document.querySelector('#mount') as HTMLDivElement;
+// const data2 = getData();
+// const idraw2 = new iDraw(
+//   mount2,
+//   Object.assign({}, opts, {
+//     // contextWidth: 500,
+//     // contextHeight: 400
+//   })
+// );
+// idraw2.setData(data2);
 
 // const parseData = idraw.getData();
 

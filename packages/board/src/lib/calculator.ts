@@ -1,16 +1,4 @@
-import type {
-  Data,
-  PointSize,
-  Point,
-  Element,
-  ElementType,
-  ViewCalculator,
-  ViewCalculatorOptions,
-  ViewScaleInfo,
-  ElementSize,
-  ViewSizeInfo,
-  ViewContext2D
-} from '@idraw/types';
+import type { Data, Point, Element, ElementType, ViewCalculator, ViewCalculatorOptions, ViewScaleInfo, ElementSize, ViewSizeInfo } from '@idraw/types';
 import { rotateElementVertexes } from '@idraw/util';
 
 export class Calculator implements ViewCalculator {
@@ -18,13 +6,6 @@ export class Calculator implements ViewCalculator {
 
   constructor(opts: ViewCalculatorOptions) {
     this._opts = opts;
-  }
-
-  private _getBoardSize(): { width: number; height: number } {
-    return {
-      width: this._opts.viewContent.boardContext.canvas.width,
-      height: this._opts.viewContent.boardContext.canvas.height
-    };
   }
 
   viewScale(num: number, prevScaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): ViewScaleInfo {
@@ -129,41 +110,22 @@ export class Calculator implements ViewCalculator {
     };
   }
 
-  isElementInView(elem: Element<ElementType>, scaleInfo: ViewScaleInfo): boolean {
-    // TODO
-    const { width, height } = this._getBoardSize();
-    const { scale = 1, offsetTop = 0, offsetLeft = 0 } = scaleInfo;
-
-    const { angle = 0 } = elem;
+  isElementInView(elem: ElementSize, scaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): boolean {
+    const { width, height } = viewSizeInfo;
+    const { angle } = elem;
     const { x, y, w, h } = this.elementSize(elem, scaleInfo);
     const vertexes = rotateElementVertexes({ x, y, w, h, angle });
-
-    // Virtual View Point
-    const vvpStart: PointSize = {
-      x: Math.min(vertexes[0].x, vertexes[1].x, vertexes[2].x, vertexes[3].x),
-      y: Math.min(vertexes[0].y, vertexes[1].y, vertexes[2].y, vertexes[3].y)
-    };
-    const vvpEnd: PointSize = {
-      x: Math.max(vertexes[0].x, vertexes[1].x, vertexes[2].x, vertexes[3].x),
-      y: Math.max(vertexes[0].y, vertexes[1].y, vertexes[2].y, vertexes[3].y)
-    };
-
-    // Virtual Element Point
-    const vep0: PointSize = { x: elem.x * scale, y: elem.y * scale };
-    const vep1: PointSize = { x: (elem.x + elem.w) * scale, y: elem.y * scale };
-    const vep2: PointSize = { x: (elem.x + elem.w) * scale, y: (elem.y + elem.h) * scale };
-    const vep3: PointSize = { x: elem.x * scale, y: (elem.y + elem.h) * scale };
-
-    const isPointInRect = (p: PointSize) => {
-      return p.x >= vvpStart.x && p.x <= vvpEnd.x && p.y >= vvpStart.y && p.y <= vvpEnd.y;
-    };
-    if (isPointInRect(vep0) || isPointInRect(vep1) || isPointInRect(vep2) || isPointInRect(vep3)) {
-      return true;
+    for (let i = 0; i < vertexes.length; i++) {
+      const v = vertexes[i];
+      if (v.x >= 0 && v.x <= width && v.y >= 0 && v.y <= height) {
+        return true;
+      }
     }
     return false;
   }
 
-  isPointInElement(ctx: ViewContext2D, p: Point, elem: Element<ElementType>, scaleInfo: ViewScaleInfo): boolean {
+  isPointInElement(p: Point, elem: Element<ElementType>, scaleInfo: ViewScaleInfo): boolean {
+    const ctx = this._opts.viewContent.boardContext;
     const { angle = 0 } = elem;
     const { x, y, w, h } = this.elementSize(elem, scaleInfo);
     const vertexes = rotateElementVertexes({ x, y, w, h, angle });
@@ -181,14 +143,14 @@ export class Calculator implements ViewCalculator {
     return false;
   }
 
-  getPointElement(ctx: ViewContext2D, p: Point, data: Data, scaleInfo: ViewScaleInfo): { index: number; element: null | Element<ElementType> } {
+  getPointElement(p: Point, data: Data, scaleInfo: ViewScaleInfo): { index: number; element: null | Element<ElementType> } {
     const result: { index: number; element: null | Element<ElementType> } = {
       index: -1,
       element: null
     };
     for (let i = 0; i < data.elements.length; i++) {
       const elem = data.elements[i];
-      if (this.isPointInElement(ctx, p, elem, scaleInfo)) {
+      if (this.isPointInElement(p, elem, scaleInfo)) {
         result.index = i;
         result.element = elem;
         break;

@@ -1,5 +1,5 @@
 import type { Point, PointWatcherEvent, BoardMiddleware, ElementSize } from '@idraw/types';
-import { drawPointWrapper, drawHoverWrapper, drawElementControllers, drawElementListShadows } from './draw-wrapper';
+import { drawPointWrapper, drawHoverWrapper, drawElementControllers } from './draw-wrapper';
 
 export const MiddlewareSelector: BoardMiddleware = (opts) => {
   const { viewer, sharer, viewContent, calculator } = opts;
@@ -43,10 +43,9 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
       if (sharer.getSharedStorage(keyActionType) === 'drag') {
         sharer.setSharedStorage(keyHoverElementSize, null);
       } else if (data) {
-        const result = calculator.getPointElement(helperContext, e.point, data, getScaleInfo());
+        const result = calculator.getPointElement(e.point, data, getScaleInfo());
         if (result.element) {
           const { x, y, w, h, angle } = result.element;
-          // const { x, y, w, h, angle } = calculator.elementSize(result.element, getScaleInfo());
           sharer.setSharedStorage(keyHoverElementSize, { x, y, w, h, angle });
           viewer.drawFrame();
           return;
@@ -60,16 +59,23 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
     pointStart: (e: PointWatcherEvent) => {
       const data = sharer.getActiveStorage('data');
       if (data) {
-        const result = calculator.getPointElement(helperContext, e.point, data, getScaleInfo());
+        const result = calculator.getPointElement(e.point, data, getScaleInfo());
         sharer.setActiveStorage('selectedIndexs', result.index >= 0 ? [result.index] : []);
       }
+      const _actionType = sharer.getSharedStorage(keyActionType);
+      const _hoverElementSize = sharer.getSharedStorage(keyHoverElementSize);
       if (getIndex() >= 0) {
         sharer.setSharedStorage(keyActionType, 'drag');
         prevPoint = e.point;
-      } else if (sharer.getSharedStorage(keyActionType) !== null || sharer.getSharedStorage(keyHoverElementSize) !== null) {
-        sharer.setSharedStorage(keyActionType, null);
-        sharer.setSharedStorage(keyHoverElementSize, null);
-        viewer.drawFrame();
+      } else if (_actionType !== null || _hoverElementSize !== null) {
+        if (_actionType === 'click') {
+          sharer.setSharedStorage(keyActionType, null);
+          sharer.setSharedStorage(keyHoverElementSize, null);
+        } else {
+          sharer.setSharedStorage(keyActionType, null);
+          sharer.setSharedStorage(keyHoverElementSize, null);
+          viewer.drawFrame();
+        }
       }
     },
     pointMove: (e: PointWatcherEvent) => {
@@ -95,15 +101,25 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
     },
     pointEnd(e: PointWatcherEvent) {
       sharer.setSharedStorage(keyActionType, 'click');
-      viewer.drawFrame();
+      const data = sharer.getActiveStorage('data');
+      if (data) {
+        const result = calculator.getPointElement(e.point, data, sharer.getActiveScaleInfo());
+        if (result.element) {
+          viewer.drawFrame();
+        }
+      }
     },
 
     beforeDrawFrame({ snapshot }) {
       const { activeStore, sharedStore } = snapshot;
-      const { data, selectedIndexs, scale, offsetLeft, offsetTop, offsetRight, offsetBottom } = activeStore;
+      const { data, selectedIndexs, scale, offsetLeft, offsetTop, offsetRight, offsetBottom, width, height, contextHeight, contextWidth, devicePixelRatio } =
+        activeStore;
+
+      const scaleInfo = { scale, offsetLeft, offsetTop, offsetRight, offsetBottom };
+      const viewSize = { width, height, contextHeight, contextWidth, devicePixelRatio };
 
       const hoverElement: ElementSize = sharedStore[keyHoverElementSize];
-      const drawOpts = { calculator, scale, offsetLeft, offsetTop, offsetRight, offsetBottom };
+      const drawOpts = { calculator, scaleInfo, viewSize };
       if (hoverElement) {
         drawHoverWrapper(helperContext, hoverElement, drawOpts);
       }

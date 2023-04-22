@@ -207,6 +207,22 @@ const data: Data = {
   ]
 };
 
+// const data: Data = {
+//   elements: [
+//     {
+//       uuid: 'xxxx-0005',
+//       x: 300,
+//       y: 300,
+//       w: 100,
+//       h: 100,
+//       type: 'circle',
+//       desc: {
+//         bgColor: '#009688'
+//       }
+//     }
+//   ]
+// };
+
 export function getData() {
   return deepClone(data);
 }

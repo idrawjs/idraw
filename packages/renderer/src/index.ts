@@ -45,15 +45,24 @@ export class Renderer extends EventEmitter<RendererEventMap> implements BoardRen
 
   scale(num: number) {
     const { sharer } = this._opts;
-    const { data, offsetTop, offsetBottom, offsetLeft, offsetRight } = sharer.getActiveStoreSnapshot();
-    // TODO calc offset data
+    const { data, offsetTop, offsetBottom, offsetLeft, offsetRight, width, height, contextHeight, contextWidth, devicePixelRatio } =
+      sharer.getActiveStoreSnapshot();
     if (data) {
       this.drawData(data, {
-        scale: num,
-        offsetTop,
-        offsetBottom,
-        offsetLeft,
-        offsetRight
+        scaleInfo: {
+          scale: num,
+          offsetTop,
+          offsetBottom,
+          offsetLeft,
+          offsetRight
+        },
+        viewSize: {
+          width,
+          height,
+          contextHeight,
+          contextWidth,
+          devicePixelRatio
+        }
       });
     }
   }
