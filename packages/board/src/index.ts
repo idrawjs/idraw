@@ -1,6 +1,6 @@
 import { Renderer } from '@idraw/renderer';
 import { throttle } from '@idraw/util';
-import type { Data, BoardMode, BoardOptions, BoardMiddleware, BoardMiddlewareObject, BoardWatcherEventMap } from '@idraw/types';
+import type { Data, BoardMode, BoardOptions, BoardMiddleware, BoardMiddlewareObject, BoardWatcherEventMap, ViewSizeInfo } from '@idraw/types';
 import { Calculator } from './lib/calculator';
 import { BoardWatcher } from './lib/watcher';
 import { Sharer } from './lib/sharer';
@@ -82,6 +82,10 @@ export class Board {
         this._handleWheelY(e);
       }, frameTime)
     );
+    this._watcher.on('scale', this._handleScale.bind(this));
+    this._watcher.on('scrollX', this._handleScrollX.bind(this));
+    this._watcher.on('scrollY', this._handleScrollY.bind(this));
+    this._watcher.on('resize', this._handleResize.bind(this));
   }
 
   private _handlePointStart(e: BoardWatcherEventMap['pointStart']) {
@@ -144,6 +148,47 @@ export class Board {
     }
   }
 
+  private _handleScale(e: BoardWatcherEventMap['scale']) {
+    for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
+      const obj = this._activeMiddlewareObjs[i];
+      const result = obj?.scale?.(e);
+      if (result === false) {
+        return;
+      }
+    }
+  }
+
+  private _handleScrollX(e: BoardWatcherEventMap['scrollX']) {
+    for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
+      const obj = this._activeMiddlewareObjs[i];
+      const result = obj?.scrollX?.(e);
+      if (result === false) {
+        return;
+      }
+    }
+  }
+
+  private _handleScrollY(e: BoardWatcherEventMap['scrollY']) {
+    for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
+      const obj = this._activeMiddlewareObjs[i];
+      const result = obj?.scrollY?.(e);
+      if (result === false) {
+        return;
+      }
+    }
+  }
+
+  private _handleResize(e: BoardWatcherEventMap['resize']) {
+    for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
+      const obj = this._activeMiddlewareObjs[i];
+      const result = obj?.resize?.(e);
+      if (result === false) {
+        return;
+      }
+    }
+  }
+
+  // draw event
   private _handleBeforeDrawFrame(e: BoardWatcherEventMap['beforeDrawFrame']) {
     for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
       const obj = this._activeMiddlewareObjs[i];
@@ -196,17 +241,26 @@ export class Board {
   }
 
   scale(num: number) {
-    this._viewer.scale(num);
+    const scaleInfo = this._viewer.scale(num);
     this._viewer.drawFrame();
+    this._watcher.trigger('scale', scaleInfo);
   }
 
   scrollX(num: number) {
-    this._viewer.scrollX(num);
+    const scaleInfo = this._viewer.scrollX(num);
     this._viewer.drawFrame();
+    this._watcher.trigger('scrollX', scaleInfo);
   }
 
   scrollY(num: number) {
-    this._viewer.scrollY(num);
+    const scaleInfo = this._viewer.scrollY(num);
     this._viewer.drawFrame();
+    this._watcher.trigger('scrollY', scaleInfo);
+  }
+
+  resize(newViewSize: Partial<ViewSizeInfo>) {
+    const viewSize = this._viewer.resize(newViewSize);
+    this._viewer.drawFrame();
+    this._watcher.trigger('resize', viewSize);
   }
 }

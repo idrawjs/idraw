@@ -1,5 +1,5 @@
 import type { Point } from './point';
-import type { ViewContent, ViewCalculator } from './view';
+import type { ViewContent, ViewCalculator, ViewScaleInfo, ViewSizeInfo } from './view';
 import type { UtilEventEmitter } from './util';
 import type { ActiveStore, StoreSharer } from './store';
 import type { RendererEventMap, RendererOptions, RendererDrawOptions } from './renderer';
@@ -20,6 +20,14 @@ export interface BoardWatherDrawFrameEvent {
   snapshot: BoardViewerFrameSnapshot;
 }
 
+export type BoardWatherScaleEvent = ViewScaleInfo;
+
+export type BoardWatherScrollXEvent = ViewScaleInfo;
+
+export type BoardWatherScrollYEvent = ViewScaleInfo;
+
+export type BoardWatherResizeEvent = ViewSizeInfo;
+
 export interface BoardWatcherEventMap {
   hover: BoardWatcherPointEvent;
   pointStart: BoardWatcherPointEvent;
@@ -29,16 +37,21 @@ export interface BoardWatcherEventMap {
   doubleClick: BoardWatcherPointEvent;
   wheelX: BoardWatherWheelXEvent;
   wheelY: BoardWatherWheelYEvent;
+  scale: BoardWatherScaleEvent;
+  scrollX: BoardWatherScrollXEvent;
+  scrollY: BoardWatherScrollYEvent;
+  resize: BoardWatherResizeEvent;
   beforeDrawFrame: BoardWatherDrawFrameEvent;
   afterDrawFrame: BoardWatherDrawFrameEvent;
 }
 
-export type BoardMode = 'SELECT' | 'SCROLL' | 'RULER' | 'CONNECT' | 'PENCIL' | 'PEN' | string;
+export type BoardMode = 'SELECT' | 'SCROLL' | 'RULE' | 'CONNECT' | 'PENCIL' | 'PEN' | string;
 
 export interface BoardMiddlewareObject {
   mode: BoardMode;
   isDefault?: boolean;
   created?: () => void;
+  // action
   hover?: (e: BoardWatcherEventMap['hover']) => void | boolean;
   pointStart?: (e: BoardWatcherEventMap['pointStart']) => void | boolean;
   pointMove?: (e: BoardWatcherEventMap['pointMove']) => void | boolean;
@@ -47,6 +60,13 @@ export interface BoardMiddlewareObject {
   doubleClick?: (e: BoardWatcherEventMap['doubleClick']) => void | boolean;
   wheelX?: (e: BoardWatcherEventMap['wheelX']) => void | boolean;
   wheelY?: (e: BoardWatcherEventMap['wheelY']) => void | boolean;
+
+  scale?: (e: BoardWatcherEventMap['scale']) => void | boolean;
+  scrollX?: (e: BoardWatcherEventMap['scrollX']) => void | boolean;
+  scrollY?: (e: BoardWatcherEventMap['scrollY']) => void | boolean;
+  resize?: (e: BoardWatcherEventMap['resize']) => void | boolean;
+
+  // draw
   beforeDrawFrame?(e: BoardWatcherEventMap['beforeDrawFrame']): void | boolean;
   afterDrawFrame?(e: BoardWatcherEventMap['afterDrawFrame']): void | boolean;
 }
@@ -85,9 +105,10 @@ export interface BoardViewerOptions {
 
 export interface BoardViewer extends UtilEventEmitter<BoardViewerEventMap> {
   drawFrame(): void;
-  scale(num: number): void;
-  scrollX(num: number): void;
-  scrollY(num: number): void;
+  scale(num: number): ViewScaleInfo;
+  scrollX(num: number): ViewScaleInfo;
+  scrollY(num: number): ViewScaleInfo;
+  resize(viewSize: Partial<ViewSizeInfo>): ViewSizeInfo;
 }
 
 export interface BoardRenderer extends UtilEventEmitter<RendererEventMap> {
