@@ -1,8 +1,7 @@
-import istype from '../../src/lib/istype';
-
+/* eslint-disable @typescript-eslint/no-empty-function */
+import { istype } from '../../src/lib/istype';
 
 describe('@idraw/util: lib/istype', () => {
-
   const _num = 123;
   const _str = 'abc';
   const _null = null;
@@ -13,9 +12,9 @@ describe('@idraw/util: lib/istype', () => {
     b: {
       c: 123
     }
-  }
-  const _func = function() {};
-  const _asyncfunc = async function() {};
+  };
+  const _func = function () {};
+  const _asyncfunc = async function () {};
   const _promise = new Promise(() => {});
 
   test('istype.type', async () => {
@@ -44,7 +43,7 @@ describe('@idraw/util: lib/istype', () => {
     expect(istype.function(_func)).toStrictEqual(true);
     expect(istype.function(null)).toStrictEqual(false);
   });
- 
+
   test('istype.asyncFunction', async () => {
     expect(istype.asyncFunction(_asyncfunc)).toStrictEqual(true);
     expect(istype.asyncFunction(null)).toStrictEqual(false);
@@ -64,7 +63,7 @@ describe('@idraw/util: lib/istype', () => {
     expect(istype.undefined(_undefined)).toStrictEqual(true);
     expect(istype.undefined(null)).toStrictEqual(false);
   });
- 
+
   test('istype.null', async () => {
     expect(istype.null(_null)).toStrictEqual(true);
     expect(istype.null(1)).toStrictEqual(false);
@@ -74,7 +73,4 @@ describe('@idraw/util: lib/istype', () => {
     expect(istype.promise(_promise)).toStrictEqual(true);
     expect(istype.promise(null)).toStrictEqual(false);
   });
-
-
 });
-

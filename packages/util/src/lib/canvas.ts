@@ -1,5 +1,5 @@
 import type { ViewContent } from '@idraw/types';
-import { Context2D } from '@idraw/util';
+import { Context2D } from './context2d';
 
 export function createContext2D(opts: { ctx?: CanvasRenderingContext2D; width: number; height: number; devicePixelRatio: number }): Context2D {
   const { width, height, ctx, devicePixelRatio } = opts;

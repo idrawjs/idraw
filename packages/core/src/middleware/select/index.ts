@@ -1,5 +1,5 @@
 import type { Point, PointWatcherEvent, BoardMiddleware, ElementSize } from '@idraw/types';
-import { drawPointWrapper, drawHoverWrapper, drawElementControllers } from './draw-wrapper';
+import { drawPointWrapper, drawHoverWrapper, drawElementControllers, drawElementListShadows } from './draw-wrapper';
 
 export const MiddlewareSelector: BoardMiddleware = (opts) => {
   const { viewer, sharer, viewContent, calculator } = opts;
@@ -43,7 +43,7 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
       if (sharer.getSharedStorage(keyActionType) === 'drag') {
         sharer.setSharedStorage(keyHoverElementSize, null);
       } else if (data) {
-        const result = calculator.getPointElement(e.point, data, getScaleInfo());
+        const result = calculator.getPointElement(helperContext, e.point, data, getScaleInfo());
         if (result.element) {
           const { x, y, w, h, angle } = result.element;
           // const { x, y, w, h, angle } = calculator.elementSize(result.element, getScaleInfo());
@@ -60,7 +60,7 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
     pointStart: (e: PointWatcherEvent) => {
       const data = sharer.getActiveStorage('data');
       if (data) {
-        const result = calculator.getPointElement(e.point, data, getScaleInfo());
+        const result = calculator.getPointElement(helperContext, e.point, data, getScaleInfo());
         sharer.setActiveStorage('selectedIndexs', result.index >= 0 ? [result.index] : []);
       }
       if (getIndex() >= 0) {
@@ -110,10 +110,10 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
 
       if (data?.elements?.[selectedIndexs?.[0]]) {
         const elem = data?.elements?.[selectedIndexs?.[0]];
-
         drawPointWrapper(helperContext, elem, drawOpts);
         drawElementControllers(helperContext, elem, drawOpts);
       }
+      // drawElementListShadows(helperContext, data?.elements || [], drawOpts);
     }
   };
 };

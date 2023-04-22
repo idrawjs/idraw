@@ -8,8 +8,10 @@ import type {
   ViewCalculatorOptions,
   ViewScaleInfo,
   ElementSize,
-  ViewSizeInfo
+  ViewSizeInfo,
+  ViewContext2D
 } from '@idraw/types';
+import {} from '@idraw/util';
 
 export class Calculator implements ViewCalculator {
   private _opts: ViewCalculatorOptions;
@@ -157,7 +159,7 @@ export class Calculator implements ViewCalculator {
     return false;
   }
 
-  isPointInElement(p: Point, elem: Element<ElementType>, scaleInfo: ViewScaleInfo): boolean {
+  isPointInElement(ctx: ViewContext2D, p: Point, elem: Element<ElementType>, scaleInfo: ViewScaleInfo): boolean {
     const { scale = 1, offsetTop = 0, offsetLeft = 0 } = scaleInfo;
     // Virtual Point
     const vp: PointSize = {
@@ -174,14 +176,14 @@ export class Calculator implements ViewCalculator {
     return false;
   }
 
-  getPointElement(p: Point, data: Data, scaleInfo: ViewScaleInfo): { index: number; element: null | Element<ElementType> } {
+  getPointElement(ctx: ViewContext2D, p: Point, data: Data, scaleInfo: ViewScaleInfo): { index: number; element: null | Element<ElementType> } {
     const result: { index: number; element: null | Element<ElementType> } = {
       index: -1,
       element: null
     };
     for (let i = 0; i < data.elements.length; i++) {
       const elem = data.elements[i];
-      if (this.isPointInElement(p, elem, scaleInfo)) {
+      if (this.isPointInElement(ctx, p, elem, scaleInfo)) {
         result.index = i;
         result.element = elem;
         break;
@@ -190,8 +192,15 @@ export class Calculator implements ViewCalculator {
     return result;
   }
 
-  pointToViewPoint(p: Point): Point {
-    // TODO
-    return {};
+  rotateElementSize(elemSize: ElementSize): PointSize[] {
+    // const { x, y, w, h, angle = 0 } = elemSize;
+    // const pointSizes: PointSize[] = [];
+
+    return [];
   }
+
+  // pointToViewPoint(p: Point): Point {
+  //   // TODO
+  //   return {};
+  // }
 }

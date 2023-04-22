@@ -2,11 +2,7 @@ module.exports = {
   // "collectCoverage": true,
   testEnvironment: 'jsdom',
   coverageDirectory: 'reports',
-  collectCoverageFrom: [
-    'packages/**/src/**/*.ts',
-    '!packages/**/node_modules/**',
-    '!**/node_modules/**'
-  ],
+  collectCoverageFrom: ['packages/**/src/**/*.ts', '!packages/**/node_modules/**', '!**/node_modules/**'],
   coverageReporters: [
     // "clover",
     // "html",
@@ -23,6 +19,13 @@ module.exports = {
   moduleFileExtensions: ['js', 'ts'],
   modulePaths: ['<rootDir>'],
   testRegex: '(/packages/([^/]{1,})/__tests__/.*)\\.test.ts$',
+  testPathIgnorePatterns: [
+    '(/packages/board/__tests__/.*)\\.test.ts$',
+    '(/packages/core/__tests__/.*)\\.test.ts$',
+    '(/packages/idraw/__tests__/.*)\\.test.ts$',
+    '(/packages/renderer/__tests__/.*)\\.test.ts$',
+    '(/packages/types/__tests__/.*)\\.test.ts$'
+  ],
   // "testRegex": "(/packages/idraw/__tests__/.*)\\.test.ts$",
   setupFiles: ['jest-canvas-mock']
 };

@@ -1,6 +1,6 @@
-import type { Point, TouchPoint } from '@idraw/types';
+import type { Point, PointSize, TouchPoint } from '@idraw/types';
 
-export function calcDistance(start: Point, end: Point) {
+export function calcDistance(start: PointSize, end: PointSize) {
   const distance = (start.x - end.x) * (start.x - end.x) + (start.y - end.y) * (start.y - end.y);
   return distance === 0 ? distance : Math.sqrt(distance);
 }
