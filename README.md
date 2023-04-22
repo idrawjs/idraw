@@ -38,6 +38,12 @@
 - [Online Playground](https://idraw.js.org/playground/) | [在线API示例](https://idraw.js.org/playground/)
 - [Online Studio](https://idraw.js.org/studio/) | [在线绘图演示](https://idraw.js.org/studio/)
  
+
+> Note:
+> At present, the development content of the main branch is v0.4, and it is currently in the development and reconstruction stage, mainly based on the v0.3 version for optimization and reconstruction.
+
+> The npm module is version v0.3. If you encounter any problems while using the npm module, you can view the content of this branch: [https://github.com/idrawjs/idraw/tree/v0.3](https://github.com/idrawjs/idraw/tree/v0.3)
+
 ## @idraw/studio Preview
 
 The preview of `@idraw/studo`. Click [here](https://github.com/idrawjs/studio) to get it.

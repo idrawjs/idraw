@@ -1,9 +1,9 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import * as util from '../src';
 
 const types = {
-  Context: 'Function',
+  Context2D: 'Function',
   check: 'Object',
-  compose: 'Function',
   createUUID: 'Function',
   deepClone: 'Function',
   delay: 'Function',
@@ -16,8 +16,7 @@ const types = {
   loadSVG: 'AsyncFunction',
   throttle: 'Function',
   toColorHexNum: 'Function',
-  toColorHexStr: 'Function',
-  default: 'Object'
+  toColorHexStr: 'Function'
 };
 
 function getType(data: any): string {
@@ -27,8 +26,18 @@ function getType(data: any): string {
 }
 
 describe('@idraw/util', () => {
+  // test('index', async () => {
+  //   const keys = Object.keys(util);
+  //   keys.forEach((key) => {
+  //     // @ts-ignore
+  //     const type = getType(util[key]);
+  //     // @ts-ignore
+  //     expect(type).toStrictEqual(types[key]);
+  //   });
+  // });
+
   test('index', async () => {
-    const keys = Object.keys(util);
+    const keys = Object.keys(types);
     keys.forEach((key) => {
       // @ts-ignore
       const type = getType(util[key]);

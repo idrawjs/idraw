@@ -1,48 +1,16 @@
-import { delay, compose, throttle } from './lib/time';
-import { downloadImageFromCanvas } from './lib/file';
-import { toColorHexStr, toColorHexNum, isColorStr } from './lib/color';
-import { createUUID } from './lib/uuid';
-import { deepClone } from './lib/data';
-import istype from './lib/istype';
-import { loadImage, loadSVG, loadHTML } from './lib/loader';
-import Context from './lib/context';
-import is from './lib/is';
-import check from './lib/check';
-
-export {
-  is,
-  check,
-  delay,
-  compose,
-  throttle,
-  loadImage,
-  loadSVG,
-  loadHTML,
-  downloadImageFromCanvas,
-  toColorHexStr,
-  toColorHexNum,
-  isColorStr,
-  createUUID,
-  istype,
-  deepClone,
-  Context
-};
-
-export default {
-  is,
-  check,
-  delay,
-  compose,
-  throttle,
-  loadImage,
-  loadSVG,
-  loadHTML,
-  downloadImageFromCanvas,
-  toColorHexStr,
-  toColorHexNum,
-  isColorStr,
-  createUUID,
-  istype,
-  deepClone,
-  Context
-};
+export { delay, compose, throttle } from './lib/time';
+export { downloadImageFromCanvas } from './lib/file';
+export { toColorHexStr, toColorHexNum, isColorStr } from './lib/color';
+export { createUUID } from './lib/uuid';
+export { deepClone } from './lib/data';
+export { istype } from './lib/istype';
+export { loadImage, loadSVG, loadHTML } from './lib/load';
+export { is } from './lib/is';
+export { check } from './lib/check';
+export { createBoardContexts, createContext2D, createOffscreenContext2D } from './lib/canvas';
+export { EventEmitter } from './lib/event';
+export { calcDistance, calcSpeed, equalPoint, equalTouchPoint, vaildPoint, vaildTouchPoint } from './lib/point';
+export { Store } from './lib/store';
+export { getViewScaleInfoFromSnapshot, getViewSizeInfoFromSnapshot } from './lib/middleware';
+export { Context2D } from './lib/context2d';
+export { rotateElement, parseRadianToAngle, parseAngleToRadian, rotateElementVertexes } from './lib/rotate';

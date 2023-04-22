@@ -7,5 +7,8 @@ export function toColorHexStr(color: number): string {
 }
 
 export function isColorStr(color?: string): boolean {
-  return  typeof color === 'string' && /^\#([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(color);
+  return (
+    typeof color === 'string' &&
+    /^\#([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(color)
+  );
 }

@@ -1,10 +1,8 @@
-type CoreOptions = {
+export interface CoreOptions {
   width: number;
   height: number;
-  devicePixelRatio: number;
-  contextWidth: number;
-  contextHeight: number;
+  devicePixelRatio?: number;
+  contextWidth?: number;
+  contextHeight?: number;
   onlyRender?: boolean;
-};
-
-export { CoreOptions };
+}
