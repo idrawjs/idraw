@@ -1,4 +1,4 @@
-import type { Point, BoardViewerFrameSnapshot, ViewScaleInfo, ViewSizeInfo } from '@idraw/types';
+import type { Point, BoardViewerFrameSnapshot, ViewScaleInfo, ViewSizeInfo, ViewContext2D } from '@idraw/types';
 import { getViewScaleInfoFromSnapshot, getViewSizeInfoFromSnapshot } from '@idraw/util';
 
 const minScrollerWidth = 12;
@@ -13,7 +13,7 @@ const scrollConfig = {
   showBackground: true
 };
 
-function isPointAtScrollbarY(helperContext: CanvasRenderingContext2D, p: Point, sizeInfo: ViewSizeInfo): boolean {
+function isPointAtScrollbarY(helperContext: ViewContext2D, p: Point, sizeInfo: ViewSizeInfo): boolean {
   const { width, height } = sizeInfo;
   const ctx = helperContext;
   ctx.beginPath();
@@ -25,7 +25,7 @@ function isPointAtScrollbarY(helperContext: CanvasRenderingContext2D, p: Point, 
   return false;
 }
 
-function isPointAtScrollbarX(helperContext: CanvasRenderingContext2D, p: Point, sizeInfo: ViewSizeInfo): boolean {
+function isPointAtScrollbarX(helperContext: ViewContext2D, p: Point, sizeInfo: ViewSizeInfo): boolean {
   const { width, height } = sizeInfo;
   const ctx = helperContext;
   ctx.beginPath();
@@ -37,7 +37,7 @@ function isPointAtScrollbarX(helperContext: CanvasRenderingContext2D, p: Point, 
   return false;
 }
 
-export function isPointInScrollbar(helperContext: CanvasRenderingContext2D, p: Point, sizeInfo: ViewSizeInfo): ScrollbarThumbType | null {
+export function isPointInScrollbar(helperContext: ViewContext2D, p: Point, sizeInfo: ViewSizeInfo): ScrollbarThumbType | null {
   let thumbType: ScrollbarThumbType | null = null;
   if (isPointAtScrollbarX(helperContext, p, sizeInfo)) {
     thumbType = 'X';
@@ -86,7 +86,7 @@ export function calcScrollerInfo(scaleInfo: ViewScaleInfo, sizeInfo: ViewSizeInf
 }
 
 function drawScrollerThumb(
-  ctx: CanvasRenderingContext2D,
+  ctx: ViewContext2D,
   opts: {
     axis: ScrollbarThumbType;
     x: number;
@@ -137,7 +137,7 @@ function drawScrollerThumb(
   ctx.stroke();
 }
 
-function drawScrollerInfo(helperContext: CanvasRenderingContext2D, opts: { scaleInfo: ViewScaleInfo; sizeInfo: ViewSizeInfo }) {
+function drawScrollerInfo(helperContext: ViewContext2D, opts: { scaleInfo: ViewScaleInfo; sizeInfo: ViewSizeInfo }) {
   const ctx = helperContext;
   const { scaleInfo, sizeInfo } = opts;
   const { width, height } = sizeInfo;
@@ -187,7 +187,7 @@ function drawScrollerInfo(helperContext: CanvasRenderingContext2D, opts: { scale
   ctx.globalAlpha = 1;
 }
 
-export function drawScroller(ctx: CanvasRenderingContext2D, opts: { snapshot: BoardViewerFrameSnapshot }) {
+export function drawScroller(ctx: ViewContext2D, opts: { snapshot: BoardViewerFrameSnapshot }) {
   const { snapshot } = opts;
   const sizeInfo = getViewSizeInfoFromSnapshot(snapshot);
   const scaleInfo = getViewScaleInfoFromSnapshot(snapshot);

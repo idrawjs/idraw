@@ -116,13 +116,14 @@ export class Calculator implements ViewCalculator {
   }
 
   elementSize(size: ElementSize, scaleInfo: ViewScaleInfo): ElementSize {
-    const { x, y, w, h } = size;
+    const { x, y, w, h, angle } = size;
     const { scale, offsetTop, offsetLeft } = scaleInfo;
     return {
       x: x * scale + offsetLeft,
       y: y * scale + offsetTop,
       w: w * scale,
-      h: h * scale
+      h: h * scale,
+      angle
     };
   }
 

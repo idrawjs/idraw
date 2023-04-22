@@ -1,13 +1,15 @@
-import type { Point, PointWatcherEvent, BoardMiddleware } from '@idraw/types';
-import { drawPointWrapper, drawHoverWrapper } from './draw-wrapper';
+import type { Point, PointWatcherEvent, BoardMiddleware, ElementSize } from '@idraw/types';
+import { drawPointWrapper, drawHoverWrapper, drawElementControllers } from './draw-wrapper';
 
 export const MiddlewareSelector: BoardMiddleware = (opts) => {
   const { viewer, sharer, viewContent, calculator } = opts;
   const { helperContext } = viewContent;
+  // let actionType: 'click' | 'drag' | 'hover' | null = null;
 
   const key = 'SELECT';
   const keyHoverElementSize = `${key}_hoverElementSize`;
-  const keySelectType = `${key}_type`; // 'default' | 'hover' | 'drag'
+  const keyActionType = `${key}_actionType`;
+  sharer.setSharedStorage(keyActionType, null);
 
   const getIndex = () => {
     const idx = sharer.getActiveStorage('selectedIndexs')[0];
@@ -31,29 +33,27 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
   };
 
   let prevPoint: Point | null = null;
-  let isDrag = false;
 
   viewer.drawFrame();
 
   return {
     mode: key,
     hover: (e: PointWatcherEvent) => {
-      if (!isDrag) {
-        const data = sharer.getActiveStorage('data');
-        if (data) {
-          const result = calculator.getPointElement(e.point, data, getScaleInfo());
-          if (result.element) {
-            const { x, y, w, h } = result.element;
-            sharer.setSharedStorage(keySelectType, 'hover');
-            sharer.setSharedStorage(keyHoverElementSize, { x, y, w, h });
-            viewer.drawFrame();
-            return;
-          }
-        }
-        if (sharer.getSharedStorage(keySelectType) === 'hover') {
-          sharer.setSharedStorage(keySelectType, 'default');
+      const data = sharer.getActiveStorage('data');
+      if (sharer.getSharedStorage(keyActionType) === 'drag') {
+        sharer.setSharedStorage(keyHoverElementSize, null);
+      } else if (data) {
+        const result = calculator.getPointElement(e.point, data, getScaleInfo());
+        if (result.element) {
+          const { x, y, w, h, angle } = result.element;
+          // const { x, y, w, h, angle } = calculator.elementSize(result.element, getScaleInfo());
+          sharer.setSharedStorage(keyHoverElementSize, { x, y, w, h, angle });
+          viewer.drawFrame();
+          return;
+        } else if (sharer.getSharedStorage(keyHoverElementSize)) {
           sharer.setSharedStorage(keyHoverElementSize, null);
           viewer.drawFrame();
+          return;
         }
       }
     },
@@ -64,13 +64,16 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
         sharer.setActiveStorage('selectedIndexs', result.index >= 0 ? [result.index] : []);
       }
       if (getIndex() >= 0) {
-        sharer.setSharedStorage(keySelectType, 'drag');
-        isDrag = true;
+        sharer.setSharedStorage(keyActionType, 'drag');
         prevPoint = e.point;
+      } else if (sharer.getSharedStorage(keyActionType) !== null || sharer.getSharedStorage(keyHoverElementSize) !== null) {
+        sharer.setSharedStorage(keyActionType, null);
+        sharer.setSharedStorage(keyHoverElementSize, null);
+        viewer.drawFrame();
       }
     },
     pointMove: (e: PointWatcherEvent) => {
-      if (!isDrag) {
+      if (sharer.getSharedStorage(keyActionType) !== 'drag') {
         return;
       }
       const data = sharer.getActiveStorage('data');
@@ -90,21 +93,26 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
       }
       viewer.drawFrame();
     },
-    pointEnd: (e: PointWatcherEvent) => {
-      sharer.setActiveStorage('selectedIndexs', []);
-      isDrag = false;
+    pointEnd(e: PointWatcherEvent) {
+      sharer.setSharedStorage(keyActionType, 'click');
+      viewer.drawFrame();
     },
 
     beforeDrawFrame({ snapshot }) {
       const { activeStore, sharedStore } = snapshot;
       const { data, selectedIndexs, scale, offsetLeft, offsetTop, offsetRight, offsetBottom } = activeStore;
-      const selectType = sharedStore[keySelectType];
-      const hoverElement = sharedStore[keyHoverElementSize];
+
+      const hoverElement: ElementSize = sharedStore[keyHoverElementSize];
       const drawOpts = { calculator, scale, offsetLeft, offsetTop, offsetRight, offsetBottom };
-      if (selectType === 'hover' && hoverElement) {
+      if (hoverElement) {
         drawHoverWrapper(helperContext, hoverElement, drawOpts);
-      } else if (selectType === 'drag' && data?.elements?.[selectedIndexs?.[0]]) {
-        drawPointWrapper(helperContext, data?.elements?.[selectedIndexs?.[0]], drawOpts);
+      }
+
+      if (data?.elements?.[selectedIndexs?.[0]]) {
+        const elem = data?.elements?.[selectedIndexs?.[0]];
+
+        drawPointWrapper(helperContext, elem, drawOpts);
+        drawElementControllers(helperContext, elem, drawOpts);
       }
     }
   };

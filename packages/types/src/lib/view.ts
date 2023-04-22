@@ -1,6 +1,7 @@
 import type { Element, ElementType, ElementSize } from './element';
 import type { Point } from './point';
 import type { Data } from './data';
+import type { ViewContext2D } from './context2d';
 
 export interface ViewScaleInfo {
   scale: number;
@@ -13,14 +14,15 @@ export interface ViewScaleInfo {
 export interface ViewSizeInfo {
   width: number;
   height: number;
+  devicePixelRatio: number;
   contextWidth: number;
   contextHeight: number;
 }
 
 export interface ViewContent {
-  viewContext: CanvasRenderingContext2D;
-  helperContext: CanvasRenderingContext2D;
-  boardContext: CanvasRenderingContext2D;
+  viewContext: ViewContext2D;
+  helperContext: ViewContext2D;
+  boardContext: ViewContext2D;
 }
 
 export interface ViewCalculatorOptions {

@@ -100,6 +100,7 @@ const data: Data = {
       y: 100,
       w: 100,
       h: 100,
+      angle: 30,
       desc: {
         src: './images/lena.png'
       }

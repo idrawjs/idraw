@@ -12,3 +12,5 @@ export { EventEmitter } from './lib/event';
 export { calcDistance, calcSpeed, equalPoint, equalTouchPoint, vaildPoint, vaildTouchPoint } from './lib/point';
 export { Store } from './lib/store';
 export { getViewScaleInfoFromSnapshot, getViewSizeInfoFromSnapshot } from './lib/middleware';
+export { Context2D } from './lib/context2d';
+export { rotateElement, parseRadianToAngle, parseAngleToRadian } from './lib/rotate';

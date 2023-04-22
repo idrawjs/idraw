@@ -11,3 +11,4 @@ export * from './lib/watcher';
 export * from './lib/core';
 export * from './lib/idraw';
 export * from './lib/middleware';
+export * from './lib/context2d';

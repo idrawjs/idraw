@@ -4,6 +4,7 @@ import { Store } from '@idraw/util';
 const defaultActiveStorage: ActiveStore = {
   width: 0,
   height: 0,
+  devicePixelRatio: 1,
   contextWidth: 0,
   contextHeight: 0,
   data: null,
@@ -90,6 +91,7 @@ export class Sharer implements StoreSharer {
     const sizeInfo: ViewSizeInfo = {
       width: this._activeStore.get('width'),
       height: this._activeStore.get('height'),
+      devicePixelRatio: this._activeStore.get('devicePixelRatio'),
       contextWidth: this._activeStore.get('contextWidth'),
       contextHeight: this._activeStore.get('contextHeight')
     };

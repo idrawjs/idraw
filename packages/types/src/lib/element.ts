@@ -3,6 +3,7 @@ export interface ElementSize {
   y: number;
   w: number;
   h: number;
+  angle?: number;
 }
 
 interface ElementRectDesc {
@@ -29,18 +30,18 @@ interface ElemenTextDesc {
   textShadowBlur?: number;
 }
 
-interface ElementCircleDesc {
-  radius: number;
-  bgColor?: string;
+interface ElementBaseDesc {
   borderWidth?: number;
   borderColor?: string;
-}
-
-interface ElementBaseDesc {
+  borderRadius?: number;
   shadowColor?: string;
   shadowOffsetX?: number;
   shadowOffsetY?: number;
   shadowBlur?: number;
+}
+interface ElementCircleDesc extends ElementBaseDesc {
+  radius: number;
+  bgColor?: string;
 }
 
 interface ElementHTMLDesc extends ElementBaseDesc {
@@ -77,12 +78,8 @@ export interface ElementOperation {
   lastModified?: number;
 }
 
-export interface Element<T extends ElementType> {
+export interface Element<T extends ElementType> extends ElementSize {
   uuid: string;
-  x: number;
-  y: number;
-  w: number;
-  h: number;
   type: T;
   desc: ElementDescMap[T];
   operation?: ElementOperation;
