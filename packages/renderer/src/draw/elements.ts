@@ -1,9 +1,9 @@
-import type { Element, ElementType, Data, RendererDrawElementOptions } from '@idraw/types';
+import type { Element, ElementType, Data, RendererDrawElementOptions, ViewContext2D } from '@idraw/types';
 import { drawCircle } from './circle';
 import { drawRect } from './rect';
 import { drawImage } from './image';
 
-export function drawElement(ctx: CanvasRenderingContext2D, elem: Element<ElementType>, opts: RendererDrawElementOptions) {
+export function drawElement(ctx: ViewContext2D, elem: Element<ElementType>, opts: RendererDrawElementOptions) {
   try {
     switch (elem.type) {
       case 'rect': {
@@ -27,7 +27,7 @@ export function drawElement(ctx: CanvasRenderingContext2D, elem: Element<Element
   }
 }
 
-export function drawElementList(ctx: CanvasRenderingContext2D, elements: Data['elements'], opts: RendererDrawElementOptions) {
+export function drawElementList(ctx: ViewContext2D, elements: Data['elements'], opts: RendererDrawElementOptions) {
   for (let i = elements.length - 1; i >= 0; i--) {
     const elem = elements[i];
     if (!opts.calculator.isElementInView(elem, opts)) {

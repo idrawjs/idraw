@@ -1,7 +1,7 @@
-import type { Element, RendererDrawElementOptions } from '@idraw/types';
+import type { Element, RendererDrawElementOptions, ViewContext2D } from '@idraw/types';
 import { rotateElement } from '@idraw/util';
 
-export function drawImage(ctx: CanvasRenderingContext2D, elem: Element<'image'>, opts: RendererDrawElementOptions) {
+export function drawImage(ctx: ViewContext2D, elem: Element<'image'>, opts: RendererDrawElementOptions) {
   const content = opts.loader.getContent(elem.uuid);
   const { calculator, scale, offsetTop, offsetBottom, offsetLeft, offsetRight } = opts;
   const { x, y, w, h, angle } = calculator.elementSize(elem, { scale, offsetTop, offsetBottom, offsetLeft, offsetRight });

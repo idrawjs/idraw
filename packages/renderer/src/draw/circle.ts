@@ -1,7 +1,7 @@
-import type { Element, RendererDrawElementOptions } from '@idraw/types';
+import type { Element, RendererDrawElementOptions, ViewContext2D } from '@idraw/types';
 import { rotateElement } from '@idraw/util';
 
-export function drawCircle(ctx: CanvasRenderingContext2D, elem: Element<'circle'>, opts: RendererDrawElementOptions) {
+export function drawCircle(ctx: ViewContext2D, elem: Element<'circle'>, opts: RendererDrawElementOptions) {
   const { desc, angle } = elem;
   const { bgColor = '#000000', borderColor = '#000000', borderWidth = 0 } = desc;
   const { calculator, scale, offsetTop, offsetBottom, offsetLeft, offsetRight } = opts;

@@ -1,7 +1,7 @@
-import type { Element, RendererDrawElementOptions } from '@idraw/types';
+import type { Element, RendererDrawElementOptions, ViewContext2D } from '@idraw/types';
 import { rotateElement } from '@idraw/util';
 
-export function drawRect(ctx: CanvasRenderingContext2D, elem: Element<'rect'>, opts: RendererDrawElementOptions) {
+export function drawRect(ctx: ViewContext2D, elem: Element<'rect'>, opts: RendererDrawElementOptions) {
   // const { desc } = elem;
   const { calculator, scale, offsetTop, offsetBottom, offsetLeft, offsetRight } = opts;
 

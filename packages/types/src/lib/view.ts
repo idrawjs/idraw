@@ -20,9 +20,9 @@ export interface ViewSizeInfo {
 }
 
 export interface ViewContent {
-  viewContext: CanvasRenderingContext2D | ViewContext2D;
-  helperContext: CanvasRenderingContext2D | ViewContext2D;
-  boardContext: CanvasRenderingContext2D | ViewContext2D;
+  viewContext: ViewContext2D;
+  helperContext: ViewContext2D;
+  boardContext: ViewContext2D;
 }
 
 export interface ViewCalculatorOptions {
