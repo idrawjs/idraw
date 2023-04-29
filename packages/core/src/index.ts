@@ -2,8 +2,8 @@ import type { Data, CoreOptions, BoardMiddleware } from '@idraw/types';
 import { Board } from '@idraw/board';
 import { createBoardContexts } from '@idraw/util';
 
-export { MiddlewareSelector } from './middleware/select';
-export { MiddlewareScroller } from './middleware/scroll';
+export { MiddlewareSelector } from './middleware/selector';
+export { MiddlewareScroller } from './middleware/scroller';
 export { MiddlewareRuler } from './middleware/rule';
 
 export class Core {

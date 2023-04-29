@@ -11,9 +11,11 @@ export interface BoardWatcherPointEvent {
 
 export interface BoardWatherWheelXEvent {
   deltaX: number;
+  point: Point;
 }
 export interface BoardWatherWheelYEvent {
   deltaY: number;
+  point: Point;
 }
 
 export interface BoardWatherDrawFrameEvent {
@@ -115,4 +117,13 @@ export interface BoardRenderer extends UtilEventEmitter<RendererEventMap> {
   updateOptions(opts: RendererOptions): void;
   drawData(data: Data, opts: RendererDrawOptions): void;
   scale(num: number): void;
+}
+
+export interface BoardWatcherOptions {
+  viewContent: ViewContent;
+  sharer: StoreSharer;
+}
+
+export interface BoardWatcherStore {
+  hasPointDown: boolean;
 }

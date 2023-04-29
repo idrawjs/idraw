@@ -26,7 +26,8 @@ export class Board {
     const sharer = new Sharer();
     const calculator = new Calculator({ viewContent });
     const watcher = new BoardWatcher({
-      viewContent
+      viewContent,
+      sharer
     });
     const renderer = new Renderer({
       viewContent,

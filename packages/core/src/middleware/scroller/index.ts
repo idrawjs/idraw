@@ -1,6 +1,6 @@
 import type { Point, BoardMiddleware, PointWatcherEvent, BoardWatherWheelXEvent, BoardWatherWheelYEvent } from '@idraw/types';
-import { drawScroller, isPointInScrollbar, calcScrollerInfo } from './scroller';
-import type { ScrollbarThumbType } from './scroller';
+import { drawScroller, isPointInScrollbar, calcScrollerInfo } from './util';
+import type { ScrollbarThumbType } from './util';
 
 export const MiddlewareScroller: BoardMiddleware = (opts) => {
   const key = 'SCROLL';
