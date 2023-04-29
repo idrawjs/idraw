@@ -4,7 +4,7 @@ import { ViewScaleInfo, ViewSizeInfo } from './view';
 export type ActiveStore = ViewSizeInfo &
   ViewScaleInfo & {
     data: Data | null;
-    selectedIndexs: number[];
+    selectedIndexes: number[];
     selectedUUIDs: string[];
   };
 
