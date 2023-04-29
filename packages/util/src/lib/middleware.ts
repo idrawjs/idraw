@@ -15,6 +15,7 @@ export function getViewScaleInfoFromSnapshot(snapshot: BoardViewerFrameSnapshot)
 export function getViewSizeInfoFromSnapshot(snapshot: BoardViewerFrameSnapshot) {
   const { activeStore } = snapshot;
   const sacelInfo: ViewSizeInfo = {
+    devicePixelRatio: activeStore.devicePixelRatio,
     width: activeStore?.width,
     height: activeStore?.height,
     contextWidth: activeStore?.contextWidth,

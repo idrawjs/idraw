@@ -13,4 +13,4 @@ export { calcDistance, calcSpeed, equalPoint, equalTouchPoint, vaildPoint, vaild
 export { Store } from './lib/store';
 export { getViewScaleInfoFromSnapshot, getViewSizeInfoFromSnapshot } from './lib/middleware';
 export { Context2D } from './lib/context2d';
-export { rotateElement, parseRadianToAngle, parseAngleToRadian, rotateElementVertexes } from './lib/rotate';
+export { rotateElement, parseRadianToAngle, parseAngleToRadian, rotateElementVertexes, calcElementCenter } from './lib/rotate';

@@ -1,23 +1,23 @@
-import type { Element, ElementSize, ElementType, RendererDrawElementOptions, ViewContext2D } from '@idraw/types';
+import type { Element, ElementSize, ElementType, PointSize, RendererDrawElementOptions, ViewContext2D } from '@idraw/types';
 import { rotateElement, rotateElementVertexes } from '@idraw/util';
-import { calcElementControllerStyle } from './controller';
-import type { ControllerStyle } from './controller';
+// import { calcElementControllerStyle } from './controller';
+import type { AreaSize, ControllerStyle, ElementSizeController } from './types';
 
 const wrapperColor = '#1973ba';
 
-export function drawPointWrapper(ctx: CanvasRenderingContext2D | ViewContext2D, elem: ElementSize, opts?: Omit<RendererDrawElementOptions, 'loader'>) {
+export function drawPointWrapper(ctx: ViewContext2D, elem: ElementSize, opts?: Omit<RendererDrawElementOptions, 'loader'>) {
   const bw = 0;
-  let { x, y, w, h } = elem;
+  const { x, y, w, h } = elem;
   const { angle = 0 } = elem;
 
-  if (opts?.calculator) {
-    const { calculator } = opts;
-    const size = calculator.elementSize({ x, y, w, h }, opts.scaleInfo);
-    x = size.x;
-    y = size.y;
-    w = size.w;
-    h = size.h;
-  }
+  // if (opts?.calculator) {
+  //   const { calculator } = opts;
+  //   const size = calculator.elementSize({ x, y, w, h }, opts.scaleInfo);
+  //   x = size.x;
+  //   y = size.y;
+  //   w = size.w;
+  //   h = size.h;
+  // }
 
   rotateElement(ctx, { x, y, w, h, angle }, () => {
     ctx.setLineDash([]);
@@ -35,18 +35,18 @@ export function drawPointWrapper(ctx: CanvasRenderingContext2D | ViewContext2D, 
   });
 }
 
-export function drawHoverWrapper(ctx: CanvasRenderingContext2D | ViewContext2D, elem: ElementSize, opts?: Omit<RendererDrawElementOptions, 'loader'>) {
+export function drawHoverWrapper(ctx: ViewContext2D, elem: ElementSize, opts?: Omit<RendererDrawElementOptions, 'loader'>) {
   const bw = 0;
-  let { x, y, w, h } = elem;
+  const { x, y, w, h } = elem;
   const { angle = 0 } = elem;
-  if (opts?.calculator) {
-    const { calculator } = opts;
-    const size = calculator.elementSize({ x, y, w, h }, opts.scaleInfo);
-    x = size.x;
-    y = size.y;
-    w = size.w;
-    h = size.h;
-  }
+  // if (opts?.calculator) {
+  //   const { calculator } = opts;
+  //   const size = calculator.elementSize({ x, y, w, h }, opts.scaleInfo);
+  //   x = size.x;
+  //   y = size.y;
+  //   w = size.w;
+  //   h = size.h;
+  // }
 
   rotateElement(ctx, { x, y, w, h, angle }, () => {
     // ctx.setLineDash([4, 4]);
@@ -64,7 +64,7 @@ export function drawHoverWrapper(ctx: CanvasRenderingContext2D | ViewContext2D, 
   });
 }
 
-function drawController(ctx: CanvasRenderingContext2D | ViewContext2D, style: ControllerStyle) {
+function drawController(ctx: ViewContext2D, style: ControllerStyle) {
   const { x, y, w, h, borderColor, borderWidth, bgColor } = style;
 
   ctx.setLineDash([]);
@@ -83,22 +83,22 @@ function drawController(ctx: CanvasRenderingContext2D | ViewContext2D, style: Co
 }
 
 export function drawElementControllers(
-  ctx: CanvasRenderingContext2D | ViewContext2D,
-  elem: Element<ElementType>,
-  opts?: Omit<RendererDrawElementOptions, 'loader'>
+  ctx: ViewContext2D,
+  elem: ElementSize,
+  opts: Omit<RendererDrawElementOptions, 'loader'> & { sizeControllers: ElementSizeController }
 ) {
   const bw = 0;
-  let { x, y, w, h } = elem;
+  const { x, y, w, h } = elem;
   const { angle = 0 } = elem;
-
-  if (opts?.calculator) {
-    const { calculator } = opts;
-    const size = calculator.elementSize({ x, y, w, h }, opts.scaleInfo);
-    x = size.x;
-    y = size.y;
-    w = size.w;
-    h = size.h;
-  }
+  const { sizeControllers } = opts;
+  // if (opts?.calculator) {
+  //   const { calculator } = opts;
+  //   const size = calculator.elementSize({ x, y, w, h }, opts.scaleInfo);
+  //   x = size.x;
+  //   y = size.y;
+  //   w = size.w;
+  //   h = size.h;
+  // }
 
   rotateElement(ctx, { x, y, w, h, angle }, () => {
     ctx.setLineDash([]);
@@ -114,8 +114,6 @@ export function drawElementControllers(
     ctx.closePath();
     ctx.stroke();
 
-    const sizeControllers: Record<string, ControllerStyle> = calcElementControllerStyle({ x, y, w, h, angle });
-
     Object.keys(sizeControllers).forEach((name: string) => {
       const ctrl = sizeControllers[name];
       drawController(ctx, { ...ctrl, ...{} });
@@ -123,11 +121,7 @@ export function drawElementControllers(
   });
 }
 
-export function drawElementListShadows(
-  ctx: CanvasRenderingContext2D | ViewContext2D,
-  elements: Element<ElementType>[],
-  opts?: Omit<RendererDrawElementOptions, 'loader'>
-) {
+export function drawElementListShadows(ctx: ViewContext2D, elements: Element<ElementType>[], opts?: Omit<RendererDrawElementOptions, 'loader'>) {
   elements.forEach((elem) => {
     let { x, y, w, h } = elem;
     const { angle = 0 } = elem;
@@ -156,4 +150,37 @@ export function drawElementListShadows(
       ctx.fill();
     }
   });
+}
+
+export function drawArea(ctx: ViewContext2D, opts: { start: PointSize; end: PointSize }) {
+  const { start, end } = opts;
+  ctx.setLineDash([]);
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = '#1976d2';
+  ctx.fillStyle = '#1976d24f';
+  ctx.beginPath();
+  ctx.moveTo(start.x, start.y);
+  ctx.lineTo(end.x, start.y);
+  ctx.lineTo(end.x, end.y);
+  ctx.lineTo(start.x, end.y);
+  ctx.closePath();
+  ctx.stroke();
+  ctx.fill();
+}
+
+export function drawListArea(ctx: ViewContext2D, opts: { areaSize: AreaSize }) {
+  const { areaSize } = opts;
+  const { x, y, w, h } = areaSize;
+  ctx.setLineDash([]);
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = '#1976d2';
+  ctx.fillStyle = '#1976d21c';
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+  ctx.lineTo(x + w, y);
+  ctx.lineTo(x + w, y + h);
+  ctx.lineTo(x, y + h);
+  ctx.closePath();
+  ctx.stroke();
+  ctx.fill();
 }
