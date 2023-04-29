@@ -1,4 +1,4 @@
-import type { Point, BoardWatcherEventMap, ViewContent, Data, Element, ElementType, BoardWatcherOptions, BoardWatcherStore } from '@idraw/types';
+import type { Point, BoardWatcherEventMap, Data, Element, ElementType, BoardWatcherOptions, BoardWatcherStore } from '@idraw/types';
 import { EventEmitter, Store } from '@idraw/util';
 
 function isBoardAvailableNum(num: any): boolean {

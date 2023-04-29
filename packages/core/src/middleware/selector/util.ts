@@ -379,20 +379,17 @@ export function getSelectedListArea(
     scaleInfo: ViewScaleInfo;
     calculator: ViewCalculator;
   }
-): { indexes: number[]; area: AreaSize } {
+): { indexes: number[] } {
   const indexes: number[] = [];
   const { calculator, scaleInfo, start, end } = opts;
-  const area: AreaSize = { x: 0, y: 0, w: 0, h: 0 };
 
   if (!(Array.isArray(data.elements) && start && end)) {
-    return { indexes, area };
+    return { indexes };
   }
   const startX = Math.min(start.x, end.x);
   const endX = Math.max(start.x, end.x);
   const startY = Math.min(start.y, end.y);
   const endY = Math.max(start.y, end.y);
-
-  let prevElemSize: ElementSize | null = null;
 
   data.elements.forEach((elem, idx) => {
     const elemSize = calculator.elementSize(elem, scaleInfo);
@@ -411,28 +408,9 @@ export function getSelectedListArea(
           elemSize.h = Math.abs(Math.max(...yList) - Math.min(...yList));
         }
       }
-
-      if (prevElemSize) {
-        const areaStartX = Math.min(elemSize.x, area.x);
-        const areaStartY = Math.min(elemSize.y, area.y);
-
-        const areaEndX = Math.max(elemSize.x + elemSize.w, area.x + area.w);
-        const areaEndY = Math.max(elemSize.y + elemSize.h, area.y + area.h);
-
-        area.x = areaStartX;
-        area.y = areaStartY;
-        area.w = Math.abs(areaEndX - areaStartX);
-        area.h = Math.abs(areaEndY - areaStartY);
-      } else {
-        area.x = elemSize.x;
-        area.y = elemSize.y;
-        area.w = elemSize.w;
-        area.h = elemSize.h;
-      }
-      prevElemSize = elemSize;
     }
   });
-  return { indexes, area };
+  return { indexes };
 }
 
 export function calcSelectedElementsArea(
@@ -449,7 +427,7 @@ export function calcSelectedElementsArea(
   const { calculator, scaleInfo } = opts;
   let prevElemSize: ElementSize | null = null;
 
-  elements.forEach((elem, idx) => {
+  elements.forEach((elem) => {
     const elemSize = calculator.elementSize(elem, scaleInfo);
 
     if (elemSize.angle && (elemSize.angle > 0 || elemSize.angle < 0)) {
