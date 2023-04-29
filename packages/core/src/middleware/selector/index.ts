@@ -131,6 +131,7 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
         clear();
         sharer.setSharedStorage(keyActionType, 'area');
         sharer.setSharedStorage(keyAreaStart, e.point);
+        sharer.setActiveStorage('selectedIndexes', []);
       }
       if (target.type) {
         prevPoint = e.point;
