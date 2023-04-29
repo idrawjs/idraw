@@ -19,7 +19,7 @@ async function dev() {
 }
 
 function getViteConfig(): UserConfig {
-  const pkgName = 'idraw';
+  const pkgName = 'lab';
   const viteConfig: UserConfig = {
     root: joinPackagePath(pkgName),
     publicDir: joinPackagePath(pkgName, 'demo', 'public'),

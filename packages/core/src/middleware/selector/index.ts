@@ -125,6 +125,7 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
         sharer.setActiveStorage('selectedIndexes', target?.indexes[0] >= 0 ? [target?.indexes[0]] : []);
         sharer.setSharedStorage(keyActionType, 'drag');
       } else if (target.type?.startsWith('resize-')) {
+      } else if (target.type?.startsWith('resize-')) {
         sharer.setSharedStorage(keyResizeType, target.type);
         sharer.setSharedStorage(keyActionType, 'resize');
       } else {
