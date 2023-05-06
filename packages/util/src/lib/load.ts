@@ -25,10 +25,7 @@ function filterAmpersand(str: string): string {
   return str.replace(/\&/gi, '&amp;');
 }
 
-export async function loadHTML(
-  html: string,
-  opts: { width: number; height: number }
-): Promise<HTMLImageElement> {
+export async function loadHTML(html: string, opts: { width: number; height: number }): Promise<HTMLImageElement> {
   html = filterAmpersand(html);
   const dataURL = await parseHTMLToDataURL(html, opts);
   const image = await loadImage(dataURL);

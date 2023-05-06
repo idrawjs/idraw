@@ -1,6 +1,5 @@
 export interface ViewContext2DOptions {
-  devicePixelRatio: number;
-  fontFamily?: string;
+  devicePixelRatio?: number;
 }
 
 export interface ViewContext2D {
@@ -8,7 +7,11 @@ export interface ViewContext2D {
 
   // extend API
   $getContext(): CanvasRenderingContext2D;
-  $setFont(opts: { fontSize: number; fontFamily?: string; fontWeight?: 'bold' }): void;
+  $setFont(opts: { fontSize: number; fontFamily?: string; fontWeight?: string }): void;
+  $resize(opts: { width: number; height: number; devicePixelRatio: number }): void;
+
+  $undoPixelRatio(num: number): number;
+  $doPixelRatio(num: number): number;
 
   // CanvasRenderingContext2D API
   canvas: HTMLCanvasElement;

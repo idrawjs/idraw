@@ -100,6 +100,7 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
 
   private _loadResource(element: Element<LoadElementType>) {
     const item = this._createLoadItem(element);
+
     this._currentLoadItemMap[element.uuid] = item;
     const loadFunc = this._loadFuncMap[element.type];
     if (typeof loadFunc === 'function') {
@@ -112,6 +113,7 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
           this._emitLoad(item);
         })
         .catch((err: Error) => {
+          console.warn(`Load element source "${item.source}" fail`, err, element);
           item.endTime = Date.now();
           item.status = 'error';
           item.error = err;

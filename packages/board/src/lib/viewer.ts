@@ -30,13 +30,14 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
       this._drawFrameStatus = 'DRAWING';
     }
     const snapshot = this._drawFrameSnapshotQueue.shift();
+
     const { renderer, viewContent, beforeDrawFrame, afterDrawFrame } = this._opts;
 
     if (snapshot) {
+      const { scale, offsetTop, offsetBottom, offsetLeft, offsetRight, width, height, contextHeight, contextWidth, devicePixelRatio } = snapshot.activeStore;
       const { viewContext, helperContext, boardContext } = viewContent;
 
       if (snapshot?.activeStore.data) {
-        const { scale, offsetTop, offsetBottom, offsetLeft, offsetRight, width, height, contextHeight, contextWidth, devicePixelRatio } = snapshot.activeStore;
         renderer.drawData(snapshot.activeStore.data, {
           scaleInfo: {
             scale,
@@ -55,7 +56,6 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
         });
       }
       beforeDrawFrame({ snapshot });
-      const { width, height } = boardContext.canvas;
       boardContext.clearRect(0, 0, width, height);
       boardContext.drawImage(viewContext.canvas, 0, 0, width, height);
       boardContext.drawImage(helperContext.canvas, 0, 0, width, height);

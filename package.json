@@ -39,6 +39,7 @@
     "@types/serve-handler": "^6.1.1",
     "@typescript-eslint/eslint-plugin": "^5.57.0",
     "@typescript-eslint/parser": "^5.57.0",
+    "@vitejs/plugin-react": "^4.0.0",
     "babel-jest": "^29.5.0",
     "canvas": "^2.11.0",
     "chalk": "^5.2.0",

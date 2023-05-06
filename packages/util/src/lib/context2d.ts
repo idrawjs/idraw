@@ -1,29 +1,25 @@
 import type { ViewContext2D, ViewContext2DOptions } from '@idraw/types';
 
 export class Context2D implements ViewContext2D {
-  private _opts: ViewContext2DOptions;
   private _ctx: CanvasRenderingContext2D;
 
-  // private _scale: number;
-  // private _scrollX: number;
-  // private _scrollY: number;
+  private _devicePixelRatio = 1;
+  // private _width: number = 0;
+  // private _height: number = 0;
 
   constructor(ctx: CanvasRenderingContext2D, opts: ViewContext2DOptions) {
-    const _opts = { ...opts };
-    if (!(_opts.devicePixelRatio > 0)) {
-      _opts.devicePixelRatio = 1;
-    } else {
-      _opts.devicePixelRatio = _opts.devicePixelRatio;
-    }
-    this._opts = opts;
+    const { devicePixelRatio = 1 } = opts;
     this._ctx = ctx;
+    this._devicePixelRatio = devicePixelRatio;
+    // this._width = ctx.canvas.width / devicePixelRatio;
+    // this._height = ctx.canvas.height / devicePixelRatio;
   }
 
-  private _undoSize(num: number) {
-    return this._opts.devicePixelRatio / num;
+  $undoPixelRatio(num: number) {
+    return num / this._devicePixelRatio;
   }
-  private _doSize(num: number) {
-    return this._opts.devicePixelRatio * num;
+  $doPixelRatio(num: number) {
+    return this._devicePixelRatio * num;
   }
 
   $getContext(): CanvasRenderingContext2D {
@@ -35,9 +31,21 @@ export class Context2D implements ViewContext2D {
     if (opts.fontWeight === 'bold') {
       strList.push(`${opts.fontWeight}`);
     }
-    strList.push(`${this._doSize(opts.fontSize || 12)}px`);
+    strList.push(`${this.$doPixelRatio(opts.fontSize || 12)}px`);
     strList.push(`${opts.fontFamily || 'sans-serif'}`);
     this._ctx.font = `${strList.join(' ')}`;
+  }
+
+  $resize(opts: { width: number; height: number; devicePixelRatio: number }) {
+    const { width, height, devicePixelRatio } = opts;
+    const { canvas } = this._ctx;
+    canvas.width = width * devicePixelRatio;
+    canvas.height = height * devicePixelRatio;
+    // canvas.style.width = `${width}px`;
+    // canvas.style.height = `${height}px`;
+    // this._width = width;
+    // this._height = height;
+    this._devicePixelRatio = devicePixelRatio;
   }
 
   get canvas() {
@@ -59,10 +67,10 @@ export class Context2D implements ViewContext2D {
   }
 
   get lineWidth() {
-    return this._undoSize(this._ctx.lineWidth);
+    return this.$undoPixelRatio(this._ctx.lineWidth);
   }
   set lineWidth(w: number) {
-    this._ctx.lineWidth = this._doSize(w);
+    this._ctx.lineWidth = this.$doPixelRatio(w);
   }
 
   get textAlign(): CanvasTextAlign {
@@ -93,24 +101,24 @@ export class Context2D implements ViewContext2D {
   }
 
   get shadowOffsetX() {
-    return this._undoSize(this._ctx.shadowOffsetX);
+    return this.$undoPixelRatio(this._ctx.shadowOffsetX);
   }
   set shadowOffsetX(offsetX: number) {
-    this._ctx.shadowOffsetX = this._doSize(offsetX);
+    this._ctx.shadowOffsetX = this.$doPixelRatio(offsetX);
   }
 
   get shadowOffsetY(): number {
-    return this._undoSize(this._ctx.shadowOffsetY);
+    return this.$undoPixelRatio(this._ctx.shadowOffsetY);
   }
   set shadowOffsetY(offsetY: number) {
-    this._ctx.shadowOffsetY = this._doSize(offsetY);
+    this._ctx.shadowOffsetY = this.$doPixelRatio(offsetY);
   }
 
   get shadowBlur(): number {
-    return this._undoSize(this._ctx.shadowBlur);
+    return this.$undoPixelRatio(this._ctx.shadowBlur);
   }
   set shadowBlur(blur: number) {
-    this._ctx.shadowBlur = this._doSize(blur);
+    this._ctx.shadowBlur = this.$doPixelRatio(blur);
   }
 
   fill(...args: [fillRule?: CanvasFillRule | undefined] | [path: Path2D, fillRule?: CanvasFillRule | undefined]): void {
@@ -118,19 +126,19 @@ export class Context2D implements ViewContext2D {
   }
 
   arc(x: number, y: number, radius: number, startAngle: number, endAngle: number, anticlockwise?: boolean | undefined): void {
-    return this._ctx.arc(this._doSize(x), this._doSize(y), this._doSize(radius), startAngle, endAngle, anticlockwise);
+    return this._ctx.arc(this.$doPixelRatio(x), this.$doPixelRatio(y), this.$doPixelRatio(radius), startAngle, endAngle, anticlockwise);
   }
 
   rect(x: number, y: number, w: number, h: number) {
-    return this._ctx.rect(this._doSize(x), this._doSize(y), this._doSize(w), this._doSize(h));
+    return this._ctx.rect(this.$doPixelRatio(x), this.$doPixelRatio(y), this.$doPixelRatio(w), this.$doPixelRatio(h));
   }
 
   fillRect(x: number, y: number, w: number, h: number) {
-    return this._ctx.fillRect(this._doSize(x), this._doSize(y), this._doSize(w), this._doSize(h));
+    return this._ctx.fillRect(this.$doPixelRatio(x), this.$doPixelRatio(y), this.$doPixelRatio(w), this.$doPixelRatio(h));
   }
 
   clearRect(x: number, y: number, w: number, h: number) {
-    return this._ctx.clearRect(this._doSize(x), this._doSize(y), this._doSize(w), this._doSize(h));
+    return this._ctx.clearRect(this.$doPixelRatio(x), this.$doPixelRatio(y), this.$doPixelRatio(w), this.$doPixelRatio(h));
   }
 
   beginPath() {
@@ -142,15 +150,15 @@ export class Context2D implements ViewContext2D {
   }
 
   lineTo(x: number, y: number) {
-    return this._ctx.lineTo(this._doSize(x), this._doSize(y));
+    return this._ctx.lineTo(this.$doPixelRatio(x), this.$doPixelRatio(y));
   }
 
   moveTo(x: number, y: number) {
-    return this._ctx.moveTo(this._doSize(x), this._doSize(y));
+    return this._ctx.moveTo(this.$doPixelRatio(x), this.$doPixelRatio(y));
   }
 
   arcTo(x1: number, y1: number, x2: number, y2: number, radius: number): void {
-    return this._ctx.arcTo(this._doSize(x1), this._doSize(y1), this._doSize(x2), this._doSize(y2), this._doSize(radius));
+    return this._ctx.arcTo(this.$doPixelRatio(x1), this.$doPixelRatio(y1), this.$doPixelRatio(x2), this.$doPixelRatio(y2), this.$doPixelRatio(radius));
   }
 
   getLineDash() {
@@ -158,7 +166,7 @@ export class Context2D implements ViewContext2D {
   }
 
   setLineDash(nums: number[]) {
-    return this._ctx.setLineDash(nums.map((n) => this._doSize(n)));
+    return this._ctx.setLineDash(nums.map((n) => this.$doPixelRatio(n)));
   }
 
   stroke() {
@@ -166,7 +174,7 @@ export class Context2D implements ViewContext2D {
   }
 
   translate(x: number, y: number) {
-    return this._ctx.translate(this._doSize(x), this._doSize(y));
+    return this._ctx.translate(this.$doPixelRatio(x), this.$doPixelRatio(y));
   }
 
   rotate(angle: number) {
@@ -188,17 +196,17 @@ export class Context2D implements ViewContext2D {
     if (args.length === 9) {
       return this._ctx.drawImage(
         image,
-        this._doSize(sx),
-        this._doSize(sy),
-        this._doSize(sw),
-        this._doSize(sh),
-        this._doSize(dx),
-        this._doSize(dy),
-        this._doSize(dw),
-        this._doSize(dh)
+        this.$doPixelRatio(sx),
+        this.$doPixelRatio(sy),
+        this.$doPixelRatio(sw),
+        this.$doPixelRatio(sh),
+        this.$doPixelRatio(dx),
+        this.$doPixelRatio(dy),
+        this.$doPixelRatio(dw),
+        this.$doPixelRatio(dh)
       );
     } else {
-      return this._ctx.drawImage(image, this._doSize(dx), this._doSize(dy), this._doSize(dw), this._doSize(dh));
+      return this._ctx.drawImage(image, this.$doPixelRatio(dx), this.$doPixelRatio(dy), this.$doPixelRatio(dw), this.$doPixelRatio(dh));
     }
   }
 
@@ -207,22 +215,23 @@ export class Context2D implements ViewContext2D {
   }
 
   measureText(text: string): TextMetrics {
-    return this._ctx.measureText(text);
+    const textMetrics = this._ctx.measureText(text);
+    return textMetrics;
   }
 
   fillText(text: string, x: number, y: number, maxWidth?: number | undefined): void {
     if (maxWidth !== undefined) {
-      return this._ctx.fillText(text, this._doSize(x), this._doSize(y), this._doSize(maxWidth));
+      return this._ctx.fillText(text, this.$doPixelRatio(x), this.$doPixelRatio(y), this.$doPixelRatio(maxWidth));
     } else {
-      return this._ctx.fillText(text, this._doSize(x), this._doSize(y));
+      return this._ctx.fillText(text, this.$doPixelRatio(x), this.$doPixelRatio(y));
     }
   }
 
   strokeText(text: string, x: number, y: number, maxWidth?: number | undefined): void {
     if (maxWidth !== undefined) {
-      return this._ctx.strokeText(text, this._doSize(x), this._doSize(y), this._doSize(maxWidth));
+      return this._ctx.strokeText(text, this.$doPixelRatio(x), this.$doPixelRatio(y), this.$doPixelRatio(maxWidth));
     } else {
-      return this._ctx.strokeText(text, this._doSize(x), this._doSize(y));
+      return this._ctx.strokeText(text, this.$doPixelRatio(x), this.$doPixelRatio(y));
     }
   }
 
@@ -248,10 +257,19 @@ export class Context2D implements ViewContext2D {
     endAngle: number,
     counterclockwise?: boolean | undefined
   ) {
-    this._ctx.ellipse(this._doSize(x), this._doSize(y), this._doSize(radiusX), this._doSize(radiusY), rotation, startAngle, endAngle, counterclockwise);
+    this._ctx.ellipse(
+      this.$doPixelRatio(x),
+      this.$doPixelRatio(y),
+      this.$doPixelRatio(radiusX),
+      this.$doPixelRatio(radiusY),
+      rotation,
+      startAngle,
+      endAngle,
+      counterclockwise
+    );
   }
 
   isPointInPath(x: number, y: number) {
-    return this._ctx.isPointInPath(this._doSize(x), this._doSize(y));
+    return this._ctx.isPointInPath(this.$doPixelRatio(x), this.$doPixelRatio(y));
   }
 }

@@ -4,5 +4,5 @@ export interface CoreOptions {
   devicePixelRatio?: number;
   contextWidth?: number;
   contextHeight?: number;
-  onlyRender?: boolean;
+  // onlyRender?: boolean;
 }

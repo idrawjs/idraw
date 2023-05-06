@@ -259,8 +259,16 @@ export class Board {
     this._watcher.trigger('scrollY', scaleInfo);
   }
 
-  resize(newViewSize: Partial<ViewSizeInfo>) {
+  resize(newViewSize: Pick<ViewSizeInfo, 'height' | 'width' | 'devicePixelRatio'>) {
     const viewSize = this._viewer.resize(newViewSize);
+    const { width, height, devicePixelRatio } = newViewSize;
+    const { viewContent } = this._opts;
+    viewContent.viewContext.$resize({ width, height, devicePixelRatio });
+    const canvas = viewContent.viewContext.canvas;
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+    viewContent.helperContext.$resize({ width, height, devicePixelRatio });
+    viewContent.boardContext.$resize({ width, height, devicePixelRatio });
     this._viewer.drawFrame();
     this._watcher.trigger('resize', viewSize);
   }

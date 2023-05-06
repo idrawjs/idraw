@@ -9,7 +9,7 @@ const defaultActiveStorage: ActiveStore = {
   contextHeight: 0,
   data: null,
   selectedUUIDs: [] as string[],
-  selectedIndexs: [] as number[],
+  selectedIndexes: [] as number[],
   scale: 1,
   offsetLeft: 0,
   offsetRight: 0,

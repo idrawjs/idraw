@@ -2,6 +2,8 @@ import type { Element, ElementType, Data, RendererDrawElementOptions, ViewContex
 import { drawCircle } from './circle';
 import { drawRect } from './rect';
 import { drawImage } from './image';
+import { drawText } from './text';
+import { drawSVG } from './svg';
 
 export function drawElement(ctx: ViewContext2D, elem: Element<ElementType>, opts: RendererDrawElementOptions) {
   try {
@@ -14,8 +16,16 @@ export function drawElement(ctx: ViewContext2D, elem: Element<ElementType>, opts
         drawCircle(ctx, elem as Element<'circle'>, opts);
         break;
       }
+      case 'text': {
+        drawText(ctx, elem as Element<'text'>, opts);
+        break;
+      }
       case 'image': {
         drawImage(ctx, elem as Element<'image'>, opts);
+        break;
+      }
+      case 'svg': {
+        drawSVG(ctx, elem as Element<'svg'>, opts);
         break;
       }
       default: {

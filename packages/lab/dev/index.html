@@ -6,14 +6,10 @@
       html, body {
         margin: 0; padding: 0;
         background: #f0f0f088;
-      }
-      #mount {
-        margin-top: 50px;
-        margin-left: 60px;
-      }
-      #mount canvas {
-        border-right: 1px solid #aaaaaa40;
-        border-bottom: 1px solid #aaaaaa40;
+      } 
+      canvas {
+        /* border-right: 1px solid #aaaaaa40;
+        border-bottom: 1px solid #aaaaaa40; */
         background-image:
         linear-gradient(#aaaaaa40 1px, transparent 0),
         linear-gradient(90deg, #aaaaaa40 1px, transparent 0),
@@ -21,10 +17,11 @@
         linear-gradient(90deg, #aaa 1px, transparent 0);
         background-size: 10px 10px, 10px 10px, 50px 50px, 50px 50px;
         background-color: #ffffff;
-        margin: 0 20px;
       }
     </style>
   </head>
-  <body></body>
-  <script type="module" src="./main.ts"></script>
+  <body>
+    <div id="lab"></div>
+  </body>
+  <script type="module" src="./main.tsx"></script>
 </html>
