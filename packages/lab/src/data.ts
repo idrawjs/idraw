@@ -145,7 +145,6 @@ const data: Data = {
       }
     },
     {
-      name: 'html-001',
       uuid: 'xxx-0012',
       x: 400,
       y: 200,
@@ -196,10 +195,159 @@ const data: Data = {
             <div class="btn-box">
               <button class="btn btn-primary">
                 <span>Button Primary</span>
-              </button> 
+              </button>
             </div>
           </div>
         `
+      }
+    },
+    {
+      uuid: 'group-001',
+      x: 400,
+      y: 400,
+      w: 100,
+      h: 100,
+      type: 'group',
+      desc: {
+        bgColor: '#1f1f1f',
+        children: [
+          {
+            uuid: 'group-001-0014',
+            type: 'circle',
+            x: -40,
+            y: 0,
+            w: 100,
+            h: 100,
+            desc: {
+              bgColor: '#f44336'
+            }
+          },
+          {
+            uuid: 'group-001-0015',
+            type: 'circle',
+            x: -20,
+            y: 0,
+            w: 100,
+            h: 100,
+            desc: {
+              bgColor: '#ff9800'
+            }
+          },
+          {
+            uuid: 'group-001-0016',
+            type: 'circle',
+            x: 0,
+            y: 0,
+            w: 100,
+            h: 100,
+            desc: {
+              bgColor: '#ffc106'
+            }
+          },
+          {
+            uuid: 'group-001-0017',
+            type: 'circle',
+            x: 20,
+            y: 0,
+            w: 100,
+            h: 100,
+            desc: {
+              bgColor: '#cddc39'
+            }
+          },
+          {
+            uuid: 'group-001-0018',
+            type: 'circle',
+            x: 40,
+            y: 0,
+            w: 100,
+            h: 100,
+            desc: {
+              bgColor: '#4caf50'
+            }
+          }
+        ]
+      }
+    },
+    {
+      uuid: 'group-0013',
+      x: 550,
+      y: 100,
+      w: 173.20508075688775,
+      // w: 100,
+      h: 100,
+      angle: 30,
+      type: 'group',
+      desc: {
+        children: [
+          {
+            uuid: 'group-002-014',
+            type: 'circle',
+            x: -40,
+            y: 0,
+            w: 100,
+            h: 100,
+            desc: {
+              bgColor: '#f44336'
+            }
+          },
+          {
+            uuid: 'group-002-0015',
+            type: 'circle',
+            x: -20,
+            y: 0,
+            w: 100,
+            h: 100,
+            desc: {
+              bgColor: '#ff9800'
+            }
+          },
+          {
+            uuid: 'group-002-0016',
+            type: 'circle',
+            x: 0,
+            y: 0,
+            w: 100,
+            h: 100,
+            desc: {
+              bgColor: '#ffc106'
+            }
+          },
+          {
+            uuid: 'group-002-0017',
+            type: 'circle',
+            x: 20,
+            y: 0,
+            w: 100,
+            h: 100,
+            desc: {
+              bgColor: '#cddc39'
+            }
+          },
+          {
+            uuid: 'group-002-0018',
+            type: 'circle',
+            x: 40,
+            y: 0,
+            w: 100,
+            h: 100,
+            desc: {
+              bgColor: '#4caf50'
+            }
+          }
+        ]
+      }
+    },
+    {
+      uuid: 'xxxx-0017',
+      type: 'image',
+      x: 100,
+      y: 400,
+      w: 100,
+      h: 100,
+      angle: 30,
+      desc: {
+        src: './images/lena.png?v=0017'
       }
     }
   ]

@@ -1,4 +1,4 @@
-import { EventEmitter, createOffscreenContext2D } from '@idraw/util';
+import { EventEmitter } from '@idraw/util';
 import { drawElementList } from './draw';
 import { Loader } from './loader';
 import type { Data, BoardRenderer, RendererOptions, RendererEventMap, RendererDrawOptions } from '@idraw/types';
@@ -6,17 +6,17 @@ import type { Data, BoardRenderer, RendererOptions, RendererEventMap, RendererDr
 export class Renderer extends EventEmitter<RendererEventMap> implements BoardRenderer {
   private _opts: RendererOptions;
   private _loader: Loader = new Loader();
-  private _draftContextTop: CanvasRenderingContext2D;
-  private _draftContextMiddle: CanvasRenderingContext2D;
-  private _draftContextBottom: CanvasRenderingContext2D;
+  // private _draftContextTop: CanvasRenderingContext2D;
+  // private _draftContextMiddle: CanvasRenderingContext2D;
+  // private _draftContextBottom: CanvasRenderingContext2D;
 
   constructor(opts: RendererOptions) {
     super();
     this._opts = opts;
-    const { width, height } = this._opts.viewContent.viewContext.canvas;
-    this._draftContextTop = createOffscreenContext2D({ width, height }) as CanvasRenderingContext2D;
-    this._draftContextMiddle = createOffscreenContext2D({ width, height }) as CanvasRenderingContext2D;
-    this._draftContextBottom = createOffscreenContext2D({ width, height }) as CanvasRenderingContext2D;
+    // const { width, height } = this._opts.viewContent.viewContext.canvas;
+    // this._draftContextTop = createOffscreenContext2D({ width, height }) as CanvasRenderingContext2D;
+    // this._draftContextMiddle = createOffscreenContext2D({ width, height }) as CanvasRenderingContext2D;
+    // this._draftContextBottom = createOffscreenContext2D({ width, height }) as CanvasRenderingContext2D;
 
     this._init();
   }
@@ -40,7 +40,18 @@ export class Renderer extends EventEmitter<RendererEventMap> implements BoardRen
     const { calculator } = this._opts;
     const { viewContext } = this._opts.viewContent;
     viewContext.clearRect(0, 0, viewContext.canvas.width, viewContext.canvas.height);
-    drawElementList(viewContext, data.elements, { loader, calculator, ...opts });
+    const parentElementSize = {
+      x: 0,
+      y: 0,
+      w: opts.viewSize.width,
+      h: opts.viewSize.height
+    };
+    drawElementList(viewContext, data.elements, {
+      loader,
+      calculator,
+      parentElementSize,
+      ...opts
+    });
   }
 
   scale(num: number) {

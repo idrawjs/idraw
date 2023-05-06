@@ -54,4 +54,6 @@ export interface ViewContext2D {
   shadowOffsetY: number;
   ellipse(x: number, y: number, radiusX: number, radiusY: number, rotation: number, startAngle: number, endAngle: number, counterclockwise?: boolean): void;
   isPointInPath(x: number, y: number, fillRule?: CanvasFillRule): boolean;
+  clip(fillRule?: CanvasFillRule): void;
+  clip(path: Path2D, fillRule?: CanvasFillRule): void;
 }

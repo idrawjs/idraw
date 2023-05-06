@@ -257,13 +257,13 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
       const drawOpts = { calculator, scaleInfo, viewSize };
       if (hoverElement && actionType !== 'drag') {
         const hoverElemSize = calculator.elementSize(hoverElement, scaleInfo);
-        drawHoverWrapper(helperContext, hoverElemSize, drawOpts);
+        drawHoverWrapper(helperContext, hoverElemSize);
       }
 
       if (elem && ['select', 'drag', 'resize'].includes(actionType)) {
         const selectedElemSize = calculator.elementSize(elem, scaleInfo);
         const sizeControllers = calcElementControllerStyle(selectedElemSize);
-        drawPointWrapper(helperContext, selectedElemSize, drawOpts);
+        drawPointWrapper(helperContext, selectedElemSize);
         drawElementControllers(helperContext, selectedElemSize, { ...drawOpts, sizeControllers });
       } else if (actionType === 'area' && areaStart && areaEnd) {
         drawArea(helperContext, { start: areaStart, end: areaEnd });

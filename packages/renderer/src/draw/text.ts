@@ -1,12 +1,11 @@
 import type { Element, RendererDrawElementOptions, ViewContext2D } from '@idraw/types';
 import { rotateElement } from '@idraw/util';
 import { is, isColorStr } from '@idraw/util';
-import { clearContext, drawBox } from './base';
+import { drawBox } from './base';
 
 export function drawText(ctx: ViewContext2D, elem: Element<'text'>, opts: RendererDrawElementOptions) {
-  clearContext(ctx);
-  drawBox(ctx, elem, elem.desc.bgColor || 'transparent');
   rotateElement(ctx, elem, () => {
+    drawBox(ctx, elem, elem.desc.bgColor || 'transparent');
     const desc: Element<'text'>['desc'] = {
       ...{
         fontSize: 12,
@@ -103,7 +102,6 @@ export function drawText(ctx: ViewContext2D, elem: Element<'text'>, opts: Render
         }
         ctx.fillText(line.text, _x, _y + fontHeight * i);
       });
-      clearContext(ctx);
     }
 
     // draw text stroke

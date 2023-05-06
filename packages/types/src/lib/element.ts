@@ -26,7 +26,7 @@ interface ElemenTextDesc extends ElementBaseDesc {
   color: string;
   fontSize: number;
   lineHeight?: number;
-  fontWeight?: 'bold' | '';
+  fontWeight?: 'bold' | string;
   fontFamily?: string;
   textAlign?: 'center' | 'left' | 'right';
   verticalAlign?: 'middle' | 'top' | 'bottom';
@@ -58,6 +58,10 @@ interface ElementSVGDesc extends ElementBaseDesc {
   svg: string;
 }
 
+interface ElementGroupDesc extends ElementBaseDesc {
+  children: Element<ElementType>[];
+}
+
 interface ElementDescMap {
   rect: ElementRectDesc;
   circle: ElementCircleDesc;
@@ -65,9 +69,10 @@ interface ElementDescMap {
   image: ElementImageDesc;
   html: ElementHTMLDesc;
   svg: ElementSVGDesc;
+  group: ElementGroupDesc;
 }
 
-export type ElementType = 'text' | 'rect' | 'circle' | 'image' | 'svg' | 'html';
+export type ElementType = 'text' | 'rect' | 'circle' | 'image' | 'svg' | 'html' | 'group';
 
 export interface ElementOperation {
   lock?: boolean;

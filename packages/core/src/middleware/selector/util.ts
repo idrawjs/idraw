@@ -432,6 +432,7 @@ export function calcSelectedElementsArea(
 
     if (elemSize.angle && (elemSize.angle > 0 || elemSize.angle < 0)) {
       const ves = rotateElementVertexes(elemSize);
+
       if (ves.length === 4) {
         const xList = [ves[0].x, ves[1].x, ves[2].x, ves[3].x];
         const yList = [ves[0].y, ves[1].y, ves[2].y, ves[3].y];

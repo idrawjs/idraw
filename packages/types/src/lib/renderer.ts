@@ -1,5 +1,5 @@
 import type { ViewContent, ViewScaleInfo, ViewCalculator, ViewSizeInfo } from './view';
-import type { Element } from './element';
+import type { Element, ElementSize } from './element';
 import type { LoaderEventMap, LoadElementType, LoadContent } from './loader';
 import type { UtilEventEmitter } from './util';
 import type { StoreSharer } from './store';
@@ -31,4 +31,6 @@ export interface RendererDrawOptions {
 export interface RendererDrawElementOptions extends RendererDrawOptions {
   loader: RendererLoader;
   calculator: ViewCalculator;
+  scaleInfo: ViewScaleInfo;
+  parentElementSize: ElementSize;
 }

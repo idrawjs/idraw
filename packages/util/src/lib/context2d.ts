@@ -272,4 +272,10 @@ export class Context2D implements ViewContext2D {
   isPointInPath(x: number, y: number) {
     return this._ctx.isPointInPath(this.$doPixelRatio(x), this.$doPixelRatio(y));
   }
+
+  // clip(fillRule?: CanvasFillRule): void;
+  // clip(path: Path2D, fillRule?: CanvasFillRule): void;
+  clip(...args: [fillRule?: CanvasFillRule | undefined] | [path: Path2D, fillRule?: CanvasFillRule | undefined]) {
+    return this._ctx.clip(...(args as any[]));
+  }
 }
