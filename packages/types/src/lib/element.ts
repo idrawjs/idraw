@@ -46,8 +46,8 @@ interface ElementCircleDesc extends ElementBaseDesc {
 
 interface ElementHTMLDesc extends ElementBaseDesc {
   html: string;
-  width: number;
-  height: number;
+  width?: number;
+  height?: number;
 }
 
 interface ElementImageDesc extends ElementBaseDesc {

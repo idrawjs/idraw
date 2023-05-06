@@ -24,7 +24,10 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
       };
     });
     this._registerLoadFunc<'html'>('html', async (elem: Element<'html'>) => {
-      const content = await loadHTML(elem.desc.html, elem.desc);
+      const content = await loadHTML(elem.desc.html, {
+        width: elem.desc.width || elem.w,
+        height: elem.desc.height || elem.h
+      });
       return {
         uuid: elem.uuid,
         lastModified: Date.now(),

@@ -4,6 +4,7 @@ import { drawRect } from './rect';
 import { drawImage } from './image';
 import { drawText } from './text';
 import { drawSVG } from './svg';
+import { drawHTML } from './html';
 
 export function drawElement(ctx: ViewContext2D, elem: Element<ElementType>, opts: RendererDrawElementOptions) {
   try {
@@ -26,6 +27,10 @@ export function drawElement(ctx: ViewContext2D, elem: Element<ElementType>, opts
       }
       case 'svg': {
         drawSVG(ctx, elem as Element<'svg'>, opts);
+        break;
+      }
+      case 'html': {
+        drawHTML(ctx, elem as Element<'html'>, opts);
         break;
       }
       default: {
