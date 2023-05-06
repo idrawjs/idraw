@@ -2,6 +2,10 @@ import type { Element, ElementType, Data, RendererDrawElementOptions, ViewContex
 import { drawCircle } from './circle';
 import { drawRect } from './rect';
 import { drawImage } from './image';
+import { drawText } from './text';
+import { drawSVG } from './svg';
+import { drawHTML } from './html';
+import { drawGroup } from './group';
 
 export function drawElement(ctx: ViewContext2D, elem: Element<ElementType>, opts: RendererDrawElementOptions) {
   try {
@@ -14,8 +18,24 @@ export function drawElement(ctx: ViewContext2D, elem: Element<ElementType>, opts
         drawCircle(ctx, elem as Element<'circle'>, opts);
         break;
       }
+      case 'text': {
+        drawText(ctx, elem as Element<'text'>, opts);
+        break;
+      }
       case 'image': {
         drawImage(ctx, elem as Element<'image'>, opts);
+        break;
+      }
+      case 'svg': {
+        drawSVG(ctx, elem as Element<'svg'>, opts);
+        break;
+      }
+      case 'html': {
+        drawHTML(ctx, elem as Element<'html'>, opts);
+        break;
+      }
+      case 'group': {
+        drawGroup(ctx, elem as Element<'group'>, opts);
         break;
       }
       default: {
@@ -28,7 +48,7 @@ export function drawElement(ctx: ViewContext2D, elem: Element<ElementType>, opts
 }
 
 export function drawElementList(ctx: ViewContext2D, elements: Data['elements'], opts: RendererDrawElementOptions) {
-  for (let i = elements.length - 1; i >= 0; i--) {
+  for (let i = 0; i < elements.length; i++) {
     const elem = elements[i];
     if (!opts.calculator.isElementInView(elem, opts.scaleInfo, opts.viewSize)) {
       continue;

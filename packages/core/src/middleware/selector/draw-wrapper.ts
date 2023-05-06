@@ -5,7 +5,7 @@ import type { AreaSize, ControllerStyle, ElementSizeController } from './types';
 
 const wrapperColor = '#1973ba';
 
-export function drawPointWrapper(ctx: ViewContext2D, elem: ElementSize, opts?: Omit<RendererDrawElementOptions, 'loader'>) {
+export function drawPointWrapper(ctx: ViewContext2D, elem: ElementSize) {
   const bw = 0;
   const { x, y, w, h } = elem;
   const { angle = 0 } = elem;
@@ -35,7 +35,7 @@ export function drawPointWrapper(ctx: ViewContext2D, elem: ElementSize, opts?: O
   });
 }
 
-export function drawHoverWrapper(ctx: ViewContext2D, elem: ElementSize, opts?: Omit<RendererDrawElementOptions, 'loader'>) {
+export function drawHoverWrapper(ctx: ViewContext2D, elem: ElementSize) {
   const bw = 0;
   const { x, y, w, h } = elem;
   const { angle = 0 } = elem;
@@ -85,7 +85,7 @@ function drawController(ctx: ViewContext2D, style: ControllerStyle) {
 export function drawElementControllers(
   ctx: ViewContext2D,
   elem: ElementSize,
-  opts: Omit<RendererDrawElementOptions, 'loader'> & { sizeControllers: ElementSizeController }
+  opts: Omit<RendererDrawElementOptions, 'loader' | 'parentElementSize'> & { sizeControllers: ElementSizeController }
 ) {
   const bw = 0;
   const { x, y, w, h } = elem;

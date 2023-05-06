@@ -148,7 +148,7 @@ export class Calculator implements ViewCalculator {
       index: -1,
       element: null
     };
-    for (let i = 0; i < data.elements.length; i++) {
+    for (let i = data.elements.length - 1; i >= 0; i--) {
       const elem = data.elements[i];
       if (this.isPointInElement(p, elem, scaleInfo)) {
         result.index = i;

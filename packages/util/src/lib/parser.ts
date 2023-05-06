@@ -1,7 +1,4 @@
-export function parseHTMLToDataURL(
-  html: string,
-  opts: { width: number; height: number }
-): Promise<string> {
+export function parseHTMLToDataURL(html: string, opts: { width: number; height: number }): Promise<string> {
   const { width, height } = opts;
   return new Promise((resolve, reject) => {
     const _svg = `

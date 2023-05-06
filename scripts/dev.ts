@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import chalk from 'chalk';
 import { createServer } from 'vite';
+import pluginReact from '@vitejs/plugin-react';
 import type { UserConfig } from 'vite';
 import { joinPackagePath } from './util/project';
 
@@ -19,7 +20,7 @@ async function dev() {
 }
 
 function getViteConfig(): UserConfig {
-  const pkgName = 'idraw';
+  const pkgName = 'lab';
   const viteConfig: UserConfig = {
     root: joinPackagePath(pkgName),
     publicDir: joinPackagePath(pkgName, 'demo', 'public'),
@@ -27,7 +28,7 @@ function getViteConfig(): UserConfig {
       port: 8080,
       host: '127.0.0.1'
     },
-    plugins: [],
+    plugins: [pluginReact()],
     resolve: {
       alias: {
         '@idraw/types': joinPackagePath('types', 'src', 'index.ts'),
@@ -38,7 +39,7 @@ function getViteConfig(): UserConfig {
       }
     },
     esbuild: {
-      include: [/\.ts$/, /\.js$/],
+      include: [/\.(ts|tsx|js|jsx)$/],
       exclude: [/\.html$/]
     },
     optimizeDeps: {}

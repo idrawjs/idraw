@@ -6,18 +6,27 @@ export interface ElementSize {
   angle?: number;
 }
 
-interface ElementRectDesc {
-  color?: string;
-  bgColor?: string;
+interface ElementBaseDesc {
+  borderWidth?: number;
+  borderColor?: string;
   borderRadius?: number;
+  shadowColor?: string;
+  shadowOffsetX?: number;
+  shadowOffsetY?: number;
+  shadowBlur?: number;
 }
 
-interface ElemenTextDesc {
+interface ElementRectDesc extends ElementBaseDesc {
+  color?: string;
+  bgColor?: string;
+}
+
+interface ElemenTextDesc extends ElementBaseDesc {
   text: string;
   color: string;
   fontSize: number;
   lineHeight?: number;
-  fontWeight?: 'bold' | '';
+  fontWeight?: 'bold' | string;
   fontFamily?: string;
   textAlign?: 'center' | 'left' | 'right';
   verticalAlign?: 'middle' | 'top' | 'bottom';
@@ -30,15 +39,6 @@ interface ElemenTextDesc {
   textShadowBlur?: number;
 }
 
-interface ElementBaseDesc {
-  borderWidth?: number;
-  borderColor?: string;
-  borderRadius?: number;
-  shadowColor?: string;
-  shadowOffsetX?: number;
-  shadowOffsetY?: number;
-  shadowBlur?: number;
-}
 interface ElementCircleDesc extends ElementBaseDesc {
   radius: number;
   bgColor?: string;
@@ -46,8 +46,8 @@ interface ElementCircleDesc extends ElementBaseDesc {
 
 interface ElementHTMLDesc extends ElementBaseDesc {
   html: string;
-  width: number;
-  height: number;
+  width?: number;
+  height?: number;
 }
 
 interface ElementImageDesc extends ElementBaseDesc {
@@ -58,6 +58,10 @@ interface ElementSVGDesc extends ElementBaseDesc {
   svg: string;
 }
 
+interface ElementGroupDesc extends ElementBaseDesc {
+  children: Element<ElementType>[];
+}
+
 interface ElementDescMap {
   rect: ElementRectDesc;
   circle: ElementCircleDesc;
@@ -65,9 +69,10 @@ interface ElementDescMap {
   image: ElementImageDesc;
   html: ElementHTMLDesc;
   svg: ElementSVGDesc;
+  group: ElementGroupDesc;
 }
 
-export type ElementType = 'text' | 'rect' | 'circle' | 'image' | 'svg' | 'html';
+export type ElementType = 'text' | 'rect' | 'circle' | 'image' | 'svg' | 'html' | 'group';
 
 export interface ElementOperation {
   lock?: boolean;
@@ -80,6 +85,7 @@ export interface ElementOperation {
 
 export interface Element<T extends ElementType> extends ElementSize {
   uuid: string;
+  name?: string;
   type: T;
   desc: ElementDescMap[T];
   operation?: ElementOperation;

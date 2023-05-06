@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "jsx": "react",
     "declaration": true,
     "sourceMap": false,
     "target": "ES6",

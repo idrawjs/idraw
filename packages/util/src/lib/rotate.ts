@@ -85,9 +85,9 @@ function calcLineRadian(center: PointSize, p: PointSize): number {
   } else if (x > 0 && y > 0) {
     return Math.PI - Math.atan(Math.abs(x) / Math.abs(y));
   } else if (x < 0 && y > 0) {
-    return Math.PI + Math.atan(Math.abs(y) / Math.abs(x));
+    return Math.PI + Math.atan(Math.abs(x) / Math.abs(y));
   } else if (x < 0 && y < 0) {
-    return 2 * Math.PI - Math.atan(Math.abs(y) / Math.abs(x));
+    return 2 * Math.PI - Math.atan(Math.abs(x) / Math.abs(y));
   }
 
   return 0;

@@ -1,4 +1,4 @@
-import type { Data, CoreOptions, BoardMiddleware } from '@idraw/types';
+import type { Data, CoreOptions, BoardMiddleware, ViewSizeInfo } from '@idraw/types';
 import { Board } from '@idraw/board';
 import { createBoardContexts } from '@idraw/util';
 
@@ -10,15 +10,13 @@ export class Core {
   private _board: Board;
   private _opts: CoreOptions;
   private _mount: HTMLDivElement;
+  private _canvas: HTMLCanvasElement;
   constructor(mount: HTMLDivElement, opts: CoreOptions) {
-    const { devicePixelRatio = 1 } = opts;
+    const { devicePixelRatio = 1, width, height } = opts;
     this._opts = opts;
     this._mount = mount;
     const canvas = document.createElement('canvas');
-    canvas.width = opts.width * devicePixelRatio;
-    canvas.height = opts.height * devicePixelRatio;
-    canvas.style.width = `${opts.width}px`;
-    canvas.style.height = `${opts.height}px`;
+    this._canvas = canvas;
     mount.appendChild(canvas);
 
     const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -33,6 +31,11 @@ export class Core {
       contextHeight: opts.contextHeight || opts.height
     });
     this._board = board;
+    this.resize({
+      width,
+      height,
+      devicePixelRatio
+    });
   }
 
   use(middleware: BoardMiddleware) {
@@ -53,5 +56,9 @@ export class Core {
 
   scrollY(num: number) {
     this._board.scrollY(num);
+  }
+
+  resize(newViewSize: Pick<ViewSizeInfo, 'height' | 'width' | 'devicePixelRatio'>) {
+    this._board.resize(newViewSize);
   }
 }
