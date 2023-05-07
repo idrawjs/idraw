@@ -43,7 +43,8 @@ export type PointTargetType = null | 'list-area' | 'over-element' | ResizeType;
 export interface PointTarget {
   type: PointTargetType;
   elements: Element<ElementType>[];
-  indexes: number[];
+  indexes: Array<number | string>;
+  uuids: string[];
 }
 
 export type AreaSize = ElementSize;

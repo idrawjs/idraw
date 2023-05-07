@@ -1,4 +1,5 @@
-import type { Point, PointWatcherEvent, BoardMiddleware, Element, ElementSize, ElementType } from './types';
+import { getSelectedElementIndexes, getSelectedElements } from '@idraw/util';
+import type { Point, PointWatcherEvent, BoardMiddleware, ElementSize } from './types';
 import { drawPointWrapper, drawHoverWrapper, drawElementControllers, drawArea, drawListArea } from './draw-wrapper';
 import { calcElementControllerStyle } from './controller';
 import { getPointTarget, resizeElement, getSelectedListArea, calcSelectedElementsArea } from './util';
@@ -18,23 +19,25 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
   sharer.setSharedStorage(keyActionType, null);
 
   const getIndexes = () => {
-    const idxs: number[] = sharer.getActiveStorage('selectedIndexes') || [];
-    return idxs;
+    const data = sharer.getActiveStorage('data');
+    if (data) {
+      const uuids = sharer.getActiveStorage('selectedUUIDs');
+      const idxes: Array<number | string> = getSelectedElementIndexes(data, uuids);
+      return idxes;
+    } else {
+      return [];
+    }
   };
 
   const getActiveElements = () => {
-    const indexes = getIndexes();
-    const elemList: Element<ElementType>[] = [];
     const data = sharer.getActiveStorage('data');
-    if (!data || !(indexes.length > 0)) {
-      return elemList;
+    if (data) {
+      const uuids = sharer.getActiveStorage('selectedUUIDs');
+      const elems = getSelectedElements(data, uuids);
+      return elems;
+    } else {
+      return [];
     }
-    indexes?.forEach((idx: number) => {
-      if (data?.elements[idx]) {
-        elemList.push(data?.elements[idx]);
-      }
-    });
-    return elemList;
   };
 
   const getScaleInfo = () => {
@@ -77,6 +80,7 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
           ctx: helperContext,
           data,
           selectedIndexes: getIndexes(),
+          selectedUUIDs: sharer.getActiveStorage('selectedUUIDs') || [],
           selectedElements: selectedElements,
           scaleInfo: getScaleInfo(),
           calculator,
@@ -103,7 +107,6 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
       // reset all shared storage
       // clear();
       sharer.setSharedStorage(keyHoverElementSize, null);
-
       const data = sharer.getActiveStorage('data');
       const listAreaSize = calcSelectedElementsArea(getActiveElements(), {
         scaleInfo: sharer.getActiveScaleInfo(),
@@ -113,6 +116,7 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
         ctx: helperContext,
         data,
         selectedIndexes: getIndexes(),
+        selectedUUIDs: sharer.getActiveStorage('selectedUUIDs') || [],
         selectedElements: getActiveElements(),
         scaleInfo: getScaleInfo(),
         calculator,
@@ -121,8 +125,8 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
 
       if (target.type === 'list-area') {
         sharer.setSharedStorage(keyActionType, 'drag-list');
-      } else if (target.type === 'over-element' && target?.indexes?.length === 1 && target.indexes[0] >= 0 && target?.elements?.length === 1) {
-        sharer.setActiveStorage('selectedIndexes', target?.indexes[0] >= 0 ? [target?.indexes[0]] : []);
+      } else if (target.type === 'over-element' && target?.uuids?.length === 1 && target?.elements?.length === 1) {
+        sharer.setActiveStorage('selectedUUIDs', target?.uuids[0] ? [target?.uuids[0]] : []);
         sharer.setSharedStorage(keyActionType, 'drag');
       } else if (target.type?.startsWith('resize-')) {
         sharer.setSharedStorage(keyResizeType, target.type);
@@ -131,7 +135,7 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
         clear();
         sharer.setSharedStorage(keyActionType, 'area');
         sharer.setSharedStorage(keyAreaStart, e.point);
-        sharer.setActiveStorage('selectedIndexes', []);
+        sharer.setActiveStorage('selectedUUIDs', []);
       }
       if (target.type) {
         prevPoint = e.point;
@@ -152,7 +156,7 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
       const actionType = sharer.getSharedStorage(keyActionType);
 
       if (actionType === 'drag') {
-        if (data && elems?.length === 1 && indexes?.length === 1 && indexes[0] >= 0 && start && end) {
+        if (data && elems?.length === 1 && indexes?.length === 1 && typeof indexes[0] === 'number' && indexes[0] >= 0 && start && end) {
           data.elements[indexes[0]].x += (end.x - start.x) / scale;
           data.elements[indexes[0]].y += (end.y - start.y) / scale;
           sharer.setActiveStorage('data', data);
@@ -165,8 +169,8 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
         if (data && start && end && indexes?.length > 1) {
           const moveX = (end.x - start.x) / scale;
           const moveY = (end.y - start.y) / scale;
-          indexes.forEach((idx: number) => {
-            if (data.elements[idx]) {
+          indexes.forEach((idx: number | string) => {
+            if (typeof idx === 'number' && data.elements[idx]) {
               data.elements[idx].x += moveX;
               data.elements[idx].y += moveY;
             }
@@ -179,7 +183,15 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
         }
         viewer.drawFrame();
       } else if (actionType === 'resize') {
-        if (data && elems?.length === 1 && indexes?.length === 1 && indexes[0] >= 0 && start && resizeType?.startsWith('resize-')) {
+        if (
+          data &&
+          elems?.length === 1 &&
+          indexes?.length === 1 &&
+          typeof indexes[0] === 'number' &&
+          indexes[0] >= 0 &&
+          start &&
+          resizeType?.startsWith('resize-')
+        ) {
           const resizedElemSize = resizeElement(elems[0], { scale, start, end, resizeType });
           data.elements[indexes[0]].x = resizedElemSize.x;
           data.elements[indexes[0]].y = resizedElemSize.y;
@@ -206,15 +218,15 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
         if (data) {
           const start = sharer.getSharedStorage(keyAreaStart);
           const end = sharer.getSharedStorage(keyAreaEnd);
-          const { indexes } = getSelectedListArea(data, {
+          const { uuids } = getSelectedListArea(data, {
             start,
             end,
             calculator,
             scaleInfo: sharer.getActiveScaleInfo()
           });
 
-          if (indexes.length > 0) {
-            sharer.setActiveStorage('selectedIndexes', indexes);
+          if (uuids.length > 0) {
+            sharer.setActiveStorage('selectedUUIDs', uuids);
             sharer.setSharedStorage(keyActionType, 'drag-list');
             viewer.drawFrame();
           }
@@ -244,11 +256,13 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
 
     beforeDrawFrame({ snapshot }) {
       const { activeStore, sharedStore } = snapshot;
-      const { data, selectedIndexes, scale, offsetLeft, offsetTop, offsetRight, offsetBottom, width, height, contextHeight, contextWidth, devicePixelRatio } =
+      const { data, selectedUUIDs, scale, offsetLeft, offsetTop, offsetRight, offsetBottom, width, height, contextHeight, contextWidth, devicePixelRatio } =
         activeStore;
       const scaleInfo = { scale, offsetLeft, offsetTop, offsetRight, offsetBottom };
       const viewSize = { width, height, contextHeight, contextWidth, devicePixelRatio };
-      const elem = data?.elements?.[selectedIndexes?.[0]];
+      // const elem = data?.elements?.[selectedIndexes?.[0] as number];
+      const selectedElements = getSelectedElements(data, selectedUUIDs);
+      const elem = selectedElements[0];
       const hoverElement: ElementSize = sharedStore[keyHoverElementSize];
       const actionType: string = sharedStore[keyActionType];
       const areaStart: Point | null = sharedStore[keyAreaStart];

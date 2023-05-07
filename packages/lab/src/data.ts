@@ -115,7 +115,7 @@ const data: Data = {
       }
     },
     {
-      uuid: 'xxxx-0010',
+      uuid: 'text-0010',
       name: 'text-002',
       x: 300,
       y: 100,

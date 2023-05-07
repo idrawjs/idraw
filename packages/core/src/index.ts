@@ -1,6 +1,6 @@
 import type { Data, CoreOptions, BoardMiddleware, ViewSizeInfo } from '@idraw/types';
 import { Board } from '@idraw/board';
-import { createBoardContexts } from '@idraw/util';
+import { createBoardContexts, validateElements } from '@idraw/util';
 
 export { MiddlewareSelector } from './middleware/selector';
 export { MiddlewareScroller } from './middleware/scroller';
@@ -43,6 +43,8 @@ export class Core {
   }
 
   setData(data: Data) {
+    // TODO
+    validateElements(data?.elements || []);
     this._board.setData(data);
   }
 
