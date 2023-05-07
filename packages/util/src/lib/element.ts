@@ -96,3 +96,27 @@ export function getSelectedElements(data: Data | null | undefined, uuids: string
   }
   return elements;
 }
+
+export function validateElements(elements: Array<Element<ElementType>>): boolean {
+  let isValid = true;
+  if (Array.isArray(elements)) {
+    const uuids: string[] = [];
+    elements.forEach((elem) => {
+      if (typeof elem.uuid === 'string' && elem.uuid) {
+        if (uuids.includes(elem.uuid)) {
+          isValid = false;
+          console.warn(`Duplicate uuids: ${elem.uuid}`);
+        } else {
+          uuids.push(elem.uuid);
+        }
+      } else {
+        isValid = false;
+        console.warn('Element missing uuid', elem);
+      }
+      if (elem.type === 'group') {
+        isValid = validateElements((elem as Element<'group'>)?.desc?.children);
+      }
+    });
+  }
+  return isValid;
+}
