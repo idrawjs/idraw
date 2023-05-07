@@ -33,7 +33,8 @@ export function getPointTarget(
   opts: {
     ctx: ViewContext2D;
     data?: Data | null;
-    selectedIndexes?: number[];
+    selectedIndexes?: Array<number | string>;
+    selectedUUIDs: Array<string>;
     selectedElements?: Element<ElementType>[];
     areaSize?: AreaSize | null;
     scaleInfo: ViewScaleInfo;
@@ -43,9 +44,10 @@ export function getPointTarget(
   const target: PointTarget = {
     type: null,
     elements: [],
-    indexes: []
+    indexes: [],
+    uuids: []
   };
-  const { ctx, data, calculator, selectedElements, selectedIndexes, scaleInfo, areaSize } = opts;
+  const { ctx, data, calculator, selectedElements, selectedIndexes, selectedUUIDs, scaleInfo, areaSize } = opts;
 
   // list area
   if (areaSize && Array.isArray(selectedElements) && selectedElements?.length > 1 && Array.isArray(selectedIndexes) && selectedIndexes?.length > 1) {
@@ -54,6 +56,7 @@ export function getPointTarget(
       target.type = 'list-area';
       target.elements = selectedElements;
       target.indexes = selectedIndexes;
+      target.uuids = selectedUUIDs;
       return target;
     }
   }
@@ -91,6 +94,7 @@ export function getPointTarget(
     if (index >= 0 && element) {
       target.indexes = [index];
       target.elements = [element];
+      target.uuids = [element.uuid];
       target.type = 'over-element';
       return target;
     }
@@ -379,12 +383,13 @@ export function getSelectedListArea(
     scaleInfo: ViewScaleInfo;
     calculator: ViewCalculator;
   }
-): { indexes: number[] } {
+): { indexes: number[]; uuids: string[] } {
   const indexes: number[] = [];
+  const uuids: string[] = [];
   const { calculator, scaleInfo, start, end } = opts;
 
   if (!(Array.isArray(data.elements) && start && end)) {
-    return { indexes };
+    return { indexes, uuids };
   }
   const startX = Math.min(start.x, end.x);
   const endX = Math.max(start.x, end.x);
@@ -397,6 +402,7 @@ export function getSelectedListArea(
     const center = calcElementCenter(elemSize);
     if (center.x >= startX && center.x <= endX && center.y >= startY && center.y <= endY) {
       indexes.push(idx);
+      uuids.push(elem.uuid);
       if (elemSize.angle && (elemSize.angle > 0 || elemSize.angle < 0)) {
         const ves = rotateElementVertexes(elemSize);
         if (ves.length === 4) {
@@ -410,7 +416,7 @@ export function getSelectedListArea(
       }
     }
   });
-  return { indexes };
+  return { indexes, uuids };
 }
 
 export function calcSelectedElementsArea(
