@@ -34,6 +34,8 @@ export class Core {
     this.resize({
       width,
       height,
+      contextWidth: opts.contextWidth || opts.width,
+      contextHeight: opts.contextHeight || opts.height,
       devicePixelRatio
     });
   }
@@ -60,7 +62,10 @@ export class Core {
     this._board.scrollY(num);
   }
 
-  resize(newViewSize: Pick<ViewSizeInfo, 'height' | 'width' | 'devicePixelRatio'>) {
+  resize(newViewSize: ViewSizeInfo) {
+    const sharer = this._board.getSharer();
+    const scaleInfo = sharer.getActiveScaleInfo();
     this._board.resize(newViewSize);
+    this._board.scale(scaleInfo.scale);
   }
 }

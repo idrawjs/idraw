@@ -259,7 +259,7 @@ export class Board {
     this._watcher.trigger('scrollY', scaleInfo);
   }
 
-  resize(newViewSize: Pick<ViewSizeInfo, 'height' | 'width' | 'devicePixelRatio'>) {
+  resize(newViewSize: ViewSizeInfo) {
     const viewSize = this._viewer.resize(newViewSize);
     const { width, height, devicePixelRatio } = newViewSize;
     const { viewContent } = this._opts;
@@ -271,5 +271,6 @@ export class Board {
     viewContent.boardContext.$resize({ width, height, devicePixelRatio });
     this._viewer.drawFrame();
     this._watcher.trigger('resize', viewSize);
+    this._sharer.setActiveViewSizeInfo(newViewSize);
   }
 }

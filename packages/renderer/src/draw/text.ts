@@ -4,8 +4,10 @@ import { is, isColorStr } from '@idraw/util';
 import { drawBox } from './base';
 
 export function drawText(ctx: ViewContext2D, elem: Element<'text'>, opts: RendererDrawElementOptions) {
-  rotateElement(ctx, elem, () => {
-    drawBox(ctx, elem, elem.desc.bgColor || 'transparent');
+  const { calculator, scaleInfo } = opts;
+  const { x, y, w, h, angle } = calculator.elementSize(elem, scaleInfo);
+  rotateElement(ctx, { x, y, w, h, angle }, () => {
+    drawBox(ctx, { ...elem, ...{ x, y, w, h, angle } }, elem.desc.bgColor || 'transparent');
     const desc: Element<'text'>['desc'] = {
       ...{
         fontSize: 12,
@@ -32,7 +34,7 @@ export function drawText(ctx: ViewContext2D, elem: Element<'text'>, opts: Render
 
       if (tempText.length > 0) {
         for (let i = 0; i < tempText.length; i++) {
-          if (ctx.measureText(lineText + (tempText[i] || '')).width < ctx.$doPixelRatio(elem.w)) {
+          if (ctx.measureText(lineText + (tempText[i] || '')).width < ctx.$doPixelRatio(w)) {
             lineText += tempText[i] || '';
           } else {
             lines.push({
@@ -42,11 +44,11 @@ export function drawText(ctx: ViewContext2D, elem: Element<'text'>, opts: Render
             lineText = tempText[i] || '';
             lineNum++;
           }
-          if ((lineNum + 1) * fontHeight > elem.h) {
+          if ((lineNum + 1) * fontHeight > h) {
             break;
           }
           if (tempText.length - 1 === i) {
-            if ((lineNum + 1) * fontHeight < elem.h) {
+            if ((lineNum + 1) * fontHeight < h) {
               lines.push({
                 text: lineText,
                 width: ctx.$undoPixelRatio(ctx.measureText(lineText).width)
@@ -67,20 +69,20 @@ export function drawText(ctx: ViewContext2D, elem: Element<'text'>, opts: Render
     });
 
     let startY = 0;
-    if (lines.length * fontHeight < elem.h) {
+    if (lines.length * fontHeight < h) {
       if (elem.desc.verticalAlign === 'top') {
         startY = 0;
       } else if (elem.desc.verticalAlign === 'bottom') {
-        startY += elem.h - lines.length * fontHeight;
+        startY += h - lines.length * fontHeight;
       } else {
         // middle and default
-        startY += (elem.h - lines.length * fontHeight) / 2;
+        startY += (h - lines.length * fontHeight) / 2;
       }
     }
 
     // draw text lines
     {
-      const _y = elem.y + startY;
+      const _y = y + startY;
       if (desc.textShadowColor !== undefined && isColorStr(desc.textShadowColor)) {
         ctx.shadowColor = desc.textShadowColor;
       }
@@ -94,11 +96,11 @@ export function drawText(ctx: ViewContext2D, elem: Element<'text'>, opts: Render
         ctx.shadowBlur = desc.textShadowBlur;
       }
       lines.forEach((line, i) => {
-        let _x = elem.x;
+        let _x = x;
         if (desc.textAlign === 'center') {
-          _x = elem.x + (elem.w - line.width) / 2;
+          _x = x + (w - line.width) / 2;
         } else if (desc.textAlign === 'right') {
-          _x = elem.x + (elem.w - line.width);
+          _x = x + (w - line.width);
         }
         ctx.fillText(line.text, _x, _y + fontHeight * i);
       });
@@ -106,13 +108,13 @@ export function drawText(ctx: ViewContext2D, elem: Element<'text'>, opts: Render
 
     // draw text stroke
     if (isColorStr(desc.strokeColor) && desc.strokeWidth !== undefined && desc.strokeWidth > 0) {
-      const _y = elem.y + startY;
+      const _y = y + startY;
       lines.forEach((line, i) => {
-        let _x = elem.x;
+        let _x = x;
         if (desc.textAlign === 'center') {
-          _x = elem.x + (elem.w - line.width) / 2;
+          _x = x + (w - line.width) / 2;
         } else if (desc.textAlign === 'right') {
-          _x = elem.x + (elem.w - line.width);
+          _x = x + (w - line.width);
         }
         if (desc.strokeColor !== undefined) {
           ctx.strokeStyle = desc.strokeColor;
@@ -125,16 +127,3 @@ export function drawText(ctx: ViewContext2D, elem: Element<'text'>, opts: Render
     }
   });
 }
-
-// export function createTextSVG(elem: DataElement<'text'>): string {
-//   const svg = `
-//   <svg xmlns="http://www.w3.org/2000/svg" width="${elem.w}" height = "${elem.h}">
-//     <foreignObject width="100%" height="100%">
-//       <div xmlns = "http://www.w3.org/1999/xhtml" style="font-size: ${elem.desc.size}px; color:${elem.desc.color};">
-//         <span>${elem.desc.text || ''}</span>
-//       </div>
-//     </foreignObject>
-//   </svg>
-//   `;
-//   return svg;
-// }
