@@ -77,22 +77,26 @@ export class BoardWatcher extends EventEmitter<BoardWatcherEventMap> {
       const point = this._getPoint(e);
       this.trigger('pointLeave', { point });
     });
-    container.addEventListener('wheel', (e: WheelEvent) => {
-      // e.preventDefault();
-      if (!this._isInTarget(e)) {
-        return;
-      }
-      const point = this._getPoint(e);
-      if (!this._isVaildPoint(point)) {
-        return;
-      }
-      if (this.has('wheelX') && (e.deltaX > 0 || e.deltaX < 0)) {
-        this.trigger('wheelX', { deltaX: e.deltaX, point });
-      }
-      if (this.has('wheelY') && (e.deltaY > 0 || e.deltaY < 0)) {
-        this.trigger('wheelY', { deltaY: e.deltaY, point });
-      }
-    });
+    container.addEventListener(
+      'wheel',
+      (e: WheelEvent) => {
+        e.preventDefault();
+        if (!this._isInTarget(e)) {
+          return;
+        }
+        const point = this._getPoint(e);
+        if (!this._isVaildPoint(point)) {
+          return;
+        }
+        if (this.has('wheelX') && (e.deltaX > 0 || e.deltaX < 0)) {
+          this.trigger('wheelX', { deltaX: e.deltaX, point });
+        }
+        if (this.has('wheelY') && (e.deltaY > 0 || e.deltaY < 0)) {
+          this.trigger('wheelY', { deltaY: e.deltaY, point });
+        }
+      },
+      { passive: false }
+    );
   }
 
   private _isInTarget(e: MouseEvent | WheelEvent) {
