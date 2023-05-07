@@ -379,6 +379,7 @@ const data: Data = {
             y: 50,
             w: 200,
             h: 200,
+            angle: 30,
             desc: {
               bgColor: '#f0f0f0',
               children: [
@@ -438,12 +439,13 @@ const data: Data = {
                   }
                 },
                 {
-                  uuid: 'groud-004-002',
+                  uuid: 'groud-004-002-xxxx',
                   type: 'group',
                   x: 50,
                   y: 100,
                   w: 200,
                   h: 100,
+                  angle: 30,
                   desc: {
                     bgColor: '#666666',
                     children: [

@@ -53,7 +53,7 @@ export function drawGroup(ctx: ViewContext2D, elem: Element<'group'>, opts: Rend
   const { x, y, w, h, angle } = calculator.elementSize({ x: elem.x, y: elem.y, w: elem.w, h: elem.h, angle: elem.angle }, scaleInfo);
 
   rotateElement(ctx, { x, y, w, h, angle }, () => {
-    drawBox(ctx, elem, elem?.desc?.bgColor);
+    drawBox(ctx, { ...elem, ...{ x, y, w, h, angle } }, elem?.desc?.bgColor);
     if (Array.isArray(elem.desc.children)) {
       const { parentElementSize: parentSize } = opts;
       const newParentSize: ElementSize = {
