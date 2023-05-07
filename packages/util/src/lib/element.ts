@@ -1,4 +1,5 @@
-import type { Data, Element, ElementType } from '@idraw/types';
+import type { Data, Element, ElementType, ElementSize } from '@idraw/types';
+import { rotateElementVertexes } from './rotate';
 
 function getGroupIndexes(elem: Element<'group'>, uuids: string[], parentIndex: string): string[] {
   let indexes: string[] = [];
@@ -119,4 +120,60 @@ export function validateElements(elements: Array<Element<ElementType>>): boolean
     });
   }
   return isValid;
+}
+
+type AreaSize = ElementSize;
+
+type ContextSize = {
+  contextWidth: number;
+  contextHeight: number;
+};
+
+export function calcElementsContextSize(elements: Array<Element<ElementType>>): ContextSize {
+  const area: AreaSize = { x: 0, y: 0, w: 0, h: 0 };
+  let prevElemSize: ElementSize | null = null;
+  elements.forEach((elem: Element<ElementType>) => {
+    const elemSize: ElementSize = {
+      x: elem.x,
+      y: elem.y,
+      w: elem.w,
+      h: elem.h
+    };
+    if (elemSize.angle && (elemSize.angle > 0 || elemSize.angle < 0)) {
+      const ves = rotateElementVertexes(elemSize);
+
+      if (ves.length === 4) {
+        const xList = [ves[0].x, ves[1].x, ves[2].x, ves[3].x];
+        const yList = [ves[0].y, ves[1].y, ves[2].y, ves[3].y];
+        elemSize.x = Math.min(...xList);
+        elemSize.y = Math.min(...yList);
+        elemSize.w = Math.abs(Math.max(...xList) - Math.min(...xList));
+        elemSize.h = Math.abs(Math.max(...yList) - Math.min(...yList));
+      }
+    }
+    if (prevElemSize) {
+      const areaStartX = Math.min(elemSize.x, area.x);
+      const areaStartY = Math.min(elemSize.y, area.y);
+
+      const areaEndX = Math.max(elemSize.x + elemSize.w, area.x + area.w);
+      const areaEndY = Math.max(elemSize.y + elemSize.h, area.y + area.h);
+
+      area.x = areaStartX;
+      area.y = areaStartY;
+      area.w = Math.abs(areaEndX - areaStartX);
+      area.h = Math.abs(areaEndY - areaStartY);
+    } else {
+      area.x = elemSize.x;
+      area.y = elemSize.y;
+      area.w = elemSize.w;
+      area.h = elemSize.h;
+    }
+    prevElemSize = elemSize;
+  });
+
+  const ctxSize: ContextSize = {
+    contextWidth: area.w,
+    contextHeight: area.h
+  };
+  return ctxSize;
 }
