@@ -80,7 +80,6 @@ export class BoardWatcher extends EventEmitter<BoardWatcherEventMap> {
     container.addEventListener(
       'wheel',
       (e: WheelEvent) => {
-        e.preventDefault();
         if (!this._isInTarget(e)) {
           return;
         }
@@ -88,6 +87,7 @@ export class BoardWatcher extends EventEmitter<BoardWatcherEventMap> {
         if (!this._isVaildPoint(point)) {
           return;
         }
+        e.preventDefault();
         if (this.has('wheelX') && (e.deltaX > 0 || e.deltaX < 0)) {
           this.trigger('wheelX', { deltaX: e.deltaX, point });
         }
