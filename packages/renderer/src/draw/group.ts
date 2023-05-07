@@ -35,6 +35,10 @@ export function drawElement(ctx: ViewContext2D, elem: Element<ElementType>, opts
         drawHTML(ctx, elem as Element<'html'>, opts);
         break;
       }
+      case 'group': {
+        drawGroup(ctx, elem as Element<'group'>, opts);
+        break;
+      }
       default: {
         break;
       }
@@ -49,7 +53,7 @@ export function drawGroup(ctx: ViewContext2D, elem: Element<'group'>, opts: Rend
   const { x, y, w, h, angle } = calculator.elementSize({ x: elem.x, y: elem.y, w: elem.w, h: elem.h, angle: elem.angle }, scaleInfo);
 
   rotateElement(ctx, { x, y, w, h, angle }, () => {
-    drawBox(ctx, elem);
+    drawBox(ctx, elem, elem?.desc?.bgColor);
     if (Array.isArray(elem.desc.children)) {
       const { parentElementSize: parentSize } = opts;
       const newParentSize: ElementSize = {
@@ -83,7 +87,7 @@ export function drawGroup(ctx: ViewContext2D, elem: Element<'group'>, opts: Rend
           continue;
         }
         try {
-          drawElement(ctx, child, opts);
+          drawElement(ctx, child, { ...opts });
         } catch (err) {
           console.error(err);
         }

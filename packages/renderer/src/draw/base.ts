@@ -14,7 +14,9 @@ import { is, istype, isColorStr } from '@idraw/util';
 
 export function drawBox(ctx: ViewContext2D, elem: Element<ElementType>, pattern?: string | CanvasPattern | null): void {
   drawBoxBorder(ctx, elem);
-
+  if (!pattern) {
+    return;
+  }
   const { x, y, w, h } = elem;
   let r: number = elem.desc.borderRadius || 0;
   r = Math.min(r, w / 2, h / 2);

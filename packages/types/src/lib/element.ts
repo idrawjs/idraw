@@ -59,6 +59,7 @@ interface ElementSVGDesc extends ElementBaseDesc {
 }
 
 interface ElementGroupDesc extends ElementBaseDesc {
+  bgColor?: string;
   children: Element<ElementType>[];
 }
 

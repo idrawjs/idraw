@@ -270,9 +270,9 @@ const data: Data = {
       }
     },
     {
-      uuid: 'group-0013',
+      uuid: 'group-003',
       x: 550,
-      y: 100,
+      y: 50,
       w: 173.20508075688775,
       // w: 100,
       h: 100,
@@ -281,7 +281,7 @@ const data: Data = {
       desc: {
         children: [
           {
-            uuid: 'group-002-014',
+            uuid: 'group-003-014',
             type: 'circle',
             x: -40,
             y: 0,
@@ -292,7 +292,7 @@ const data: Data = {
             }
           },
           {
-            uuid: 'group-002-0015',
+            uuid: 'group-003-0015',
             type: 'circle',
             x: -20,
             y: 0,
@@ -303,7 +303,7 @@ const data: Data = {
             }
           },
           {
-            uuid: 'group-002-0016',
+            uuid: 'group-003-0016',
             type: 'circle',
             x: 0,
             y: 0,
@@ -314,7 +314,7 @@ const data: Data = {
             }
           },
           {
-            uuid: 'group-002-0017',
+            uuid: 'group-003-0017',
             type: 'circle',
             x: 20,
             y: 0,
@@ -325,7 +325,7 @@ const data: Data = {
             }
           },
           {
-            uuid: 'group-002-0018',
+            uuid: 'group-003-0018',
             type: 'circle',
             x: 40,
             y: 0,
@@ -342,12 +342,173 @@ const data: Data = {
       uuid: 'xxxx-0017',
       type: 'image',
       x: 100,
-      y: 400,
+      y: 300,
       w: 100,
       h: 100,
       angle: 30,
       desc: {
         src: './images/lena.png?v=0017'
+      }
+    },
+    {
+      uuid: 'group-004',
+      x: 550,
+      y: 250,
+      w: 375,
+      h: 400,
+      type: 'group',
+      desc: {
+        bgColor: '#FFFFFF',
+        children: [
+          {
+            uuid: 'groud-004-001',
+            type: 'image',
+            x: 200,
+            y: 200,
+            w: 100,
+            h: 100,
+            angle: 30,
+            desc: {
+              src: './images/lena.png'
+            }
+          },
+          {
+            uuid: 'groud-004-002',
+            type: 'group',
+            x: 50,
+            y: 50,
+            w: 200,
+            h: 200,
+            desc: {
+              bgColor: '#f0f0f0',
+              children: [
+                {
+                  uuid: 'group-004-002-014',
+                  type: 'circle',
+                  x: -40,
+                  y: 0,
+                  w: 100,
+                  h: 100,
+                  desc: {
+                    bgColor: '#f44336'
+                  }
+                },
+                {
+                  uuid: 'group-004-001-0015',
+                  type: 'circle',
+                  x: -20,
+                  y: 0,
+                  w: 100,
+                  h: 100,
+                  desc: {
+                    bgColor: '#ff9800'
+                  }
+                },
+                {
+                  uuid: 'group-004-002-0016',
+                  type: 'circle',
+                  x: 0,
+                  y: 0,
+                  w: 100,
+                  h: 100,
+                  desc: {
+                    bgColor: '#ffc106'
+                  }
+                },
+                {
+                  uuid: 'group-004-002-0017',
+                  type: 'circle',
+                  x: 20,
+                  y: 0,
+                  w: 100,
+                  h: 100,
+                  desc: {
+                    bgColor: '#cddc39'
+                  }
+                },
+                {
+                  uuid: 'group-004-002-0018',
+                  type: 'circle',
+                  x: 40,
+                  y: 0,
+                  w: 100,
+                  h: 100,
+                  desc: {
+                    bgColor: '#4caf50'
+                  }
+                },
+                {
+                  uuid: 'groud-004-002',
+                  type: 'group',
+                  x: 50,
+                  y: 100,
+                  w: 200,
+                  h: 100,
+                  desc: {
+                    bgColor: '#666666',
+                    children: [
+                      {
+                        uuid: 'group-004-002-xxx-014',
+                        type: 'circle',
+                        x: -40,
+                        y: 0,
+                        w: 100,
+                        h: 100,
+                        desc: {
+                          bgColor: '#f44336'
+                        }
+                      },
+                      {
+                        uuid: 'group-004-002-xxx-0015',
+                        type: 'circle',
+                        x: -20,
+                        y: 0,
+                        w: 100,
+                        h: 100,
+                        desc: {
+                          bgColor: '#ff9800'
+                        }
+                      },
+                      {
+                        uuid: 'group-004-002-xxx-0016',
+                        type: 'circle',
+                        x: 0,
+                        y: 0,
+                        w: 100,
+                        h: 100,
+                        desc: {
+                          bgColor: '#ffc106'
+                        }
+                      },
+                      {
+                        uuid: 'group-004-002-xxx-0017',
+                        type: 'circle',
+                        x: 20,
+                        y: 0,
+                        w: 100,
+                        h: 100,
+                        desc: {
+                          bgColor: '#cddc39'
+                        }
+                      },
+                      {
+                        uuid: 'group-004-002-xxx-0018',
+                        type: 'circle',
+                        x: 40,
+                        y: 0,
+                        w: 100,
+                        h: 100,
+                        desc: {
+                          bgColor: '#4caf50'
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
       }
     }
   ]
