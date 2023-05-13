@@ -49,8 +49,8 @@ export function drawElement(ctx: ViewContext2D, elem: Element<ElementType>, opts
 }
 
 export function drawGroup(ctx: ViewContext2D, elem: Element<'group'>, opts: RendererDrawElementOptions) {
-  const { calculator, scaleInfo } = opts;
-  const { x, y, w, h, angle } = calculator.elementSize({ x: elem.x, y: elem.y, w: elem.w, h: elem.h, angle: elem.angle }, scaleInfo);
+  const { calculator, scaleInfo, viewSize } = opts;
+  const { x, y, w, h, angle } = calculator.elementSize({ x: elem.x, y: elem.y, w: elem.w, h: elem.h, angle: elem.angle }, scaleInfo, viewSize);
 
   rotateElement(ctx, { x, y, w, h, angle }, () => {
     drawBox(ctx, { ...elem, ...{ x, y, w, h, angle } }, elem?.desc?.bgColor);

@@ -6,7 +6,7 @@ export const MiddlewareScroller: BoardMiddleware = (opts) => {
   const key = 'SCROLL';
   const { viewer, viewContent, sharer } = opts;
   const { helperContext } = viewContent;
-  viewer.drawFrame();
+  // viewer.drawFrame();
 
   let activeThumbType: ScrollbarThumbType | null = null;
 

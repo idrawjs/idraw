@@ -10,11 +10,12 @@ export class Calculator implements ViewCalculator {
 
   viewScale(num: number, prevScaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): ViewScaleInfo {
     const scale = num;
+
+    const { width, height, contextX, contextY, contextWidth, contextHeight } = viewSizeInfo;
     let offsetLeft = 0;
     let offsetRight = 0;
     let offsetTop = 0;
     let offsetBottom = 0;
-    const { width, height, contextWidth, contextHeight } = viewSizeInfo;
 
     if (contextWidth * scale < width) {
       offsetLeft = offsetRight = (width - contextWidth * scale) / 2;
@@ -98,12 +99,13 @@ export class Calculator implements ViewCalculator {
     };
   }
 
-  elementSize(size: ElementSize, scaleInfo: ViewScaleInfo): ElementSize {
+  elementSize(size: ElementSize, scaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): ElementSize {
     const { x, y, w, h, angle } = size;
+    const { contextX = 0, contextY = 0 } = viewSizeInfo;
     const { scale, offsetTop, offsetLeft } = scaleInfo;
     return {
-      x: x * scale + offsetLeft,
-      y: y * scale + offsetTop,
+      x: x * scale + offsetLeft - contextX,
+      y: y * scale + offsetTop - contextY,
       w: w * scale,
       h: h * scale,
       angle
@@ -113,7 +115,7 @@ export class Calculator implements ViewCalculator {
   isElementInView(elem: ElementSize, scaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): boolean {
     const { width, height } = viewSizeInfo;
     const { angle } = elem;
-    const { x, y, w, h } = this.elementSize(elem, scaleInfo);
+    const { x, y, w, h } = this.elementSize(elem, scaleInfo, viewSizeInfo);
     const vertexes = rotateElementVertexes({ x, y, w, h, angle });
     for (let i = 0; i < vertexes.length; i++) {
       const v = vertexes[i];
@@ -124,10 +126,10 @@ export class Calculator implements ViewCalculator {
     return false;
   }
 
-  isPointInElement(p: Point, elem: Element<ElementType>, scaleInfo: ViewScaleInfo): boolean {
+  isPointInElement(p: Point, elem: Element<ElementType>, scaleInfo: ViewScaleInfo, viewSize: ViewSizeInfo): boolean {
     const ctx = this._opts.viewContent.boardContext;
     const { angle = 0 } = elem;
-    const { x, y, w, h } = this.elementSize(elem, scaleInfo);
+    const { x, y, w, h } = this.elementSize(elem, scaleInfo, viewSize);
     const vertexes = rotateElementVertexes({ x, y, w, h, angle });
     if (vertexes.length >= 2) {
       ctx.beginPath();
@@ -143,14 +145,14 @@ export class Calculator implements ViewCalculator {
     return false;
   }
 
-  getPointElement(p: Point, data: Data, scaleInfo: ViewScaleInfo): { index: number; element: null | Element<ElementType> } {
+  getPointElement(p: Point, data: Data, scaleInfo: ViewScaleInfo, viewSize: ViewSizeInfo): { index: number; element: null | Element<ElementType> } {
     const result: { index: number; element: null | Element<ElementType> } = {
       index: -1,
       element: null
     };
     for (let i = data.elements.length - 1; i >= 0; i--) {
       const elem = data.elements[i];
-      if (this.isPointInElement(p, elem, scaleInfo)) {
+      if (this.isPointInElement(p, elem, scaleInfo, viewSize)) {
         result.index = i;
         result.element = elem;
         break;

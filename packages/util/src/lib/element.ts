@@ -1,4 +1,4 @@
-import type { Data, Element, ElementType, ElementSize } from '@idraw/types';
+import type { Data, Element, ElementType, ElementSize, ViewContextSize, ViewScaleInfo, ViewSizeInfo } from '@idraw/types';
 import { rotateElementVertexes } from './rotate';
 
 function getGroupIndexes(elem: Element<'group'>, uuids: string[], parentIndex: string): string[] {
@@ -124,12 +124,7 @@ export function validateElements(elements: Array<Element<ElementType>>): boolean
 
 type AreaSize = ElementSize;
 
-type ContextSize = {
-  contextWidth: number;
-  contextHeight: number;
-};
-
-export function calcElementsContextSize(elements: Array<Element<ElementType>>): ContextSize {
+export function calcElementsContextSize(elements: Array<Element<ElementType>>): ViewContextSize {
   const area: AreaSize = { x: 0, y: 0, w: 0, h: 0 };
   let prevElemSize: ElementSize | null = null;
   elements.forEach((elem: Element<ElementType>) => {
@@ -137,7 +132,8 @@ export function calcElementsContextSize(elements: Array<Element<ElementType>>): 
       x: elem.x,
       y: elem.y,
       w: elem.w,
-      h: elem.h
+      h: elem.h,
+      angle: elem.angle
     };
     if (elemSize.angle && (elemSize.angle > 0 || elemSize.angle < 0)) {
       const ves = rotateElementVertexes(elemSize);
@@ -171,9 +167,34 @@ export function calcElementsContextSize(elements: Array<Element<ElementType>>): 
     prevElemSize = elemSize;
   });
 
-  const ctxSize: ContextSize = {
+  const ctxSize: ViewContextSize = {
+    contextX: area.x,
+    contextY: area.y,
     contextWidth: area.w,
     contextHeight: area.h
   };
   return ctxSize;
+}
+
+export function calcElementsViewInfo(
+  elements: Array<Element<ElementType>>,
+  prevContextSize: ViewContextSize,
+  scaleInfo: ViewScaleInfo
+): {
+  contextSize: ViewContextSize;
+  scaleInfo: ViewScaleInfo;
+} {
+  const contextSize = calcElementsContextSize(elements);
+  let { scale, offsetLeft, offsetRight, offsetBottom, offsetTop } = scaleInfo;
+  // TODO
+  return {
+    contextSize,
+    scaleInfo: {
+      scale,
+      offsetLeft,
+      offsetRight,
+      offsetBottom,
+      offsetTop
+    }
+  };
 }

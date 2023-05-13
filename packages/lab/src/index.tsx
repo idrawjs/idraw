@@ -11,13 +11,10 @@ export const Lab = () => {
       const width = window.innerWidth;
       const height = window.innerHeight;
       const devicePixelRatio = window.devicePixelRatio;
-      const contextSize = calcElementsContextSize(data.elements);
       const options = {
         width,
         height,
-        devicePixelRatio,
-        contextWidth: contextSize.contextWidth,
-        contextHeight: contextSize.contextHeight
+        devicePixelRatio
       };
       const core = new Core(ref.current, options);
 
@@ -33,9 +30,8 @@ export const Lab = () => {
         core.resize({
           width,
           height,
-          contextWidth: contextSize.contextWidth,
-          contextHeight: contextSize.contextHeight,
-          devicePixelRatio
+          devicePixelRatio,
+          ...contextSize
         });
       });
     }

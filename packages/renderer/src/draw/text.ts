@@ -4,8 +4,8 @@ import { is, isColorStr } from '@idraw/util';
 import { drawBox } from './base';
 
 export function drawText(ctx: ViewContext2D, elem: Element<'text'>, opts: RendererDrawElementOptions) {
-  const { calculator, scaleInfo } = opts;
-  const { x, y, w, h, angle } = calculator.elementSize(elem, scaleInfo);
+  const { calculator, scaleInfo, viewSize } = opts;
+  const { x, y, w, h, angle } = calculator.elementSize(elem, scaleInfo, viewSize);
   rotateElement(ctx, { x, y, w, h, angle }, () => {
     drawBox(ctx, { ...elem, ...{ x, y, w, h, angle } }, elem.desc.bgColor || 'transparent');
     const desc: Element<'text'>['desc'] = {

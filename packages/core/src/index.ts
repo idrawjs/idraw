@@ -1,6 +1,6 @@
 import type { Data, CoreOptions, BoardMiddleware, ViewSizeInfo } from '@idraw/types';
 import { Board } from '@idraw/board';
-import { createBoardContexts, validateElements } from '@idraw/util';
+import { createBoardContexts, validateElements, calcElementsContextSize } from '@idraw/util';
 
 export { MiddlewareSelector } from './middleware/selector';
 export { MiddlewareScroller } from './middleware/scroller';
@@ -24,20 +24,16 @@ export class Core {
     const board = new Board({ viewContent });
     const sharer = board.getSharer();
     sharer.setActiveViewSizeInfo({
-      devicePixelRatio,
-      width: opts.width,
-      height: opts.height,
-      contextWidth: opts.contextWidth || opts.width,
-      contextHeight: opts.contextHeight || opts.height
-    });
-    this._board = board;
-    this.resize({
       width,
       height,
-      contextWidth: opts.contextWidth || opts.width,
-      contextHeight: opts.contextHeight || opts.height,
-      devicePixelRatio
+      devicePixelRatio,
+      contextX: 0,
+      contextY: 0,
+      contextWidth: width,
+      contextHeight: height
     });
+    this._board = board;
+    this.resize(sharer.getActiveViewSizeInfo());
   }
 
   use(middleware: BoardMiddleware) {
@@ -48,6 +44,12 @@ export class Core {
     // TODO
     validateElements(data?.elements || []);
     this._board.setData(data);
+    const newViewContextSize = calcElementsContextSize(data.elements);
+    const currentViewSize = this._board.getSharer().getActiveViewSizeInfo();
+    this.resize({
+      ...currentViewSize,
+      ...newViewContextSize
+    });
   }
 
   scale(num: number) {
@@ -67,5 +69,7 @@ export class Core {
     const scaleInfo = sharer.getActiveScaleInfo();
     this._board.resize(newViewSize);
     this._board.scale(scaleInfo.scale);
+    this._board.scrollX(scaleInfo.offsetLeft);
+    this._board.scrollY(scaleInfo.offsetTop);
   }
 }
