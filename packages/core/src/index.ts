@@ -41,15 +41,24 @@ export class Core {
   }
 
   setData(data: Data) {
-    // TODO
     validateElements(data?.elements || []);
     this._board.setData(data);
-    const newViewContextSize = calcElementsContextSize(data.elements);
-    const currentViewSize = this._board.getSharer().getActiveViewSizeInfo();
+    const sharer = this._board.getSharer();
+    const currentViewSize = sharer.getActiveViewSizeInfo();
+    const currentScaleInfo = sharer.getActiveScaleInfo();
+
+    const newViewContextSize = calcElementsContextSize(data.elements, {
+      viewWidth: currentViewSize.width,
+      viewHeight: currentViewSize.height
+    });
+
     this.resize({
       ...currentViewSize,
       ...newViewContextSize
     });
+
+    this.scrollX(newViewContextSize.contextX);
+    this.scrollY(newViewContextSize.contextY);
   }
 
   scale(num: number) {
@@ -68,8 +77,8 @@ export class Core {
     const sharer = this._board.getSharer();
     const scaleInfo = sharer.getActiveScaleInfo();
     this._board.resize(newViewSize);
-    this._board.scale(scaleInfo.scale);
-    this._board.scrollX(scaleInfo.offsetLeft);
-    this._board.scrollY(scaleInfo.offsetTop);
+    // this._board.scale(scaleInfo.scale);
+    // this._board.scrollX(scaleInfo.offsetLeft);
+    // this._board.scrollY(scaleInfo.offsetTop);
   }
 }

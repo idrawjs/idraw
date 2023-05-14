@@ -47,11 +47,11 @@ export class Calculator implements ViewCalculator {
   viewScroll(opts: { moveX?: number; moveY?: number }, scaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): ViewScaleInfo {
     const scale = scaleInfo.scale;
     const { moveX, moveY } = opts;
+    const { width, height, contextWidth, contextHeight, contextX, contextY } = viewSizeInfo;
     let offsetLeft = scaleInfo.offsetLeft;
     let offsetRight = scaleInfo.offsetRight;
     let offsetTop = scaleInfo.offsetTop;
     let offsetBottom = scaleInfo.offsetBottom;
-    const { width, height, contextWidth, contextHeight } = viewSizeInfo;
     if (moveX !== undefined && (moveX > 0 || moveX <= 0)) {
       if (contextWidth * scale < width) {
         offsetLeft = offsetRight = (width - contextWidth * scale) / 2;
@@ -110,6 +110,16 @@ export class Calculator implements ViewCalculator {
       h: h * scale,
       angle
     };
+
+    // const { x, y, w, h, angle } = size;
+    // const { scale, offsetTop, offsetLeft } = scaleInfo;
+    // return {
+    //   x: x * scale + offsetLeft,
+    //   y: y * scale + offsetTop,
+    //   w: w * scale,
+    //   h: h * scale,
+    //   angle
+    // };
   }
 
   isElementInView(elem: ElementSize, scaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): boolean {

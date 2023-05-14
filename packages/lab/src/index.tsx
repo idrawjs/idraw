@@ -21,12 +21,14 @@ export const Lab = () => {
       core.use(MiddlewareScroller);
       core.use(MiddlewareSelector);
       core.setData(data);
+      // core.scrollX(0);
+      // core.scrollY(0);
 
       window.addEventListener('resize', () => {
         const width = window.innerWidth;
         const height = window.innerHeight;
         const devicePixelRatio = window.devicePixelRatio;
-        const contextSize = calcElementsContextSize(data.elements);
+        const contextSize = calcElementsContextSize(data.elements, { viewWidth: width, viewHeight: height });
         core.resize({
           width,
           height,

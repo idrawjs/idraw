@@ -233,6 +233,11 @@ export class Board {
     this._viewer.drawFrame();
   }
 
+  getData(): Data | null {
+    const { data } = this._sharer.getActiveStoreSnapshot();
+    return data;
+  }
+
   use(middleware: BoardMiddleware) {
     const { viewContent } = this._opts;
     const { _sharer: sharer, _viewer: viewer, _calculator: calculator } = this;

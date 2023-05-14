@@ -124,7 +124,7 @@ export function validateElements(elements: Array<Element<ElementType>>): boolean
 
 type AreaSize = ElementSize;
 
-export function calcElementsContextSize(elements: Array<Element<ElementType>>): ViewContextSize {
+export function calcElementsContextSize(elements: Array<Element<ElementType>>, opts?: { viewWidth: number; viewHeight: number }): ViewContextSize {
   const area: AreaSize = { x: 0, y: 0, w: 0, h: 0 };
   let prevElemSize: ElementSize | null = null;
   elements.forEach((elem: Element<ElementType>) => {
@@ -173,28 +173,52 @@ export function calcElementsContextSize(elements: Array<Element<ElementType>>): 
     contextWidth: area.w,
     contextHeight: area.h
   };
+
+  if (opts?.viewWidth && opts?.viewHeight && opts?.viewWidth > 0 && opts?.viewHeight > 0) {
+    if (opts.viewWidth > area.x + area.w) {
+      ctxSize.contextWidth = opts.viewWidth - area.x;
+    }
+    if (opts.viewHeight > area.y + area.h) {
+      ctxSize.contextHeight = opts.viewHeight - area.y;
+    }
+  }
   return ctxSize;
 }
 
 export function calcElementsViewInfo(
   elements: Array<Element<ElementType>>,
-  prevContextSize: ViewContextSize,
+  prevViewSize: ViewSizeInfo,
   scaleInfo: ViewScaleInfo
 ): {
   contextSize: ViewContextSize;
-  scaleInfo: ViewScaleInfo;
+  changeContextLeft: number;
+  changeContextRight: number;
+  changeContextTop: number;
+  changeContextBottom: number;
 } {
-  const contextSize = calcElementsContextSize(elements);
-  let { scale, offsetLeft, offsetRight, offsetBottom, offsetTop } = scaleInfo;
-  // TODO
+  const contextSize = calcElementsContextSize(elements, { viewWidth: prevViewSize.width, viewHeight: prevViewSize.height });
+
+  let changeContextLeft = 0;
+  let changeContextRight = 0;
+  let changeContextTop = 0;
+  let changeContextBottom = 0;
+
+  if (contextSize.contextX !== prevViewSize.contextX) {
+    changeContextLeft = contextSize.contextX - prevViewSize.contextX;
+  } else if (contextSize.contextWidth !== prevViewSize.contextWidth) {
+    changeContextRight = contextSize.contextWidth - prevViewSize.contextWidth;
+  }
+  if (contextSize.contextY !== prevViewSize.contextY) {
+    changeContextTop = contextSize.contextY - prevViewSize.contextY;
+  } else if (contextSize.contextHeight !== prevViewSize.contextHeight) {
+    changeContextBottom = contextSize.contextHeight - prevViewSize.contextHeight;
+  }
+
   return {
     contextSize,
-    scaleInfo: {
-      scale,
-      offsetLeft,
-      offsetRight,
-      offsetBottom,
-      offsetTop
-    }
+    changeContextLeft,
+    changeContextRight,
+    changeContextTop,
+    changeContextBottom
   };
 }

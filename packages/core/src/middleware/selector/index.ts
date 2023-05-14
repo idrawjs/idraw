@@ -207,8 +207,8 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
       const actionType = sharer.getSharedStorage(keyActionType);
       const scaleInfo = sharer.getActiveScaleInfo();
       const viewSize = sharer.getActiveViewSizeInfo();
-      const { scale } = scaleInfo;
-      const { contextHeight, contextWidth, contextX, contextY } = viewSize;
+      const { scale, offsetLeft, offsetTop } = scaleInfo;
+      const { width, height, contextHeight, contextWidth, contextX, contextY } = viewSize;
       let needDrawFrame = false;
 
       if (actionType === 'resize' && resizeType) {
@@ -254,13 +254,14 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
           return;
         }
         if (data && Array.isArray(data?.elements) && ['drag', 'drag-list'].includes(actionType)) {
-          // const viewInfo = calcElementsViewInfo(data.elements, { contextHeight, contextWidth, contextX, contextY }, scaleInfo);
-          // sharer.setActiveStorage('contextX', viewInfo.contextSize.contextX);
-          // sharer.setActiveStorage('contextY', viewInfo.contextSize.contextY);
-          // sharer.setActiveStorage('contextHeight', viewInfo.contextSize.contextHeight);
-          // sharer.setActiveStorage('contextWidth', viewInfo.contextSize.contextWidth);
+          const viewInfo = calcElementsViewInfo(data.elements, viewSize, scaleInfo);
+          sharer.setActiveStorage('contextX', viewInfo.contextSize.contextX);
+          sharer.setActiveStorage('contextY', viewInfo.contextSize.contextY);
+          sharer.setActiveStorage('contextHeight', viewInfo.contextSize.contextHeight);
+          sharer.setActiveStorage('contextWidth', viewInfo.contextSize.contextWidth);
+          viewer.scrollX(offsetLeft + viewInfo.changeContextLeft);
+          viewer.scrollY(offsetTop + viewInfo.changeContextTop);
         }
-        // viewer.scale(scale);
         viewer.drawFrame();
       };
 
