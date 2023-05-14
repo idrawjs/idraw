@@ -11,12 +11,17 @@ export interface ViewScaleInfo {
   offsetRight: number;
 }
 
-export interface ViewSizeInfo {
+export interface ViewContextSize {
+  contextX: number;
+  contextY: number;
+  contextWidth: number;
+  contextHeight: number;
+}
+
+export interface ViewSizeInfo extends ViewContextSize {
   width: number;
   height: number;
   devicePixelRatio: number;
-  contextWidth: number;
-  contextHeight: number;
 }
 
 export interface ViewContent {
@@ -32,10 +37,10 @@ export interface ViewCalculatorOptions {
 export interface ViewCalculator {
   viewScale(num: number, prevScaleInfo: ViewScaleInfo, viewSize: ViewSizeInfo): ViewScaleInfo;
   isElementInView(elem: Element<ElementType>, scaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): boolean;
-  isPointInElement(p: Point, elem: Element<ElementType>, scaleInfo: ViewScaleInfo): boolean;
-  elementSize(size: ElementSize, scaleInfo: ViewScaleInfo): ElementSize;
+  isPointInElement(p: Point, elem: Element<ElementType>, scaleInfo: ViewScaleInfo, viewSize: ViewSizeInfo): boolean;
+  elementSize(size: ElementSize, scaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): ElementSize;
   viewScroll(opts: { moveX?: number; moveY?: number }, scaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): ViewScaleInfo;
-  getPointElement(p: Point, data: Data, scaleInfo: ViewScaleInfo): { index: number; element: null | Element<ElementType> };
+  getPointElement(p: Point, data: Data, scaleInfo: ViewScaleInfo, viewSize: ViewSizeInfo): { index: number; element: null | Element<ElementType> };
   // rotateElementSize(elemSize: ElementSize): PointSize[];
   // pointToViewPoint(  p: Point): Point;
   // TODO

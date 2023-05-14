@@ -17,8 +17,8 @@ const data: Data = {
     },
     {
       uuid: 'xxxx-0001',
-      x: 2,
-      y: 2,
+      x: -50,
+      y: -40,
       w: 100,
       h: 100,
       type: 'circle',

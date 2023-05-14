@@ -3,9 +3,9 @@ import { rotateElement } from '@idraw/util';
 
 export function drawRect(ctx: ViewContext2D, elem: Element<'rect'>, opts: RendererDrawElementOptions) {
   // const { desc } = elem;
-  const { calculator, scaleInfo } = opts;
+  const { calculator, scaleInfo, viewSize } = opts;
 
-  const { x, y, w, h, angle } = calculator.elementSize(elem, scaleInfo);
+  const { x, y, w, h, angle } = calculator.elementSize(elem, scaleInfo, viewSize);
   rotateElement(ctx, { x, y, w, h, angle }, () => {
     let r: number = (elem.desc.borderRadius || 0) * scaleInfo.scale;
     r = Math.min(r, w / 2, h / 2);

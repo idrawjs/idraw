@@ -1,4 +1,4 @@
-import { getSelectedElementIndexes, getSelectedElements } from '@idraw/util';
+import { getSelectedElementIndexes, getSelectedElements, calcElementsViewInfo } from '@idraw/util';
 import type { Point, PointWatcherEvent, BoardMiddleware, ElementSize } from './types';
 import { drawPointWrapper, drawHoverWrapper, drawElementControllers, drawArea, drawListArea } from './draw-wrapper';
 import { calcElementControllerStyle } from './controller';
@@ -40,16 +40,6 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
     }
   };
 
-  const getScaleInfo = () => {
-    return {
-      scale: sharer.getActiveStorage('scale'),
-      offsetLeft: sharer.getActiveStorage('offsetLeft'),
-      offsetRight: sharer.getActiveStorage('offsetRight'),
-      offsetTop: sharer.getActiveStorage('offsetTop'),
-      offsetBottom: sharer.getActiveStorage('offsetBottom')
-    };
-  };
-
   const clear = () => {
     sharer.setSharedStorage(keyActionType, null);
     sharer.setSharedStorage(keyHoverElementSize, null);
@@ -75,17 +65,20 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
         sharer.setSharedStorage(keyHoverElementSize, null);
       } else if (data) {
         const selectedElements = getActiveElements();
-        const scaleInfo = getScaleInfo();
+        const scaleInfo = sharer.getActiveScaleInfo();
+        const viewSize = sharer.getActiveViewSizeInfo();
         const target = getPointTarget(e.point, {
           ctx: helperContext,
           data,
           selectedIndexes: getIndexes(),
           selectedUUIDs: sharer.getActiveStorage('selectedUUIDs') || [],
           selectedElements: selectedElements,
-          scaleInfo: getScaleInfo(),
+          scaleInfo,
+          viewSize,
           calculator,
           areaSize: calcSelectedElementsArea(selectedElements, {
             scaleInfo,
+            viewSize,
             calculator
           })
         });
@@ -110,6 +103,7 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
       const data = sharer.getActiveStorage('data');
       const listAreaSize = calcSelectedElementsArea(getActiveElements(), {
         scaleInfo: sharer.getActiveScaleInfo(),
+        viewSize: sharer.getActiveViewSizeInfo(),
         calculator
       });
       const target = getPointTarget(e.point, {
@@ -118,7 +112,8 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
         selectedIndexes: getIndexes(),
         selectedUUIDs: sharer.getActiveStorage('selectedUUIDs') || [],
         selectedElements: getActiveElements(),
-        scaleInfo: getScaleInfo(),
+        scaleInfo: sharer.getActiveScaleInfo(),
+        viewSize: sharer.getActiveViewSizeInfo(),
         calculator,
         areaSize: listAreaSize
       });
@@ -210,6 +205,11 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
       const data = sharer.getActiveStorage('data');
       const resizeType = sharer.getSharedStorage(keyResizeType);
       const actionType = sharer.getSharedStorage(keyActionType);
+      const scaleInfo = sharer.getActiveScaleInfo();
+      const viewSize = sharer.getActiveViewSizeInfo();
+      const { scale, offsetLeft, offsetTop } = scaleInfo;
+      const { width, height, contextHeight, contextWidth, contextX, contextY } = viewSize;
+      let needDrawFrame = false;
 
       if (actionType === 'resize' && resizeType) {
         sharer.setSharedStorage(keyResizeType, null);
@@ -222,31 +222,50 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
             start,
             end,
             calculator,
-            scaleInfo: sharer.getActiveScaleInfo()
+            scaleInfo: sharer.getActiveScaleInfo(),
+            viewSize: sharer.getActiveViewSizeInfo()
           });
 
           if (uuids.length > 0) {
             sharer.setActiveStorage('selectedUUIDs', uuids);
             sharer.setSharedStorage(keyActionType, 'drag-list');
-            viewer.drawFrame();
+            needDrawFrame = true;
           }
         }
       } else if (actionType === 'drag-list') {
         sharer.setSharedStorage(keyActionType, 'drag-list-end');
-        viewer.drawFrame();
+        needDrawFrame = true;
       } else if (data) {
-        const result = calculator.getPointElement(e.point, data, sharer.getActiveScaleInfo());
+        const result = calculator.getPointElement(e.point, data, sharer.getActiveScaleInfo(), sharer.getActiveViewSizeInfo());
         if (result.element) {
           sharer.setSharedStorage(keyActionType, 'select');
-          viewer.drawFrame();
+          needDrawFrame = true;
         } else {
           sharer.setSharedStorage(keyActionType, null);
         }
       }
       if (sharer.getSharedStorage(keyActionType) === null) {
         clear();
-        viewer.drawFrame();
+        needDrawFrame = true;
       }
+
+      const finalDrawFrame = () => {
+        if (!needDrawFrame) {
+          return;
+        }
+        if (data && Array.isArray(data?.elements) && ['drag', 'drag-list'].includes(actionType)) {
+          const viewInfo = calcElementsViewInfo(data.elements, viewSize, scaleInfo);
+          sharer.setActiveStorage('contextX', viewInfo.contextSize.contextX);
+          sharer.setActiveStorage('contextY', viewInfo.contextSize.contextY);
+          sharer.setActiveStorage('contextHeight', viewInfo.contextSize.contextHeight);
+          sharer.setActiveStorage('contextWidth', viewInfo.contextSize.contextWidth);
+          viewer.scrollX(offsetLeft + viewInfo.changeContextLeft);
+          viewer.scrollY(offsetTop + viewInfo.changeContextTop);
+        }
+        viewer.drawFrame();
+      };
+
+      finalDrawFrame();
     },
 
     pointLeave() {
@@ -256,10 +275,24 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
 
     beforeDrawFrame({ snapshot }) {
       const { activeStore, sharedStore } = snapshot;
-      const { data, selectedUUIDs, scale, offsetLeft, offsetTop, offsetRight, offsetBottom, width, height, contextHeight, contextWidth, devicePixelRatio } =
-        activeStore;
+      const {
+        data,
+        selectedUUIDs,
+        scale,
+        offsetLeft,
+        offsetTop,
+        offsetRight,
+        offsetBottom,
+        width,
+        height,
+        contextX,
+        contextY,
+        contextHeight,
+        contextWidth,
+        devicePixelRatio
+      } = activeStore;
       const scaleInfo = { scale, offsetLeft, offsetTop, offsetRight, offsetBottom };
-      const viewSize = { width, height, contextHeight, contextWidth, devicePixelRatio };
+      const viewSize = { width, height, contextX, contextY, contextHeight, contextWidth, devicePixelRatio };
       // const elem = data?.elements?.[selectedIndexes?.[0] as number];
       const selectedElements = getSelectedElements(data, selectedUUIDs);
       const elem = selectedElements[0];
@@ -270,12 +303,12 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
 
       const drawOpts = { calculator, scaleInfo, viewSize };
       if (hoverElement && actionType !== 'drag') {
-        const hoverElemSize = calculator.elementSize(hoverElement, scaleInfo);
+        const hoverElemSize = calculator.elementSize(hoverElement, scaleInfo, viewSize);
         drawHoverWrapper(helperContext, hoverElemSize);
       }
 
       if (elem && ['select', 'drag', 'resize'].includes(actionType)) {
-        const selectedElemSize = calculator.elementSize(elem, scaleInfo);
+        const selectedElemSize = calculator.elementSize(elem, scaleInfo, viewSize);
         const sizeControllers = calcElementControllerStyle(selectedElemSize);
         drawPointWrapper(helperContext, selectedElemSize);
         drawElementControllers(helperContext, selectedElemSize, { ...drawOpts, sizeControllers });
@@ -284,6 +317,7 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
       } else if (['drag-list', 'drag-list-end'].includes(actionType)) {
         const listAreaSize = calcSelectedElementsArea(getActiveElements(), {
           scaleInfo: sharer.getActiveScaleInfo(),
+          viewSize: sharer.getActiveViewSizeInfo(),
           calculator
         });
         if (listAreaSize) {

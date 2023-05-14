@@ -32,5 +32,6 @@ export interface RendererDrawElementOptions extends RendererDrawOptions {
   loader: RendererLoader;
   calculator: ViewCalculator;
   scaleInfo: ViewScaleInfo;
+  viewSize: ViewSizeInfo;
   parentElementSize: ElementSize;
 }

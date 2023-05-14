@@ -1,6 +1,6 @@
 import type { Data, CoreOptions, BoardMiddleware, ViewSizeInfo } from '@idraw/types';
 import { Board } from '@idraw/board';
-import { createBoardContexts, validateElements } from '@idraw/util';
+import { createBoardContexts, validateElements, calcElementsContextSize } from '@idraw/util';
 
 export { MiddlewareSelector } from './middleware/selector';
 export { MiddlewareScroller } from './middleware/scroller';
@@ -24,20 +24,16 @@ export class Core {
     const board = new Board({ viewContent });
     const sharer = board.getSharer();
     sharer.setActiveViewSizeInfo({
-      devicePixelRatio,
-      width: opts.width,
-      height: opts.height,
-      contextWidth: opts.contextWidth || opts.width,
-      contextHeight: opts.contextHeight || opts.height
-    });
-    this._board = board;
-    this.resize({
       width,
       height,
-      contextWidth: opts.contextWidth || opts.width,
-      contextHeight: opts.contextHeight || opts.height,
-      devicePixelRatio
+      devicePixelRatio,
+      contextX: 0,
+      contextY: 0,
+      contextWidth: width,
+      contextHeight: height
     });
+    this._board = board;
+    this.resize(sharer.getActiveViewSizeInfo());
   }
 
   use(middleware: BoardMiddleware) {
@@ -45,9 +41,24 @@ export class Core {
   }
 
   setData(data: Data) {
-    // TODO
     validateElements(data?.elements || []);
     this._board.setData(data);
+    const sharer = this._board.getSharer();
+    const currentViewSize = sharer.getActiveViewSizeInfo();
+    const currentScaleInfo = sharer.getActiveScaleInfo();
+
+    const newViewContextSize = calcElementsContextSize(data.elements, {
+      viewWidth: currentViewSize.width,
+      viewHeight: currentViewSize.height
+    });
+
+    this.resize({
+      ...currentViewSize,
+      ...newViewContextSize
+    });
+
+    this.scrollX(newViewContextSize.contextX);
+    this.scrollY(newViewContextSize.contextY);
   }
 
   scale(num: number) {
@@ -66,6 +77,8 @@ export class Core {
     const sharer = this._board.getSharer();
     const scaleInfo = sharer.getActiveScaleInfo();
     this._board.resize(newViewSize);
-    this._board.scale(scaleInfo.scale);
+    // this._board.scale(scaleInfo.scale);
+    // this._board.scrollX(scaleInfo.offsetLeft);
+    // this._board.scrollY(scaleInfo.offsetTop);
   }
 }

@@ -11,7 +11,8 @@ import type {
   ElementType,
   ElementSize,
   ResizeType,
-  AreaSize
+  AreaSize,
+  ViewSizeInfo
 } from './types';
 import { rotateElement, calcElementCenter, rotateElementVertexes } from '@idraw/util';
 import { calcElementControllerStyle } from './controller';
@@ -38,6 +39,7 @@ export function getPointTarget(
     selectedElements?: Element<ElementType>[];
     areaSize?: AreaSize | null;
     scaleInfo: ViewScaleInfo;
+    viewSize: ViewSizeInfo;
     calculator: ViewCalculator;
   }
 ): PointTarget {
@@ -47,7 +49,7 @@ export function getPointTarget(
     indexes: [],
     uuids: []
   };
-  const { ctx, data, calculator, selectedElements, selectedIndexes, selectedUUIDs, scaleInfo, areaSize } = opts;
+  const { ctx, data, calculator, selectedElements, selectedIndexes, selectedUUIDs, scaleInfo, viewSize, areaSize } = opts;
 
   // list area
   if (areaSize && Array.isArray(selectedElements) && selectedElements?.length > 1 && Array.isArray(selectedIndexes) && selectedIndexes?.length > 1) {
@@ -63,7 +65,7 @@ export function getPointTarget(
 
   // resize
   if (selectedElements?.length === 1) {
-    const elemSize = calculator.elementSize(selectedElements[0], scaleInfo);
+    const elemSize = calculator.elementSize(selectedElements[0], scaleInfo, viewSize);
     const ctrls = calcElementControllerStyle(elemSize);
     rotateElement(ctx, elemSize, () => {
       const ctrlKeys = Object.keys(ctrls);
@@ -90,7 +92,7 @@ export function getPointTarget(
 
   // over-element
   if (data) {
-    const { index, element } = calculator.getPointElement(p as Point, data, scaleInfo);
+    const { index, element } = calculator.getPointElement(p as Point, data, scaleInfo, viewSize);
     if (index >= 0 && element) {
       target.indexes = [index];
       target.elements = [element];
@@ -381,12 +383,13 @@ export function getSelectedListArea(
     start: Point;
     end: Point;
     scaleInfo: ViewScaleInfo;
+    viewSize: ViewSizeInfo;
     calculator: ViewCalculator;
   }
 ): { indexes: number[]; uuids: string[] } {
   const indexes: number[] = [];
   const uuids: string[] = [];
-  const { calculator, scaleInfo, start, end } = opts;
+  const { calculator, scaleInfo, viewSize, start, end } = opts;
 
   if (!(Array.isArray(data.elements) && start && end)) {
     return { indexes, uuids };
@@ -397,7 +400,7 @@ export function getSelectedListArea(
   const endY = Math.max(start.y, end.y);
 
   data.elements.forEach((elem, idx) => {
-    const elemSize = calculator.elementSize(elem, scaleInfo);
+    const elemSize = calculator.elementSize(elem, scaleInfo, viewSize);
 
     const center = calcElementCenter(elemSize);
     if (center.x >= startX && center.x <= endX && center.y >= startY && center.y <= endY) {
@@ -423,6 +426,7 @@ export function calcSelectedElementsArea(
   elements: Element<ElementType>[],
   opts: {
     scaleInfo: ViewScaleInfo;
+    viewSize: ViewSizeInfo;
     calculator: ViewCalculator;
   }
 ): AreaSize | null {
@@ -430,11 +434,11 @@ export function calcSelectedElementsArea(
     return null;
   }
   const area: AreaSize = { x: 0, y: 0, w: 0, h: 0 };
-  const { calculator, scaleInfo } = opts;
+  const { calculator, scaleInfo, viewSize } = opts;
   let prevElemSize: ElementSize | null = null;
 
   elements.forEach((elem) => {
-    const elemSize = calculator.elementSize(elem, scaleInfo);
+    const elemSize = calculator.elementSize(elem, scaleInfo, viewSize);
 
     if (elemSize.angle && (elemSize.angle > 0 || elemSize.angle < 0)) {
       const ves = rotateElementVertexes(elemSize);

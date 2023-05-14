@@ -34,7 +34,8 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
     const { renderer, viewContent, beforeDrawFrame, afterDrawFrame } = this._opts;
 
     if (snapshot) {
-      const { scale, offsetTop, offsetBottom, offsetLeft, offsetRight, width, height, contextHeight, contextWidth, devicePixelRatio } = snapshot.activeStore;
+      const { scale, offsetTop, offsetBottom, offsetLeft, offsetRight, width, height, contextX, contextY, contextHeight, contextWidth, devicePixelRatio } =
+        snapshot.activeStore;
       const { viewContext, helperContext, boardContext } = viewContent;
 
       if (snapshot?.activeStore.data) {
@@ -49,6 +50,8 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
           viewSize: {
             width,
             height,
+            contextX,
+            contextY,
             contextHeight,
             contextWidth,
             devicePixelRatio
