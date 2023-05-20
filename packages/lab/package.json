@@ -1,5 +1,5 @@
 {
-  "name": "@idtaw/studio",
+  "name": "@idraw/lab",
   "version": "0.4.0-alpha.0",
   "dependencies": {
     "@idraw/core": "^0.4.0-alpha.0",

@@ -1,4 +1,4 @@
-export const PREFIX = 'idraw-studio';
+export const PREFIX = 'idraw-design';
 
 export function createPrefixName(modName: string) {
   return (...args: string[]) => {
