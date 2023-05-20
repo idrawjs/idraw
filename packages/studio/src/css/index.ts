@@ -1,1 +1,1 @@
-export { prefixName } from './variable';
+export { createPrefixName } from './variable';

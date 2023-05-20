@@ -1,7 +1,15 @@
 @import "../../css/variable.less";
 
-@mod-name: mod-toolbar;
+@mod-name: ~'@{prefix}-mod-toolbar';
 
-.@{prefix}-@{mod-name} {
-  border: 1px solid #f0f0f0;
+.@{mod-name} {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid;
+  border-color: ~'var(--@{prefix}-common-border-color)';
+  height: 52px;
+  box-sizing: border-box;
+  background:  ~'var(--@{prefix}-common-bg-color)';
+  border-radius: 12px;
 }

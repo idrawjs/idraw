@@ -1,5 +1,7 @@
 export const PREFIX = 'idraw-studio';
 
-export const prefixName = (name: string) => {
-  return `${PREFIX}-${name}`;
-};
+export function createPrefixName(modName: string) {
+  return (...args: string[]) => {
+    return [PREFIX, modName, ...args].join('-');
+  };
+}

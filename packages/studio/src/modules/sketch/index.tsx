@@ -1,11 +1,25 @@
 import React, { useEffect, useRef } from 'react';
+import classnames from 'classnames';
 import { Core, MiddlewareScroller, MiddlewareSelector } from '@idraw/core';
 import { calcElementsContextSize } from '@idraw/util';
-import { getData } from './data';
-import { Toolbar } from './modules';
+import { getData } from '../../data';
+import { Toolbar } from '../toolbar';
+import type { CSSProperties } from 'react';
+import { createPrefixName } from '../../css';
+import './index.less';
 
-export const Sketch = () => {
+const modName = 'mod-sketch';
+
+const prefixName = createPrefixName(modName);
+
+export interface SketchProps {
+  className?: string;
+  style?: CSSProperties;
+}
+
+export const Sketch = (props: SketchProps) => {
   const ref = useRef<HTMLDivElement>(null);
+  const { className, style } = props;
   useEffect(() => {
     if (ref?.current) {
       const data = getData();
@@ -40,9 +54,9 @@ export const Sketch = () => {
     }
   }, []);
   return (
-    <div style={{ position: 'fixed', left: 0, right: 0, width: '100%', height: '100%' }}>
+    <div className={classnames(prefixName(), className)} style={style}>
       <div ref={ref}></div>
-      <Toolbar />
+      <Toolbar className={prefixName('toolbar-position')} />
     </div>
   );
 };

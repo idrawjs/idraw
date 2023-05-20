@@ -1,8 +1,6 @@
-import React, { useEffect, useRef } from 'react';
-import { Core, MiddlewareScroller, MiddlewareSelector } from '@idraw/core';
-import { calcElementsContextSize } from '@idraw/util';
-import { getData } from './data';
-import { Sketch } from './sketch';
+import React from 'react';
+import { Sketch } from './modules';
+import './css/index.less';
 
 export const Lab = () => {
   return (
