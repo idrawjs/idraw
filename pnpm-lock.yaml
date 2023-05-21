@@ -169,6 +169,37 @@ importers:
         specifier: ^0.4.0-alpha.0
         version: link:../types
 
+  packages/design:
+    dependencies:
+      '@idraw/core':
+        specifier: ^0.4.0-alpha.0
+        version: link:../core
+      '@idraw/util':
+        specifier: ^0.4.0-alpha.0
+        version: link:../util
+      antd:
+        specifier: ^5.5.0
+        version: 5.5.0(react-dom@18.2.0)(react@18.2.0)
+      classnames:
+        specifier: ^2.3.2
+        version: 2.3.2
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+      react-dom:
+        specifier: ^18.2.0
+        version: 18.2.0(react@18.2.0)
+    devDependencies:
+      '@idraw/types':
+        specifier: ^0.4.0-alpha.0
+        version: link:../types
+      '@types/react':
+        specifier: ^18.2.0
+        version: 18.2.0
+      '@types/react-dom':
+        specifier: ^18.2.1
+        version: 18.2.1
+
   packages/idraw:
     dependencies:
       '@idraw/core':
@@ -219,37 +250,6 @@ importers:
       '@idraw/types':
         specifier: ^0.4.0-alpha.0
         version: link:../types
-
-  packages/studio:
-    dependencies:
-      '@idraw/core':
-        specifier: ^0.4.0-alpha.0
-        version: link:../core
-      '@idraw/util':
-        specifier: ^0.4.0-alpha.0
-        version: link:../util
-      antd:
-        specifier: ^5.5.0
-        version: 5.5.0(react-dom@18.2.0)(react@18.2.0)
-      classnames:
-        specifier: ^2.3.2
-        version: 2.3.2
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
-    devDependencies:
-      '@idraw/types':
-        specifier: ^0.4.0-alpha.0
-        version: link:../types
-      '@types/react':
-        specifier: ^18.2.0
-        version: 18.2.0
-      '@types/react-dom':
-        specifier: ^18.2.1
-        version: 18.2.1
 
   packages/types: {}
 
