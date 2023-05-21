@@ -1,0 +1,32 @@
+@import "../variable.less";
+
+@mod-toolbar: ~'@{prefix}-mod-toolbar';
+
+.@{mod-toolbar} {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  // border: 1px solid;
+  // border-color: ~'var(--@{prefix}-common-border-color)';
+  height: 50px;
+  box-sizing: border-box;
+  background:  ~'var(--@{prefix}-common-bg-color)';
+  border-radius: 16px;
+  box-shadow: 0 0 0 1px #0000001a,0px 0px .5px #0000002e, 0px 3px 8px #0000001a, 0px 1px 3px #0000001a;
+
+  .@{mod-toolbar}-mode-switch {
+    display: flex;
+    text-align: center;
+    vertical-align: middle;
+    align-items: center;
+    justify-content: center;
+  }
+
+  // hack style for antd
+  .ant-radio-button-wrapper {
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+  }
+}

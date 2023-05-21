@@ -6,7 +6,6 @@ import { getData } from '../../data';
 import { Toolbar } from '../toolbar';
 import type { CSSProperties } from 'react';
 import { createPrefixName } from '../../css';
-import './index.less';
 
 const modName = 'mod-sketch';
 
