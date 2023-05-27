@@ -1,15 +1,23 @@
-@import "../variable.less";
- 
+@import '../variable.less';
+
 @mod-sketch: ~'@{prefix}-mod-sketch';
 
 // @mod-sketch-header-height: 36px;
 
-.@{mod-sketch} { 
+.@{mod-sketch} {
   display: flex;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 0 0 1px #0000001a,0px 0px .5px #0000002e, 0px 3px 8px #0000001a, 0px 1px 3px #0000001a;
-   
+  box-shadow: 0 0 0 1px #0000001a, 0px 0px 0.5px #0000002e, 0px 3px 8px #0000001a, 0px 1px 3px #0000001a;
+  // background: ~'var(--@{prefix}-bg-color)';
+
+  canvas {
+    // background: ~'var(--@{prefix}-bg-color)';
+    background-image: linear-gradient(#aaaaaa40 1px, transparent 0), linear-gradient(90deg, #aaaaaa40 1px, transparent 0),
+      linear-gradient(#aaa 1px, transparent 0), linear-gradient(90deg, #aaa 1px, transparent 0);
+    background-size: 10px 10px, 10px 10px, 50px 50px, 50px 50px;
+  }
+
   .@{mod-sketch}-toolbar-position {
     position: absolute;
     bottom: 50px;
@@ -32,6 +40,6 @@
     // top: @mod-sketch-header-height;
     bottom: 0;
     left: 0;
-    right: 0; 
+    right: 0;
   }
 }

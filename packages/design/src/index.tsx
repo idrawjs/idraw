@@ -1,10 +1,12 @@
 import React, { useEffect, useReducer } from 'react';
+import ConfigProvider from 'antd/es/config-provider';
+import theme from 'antd/es/theme';
 import classnames from 'classnames';
 import { Sketch } from './modules';
 import { createPrefixName } from './css';
-import type { SketchProps } from './modules';
 import { Provider, createDesignContextState, createDesignReducer } from './context';
 import type { DesignData } from './types';
+import type { SketchProps } from './modules';
 import './css/index.less';
 
 const themeName = 'theme';
@@ -43,12 +45,14 @@ export const Design = (props: DesignProps) => {
 
   return (
     <Provider value={{ state, dispatch }}>
-      <Sketch
-        width={width}
-        height={height}
-        style={style}
-        className={classnames([themePrefixName(), state?.themeMode === 'dark' ? themePrefixName('dark') : '', className])}
-      />
+      <ConfigProvider theme={{ algorithm: state.themeMode === 'dark' ? theme.darkAlgorithm : theme.defaultAlgorithm }}>
+        <Sketch
+          width={width}
+          height={height}
+          style={style}
+          className={classnames([themePrefixName(), state?.themeMode === 'dark' ? themePrefixName('dark') : '', className])}
+        />
+      </ConfigProvider>
     </Provider>
   );
 };
