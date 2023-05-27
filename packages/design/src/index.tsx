@@ -1,25 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { Sketch } from './modules';
+import type { SketchProps } from './modules';
+import { Provider, createDesignContextValue } from './context';
+import type { DesignContext } from './context';
+import type { DesignData } from './types';
 import './css/index.less';
 
-export const Design = () => {
-  const [width, setWidth] = useState<number>(1000);
-  const [height, setHeight] = useState<number>(600);
+export type DesignProps = SketchProps & {
+  data?: DesignData;
+  locale?: string; // TODO
+};
 
-  // const [width, setWidth] = useState<number>(window.innerWidth);
-  // const [height, setHeight] = useState<number>(window.innerHeight);
-  // useEffect(() => {
-  //   window.addEventListener('resize', () => {
-  //     const width = window.innerWidth;
-  //     const height = window.innerHeight;
-  //     setWidth(width);
-  //     setHeight(height);
-  //   });
-  // }, []);
+export const Design = (props: DesignProps) => {
+  const { width = 1000, height = 600, style, className, data } = props;
+  const [contextValue, setContextValue] = useState<DesignContext>(createDesignContextValue({ data }));
+
+  useEffect(() => {
+    if (data) {
+      setContextValue({ ...contextValue, ...{ data } });
+    }
+  }, [data]);
 
   return (
-    <div style={{ position: 'fixed', left: 0, right: 0, width, height }}>
-      <Sketch width={width} height={height} />
-    </div>
+    <Provider value={contextValue}>
+      <Sketch width={width} height={height} style={style} className={className} />
+    </Provider>
   );
 };
+
+export * from './types';

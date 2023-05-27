@@ -3,20 +3,22 @@ import type { CSSProperties } from 'react';
 import classnames from 'classnames';
 import { createPrefixName } from '../../css';
 
-const modName = 'mod-xxx';
+const modName = 'mod-panel-layer';
 
 const prefixName = createPrefixName(modName);
 
-export interface ModProps {
+export interface PanelLayerProps {
   className?: string;
   style?: CSSProperties;
 }
 
-export const Mod = (props: ModProps) => {
+export const PanelLayer = (props: PanelLayerProps) => {
   const { className, style } = props;
   return (
     <div style={style} className={classnames(prefixName(), className)}>
-      Mod
+      <div className={prefixName('header')}>header</div>
+      <div className={prefixName('content')}>Panel Layer</div>
+      <div className={prefixName('footer')}>footer</div>
     </div>
   );
 };

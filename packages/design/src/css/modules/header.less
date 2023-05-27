@@ -1,1 +1,16 @@
-@import "../variable.less";
+@import '../variable.less';
+
+@mod-header: ~'@{prefix}-mod-header';
+
+.@{mod-header} {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 0 20px;
+
+  .@{mod-header}-theme-switch {
+    display: flex;
+  }
+}

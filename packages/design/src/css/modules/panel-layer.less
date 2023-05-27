@@ -1,0 +1,23 @@
+@import "../variable.less";
+
+@mod-panel-layer: ~'@{prefix}-mod-panel-layer';
+
+.@{mod-panel-layer} {
+  height: 100%;
+  width: 100%;
+  display: flex; 
+  flex-flow: column;
+
+  .@{mod-panel-layer}-header { 
+    height: 40px;
+  }
+
+  .@{mod-panel-layer}-content { 
+    flex: 1;
+  }
+
+  .@{mod-panel-layer}-footer { 
+    height: 40px;
+  }
+
+}

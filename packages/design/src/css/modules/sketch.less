@@ -2,7 +2,10 @@
  
 @mod-sketch: ~'@{prefix}-mod-sketch';
 
+// @mod-sketch-header-height: 36px;
+
 .@{mod-sketch} { 
+  display: flex;
   position: relative;
   overflow: hidden;
   box-shadow: 0 0 0 1px #0000001a,0px 0px .5px #0000002e, 0px 3px 8px #0000001a, 0px 1px 3px #0000001a;
@@ -14,5 +17,21 @@
     max-width: 800px;
     min-width: 400px;
     transform: translateX(-50%);
+  }
+
+  .@{mod-sketch}-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    // height: @mod-sketch-header-height;
+  }
+
+  .@{mod-sketch}-content {
+    position: absolute;
+    // top: @mod-sketch-header-height;
+    bottom: 0;
+    left: 0;
+    right: 0; 
   }
 }
