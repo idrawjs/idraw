@@ -31,3 +31,8 @@ const core = new Core(
   }
 );
 core.setData(data);
+
+const elem1 = core.getData().elements[1];
+elem1.desc.text = 'Updated';
+
+core.updateElement(elem1);
