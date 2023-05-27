@@ -17,10 +17,10 @@ const App = () => {
   // }, []);
 
   const style = { margin: 40 };
-  const width = 1000;
+  const width = 800;
   const height = 600;
 
-  return <Design width={width} height={height} style={style} />;
+  return <Design width={width} height={height} mode={'dark'} style={style} />;
 };
 
 root.render(<App />);
