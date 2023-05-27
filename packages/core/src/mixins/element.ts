@@ -62,6 +62,7 @@ export function updateElement(
         resourceChangeUUIDs.push(result);
       }
       data.elements[i] = _elem;
+      core.setData(data);
       break;
     }
   }

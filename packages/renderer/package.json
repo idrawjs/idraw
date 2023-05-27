@@ -1,6 +1,6 @@
 {
   "name": "@idraw/renderer",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "",
   "main": "dist/esm/index.js",
   "module": "dist/esm/index.js",
@@ -21,10 +21,10 @@
   "author": "chenshenhai",
   "license": "MIT",
   "devDependencies": {
-    "@idraw/types": "^0.3.0"
+    "@idraw/types": "^0.3.1"
   },
   "dependencies": {
-    "@idraw/util": "^0.3.0"
+    "@idraw/util": "^0.3.1"
   },
   "publishConfig": {
     "access": "public"
