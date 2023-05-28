@@ -2,9 +2,8 @@ import React from 'react';
 import type { CSSProperties } from 'react';
 import classnames from 'classnames';
 import { createPrefixName } from '../../css';
-import './index.less';
 
-const modName = 'mod-sketch';
+const modName = 'mod-xxx';
 
 const prefixName = createPrefixName(modName);
 

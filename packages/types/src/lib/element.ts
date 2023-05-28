@@ -6,7 +6,7 @@ export interface ElementSize {
   angle?: number;
 }
 
-interface ElementBaseDesc {
+export interface ElementBaseDesc {
   borderWidth?: number;
   borderColor?: string;
   borderRadius?: number;
@@ -14,12 +14,16 @@ interface ElementBaseDesc {
   shadowOffsetX?: number;
   shadowOffsetY?: number;
   shadowBlur?: number;
-}
-
-interface ElementRectDesc extends ElementBaseDesc {
   color?: string;
   bgColor?: string;
 }
+
+// interface ElementRectDesc extends ElementBaseDesc {
+//   // color?: string;
+//   // bgColor?: string;
+// }
+
+type ElementRectDesc = ElementBaseDesc;
 
 interface ElemenTextDesc extends ElementBaseDesc {
   text: string;

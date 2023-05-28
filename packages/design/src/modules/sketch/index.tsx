@@ -5,8 +5,11 @@ import { calcElementsContextSize } from '@idraw/util';
 import Drawer from 'antd/es/drawer';
 import { getData } from '../../data';
 import { Toolbar } from '../toolbar';
+import { PanelLayer } from '../panel-layer';
+import { Header } from '../header';
 import type { CSSProperties } from 'react';
 import { createPrefixName } from '../../css';
+import { HEADER_HEIGHT } from './layout';
 
 const modName = 'mod-sketch';
 const siderWidth = 200;
@@ -24,25 +27,28 @@ export const Sketch = (props: SketchProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const refCore = useRef<Core | null>(null);
   const refLeftDOM = useRef<HTMLDivElement | null>(null);
+  const refRighttDOM = useRef<HTMLDivElement | null>(null);
   const { className, style, width, height } = props;
   const data = getData();
   const devicePixelRatio = window.devicePixelRatio;
 
-  const [openLayer, setOpenLayer] = useState<boolean>(false);
-  const [openSetting, setOpenSetting] = useState<boolean>(false);
+  const [openLeftSider, setOpenLeftSider] = useState<boolean>(true);
+  const [openRightSider, setOpenRightSider] = useState<boolean>(false);
 
   useEffect(() => {
     if (ref?.current) {
-      const options = {
-        width,
-        height,
-        devicePixelRatio
-      };
-      const core = new Core(ref.current, options);
-      core.use(MiddlewareScroller);
-      core.use(MiddlewareSelector);
-      core.setData(data);
-      refCore.current = core;
+      if (!refCore?.current) {
+        const options = {
+          width,
+          height: height - HEADER_HEIGHT,
+          devicePixelRatio
+        };
+        const core = new Core(ref.current, options);
+        core.use(MiddlewareScroller);
+        core.use(MiddlewareSelector);
+        core.setData(data);
+        refCore.current = core;
+      }
     }
   }, []);
 
@@ -55,40 +61,48 @@ export const Sketch = (props: SketchProps) => {
     const contextSize = calcElementsContextSize(data.elements, { viewWidth: width, viewHeight: height });
     core.resize({
       width,
-      height,
+      height: height - HEADER_HEIGHT,
       devicePixelRatio,
       ...contextSize
     });
   }, [height, width]);
 
   return (
-    <div className={classnames(prefixName(), className)} style={style}>
-      <div ref={ref}></div>
+    <div className={classnames(prefixName(), className)} style={{ ...style, ...{ width, height, padding: 0 } }}>
+      <div className={prefixName('header')} style={{ height: HEADER_HEIGHT }}>
+        <Header />
+      </div>
+      <div ref={ref} className={prefixName('content')} style={{ top: HEADER_HEIGHT }}></div>
+      <div ref={refLeftDOM}></div>
+      <div ref={refRighttDOM}></div>
       <Toolbar
         className={prefixName('toolbar-position')}
-        openLayer={openLayer}
-        openSetting={openSetting}
+        openLeftSider={openLeftSider}
+        openRightSider={openRightSider}
         onClickToggleLayer={() => {
-          setOpenLayer(openLayer ? false : true);
+          setOpenLeftSider(openLeftSider ? false : true);
         }}
         onClickToggleSetting={() => {
-          setOpenSetting(openSetting ? false : true);
+          setOpenRightSider(openRightSider ? false : true);
         }}
       />
-      <div ref={refLeftDOM}></div>
       <Drawer
-        title="left Drawer"
+        // title="left Drawer"
         placement="left"
+        closable={false}
         onClose={() => {
           console.log('on close left');
-          setOpenLayer(false);
+          setOpenLeftSider(false);
         }}
         mask={false}
-        open={openLayer}
+        open={openLeftSider}
         getContainer={() => {
           return refLeftDOM.current as HTMLDivElement;
         }}
         width={siderWidth}
+        bodyStyle={{
+          padding: 0
+        }}
         rootStyle={{
           position: 'absolute',
           top: 0,
@@ -96,21 +110,19 @@ export const Sketch = (props: SketchProps) => {
           left: 0
         }}
       >
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
+        <PanelLayer />
       </Drawer>
       <Drawer
         title="right Drawer"
         placement="right"
         onClose={() => {
           console.log('on close right');
-          setOpenSetting(false);
+          setOpenRightSider(false);
         }}
         mask={false}
-        open={openSetting}
+        open={openRightSider}
         getContainer={() => {
-          return refLeftDOM.current as HTMLDivElement;
+          return refRighttDOM.current as HTMLDivElement;
         }}
         width={siderWidth}
         rootStyle={{

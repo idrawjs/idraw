@@ -1,11 +1,19 @@
-@import "../../css/variable.less";
+@import '../../css/variable.less';
 
 @mod-name: ~'@{prefix}-icon';
 
 .@{mod-name} {
-  display: flex;
-  text-align: center;
+  font-size: 16;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 16;
+  color: inherit;
+  font-style: normal;
+  line-height: 0;
+  text-align: center;
+  text-transform: none;
+
+  svg {
+    justify-content: center;
+  }
 }
