@@ -32,17 +32,6 @@ export const Design = (props: DesignProps) => {
     }
   }, [data]);
 
-  useEffect(() => {
-    setTimeout(() => {
-      dispatch?.({
-        type: 'updateThemeMode',
-        payload: {
-          themeMode: 'dark'
-        }
-      });
-    }, 2000);
-  }, []);
-
   return (
     <Provider value={{ state, dispatch }}>
       <ConfigProvider theme={{ algorithm: state.themeMode === 'dark' ? theme.darkAlgorithm : theme.defaultAlgorithm }}>

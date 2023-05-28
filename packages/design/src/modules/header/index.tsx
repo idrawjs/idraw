@@ -22,7 +22,7 @@ export const Header = (props: ModProps) => {
 
   return (
     <div style={style} className={classnames(prefixName(), className)}>
-      <span>Header</span>
+      <span>@idraw/design</span>
       <Switch
         className={prefixName('theme', 'switch')}
         checkedChildren={<IconLight style={{ height: '100%' }} />}

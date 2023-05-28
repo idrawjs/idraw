@@ -1,23 +1,47 @@
-@import "../variable.less";
+@import '../variable.less';
 
 @mod-panel-layer: ~'@{prefix}-mod-panel-layer';
 
 .@{mod-panel-layer} {
   height: 100%;
   width: 100%;
-  display: flex; 
+  display: flex;
   flex-flow: column;
 
-  .@{mod-panel-layer}-header { 
+  .@{mod-panel-layer}-header {
     height: 40px;
   }
 
-  .@{mod-panel-layer}-content { 
+  .@{mod-panel-layer}-content {
     flex: 1;
+    // display: flex;
+    width: 100%;
   }
 
-  .@{mod-panel-layer}-footer { 
+  .@{mod-panel-layer}-footer {
     height: 40px;
   }
 
+  .@{mod-panel-layer}-tabs {
+    // width: 100%;
+    // display: flex;
+    // padding-bottom: 100px;
+
+    .@{mod-panel-layer}-tab-title {
+      font-size: 16;
+      margin: 0 4px;
+    }
+
+    .ant-tree-switcher {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .ant-tree-node-content-wrapper {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
 }

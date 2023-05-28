@@ -32,21 +32,23 @@ export const Sketch = (props: SketchProps) => {
   const data = getData();
   const devicePixelRatio = window.devicePixelRatio;
 
-  const [openLeftSider, setOpenLeftSider] = useState<boolean>(false);
+  const [openLeftSider, setOpenLeftSider] = useState<boolean>(true);
   const [openRightSider, setOpenRightSider] = useState<boolean>(false);
 
   useEffect(() => {
     if (ref?.current) {
-      const options = {
-        width,
-        height: height - HEADER_HEIGHT,
-        devicePixelRatio
-      };
-      const core = new Core(ref.current, options);
-      core.use(MiddlewareScroller);
-      core.use(MiddlewareSelector);
-      core.setData(data);
-      refCore.current = core;
+      if (!refCore?.current) {
+        const options = {
+          width,
+          height: height - HEADER_HEIGHT,
+          devicePixelRatio
+        };
+        const core = new Core(ref.current, options);
+        core.use(MiddlewareScroller);
+        core.use(MiddlewareSelector);
+        core.setData(data);
+        refCore.current = core;
+      }
     }
   }, []);
 
