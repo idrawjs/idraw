@@ -1,13 +1,16 @@
 import { createContext } from 'react';
 import type { Dispatch } from 'react';
+import type { Data } from '@idraw/types';
 import { DesignData } from './types';
 
 export interface DesignState {
-  data: DesignData;
+  designData: DesignData | null;
+  viewDrawData: Data | null;
+  viewDrawUUID: string | null;
   themeMode: 'light' | 'dark';
 }
 
-export type DesignActionType = 'updateThemeMode' | 'updateData';
+export type DesignActionType = 'updateThemeMode' | 'updateDesignData';
 
 export type DesignAction = {
   type: DesignActionType;
@@ -42,14 +45,14 @@ export function createDesignReducer(state: DesignState, action: DesignAction): D
         }
       };
     }
-    case 'updateData': {
-      if (!action?.payload?.data) {
+    case 'updateDesignData': {
+      if (!action?.payload?.designData) {
         return state;
       }
       return {
         ...state,
         ...{
-          data: action?.payload?.data
+          data: action?.payload?.designData
         }
       };
     }
@@ -60,8 +63,10 @@ export function createDesignReducer(state: DesignState, action: DesignAction): D
 
 export function createDesignContextState(opts?: Partial<DesignState>): DesignState {
   return {
-    data: opts?.data || createDesignData(),
-    themeMode: opts?.themeMode || 'light'
+    designData: opts?.designData || createDesignData(),
+    themeMode: opts?.themeMode || 'light',
+    viewDrawData: null,
+    viewDrawUUID: null
   };
 }
 

@@ -7,27 +7,35 @@ import { prefixName } from './config';
 import { LayerTree } from './layer-tree';
 import FileOutlined from '@ant-design/icons/FileOutlined';
 import AppstoreOutlined from '@ant-design/icons/AppstoreOutlined';
-import ProjectOutlined from '@ant-design/icons/ProjectOutlined';
+import CalculatorOutlined from '@ant-design/icons/CalculatorOutlined';
 
 const items: TabsProps['items'] = [
   {
-    key: '1',
+    key: 'page',
     label: <FileOutlined className={prefixName('tab', 'title')} />,
     children: (
       <div style={{ width: '100%', overflow: 'auto' }}>
-        <LayerTree />
+        <LayerTree type="page" />
       </div>
     )
   },
   {
-    key: '2',
+    key: 'module',
     label: <AppstoreOutlined className={prefixName('tab', 'title')} />,
-    children: `Content of Tab Pane 2`
+    children: (
+      <div style={{ width: '100%', overflow: 'auto' }}>
+        <LayerTree type="module" />
+      </div>
+    )
   },
   {
-    key: '3',
-    label: <ProjectOutlined className={prefixName('tab', 'title')} />,
-    children: `Content of Tab Pane 3`
+    key: 'component',
+    label: <CalculatorOutlined className={prefixName('tab', 'title')} />,
+    children: (
+      <div style={{ width: '100%', overflow: 'auto' }}>
+        <LayerTree type="component" />
+      </div>
+    )
   }
 ];
 
@@ -38,11 +46,13 @@ export interface PanelLayerProps {
 
 export const PanelLayer = (props: PanelLayerProps) => {
   const { className, style } = props;
+
+  const defaultTabKey = items[2].key;
   return (
     <div style={style} className={classnames(prefixName(), className)}>
       {/* <div className={prefixName('header')}>header</div> */}
       <div className={prefixName('content')}>
-        <Tabs className={prefixName('tabs')} defaultActiveKey="1" centered items={items} size="small" />
+        <Tabs className={prefixName('tabs')} defaultActiveKey={defaultTabKey} centered items={items} size="small" />
       </div>
       {/* <div className={prefixName('footer')}>footer</div> */}
     </div>

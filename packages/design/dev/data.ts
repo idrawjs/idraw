@@ -1,11 +1,12 @@
+import { createUUID } from '@idraw/util';
 import type { DesignData } from '../src';
 
 const data: DesignData = {
   components: [
     {
-      uuid: 'demo-xxx-001',
+      uuid: createUUID(),
       type: 'component',
-      name: 'demo',
+      name: 'Button default',
       x: 50,
       y: 50,
       w: 100,
@@ -14,7 +15,7 @@ const data: DesignData = {
         bgColor: '#1f1f1f',
         children: [
           {
-            uuid: 'group-001-0014',
+            uuid: createUUID(),
             type: 'circle',
             x: -40,
             y: 0,
@@ -25,7 +26,7 @@ const data: DesignData = {
             }
           },
           {
-            uuid: 'group-001-0015',
+            uuid: createUUID(),
             type: 'circle',
             x: -20,
             y: 0,
@@ -36,7 +37,7 @@ const data: DesignData = {
             }
           },
           {
-            uuid: 'group-001-0016',
+            uuid: createUUID(),
             type: 'circle',
             x: 0,
             y: 0,
@@ -47,7 +48,7 @@ const data: DesignData = {
             }
           },
           {
-            uuid: 'group-001-0017',
+            uuid: createUUID(),
             type: 'circle',
             x: 20,
             y: 0,
@@ -58,7 +59,7 @@ const data: DesignData = {
             }
           },
           {
-            uuid: 'group-001-0018',
+            uuid: createUUID(),
             type: 'circle',
             x: 40,
             y: 0,
@@ -72,9 +73,9 @@ const data: DesignData = {
       }
     },
     {
-      uuid: 'demo-xxx-002',
+      uuid: createUUID(),
       type: 'component',
-      name: 'demo',
+      name: 'Button primary',
       x: 50,
       y: 50,
       w: 100,
@@ -83,7 +84,7 @@ const data: DesignData = {
         bgColor: '#f0f0f0',
         children: [
           {
-            uuid: 'group-001-0014',
+            uuid: createUUID(),
             type: 'circle',
             x: -40,
             y: 0,
@@ -94,7 +95,7 @@ const data: DesignData = {
             }
           },
           {
-            uuid: 'group-001-0015',
+            uuid: createUUID(),
             type: 'circle',
             x: -20,
             y: 0,
@@ -105,7 +106,7 @@ const data: DesignData = {
             }
           },
           {
-            uuid: 'group-001-0016',
+            uuid: createUUID(),
             type: 'circle',
             x: 0,
             y: 0,
@@ -116,7 +117,7 @@ const data: DesignData = {
             }
           },
           {
-            uuid: 'group-001-0017',
+            uuid: createUUID(),
             type: 'circle',
             x: 20,
             y: 0,
@@ -127,7 +128,7 @@ const data: DesignData = {
             }
           },
           {
-            uuid: 'group-001-0018',
+            uuid: createUUID(),
             type: 'circle',
             x: 40,
             y: 0,

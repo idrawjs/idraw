@@ -13,24 +13,24 @@ const themeName = 'theme';
 const themePrefixName = createPrefixName(themeName);
 
 export type DesignProps = SketchProps & {
-  data?: DesignData;
+  designData?: DesignData;
   locale?: string; // TODO
   themeMode?: 'light' | 'dark';
 };
 
 export const Design = (props: DesignProps) => {
-  const { width = 1000, height = 600, style, className, data, themeMode } = props;
+  const { width = 1000, height = 600, style, className, designData, themeMode } = props;
 
-  const [state, dispatch] = useReducer(createDesignReducer, createDesignContextState({ data, themeMode }));
+  const [state, dispatch] = useReducer(createDesignReducer, createDesignContextState({ designData, themeMode }));
 
   useEffect(() => {
-    if (data) {
+    if (designData) {
       dispatch({
-        type: 'updateData',
-        payload: { data }
+        type: 'updateDesignData',
+        payload: { designData }
       });
     }
-  }, [data]);
+  }, [designData]);
 
   return (
     <Provider value={{ state, dispatch }}>
