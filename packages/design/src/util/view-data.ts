@@ -1,6 +1,20 @@
 import { deepClone } from '@idraw/util';
-import type { Data, Element } from '@idraw/types';
+import type { Data, Element, ElementType, ElementBaseDesc } from '@idraw/types';
 import type { DesignComponent, DesignComponentItem } from '../types';
+
+const baseDescKeys = ['borderWidth', 'borderColor', 'borderRadius', 'shadowColor', 'shadowOffsetX', 'shadowOffsetY', 'shadowBlur', 'color', 'bgColor'];
+
+function parseElementBaseDesc(elem: DesignComponent | DesignComponentItem | Element<ElementType>): ElementBaseDesc {
+  const baseDesc: ElementBaseDesc = {};
+  if (elem?.desc) {
+    Object.keys(elem.desc).forEach((name: string) => {
+      if (baseDescKeys.includes(name)) {
+        baseDesc[name as keyof ElementBaseDesc] = (elem.desc as any)?.[name];
+      }
+    });
+  }
+  return baseDesc;
+}
 
 function parseComponentItemToElement(item: DesignComponentItem): Element<'group'> {
   const elem: Element<'group'> = {
@@ -12,8 +26,10 @@ function parseComponentItemToElement(item: DesignComponentItem): Element<'group'
     w: item.w,
     h: item.h,
     desc: {
-      ...item.desc,
-      children: []
+      ...parseElementBaseDesc(item),
+      ...{
+        children: []
+      }
     }
   };
   item.desc?.children?.forEach?.((child) => {
@@ -38,7 +54,10 @@ function parseComponentToElement(comp: DesignComponent): Element<'group'> {
     w: comp.w,
     h: comp.h,
     desc: {
-      children: []
+      ...parseElementBaseDesc(comp),
+      ...{
+        children: []
+      }
     }
   };
 

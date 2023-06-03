@@ -83,6 +83,7 @@ export function createButton(name: string) {
     w: 800,
     h: 400,
     desc: {
+      bgColor: '#aaaaaa54',
       default: createButtonItem('default'),
       variants: [createButtonItem('primary'), createButtonItem('secondary')]
     }

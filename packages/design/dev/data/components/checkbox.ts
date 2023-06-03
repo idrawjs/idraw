@@ -83,6 +83,7 @@ export function createCheckbox(name: string) {
     w: 800,
     h: 400,
     desc: {
+      bgColor: '#aaaaaa54',
       default: createCheckboxItem('default'),
       variants: [createCheckboxItem('primary'), createCheckboxItem('secondary')]
     }
