@@ -6,12 +6,12 @@ import { Header } from '../header';
 import { Sketch } from '../sketch';
 import type { CSSProperties } from 'react';
 import { createPrefixName } from '../../css';
-import { HEADER_HEIGHT } from './layout';
 import SplitPane from '../split-pane';
 
 const modName = 'mod-dashboard';
 const leftSiderDefaultWidth = 240;
 const rightSiderDefaultWidth = 200;
+const headerHeight = 36;
 
 const prefixName = createPrefixName(modName);
 
@@ -48,10 +48,10 @@ export const Dashboard = (props: DashboardProps) => {
 
   return (
     <div className={classnames(prefixName(), className)} style={{ ...style, ...{ width, height, padding: 0 } }}>
-      <div className={prefixName('header')} style={{ height: HEADER_HEIGHT }}>
+      <div className={prefixName('header')} style={{ height: headerHeight }}>
         <Header />
       </div>
-      <div className={prefixName('content')} style={{ top: HEADER_HEIGHT }}>
+      <div className={prefixName('content')} style={{ top: headerHeight }}>
         <SplitPane
           split="vertical"
           defaultSize={centerWidth + rightWidth}
@@ -67,12 +67,10 @@ export const Dashboard = (props: DashboardProps) => {
             width: centerWidth + rightWidth
           }}
         >
-          <div>
-            <PanelLayer className={prefixName('left')} />
-          </div>
+          <div>{openLeftSider && <PanelLayer className={prefixName('left')} />}</div>
           <div style={{ width: centerWidth + rightWidth, display: 'flex', flexDirection: 'row' }}>
-            <Sketch className={prefixName('center')} width={centerWidth} height={height - HEADER_HEIGHT} />
-            <div className={prefixName('right')} style={{ width: rightWidth, height: height - HEADER_HEIGHT }}>
+            <Sketch className={prefixName('center')} width={centerWidth} height={height - headerHeight} />
+            <div className={prefixName('right')} style={{ width: rightWidth, height: height - headerHeight }}>
               Right
             </div>
           </div>
