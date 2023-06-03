@@ -1,24 +1,11 @@
-import { Data } from '@idraw/types';
 import { ViewTreeNode, DesignData, DesignComponent } from '../types';
+import { parseComponentToViewTreeNode } from './view-tree';
 
 export function parseComponentViewTree(designData: DesignData | null): ViewTreeNode[] {
-  const list: ViewTreeNode[] = [];
+  const treeNodes: ViewTreeNode[] = [];
   designData?.components?.forEach((comp: DesignComponent) => {
-    const children: ViewTreeNode[] = [];
-    if (Array.isArray(comp?.desc?.children)) {
-      comp?.desc?.children?.forEach((child) => {
-        children.push({
-          key: child.uuid,
-          title: child.name || 'Unamed',
-          children: []
-        });
-      });
-    }
-    list.push({
-      key: comp.uuid,
-      title: comp.name || 'Unamed',
-      children
-    });
+    const node = parseComponentToViewTreeNode(comp);
+    treeNodes.push(node);
   });
-  return list;
+  return treeNodes;
 }

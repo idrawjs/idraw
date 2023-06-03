@@ -1,34 +1,22 @@
 import { createContext } from 'react';
-import type { Dispatch } from 'react';
-import type { Data } from '@idraw/types';
-import { DesignData } from './types';
-
-export interface DesignState {
-  designData: DesignData | null;
-  viewDrawData: Data | null;
-  viewDrawUUID: string | null;
-  themeMode: 'light' | 'dark';
-}
-
-export type DesignActionType = 'updateThemeMode' | 'updateDesignData';
-
-export type DesignAction = {
-  type: DesignActionType;
-  payload: Partial<DesignState>;
-};
-
-export type DesignDispatch = Dispatch<DesignAction>;
-
-export interface DesignContext {
-  state?: DesignState;
-  dispatch?: DesignDispatch;
-}
+import { DesignData, DesignState, DesignAction, DesignContext } from './types';
+import { parseComponentsToDrawData } from './util/view-data';
 
 export function createDesignData(): DesignData {
   return {
     components: [],
     modules: [],
     pages: []
+  };
+}
+
+export function createDesignContextState(opts?: Partial<DesignState>): DesignState {
+  return {
+    designData: opts?.designData || createDesignData(),
+    activeDrawDataType: 'component', // TODO
+    themeMode: opts?.themeMode || 'light',
+    viewDrawData: null,
+    viewDrawUUID: null
   };
 }
 
@@ -52,24 +40,40 @@ export function createDesignReducer(state: DesignState, action: DesignAction): D
       return {
         ...state,
         ...{
-          data: action?.payload?.designData
+          designData: action?.payload?.designData
         }
       };
     }
+    case 'switchDrawDataType': {
+      if (!action?.payload?.activeDrawDataType) {
+        return state;
+      }
+      let newState = {
+        ...state,
+        ...{
+          activeDrawDataType: action?.payload.activeDrawDataType
+        }
+      };
+      if (action.payload.activeDrawDataType === 'component') {
+        newState = {
+          ...newState,
+          viewDrawData: parseComponentsToDrawData(state.designData?.components || [])
+        };
+      }
+
+      return newState;
+    }
+
     default:
       return state;
   }
 }
 
-export function createDesignContextState(opts?: Partial<DesignState>): DesignState {
-  return {
-    designData: opts?.designData || createDesignData(),
-    themeMode: opts?.themeMode || 'light',
-    viewDrawData: null,
-    viewDrawUUID: null
-  };
-}
-
-export const Context = createContext<DesignContext>({});
+export const Context = createContext<DesignContext>({
+  state: createDesignContextState(),
+  dispatch: () => {
+    return;
+  }
+});
 
 export const Provider = Context.Provider;

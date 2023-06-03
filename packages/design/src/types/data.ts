@@ -1,13 +1,23 @@
 import type { Element, ElementType, ElementSize, ElementBaseDesc } from '@idraw/types';
 
-export type DesignItemType = 'component' | 'module' | 'page';
+export type DesignItemType = 'component' | 'component-item' | 'module' | 'page';
+
+export type DesignComponentItem = Omit<ElementSize, 'angle'> & {
+  uuid: string;
+  type: 'component-item';
+  name: string;
+  desc?: ElementBaseDesc & {
+    children: Array<Element<ElementType> | DesignComponentItem>;
+  };
+};
 
 export type DesignComponent = Omit<ElementSize, 'angle'> & {
   uuid: string;
   type: 'component';
   name: string;
   desc?: ElementBaseDesc & {
-    children: Array<Element<ElementType> | DesignComponent>;
+    default: DesignComponentItem;
+    variants: DesignComponentItem[];
   };
 };
 
