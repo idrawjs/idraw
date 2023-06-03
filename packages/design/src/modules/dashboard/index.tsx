@@ -11,20 +11,20 @@ import { createPrefixName } from '../../css';
 import { HEADER_HEIGHT } from './layout';
 import SplitPane from '../split-pane';
 
-const modName = 'mod-sketch';
+const modName = 'mod-dashboard';
 const leftSiderDefaultWidth = 240;
 const rightSiderDefaultWidth = 200;
 
 const prefixName = createPrefixName(modName);
 
-export interface SketchProps {
+export interface DashboardProps {
   className?: string;
   style?: CSSProperties;
   width: number;
   height: number;
 }
 
-export const Sketch = (props: SketchProps) => {
+export const Dashboard = (props: DashboardProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const refCore = useRef<Core | null>(null);
   const { className, style, width, height } = props;

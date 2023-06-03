@@ -2,6 +2,8 @@ import type { Element, ElementType, ElementSize, ElementBaseDesc } from '@idraw/
 
 export type DesignItemType = 'component' | 'component-item' | 'module' | 'page';
 
+export type DesignDrawDataType = 'component' | 'module' | 'page';
+
 export type DesignComponentItem = Omit<ElementSize, 'angle'> & {
   uuid: string;
   type: 'component-item';
