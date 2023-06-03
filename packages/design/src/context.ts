@@ -1,5 +1,6 @@
 import { createContext } from 'react';
-import { DesignData, DesignState, DesignAction, DesignContext } from './types';
+import type { Data } from '@idraw/types';
+import { DesignData, DesignState, DesignAction, DesignContext, DesignDrawDataType } from './types';
 import { parseComponentsToDrawData } from './util/view-data';
 
 export function createDesignData(): DesignData {
@@ -10,12 +11,24 @@ export function createDesignData(): DesignData {
   };
 }
 
+function parseDrawData(drawDataType: DesignDrawDataType, designData: DesignData | null): Data {
+  let drawData: Data = { elements: [] };
+  if (drawDataType === 'component') {
+    drawData = parseComponentsToDrawData(designData?.components || []);
+  }
+  return drawData;
+}
+
 export function createDesignContextState(opts?: Partial<DesignState>): DesignState {
+  const activeDrawDataType: DesignDrawDataType = 'component';
+  const designData: DesignData = opts?.designData || createDesignData();
+  const viewDrawData = parseDrawData(activeDrawDataType, designData);
+
   return {
-    designData: opts?.designData || createDesignData(),
-    activeDrawDataType: 'component', // TODO
+    designData: designData,
+    activeDrawDataType: activeDrawDataType,
     themeMode: opts?.themeMode || 'light',
-    viewDrawData: null,
+    viewDrawData: viewDrawData,
     viewDrawUUID: null
   };
 }
@@ -48,19 +61,13 @@ export function createDesignReducer(state: DesignState, action: DesignAction): D
       if (!action?.payload?.activeDrawDataType) {
         return state;
       }
-      let newState = {
+      const newState = {
         ...state,
         ...{
-          activeDrawDataType: action?.payload.activeDrawDataType
+          activeDrawDataType: action?.payload.activeDrawDataType,
+          viewDrawData: parseDrawData(action?.payload?.activeDrawDataType, state.designData)
         }
       };
-      if (action.payload.activeDrawDataType === 'component') {
-        newState = {
-          ...newState,
-          viewDrawData: parseComponentsToDrawData(state.designData?.components || [])
-        };
-      }
-
       return newState;
     }
 

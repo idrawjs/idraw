@@ -1,11 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classnames from 'classnames';
-import { Core, MiddlewareScroller, MiddlewareSelector } from '@idraw/core';
-import { calcElementsContextSize } from '@idraw/util';
-import { getData } from '../../data';
 import { Toolbar } from '../toolbar';
 import { PanelLayer } from '../panel-layer';
 import { Header } from '../header';
+import { Sketch } from '../sketch';
 import type { CSSProperties } from 'react';
 import { createPrefixName } from '../../css';
 import { HEADER_HEIGHT } from './layout';
@@ -25,11 +23,7 @@ export interface DashboardProps {
 }
 
 export const Dashboard = (props: DashboardProps) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const refCore = useRef<Core | null>(null);
   const { className, style, width, height } = props;
-  const data = getData();
-  const devicePixelRatio = window.devicePixelRatio;
 
   const [openLeftSider, setOpenLeftSider] = useState<boolean>(true);
   const [openRightSider, setOpenRightSider] = useState<boolean>(false);
@@ -37,23 +31,6 @@ export const Dashboard = (props: DashboardProps) => {
   const [leftWidth, setLeftWidth] = useState<number>(openLeftSider ? leftSiderDefaultWidth : 0);
   const [rightWidth, setRightWidth] = useState<number>(openRightSider ? rightSiderDefaultWidth : 0);
   const [centerWidth, setCenterWidth] = useState<number>(width - leftWidth - rightWidth);
-
-  useEffect(() => {
-    if (ref?.current) {
-      if (!refCore?.current) {
-        const options = {
-          width: centerWidth,
-          height: height - HEADER_HEIGHT,
-          devicePixelRatio
-        };
-        const core = new Core(ref.current, options);
-        core.use(MiddlewareScroller);
-        core.use(MiddlewareSelector);
-        core.setData(data);
-        refCore.current = core;
-      }
-    }
-  }, []);
 
   useEffect(() => {
     const prevWidth = leftWidth + centerWidth + rightWidth;
@@ -68,20 +45,6 @@ export const Dashboard = (props: DashboardProps) => {
     setRightWidth(newRightWidth);
     setCenterWidth(newCenterWidth);
   }, [height, width]);
-
-  useEffect(() => {
-    if (!refCore?.current) {
-      return;
-    }
-    const core = refCore.current;
-    const contextSize = calcElementsContextSize(data.elements, { viewWidth: width, viewHeight: height });
-    core.resize({
-      width: centerWidth,
-      height: height - HEADER_HEIGHT,
-      devicePixelRatio,
-      ...contextSize
-    });
-  }, [height, centerWidth]);
 
   return (
     <div className={classnames(prefixName(), className)} style={{ ...style, ...{ width, height, padding: 0 } }}>
@@ -108,7 +71,7 @@ export const Dashboard = (props: DashboardProps) => {
             <PanelLayer className={prefixName('left')} />
           </div>
           <div style={{ width: centerWidth + rightWidth, display: 'flex', flexDirection: 'row' }}>
-            <div ref={ref} className={prefixName('center')} style={{ width: centerWidth, height: height - HEADER_HEIGHT }}></div>
+            <Sketch className={prefixName('center')} width={centerWidth} height={height - HEADER_HEIGHT} />
             <div className={prefixName('right')} style={{ width: rightWidth, height: height - HEADER_HEIGHT }}>
               Right
             </div>

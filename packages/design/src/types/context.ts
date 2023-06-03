@@ -4,8 +4,8 @@ import { DesignData, DesignDrawDataType } from './data';
 
 export interface DesignState {
   activeDrawDataType: DesignDrawDataType;
-  designData: DesignData | null;
-  viewDrawData: Data | null;
+  designData: DesignData;
+  viewDrawData: Data;
   viewDrawUUID: string | null;
   themeMode: 'light' | 'dark';
 }
