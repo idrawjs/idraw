@@ -2,6 +2,7 @@ import type { Point, BoardViewerFrameSnapshot, ViewScaleInfo, ViewSizeInfo, View
 import { getViewScaleInfoFromSnapshot, getViewSizeInfoFromSnapshot } from '@idraw/util';
 
 const minScrollerWidth = 12;
+const scrollerLineWidth = 16;
 const scrollerAlpha = 0.12;
 const scrollerThumbAlpha = 0.36;
 
@@ -50,8 +51,8 @@ export function isPointInScrollbar(helperContext: ViewContext2D, p: Point, sizeI
 export function calcScrollerInfo(scaleInfo: ViewScaleInfo, sizeInfo: ViewSizeInfo) {
   const { width, height } = sizeInfo;
   const { offsetTop, offsetBottom, offsetLeft, offsetRight } = scaleInfo;
-  const sliderMinSize = 10 * 2.5;
-  const lineSize = 10;
+  const sliderMinSize = scrollerLineWidth * 2.5;
+  const lineSize = scrollerLineWidth;
   let xSize = 0;
   let ySize = 0;
   if (offsetLeft <= 0 && offsetRight <= 0) {
@@ -100,10 +101,10 @@ function drawScrollerThumb(
   let { x, y, h, w } = opts;
   const { color, axis } = opts;
   if (axis === 'X') {
-    y = y + h / 4 + 1;
+    y = y + h / 4 + 0;
     h = h / 2;
   } else if (axis === 'Y') {
-    x = x + w / 4 + 1;
+    x = x + w / 4 + 0;
     w = w / 2;
   }
 

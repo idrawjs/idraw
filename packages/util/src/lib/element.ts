@@ -1,4 +1,4 @@
-import type { Data, Element, ElementType, ElementSize, ViewContextSize, ViewScaleInfo, ViewSizeInfo } from '@idraw/types';
+import type { Data, Element, ElementType, ElementSize, ViewContextSize, ViewSizeInfo } from '@idraw/types';
 import { rotateElementVertexes } from './rotate';
 
 function getGroupIndexes(elem: Element<'group'>, uuids: string[], parentIndex: string): string[] {
@@ -188,7 +188,9 @@ export function calcElementsContextSize(elements: Array<Element<ElementType>>, o
 export function calcElementsViewInfo(
   elements: Array<Element<ElementType>>,
   prevViewSize: ViewSizeInfo,
-  scaleInfo: ViewScaleInfo
+  options?: {
+    extend: boolean;
+  }
 ): {
   contextSize: ViewContextSize;
   changeContextLeft: number;
@@ -197,6 +199,13 @@ export function calcElementsViewInfo(
   changeContextBottom: number;
 } {
   const contextSize = calcElementsContextSize(elements, { viewWidth: prevViewSize.width, viewHeight: prevViewSize.height });
+
+  if (options?.extend === true) {
+    contextSize.contextX = Math.min(contextSize.contextX, prevViewSize.contextX);
+    contextSize.contextY = Math.min(contextSize.contextY, prevViewSize.contextY);
+    contextSize.contextWidth = Math.max(contextSize.contextWidth, prevViewSize.contextWidth);
+    contextSize.contextHeight = Math.max(contextSize.contextHeight, prevViewSize.contextHeight);
+  }
 
   let changeContextLeft = 0;
   let changeContextRight = 0;
