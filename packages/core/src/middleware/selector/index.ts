@@ -254,7 +254,7 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
           return;
         }
         if (data && Array.isArray(data?.elements) && ['drag', 'drag-list'].includes(actionType)) {
-          const viewInfo = calcElementsViewInfo(data.elements, viewSize, scaleInfo);
+          const viewInfo = calcElementsViewInfo(data.elements, viewSize, { extend: true });
           sharer.setActiveStorage('contextX', viewInfo.contextSize.contextX);
           sharer.setActiveStorage('contextY', viewInfo.contextSize.contextY);
           sharer.setActiveStorage('contextHeight', viewInfo.contextSize.contextHeight);
