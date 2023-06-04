@@ -22,3 +22,4 @@ export {
   calcElementsContextSize,
   calcElementsViewInfo
 } from './lib/element';
+export { checkRectIntersect } from './lib/rect';

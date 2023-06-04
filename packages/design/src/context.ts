@@ -1,31 +1,35 @@
 import { createContext } from 'react';
-import type { Dispatch } from 'react';
-import { DesignData } from './types';
-
-export interface DesignState {
-  data: DesignData;
-  themeMode: 'light' | 'dark';
-}
-
-export type DesignActionType = 'updateThemeMode' | 'updateData';
-
-export type DesignAction = {
-  type: DesignActionType;
-  payload: Partial<DesignState>;
-};
-
-export type DesignDispatch = Dispatch<DesignAction>;
-
-export interface DesignContext {
-  state?: DesignState;
-  dispatch?: DesignDispatch;
-}
+import type { Data } from '@idraw/types';
+import { DesignData, DesignState, DesignAction, DesignContext, DesignDrawDataType } from './types';
+import { parseComponentsToDrawData } from './util/view-data';
 
 export function createDesignData(): DesignData {
   return {
     components: [],
     modules: [],
     pages: []
+  };
+}
+
+function parseDrawData(drawDataType: DesignDrawDataType, designData: DesignData | null): Data {
+  let drawData: Data = { elements: [] };
+  if (drawDataType === 'component') {
+    drawData = parseComponentsToDrawData(designData?.components || []);
+  }
+  return drawData;
+}
+
+export function createDesignContextState(opts?: Partial<DesignState>): DesignState {
+  const activeDrawDataType: DesignDrawDataType = 'component';
+  const designData: DesignData = opts?.designData || createDesignData();
+  const viewDrawData = parseDrawData(activeDrawDataType, designData);
+
+  return {
+    designData: designData,
+    activeDrawDataType: activeDrawDataType,
+    themeMode: opts?.themeMode || 'light',
+    viewDrawData: viewDrawData,
+    viewDrawUUID: null
   };
 }
 
@@ -42,29 +46,41 @@ export function createDesignReducer(state: DesignState, action: DesignAction): D
         }
       };
     }
-    case 'updateData': {
-      if (!action?.payload?.data) {
+    case 'updateDesignData': {
+      if (!action?.payload?.designData) {
         return state;
       }
       return {
         ...state,
         ...{
-          data: action?.payload?.data
+          designData: action?.payload?.designData
         }
       };
     }
+    case 'switchDrawDataType': {
+      if (!action?.payload?.activeDrawDataType) {
+        return state;
+      }
+      const newState = {
+        ...state,
+        ...{
+          activeDrawDataType: action?.payload.activeDrawDataType,
+          viewDrawData: parseDrawData(action?.payload?.activeDrawDataType, state.designData)
+        }
+      };
+      return newState;
+    }
+
     default:
       return state;
   }
 }
 
-export function createDesignContextState(opts?: Partial<DesignState>): DesignState {
-  return {
-    data: opts?.data || createDesignData(),
-    themeMode: opts?.themeMode || 'light'
-  };
-}
-
-export const Context = createContext<DesignContext>({});
+export const Context = createContext<DesignContext>({
+  state: createDesignContextState(),
+  dispatch: () => {
+    return;
+  }
+});
 
 export const Provider = Context.Provider;

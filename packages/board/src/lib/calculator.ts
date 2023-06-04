@@ -1,5 +1,5 @@
 import type { Data, Point, Element, ElementType, ViewCalculator, ViewCalculatorOptions, ViewScaleInfo, ElementSize, ViewSizeInfo } from '@idraw/types';
-import { rotateElementVertexes } from '@idraw/util';
+import { rotateElementVertexes, checkRectIntersect } from '@idraw/util';
 
 export class Calculator implements ViewCalculator {
   private _opts: ViewCalculatorOptions;
@@ -123,17 +123,30 @@ export class Calculator implements ViewCalculator {
   }
 
   isElementInView(elem: ElementSize, scaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): boolean {
+    // const { width, height } = viewSizeInfo;
+    // const { angle } = elem;
+    // const { x, y, w, h } = this.elementSize(elem, scaleInfo, viewSizeInfo);
+    // const ves = rotateElementVertexes({ x, y, w, h, angle });
+    // for (let i = 0; i < ves.length; i++) {
+    //   const v = ves[i];
+    //   if (v.x >= 0 && v.x <= width && v.y >= 0 && v.y <= height) {
+    //     return true;
+    //   }
+    // }
+
     const { width, height } = viewSizeInfo;
     const { angle } = elem;
     const { x, y, w, h } = this.elementSize(elem, scaleInfo, viewSizeInfo);
-    const vertexes = rotateElementVertexes({ x, y, w, h, angle });
-    for (let i = 0; i < vertexes.length; i++) {
-      const v = vertexes[i];
-      if (v.x >= 0 && v.x <= width && v.y >= 0 && v.y <= height) {
-        return true;
-      }
-    }
-    return false;
+    const ves = rotateElementVertexes({ x, y, w, h, angle });
+    const viewSize = { x: 0, y: 0, w: width, h: height };
+
+    const elemStartX = Math.min(ves[0].x, ves[1].x, ves[2].x, ves[3].x);
+    const elemStartY = Math.min(ves[0].y, ves[1].y, ves[2].y, ves[3].y);
+    const elemEndX = Math.max(ves[0].x, ves[1].x, ves[2].x, ves[3].x);
+    const elemEndY = Math.max(ves[0].y, ves[1].y, ves[2].y, ves[3].y);
+    const elemSize = { x: elemStartX, y: elemStartY, w: elemEndX - elemStartX, h: elemEndY - elemStartY };
+
+    return checkRectIntersect(viewSize, elemSize);
   }
 
   isPointInElement(p: Point, elem: Element<ElementType>, scaleInfo: ViewScaleInfo, viewSize: ViewSizeInfo): boolean {
