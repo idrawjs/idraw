@@ -50,6 +50,7 @@ export function drawElement(ctx: ViewContext2D, elem: Element<ElementType>, opts
 export function drawElementList(ctx: ViewContext2D, elements: Data['elements'], opts: RendererDrawElementOptions) {
   for (let i = 0; i < elements.length; i++) {
     const elem = elements[i];
+    // TODO
     if (!opts.calculator.isElementInView(elem, opts.scaleInfo, opts.viewSize)) {
       continue;
     }
