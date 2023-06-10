@@ -71,6 +71,7 @@ export class Board {
         this._handleHover(e);
       }, frameTime)
     );
+
     this._watcher.on(
       'wheelX',
       throttle((e) => {
@@ -87,6 +88,7 @@ export class Board {
     this._watcher.on('scrollX', this._handleScrollX.bind(this));
     this._watcher.on('scrollY', this._handleScrollY.bind(this));
     this._watcher.on('resize', this._handleResize.bind(this));
+    this._watcher.on('doubleClick', this._handleDoubleClick.bind(this));
   }
 
   private _handlePointStart(e: BoardWatcherEventMap['pointStart']) {
@@ -123,6 +125,16 @@ export class Board {
     for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
       const obj = this._activeMiddlewareObjs[i];
       const result = obj?.hover?.(e);
+      if (result === false) {
+        return;
+      }
+    }
+  }
+
+  private _handleDoubleClick(e: BoardWatcherEventMap['doubleClick']) {
+    for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
+      const obj = this._activeMiddlewareObjs[i];
+      const result = obj?.doubleClick?.(e);
       if (result === false) {
         return;
       }

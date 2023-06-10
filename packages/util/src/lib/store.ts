@@ -1,6 +1,6 @@
 import { deepClone } from './data';
 
-export class Store<T extends Record<string, any>> {
+export class Store<T extends Record<string | symbol, any>> {
   private _temp: T;
   private _backUpDefaultStorage: T;
 

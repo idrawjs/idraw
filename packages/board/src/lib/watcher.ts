@@ -10,7 +10,7 @@ export class BoardWatcher extends EventEmitter<BoardWatcherEventMap> {
   private _store: Store<BoardWatcherStore>;
   constructor(opts: BoardWatcherOptions) {
     super();
-    const store = new Store<BoardWatcherStore>({ defaultStorage: { hasPointDown: true } });
+    const store = new Store<BoardWatcherStore>({ defaultStorage: { hasPointDown: true, prevClickPoint: null } });
     this._store = store;
     this._opts = opts;
     this._init();
@@ -97,6 +97,25 @@ export class BoardWatcher extends EventEmitter<BoardWatcherEventMap> {
       },
       { passive: false }
     );
+    container.addEventListener('click', (e: MouseEvent) => {
+      if (!this._isInTarget(e)) {
+        return;
+      }
+      e.preventDefault();
+      this._store.set('hasPointDown', true);
+      const point = this._getPoint(e);
+      if (!this._isVaildPoint(point)) {
+        return;
+      }
+      const maxLimitTime = 500;
+      const t = Date.now();
+      const preClickPoint = this._store.get('prevClickPoint');
+      if (preClickPoint && t - preClickPoint.t <= maxLimitTime && Math.abs(preClickPoint.x - point.x) <= 5 && Math.abs(preClickPoint.y - point.y) <= 5) {
+        this.trigger('doubleClick', { point });
+      } else {
+        this._store.set('prevClickPoint', point);
+      }
+    });
   }
 
   private _isInTarget(e: MouseEvent | WheelEvent) {

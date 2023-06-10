@@ -11,7 +11,7 @@ export class Calculator implements ViewCalculator {
   viewScale(num: number, prevScaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): ViewScaleInfo {
     const scale = num;
 
-    const { width, height, contextX, contextY, contextWidth, contextHeight } = viewSizeInfo;
+    const { width, height, contextWidth, contextHeight } = viewSizeInfo;
     let offsetLeft = 0;
     let offsetRight = 0;
     let offsetTop = 0;
@@ -47,7 +47,7 @@ export class Calculator implements ViewCalculator {
   viewScroll(opts: { moveX?: number; moveY?: number }, scaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): ViewScaleInfo {
     const scale = scaleInfo.scale;
     const { moveX, moveY } = opts;
-    const { width, height, contextWidth, contextHeight, contextX, contextY } = viewSizeInfo;
+    const { width, height, contextWidth, contextHeight } = viewSizeInfo;
     let offsetLeft = scaleInfo.offsetLeft;
     let offsetRight = scaleInfo.offsetRight;
     let offsetTop = scaleInfo.offsetTop;
@@ -103,13 +103,16 @@ export class Calculator implements ViewCalculator {
     const { x, y, w, h, angle } = size;
     const { contextX = 0, contextY = 0 } = viewSizeInfo;
     const { scale, offsetTop, offsetLeft } = scaleInfo;
-    return {
+
+    const newSize = {
       x: x * scale + offsetLeft - contextX,
       y: y * scale + offsetTop - contextY,
       w: w * scale,
       h: h * scale,
       angle
     };
+
+    return newSize;
 
     // const { x, y, w, h, angle } = size;
     // const { scale, offsetTop, offsetLeft } = scaleInfo;

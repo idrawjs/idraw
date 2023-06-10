@@ -18,8 +18,8 @@ export interface BoardWatherWheelYEvent {
   point: Point;
 }
 
-export interface BoardWatherDrawFrameEvent {
-  snapshot: BoardViewerFrameSnapshot;
+export interface BoardWatherDrawFrameEvent<S extends Record<any | symbol, any>> {
+  snapshot: BoardViewerFrameSnapshot<S>;
 }
 
 export type BoardWatherScaleEvent = ViewScaleInfo;
@@ -30,7 +30,7 @@ export type BoardWatherScrollYEvent = ViewScaleInfo;
 
 export type BoardWatherResizeEvent = ViewSizeInfo;
 
-export interface BoardWatcherEventMap {
+export interface BoardWatcherEventMap<S extends Record<any | symbol, any>> {
   hover: BoardWatcherPointEvent;
   pointStart: BoardWatcherPointEvent;
   pointMove: BoardWatcherPointEvent;
@@ -43,52 +43,52 @@ export interface BoardWatcherEventMap {
   scrollX: BoardWatherScrollXEvent;
   scrollY: BoardWatherScrollYEvent;
   resize: BoardWatherResizeEvent;
-  beforeDrawFrame: BoardWatherDrawFrameEvent;
-  afterDrawFrame: BoardWatherDrawFrameEvent;
+  beforeDrawFrame: BoardWatherDrawFrameEvent<S>;
+  afterDrawFrame: BoardWatherDrawFrameEvent<S>;
 }
 
 export type BoardMode = 'SELECT' | 'SCROLL' | 'RULE' | 'CONNECT' | 'PENCIL' | 'PEN' | string;
 
-export interface BoardMiddlewareObject {
+export interface BoardMiddlewareObject<S extends Record<any | symbol, any>> {
   mode: BoardMode;
   isDefault?: boolean;
   created?: () => void;
   // action
-  hover?: (e: BoardWatcherEventMap['hover']) => void | boolean;
-  pointStart?: (e: BoardWatcherEventMap['pointStart']) => void | boolean;
-  pointMove?: (e: BoardWatcherEventMap['pointMove']) => void | boolean;
-  pointEnd?: (e: BoardWatcherEventMap['pointEnd']) => void | boolean;
-  pointLeave?: (e: BoardWatcherEventMap['pointLeave']) => void | boolean;
-  doubleClick?: (e: BoardWatcherEventMap['doubleClick']) => void | boolean;
-  wheelX?: (e: BoardWatcherEventMap['wheelX']) => void | boolean;
-  wheelY?: (e: BoardWatcherEventMap['wheelY']) => void | boolean;
+  hover?: (e: BoardWatcherEventMap<S>['hover']) => void | boolean;
+  pointStart?: (e: BoardWatcherEventMap<S>['pointStart']) => void | boolean;
+  pointMove?: (e: BoardWatcherEventMap<S>['pointMove']) => void | boolean;
+  pointEnd?: (e: BoardWatcherEventMap<S>['pointEnd']) => void | boolean;
+  pointLeave?: (e: BoardWatcherEventMap<S>['pointLeave']) => void | boolean;
+  doubleClick?: (e: BoardWatcherEventMap<S>['doubleClick']) => void | boolean;
+  wheelX?: (e: BoardWatcherEventMap<S>['wheelX']) => void | boolean;
+  wheelY?: (e: BoardWatcherEventMap<S>['wheelY']) => void | boolean;
 
-  scale?: (e: BoardWatcherEventMap['scale']) => void | boolean;
-  scrollX?: (e: BoardWatcherEventMap['scrollX']) => void | boolean;
-  scrollY?: (e: BoardWatcherEventMap['scrollY']) => void | boolean;
-  resize?: (e: BoardWatcherEventMap['resize']) => void | boolean;
+  scale?: (e: BoardWatcherEventMap<S>['scale']) => void | boolean;
+  scrollX?: (e: BoardWatcherEventMap<S>['scrollX']) => void | boolean;
+  scrollY?: (e: BoardWatcherEventMap<S>['scrollY']) => void | boolean;
+  resize?: (e: BoardWatcherEventMap<S>['resize']) => void | boolean;
 
   // draw
-  beforeDrawFrame?(e: BoardWatcherEventMap['beforeDrawFrame']): void | boolean;
-  afterDrawFrame?(e: BoardWatcherEventMap['afterDrawFrame']): void | boolean;
+  beforeDrawFrame?(e: BoardWatcherEventMap<S>['beforeDrawFrame']): void | boolean;
+  afterDrawFrame?(e: BoardWatcherEventMap<S>['afterDrawFrame']): void | boolean;
 }
 
-export interface BoardMiddlewareOptions {
+export interface BoardMiddlewareOptions<S extends Record<any | symbol, any>> {
   viewContent: ViewContent;
-  sharer: StoreSharer;
+  sharer: StoreSharer<S>;
   viewer: BoardViewer;
   calculator: ViewCalculator;
 }
 
-export type BoardMiddleware = (opts: BoardMiddlewareOptions) => BoardMiddlewareObject;
+export type BoardMiddleware<S extends Record<any | symbol, any> = any> = (opts: BoardMiddlewareOptions<S>) => BoardMiddlewareObject<S>;
 
 export interface BoardOptions {
   viewContent: ViewContent;
 }
 
-export interface BoardViewerFrameSnapshot {
+export interface BoardViewerFrameSnapshot<S extends Record<any | symbol, any>> {
   activeStore: ActiveStore;
-  sharedStore: Record<string, any>;
+  sharedStore: S;
 }
 
 export interface BoardViewerEventMap {
@@ -97,12 +97,12 @@ export interface BoardViewerEventMap {
 }
 
 export interface BoardViewerOptions {
-  sharer: StoreSharer;
+  sharer: StoreSharer<Record<any | symbol, any>>;
   renderer: BoardRenderer;
   calculator: ViewCalculator;
   viewContent: ViewContent;
-  beforeDrawFrame: (e: { snapshot: BoardViewerFrameSnapshot }) => void;
-  afterDrawFrame: (e: { snapshot: BoardViewerFrameSnapshot }) => void;
+  beforeDrawFrame: (e: { snapshot: BoardViewerFrameSnapshot<Record<any | symbol, any>> }) => void;
+  afterDrawFrame: (e: { snapshot: BoardViewerFrameSnapshot<Record<any | symbol, any>> }) => void;
 }
 
 export interface BoardViewer extends UtilEventEmitter<BoardViewerEventMap> {
@@ -121,9 +121,10 @@ export interface BoardRenderer extends UtilEventEmitter<RendererEventMap> {
 
 export interface BoardWatcherOptions {
   viewContent: ViewContent;
-  sharer: StoreSharer;
+  sharer: StoreSharer<Record<any | symbol, any>>;
 }
 
 export interface BoardWatcherStore {
   hasPointDown: boolean;
+  prevClickPoint: Point | null;
 }

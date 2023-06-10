@@ -124,7 +124,10 @@ export function validateElements(elements: Array<Element<ElementType>>): boolean
 
 type AreaSize = ElementSize;
 
-export function calcElementsContextSize(elements: Array<Element<ElementType>>, opts?: { viewWidth: number; viewHeight: number }): ViewContextSize {
+export function calcElementsContextSize(
+  elements: Array<Element<ElementType>>,
+  opts?: { viewWidth: number; viewHeight: number; extend?: boolean }
+): ViewContextSize {
   const area: AreaSize = { x: 0, y: 0, w: 0, h: 0 };
   let prevElemSize: ElementSize | null = null;
   elements.forEach((elem: Element<ElementType>) => {
@@ -167,6 +170,11 @@ export function calcElementsContextSize(elements: Array<Element<ElementType>>, o
     prevElemSize = elemSize;
   });
 
+  if (opts?.extend) {
+    area.x = Math.min(area.x, 0);
+    area.y = Math.min(area.y, 0);
+  }
+
   const ctxSize: ViewContextSize = {
     contextX: area.x,
     contextY: area.y,
@@ -198,11 +206,11 @@ export function calcElementsViewInfo(
   changeContextTop: number;
   changeContextBottom: number;
 } {
-  const contextSize = calcElementsContextSize(elements, { viewWidth: prevViewSize.width, viewHeight: prevViewSize.height });
+  const contextSize = calcElementsContextSize(elements, { viewWidth: prevViewSize.width, viewHeight: prevViewSize.height, extend: options?.extend });
 
   if (options?.extend === true) {
-    contextSize.contextX = Math.min(contextSize.contextX, prevViewSize.contextX);
-    contextSize.contextY = Math.min(contextSize.contextY, prevViewSize.contextY);
+    contextSize.contextX = Math.min(0, contextSize.contextX, prevViewSize.contextX);
+    contextSize.contextY = Math.min(0, contextSize.contextY, prevViewSize.contextY);
     contextSize.contextWidth = Math.max(contextSize.contextWidth, prevViewSize.contextWidth);
     contextSize.contextHeight = Math.max(contextSize.contextHeight, prevViewSize.contextHeight);
   }

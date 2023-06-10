@@ -1,4 +1,5 @@
 import { createUUID } from '@idraw/util';
+import type { ElementSize } from '@idraw/types';
 import type { DesignComponent, DesignComponentItem } from '../../../src';
 
 function createCheckboxItem(variantName: string) {
@@ -73,20 +74,21 @@ function createCheckboxItem(variantName: string) {
   return componentItem;
 }
 
-export function createCheckbox(name: string) {
+export function createCheckbox(name: string, size?: Partial<ElementSize>) {
   const checkbox: DesignComponent = {
     uuid: createUUID(),
     type: 'component',
     name: `Checkbox ${name}`,
     x: 50,
     y: 50,
-    w: 800,
-    h: 400,
+    w: 360,
+    h: 200,
     desc: {
       bgColor: '#aaaaaa54',
       default: createCheckboxItem('default'),
       variants: [createCheckboxItem('primary'), createCheckboxItem('secondary')]
-    }
+    },
+    ...(size || {})
   };
   return checkbox;
 }
