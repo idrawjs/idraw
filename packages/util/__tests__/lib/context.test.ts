@@ -26,7 +26,7 @@ describe('@idraw/board: src/lib/context', () => {
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, opts.contextWidth, opts.contextHeight);
     data.elements.forEach((ele) => {
-      ctx.fillStyle = ele.desc.color;
+      ctx.fillStyle = ele.detail.color;
       ctx.fillRect(ele.x, ele.y, ele.w, ele.h);
     });
     // @ts-ignore;
