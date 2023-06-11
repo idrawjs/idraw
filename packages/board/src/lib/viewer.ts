@@ -1,4 +1,4 @@
-import { EventEmitter } from '@idraw/util';
+import { EventEmitter, viewScale, viewScroll } from '@idraw/util';
 import type { BoardViewer, BoardViewerEventMap, BoardViewerOptions, ActiveStore, BoardViewerFrameSnapshot, ViewScaleInfo, ViewSizeInfo } from '@idraw/types';
 
 const { requestAnimationFrame } = window;
@@ -40,14 +40,14 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
 
       if (snapshot?.activeStore.data) {
         renderer.drawData(snapshot.activeStore.data, {
-          scaleInfo: {
+          viewScaleInfo: {
             scale,
             offsetTop,
             offsetBottom,
             offsetLeft,
             offsetRight
           },
-          viewSize: {
+          viewSizeInfo: {
             width,
             height,
             contextX,
@@ -90,31 +90,31 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
   }
 
   scale(num: number): ViewScaleInfo {
-    const { sharer, renderer, calculator } = this._opts;
-    const prevScaleInfo: ViewScaleInfo = sharer.getActiveScaleInfo();
+    const { sharer, renderer } = this._opts;
+    const prevViewScaleInfo: ViewScaleInfo = sharer.getActiveScaleInfo();
     const viewSizeInfo: ViewSizeInfo = sharer.getActiveViewSizeInfo();
-    const scaleInfo = calculator.viewScale(num, prevScaleInfo, viewSizeInfo);
-    sharer.setActiveScaleInfo(scaleInfo);
+    const viewScaleInfo = viewScale({ num, prevViewScaleInfo, viewSizeInfo });
+    sharer.setActiveScaleInfo(viewScaleInfo);
     renderer.scale(num);
-    return scaleInfo;
+    return viewScaleInfo;
   }
 
   scrollX(num: number): ViewScaleInfo {
-    const { sharer, calculator } = this._opts;
-    const prevScaleInfo: ViewScaleInfo = sharer.getActiveScaleInfo();
+    const { sharer } = this._opts;
+    const prevViewScaleInfo: ViewScaleInfo = sharer.getActiveScaleInfo();
     const viewSizeInfo: ViewSizeInfo = sharer.getActiveViewSizeInfo();
-    const scaleInfo = calculator.viewScroll({ moveX: num - (prevScaleInfo.offsetLeft || 0) }, prevScaleInfo, viewSizeInfo);
-    sharer.setActiveScaleInfo(scaleInfo);
-    return scaleInfo;
+    const viewScaleInfo = viewScroll({ moveX: num - (prevViewScaleInfo.offsetLeft || 0), viewScaleInfo: prevViewScaleInfo, viewSizeInfo });
+    sharer.setActiveScaleInfo(viewScaleInfo);
+    return viewScaleInfo;
   }
 
   scrollY(num: number): ViewScaleInfo {
-    const { sharer, calculator } = this._opts;
-    const prevScaleInfo: ViewScaleInfo = sharer.getActiveScaleInfo();
+    const { sharer } = this._opts;
+    const prevViewScaleInfo: ViewScaleInfo = sharer.getActiveScaleInfo();
     const viewSizeInfo: ViewSizeInfo = sharer.getActiveViewSizeInfo();
-    const scaleInfo = calculator.viewScroll({ moveY: num - (prevScaleInfo.offsetTop || 0) }, prevScaleInfo, viewSizeInfo);
-    sharer.setActiveScaleInfo(scaleInfo);
-    return scaleInfo;
+    const viewScaleInfo = viewScroll({ moveY: num - (prevViewScaleInfo.offsetTop || 0), viewScaleInfo: prevViewScaleInfo, viewSizeInfo });
+    sharer.setActiveScaleInfo(viewScaleInfo);
+    return viewScaleInfo;
   }
 
   resize(viewSize: Partial<ViewSizeInfo> = {}): ViewSizeInfo {

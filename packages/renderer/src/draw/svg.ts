@@ -3,8 +3,8 @@ import { rotateElement } from '@idraw/util';
 
 export function drawSVG(ctx: ViewContext2D, elem: Element<'svg'>, opts: RendererDrawElementOptions) {
   const content = opts.loader.getContent(elem.uuid);
-  const { calculator, scaleInfo, viewSize } = opts;
-  const { x, y, w, h, angle } = calculator.elementSize(elem, scaleInfo, viewSize);
+  const { calculator, viewScaleInfo, viewSizeInfo } = opts;
+  const { x, y, w, h, angle } = calculator.elementSize(elem, viewScaleInfo, viewSizeInfo);
   rotateElement(ctx, { x, y, w, h, angle }, () => {
     if (!content) {
       opts.loader.load(elem as Element<'svg'>);

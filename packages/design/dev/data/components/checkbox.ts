@@ -1,4 +1,5 @@
 import { createUUID } from '@idraw/util';
+import type { ElementSize } from '@idraw/types';
 import type { DesignComponent, DesignComponentItem } from '../../../src';
 
 function createCheckboxItem(variantName: string) {
@@ -10,7 +11,7 @@ function createCheckboxItem(variantName: string) {
     y: 50,
     w: 100,
     h: 100,
-    desc: {
+    detail: {
       children: [
         {
           uuid: createUUID(),
@@ -19,7 +20,7 @@ function createCheckboxItem(variantName: string) {
           y: 0,
           w: 100,
           h: 100,
-          desc: {
+          detail: {
             bgColor: '#f44336'
           }
         },
@@ -30,7 +31,7 @@ function createCheckboxItem(variantName: string) {
           y: 0,
           w: 100,
           h: 100,
-          desc: {
+          detail: {
             bgColor: '#ff9800'
           }
         },
@@ -41,7 +42,7 @@ function createCheckboxItem(variantName: string) {
           y: 0,
           w: 100,
           h: 100,
-          desc: {
+          detail: {
             bgColor: '#ffc106'
           }
         },
@@ -52,7 +53,7 @@ function createCheckboxItem(variantName: string) {
           y: 0,
           w: 100,
           h: 100,
-          desc: {
+          detail: {
             bgColor: '#cddc39'
           }
         },
@@ -63,7 +64,7 @@ function createCheckboxItem(variantName: string) {
           y: 0,
           w: 100,
           h: 100,
-          desc: {
+          detail: {
             bgColor: '#4caf50'
           }
         }
@@ -73,20 +74,21 @@ function createCheckboxItem(variantName: string) {
   return componentItem;
 }
 
-export function createCheckbox(name: string) {
+export function createCheckbox(name: string, size?: Partial<ElementSize>) {
   const checkbox: DesignComponent = {
     uuid: createUUID(),
     type: 'component',
     name: `Checkbox ${name}`,
     x: 50,
     y: 50,
-    w: 800,
-    h: 400,
-    desc: {
+    w: 360,
+    h: 200,
+    detail: {
       bgColor: '#aaaaaa54',
       default: createCheckboxItem('default'),
       variants: [createCheckboxItem('primary'), createCheckboxItem('secondary')]
-    }
+    },
+    ...(size || {})
   };
   return checkbox;
 }

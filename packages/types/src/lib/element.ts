@@ -92,6 +92,6 @@ export interface Element<T extends ElementType> extends ElementSize {
   uuid: string;
   name?: string;
   type: T;
-  desc: ElementDescMap[T];
+  detail: ElementDescMap[T];
   operation?: ElementOperation;
 }

@@ -39,8 +39,9 @@ export function getPointTarget(
     selectedElements?: Element<ElementType>[];
     areaSize?: AreaSize | null;
     viewScaleInfo: ViewScaleInfo;
-    viewSize: ViewSizeInfo;
+    viewSizeInfo: ViewSizeInfo;
     calculator: ViewCalculator;
+    groupQueue: Element<'group'>[] | null;
   }
 ): PointTarget {
   const target: PointTarget = {
@@ -49,7 +50,47 @@ export function getPointTarget(
     indexes: [],
     uuids: []
   };
-  const { ctx, data, calculator, selectedElements, selectedIndexes, selectedUUIDs, viewScaleInfo, viewSize, areaSize } = opts;
+  const { ctx, data, calculator, selectedElements, selectedIndexes, selectedUUIDs, viewScaleInfo, viewSizeInfo, areaSize, groupQueue } = opts;
+
+  // in-group-element
+  if (groupQueue && Array.isArray(groupQueue) && groupQueue.length > 0 && data) {
+    const { element, groupQueueIndex } = calculator.getPointElement(p as Point, { data, viewScaleInfo, viewSizeInfo, groupQueue });
+    if (groupQueueIndex >= 0) {
+      const newQueue: Element<'group'>[] = groupQueue.splice(0, groupQueueIndex + 1);
+      target.indexes = [];
+      target.elements = newQueue;
+      target.uuids = [];
+      target.type = 'in-group-element';
+      return target;
+    } else if (element) {
+      const newQueue: Element<'group'>[] = [];
+      for (let i = 0; i < groupQueue.length; i++) {
+        const group = groupQueue[i];
+        if (group.type !== 'group') {
+          break;
+        }
+        newQueue.push(group);
+        if (element.uuid === group.uuid) {
+          target.indexes = [];
+          target.elements = newQueue;
+          target.uuids = [];
+          target.type = 'in-group-element';
+          return target;
+        } else if (Array.isArray(group.detail.children) && group.detail.children.length > 0) {
+          for (let j = 0; j < group.detail.children.length; j++) {
+            const child = group.detail.children[j];
+            if (element.uuid === child.uuid && element.type === 'group') {
+              newQueue.push(element as Element<'group'>);
+              target.indexes = [];
+              target.elements = newQueue;
+              target.uuids = [];
+              target.type = 'in-group-element';
+            }
+          }
+        }
+      }
+    }
+  }
 
   // list area
   if (areaSize && Array.isArray(selectedElements) && selectedElements?.length > 1 && Array.isArray(selectedIndexes) && selectedIndexes?.length > 1) {
@@ -65,7 +106,7 @@ export function getPointTarget(
 
   // resize
   if (selectedElements?.length === 1) {
-    const elemSize = calculator.elementSize(selectedElements[0], viewScaleInfo, viewSize);
+    const elemSize = calculator.elementSize(selectedElements[0], viewScaleInfo, viewSizeInfo);
     const ctrls = calcElementControllerStyle(elemSize);
     rotateElement(ctx, elemSize, () => {
       const ctrlKeys = Object.keys(ctrls);
@@ -92,7 +133,7 @@ export function getPointTarget(
 
   // over-element
   if (data) {
-    const { index, element } = calculator.getPointElement(p as Point, data, viewScaleInfo, viewSize);
+    const { index, element } = calculator.getPointElement(p as Point, { data, viewScaleInfo, viewSizeInfo });
     if (index >= 0 && element) {
       target.indexes = [index];
       target.elements = [element];
@@ -383,13 +424,13 @@ export function getSelectedListArea(
     start: Point;
     end: Point;
     viewScaleInfo: ViewScaleInfo;
-    viewSize: ViewSizeInfo;
+    viewSizeInfo: ViewSizeInfo;
     calculator: ViewCalculator;
   }
 ): { indexes: number[]; uuids: string[] } {
   const indexes: number[] = [];
   const uuids: string[] = [];
-  const { calculator, viewScaleInfo, viewSize, start, end } = opts;
+  const { calculator, viewScaleInfo, viewSizeInfo, start, end } = opts;
 
   if (!(Array.isArray(data.elements) && start && end)) {
     return { indexes, uuids };
@@ -400,7 +441,7 @@ export function getSelectedListArea(
   const endY = Math.max(start.y, end.y);
 
   data.elements.forEach((elem, idx) => {
-    const elemSize = calculator.elementSize(elem, viewScaleInfo, viewSize);
+    const elemSize = calculator.elementSize(elem, viewScaleInfo, viewSizeInfo);
 
     const center = calcElementCenter(elemSize);
     if (center.x >= startX && center.x <= endX && center.y >= startY && center.y <= endY) {
@@ -426,7 +467,7 @@ export function calcSelectedElementsArea(
   elements: Element<ElementType>[],
   opts: {
     viewScaleInfo: ViewScaleInfo;
-    viewSize: ViewSizeInfo;
+    viewSizeInfo: ViewSizeInfo;
     calculator: ViewCalculator;
   }
 ): AreaSize | null {
@@ -434,11 +475,11 @@ export function calcSelectedElementsArea(
     return null;
   }
   const area: AreaSize = { x: 0, y: 0, w: 0, h: 0 };
-  const { calculator, viewScaleInfo, viewSize } = opts;
+  const { calculator, viewScaleInfo, viewSizeInfo } = opts;
   let prevElemSize: ElementSize | null = null;
 
   elements.forEach((elem) => {
-    const elemSize = calculator.elementSize(elem, viewScaleInfo, viewSize);
+    const elemSize = calculator.elementSize(elem, viewScaleInfo, viewSizeInfo);
 
     if (elemSize.angle && (elemSize.angle > 0 || elemSize.angle < 0)) {
       const ves = rotateElementVertexes(elemSize);
@@ -472,4 +513,16 @@ export function calcSelectedElementsArea(
     prevElemSize = elemSize;
   });
   return area;
+}
+
+export function isElementInGroup(elem: Element<ElementType>, group: Element<'group'>): boolean {
+  if (group?.type === 'group' && Array.isArray(group?.detail?.children)) {
+    for (let i = 0; i < group.detail.children.length; i++) {
+      const child = group.detail.children[i];
+      if (elem.uuid === child.uuid) {
+        return true;
+      }
+    }
+  }
+  return false;
 }

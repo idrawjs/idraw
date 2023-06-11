@@ -2,12 +2,12 @@ import type { Element, RendererDrawElementOptions, ViewContext2D } from '@idraw/
 import { rotateElement } from '@idraw/util';
 
 export function drawRect(ctx: ViewContext2D, elem: Element<'rect'>, opts: RendererDrawElementOptions) {
-  // const { desc } = elem;
-  const { calculator, scaleInfo, viewSize } = opts;
+  // const { detail } = elem;
+  const { calculator, viewScaleInfo, viewSizeInfo } = opts;
 
-  const { x, y, w, h, angle } = calculator.elementSize(elem, scaleInfo, viewSize);
+  const { x, y, w, h, angle } = calculator.elementSize(elem, viewScaleInfo, viewSizeInfo);
   rotateElement(ctx, { x, y, w, h, angle }, () => {
-    let r: number = (elem.desc.borderRadius || 0) * scaleInfo.scale;
+    let r: number = (elem.detail.borderRadius || 0) * viewScaleInfo.scale;
     r = Math.min(r, w / 2, h / 2);
     if (w < r * 2 || h < r * 2) {
       r = 0;
@@ -19,7 +19,7 @@ export function drawRect(ctx: ViewContext2D, elem: Element<'rect'>, opts: Render
     ctx.arcTo(x, y + h, x, y, r);
     ctx.arcTo(x, y, x + w, y, r);
     ctx.closePath();
-    ctx.fillStyle = elem.desc.bgColor || '#000000';
+    ctx.fillStyle = elem.detail.bgColor || '#000000';
     ctx.fill();
   });
 }

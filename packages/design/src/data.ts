@@ -11,7 +11,7 @@ const data: Data = {
       w: 100,
       h: 100,
       angle: 30,
-      desc: {
+      detail: {
         src: './images/lena.png'
       }
     },
@@ -22,7 +22,7 @@ const data: Data = {
       w: 100,
       h: 100,
       type: 'circle',
-      desc: {
+      detail: {
         bgColor: '#f44336'
       }
     },
@@ -33,7 +33,7 @@ const data: Data = {
       y: 50,
       w: 100,
       h: 100,
-      desc: {
+      detail: {
         bgColor: '#2196f3'
       }
     },
@@ -44,7 +44,7 @@ const data: Data = {
       y: 250,
       w: 100,
       h: 100,
-      desc: {
+      detail: {
         src: './images/github.png?t=003'
       }
     },
@@ -55,7 +55,7 @@ const data: Data = {
       w: 100,
       h: 100,
       type: 'circle',
-      desc: {
+      detail: {
         bgColor: '#009688'
       }
     },
@@ -66,7 +66,7 @@ const data: Data = {
       w: 100,
       h: 100,
       type: 'circle',
-      desc: {
+      detail: {
         bgColor: '#673ab7'
       }
     },
@@ -77,7 +77,7 @@ const data: Data = {
       w: 100,
       h: 100,
       type: 'circle',
-      desc: {
+      detail: {
         bgColor: '#ffc107'
       }
     },
@@ -88,7 +88,7 @@ const data: Data = {
       w: 100,
       h: 100,
       type: 'circle',
-      desc: {
+      detail: {
         bgColor: '#4caf50'
       }
     },
@@ -99,7 +99,7 @@ const data: Data = {
       w: 100,
       h: 100,
       type: 'circle',
-      desc: {
+      detail: {
         bgColor: '#ff9800'
       }
     },
@@ -110,7 +110,7 @@ const data: Data = {
       w: 100,
       h: 100,
       type: 'circle',
-      desc: {
+      detail: {
         bgColor: '#cddc39'
       }
     },
@@ -122,7 +122,7 @@ const data: Data = {
       w: 100,
       h: 60,
       type: 'text',
-      desc: {
+      detail: {
         fontSize: 16,
         text: [0, 1, 2, 3, 4].map((i) => `Hello Text ${i}`).join('\r\n'),
         // text: [0, 1, 2, 3, 4].map(i => `Hello Text ${i}`).join(''),
@@ -140,7 +140,7 @@ const data: Data = {
       y: 100,
       w: 100,
       h: 100,
-      desc: {
+      detail: {
         svg: `<svg viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M336 421m-48 0a48 48 0 1 0 96 0 48 48 0 1 0-96 0Z" ></path><path d="M688 421m-48 0a48 48 0 1 0 96 0 48 48 0 1 0-96 0Z" ></path><path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64z m263 711c-34.2 34.2-74 61-118.3 79.8C611 874.2 562.3 884 512 884c-50.3 0-99-9.8-144.8-29.2-44.3-18.7-84.1-45.6-118.3-79.8-34.2-34.2-61-74-79.8-118.3C149.8 611 140 562.3 140 512s9.8-99 29.2-144.8c18.7-44.3 45.6-84.1 79.8-118.3 34.2-34.2 74-61 118.3-79.8C413 149.8 461.7 140 512 140c50.3 0 99 9.8 144.8 29.2 44.3 18.7 84.1 45.6 118.3 79.8 34.2 34.2 61 74 79.8 118.3C874.2 413 884 461.7 884 512s-9.8 99-29.2 144.8c-18.7 44.3-45.6 84.1-79.8 118.2z"></path><path d="M664 533h-48.1c-4.2 0-7.8 3.2-8.1 7.4C604 589.9 562.5 629 512 629s-92.1-39.1-95.8-88.6c-0.3-4.2-3.9-7.4-8.1-7.4H360c-4.6 0-8.2 3.8-8 8.4 4.4 84.3 74.5 151.6 160 151.6s155.6-67.3 160-151.6c0.2-4.6-3.4-8.4-8-8.4z" ></path></svg>`
       }
     },
@@ -152,7 +152,7 @@ const data: Data = {
       h: 100,
       type: 'html',
       angle: 0,
-      desc: {
+      detail: {
         html: `
           <style>
           .btn-box {
@@ -208,7 +208,7 @@ const data: Data = {
       w: 100,
       h: 100,
       type: 'group',
-      desc: {
+      detail: {
         bgColor: '#1f1f1f',
         children: [
           {
@@ -218,7 +218,7 @@ const data: Data = {
             y: 0,
             w: 100,
             h: 100,
-            desc: {
+            detail: {
               bgColor: '#f44336'
             }
           },
@@ -229,7 +229,7 @@ const data: Data = {
             y: 0,
             w: 100,
             h: 100,
-            desc: {
+            detail: {
               bgColor: '#ff9800'
             }
           },
@@ -240,7 +240,7 @@ const data: Data = {
             y: 0,
             w: 100,
             h: 100,
-            desc: {
+            detail: {
               bgColor: '#ffc106'
             }
           },
@@ -251,7 +251,7 @@ const data: Data = {
             y: 0,
             w: 100,
             h: 100,
-            desc: {
+            detail: {
               bgColor: '#cddc39'
             }
           },
@@ -262,7 +262,7 @@ const data: Data = {
             y: 0,
             w: 100,
             h: 100,
-            desc: {
+            detail: {
               bgColor: '#4caf50'
             }
           }
@@ -278,7 +278,7 @@ const data: Data = {
       h: 100,
       angle: 30,
       type: 'group',
-      desc: {
+      detail: {
         children: [
           {
             uuid: 'group-003-014',
@@ -287,7 +287,7 @@ const data: Data = {
             y: 0,
             w: 100,
             h: 100,
-            desc: {
+            detail: {
               bgColor: '#f44336'
             }
           },
@@ -298,7 +298,7 @@ const data: Data = {
             y: 0,
             w: 100,
             h: 100,
-            desc: {
+            detail: {
               bgColor: '#ff9800'
             }
           },
@@ -309,7 +309,7 @@ const data: Data = {
             y: 0,
             w: 100,
             h: 100,
-            desc: {
+            detail: {
               bgColor: '#ffc106'
             }
           },
@@ -320,7 +320,7 @@ const data: Data = {
             y: 0,
             w: 100,
             h: 100,
-            desc: {
+            detail: {
               bgColor: '#cddc39'
             }
           },
@@ -331,7 +331,7 @@ const data: Data = {
             y: 0,
             w: 100,
             h: 100,
-            desc: {
+            detail: {
               bgColor: '#4caf50'
             }
           }
@@ -346,7 +346,7 @@ const data: Data = {
       w: 100,
       h: 100,
       angle: 30,
-      desc: {
+      detail: {
         src: './images/lena.png?v=0017'
       }
     },
@@ -357,7 +357,7 @@ const data: Data = {
       w: 375,
       h: 400,
       type: 'group',
-      desc: {
+      detail: {
         bgColor: '#FFFFFF',
         children: [
           {
@@ -368,7 +368,7 @@ const data: Data = {
             w: 100,
             h: 100,
             angle: 30,
-            desc: {
+            detail: {
               src: './images/lena.png'
             }
           },
@@ -380,7 +380,7 @@ const data: Data = {
             w: 200,
             h: 200,
             angle: 30,
-            desc: {
+            detail: {
               bgColor: '#f0f0f0',
               children: [
                 {
@@ -390,7 +390,7 @@ const data: Data = {
                   y: 0,
                   w: 100,
                   h: 100,
-                  desc: {
+                  detail: {
                     bgColor: '#f44336'
                   }
                 },
@@ -401,7 +401,7 @@ const data: Data = {
                   y: 0,
                   w: 100,
                   h: 100,
-                  desc: {
+                  detail: {
                     bgColor: '#ff9800'
                   }
                 },
@@ -412,7 +412,7 @@ const data: Data = {
                   y: 0,
                   w: 100,
                   h: 100,
-                  desc: {
+                  detail: {
                     bgColor: '#ffc106'
                   }
                 },
@@ -423,7 +423,7 @@ const data: Data = {
                   y: 0,
                   w: 100,
                   h: 100,
-                  desc: {
+                  detail: {
                     bgColor: '#cddc39'
                   }
                 },
@@ -434,7 +434,7 @@ const data: Data = {
                   y: 0,
                   w: 100,
                   h: 100,
-                  desc: {
+                  detail: {
                     bgColor: '#4caf50'
                   }
                 },
@@ -446,7 +446,7 @@ const data: Data = {
                   w: 200,
                   h: 100,
                   angle: 30,
-                  desc: {
+                  detail: {
                     bgColor: '#666666',
                     children: [
                       {
@@ -456,7 +456,7 @@ const data: Data = {
                         y: 0,
                         w: 100,
                         h: 100,
-                        desc: {
+                        detail: {
                           bgColor: '#f44336'
                         }
                       },
@@ -467,7 +467,7 @@ const data: Data = {
                         y: 0,
                         w: 100,
                         h: 100,
-                        desc: {
+                        detail: {
                           bgColor: '#ff9800'
                         }
                       },
@@ -478,7 +478,7 @@ const data: Data = {
                         y: 0,
                         w: 100,
                         h: 100,
-                        desc: {
+                        detail: {
                           bgColor: '#ffc106'
                         }
                       },
@@ -489,7 +489,7 @@ const data: Data = {
                         y: 0,
                         w: 100,
                         h: 100,
-                        desc: {
+                        detail: {
                           bgColor: '#cddc39'
                         }
                       },
@@ -500,7 +500,7 @@ const data: Data = {
                         y: 0,
                         w: 100,
                         h: 100,
-                        desc: {
+                        detail: {
                           bgColor: '#4caf50'
                         }
                       }

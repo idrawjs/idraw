@@ -19,10 +19,10 @@ const defaultActiveStorage: ActiveStore = {
   offsetBottom: 0
 };
 
-export class Sharer implements StoreSharer {
+export class Sharer implements StoreSharer<Record<string | number | symbol, any>> {
   private _activeStore: Store<ActiveStore>;
   private _sharedStore: Store<{
-    [string: string]: any;
+    [string: string | number | symbol]: any;
   }>;
 
   constructor() {
@@ -48,11 +48,11 @@ export class Sharer implements StoreSharer {
     return this._activeStore.getSnapshot();
   }
 
-  getSharedStorage(key: string): any {
+  getSharedStorage(key: string | number | symbol): any {
     return this._sharedStore.get(key);
   }
 
-  setSharedStorage(key: string, storage: any) {
+  setSharedStorage(key: string | number | symbol, storage: any) {
     return this._sharedStore.set(key, storage);
   }
 
@@ -63,18 +63,18 @@ export class Sharer implements StoreSharer {
   // get/set active info
 
   getActiveScaleInfo(): ViewScaleInfo {
-    const scaleInfo: ViewScaleInfo = {
+    const viewScaleInfo: ViewScaleInfo = {
       scale: this._activeStore.get('scale'),
       offsetTop: this._activeStore.get('offsetTop'),
       offsetBottom: this._activeStore.get('offsetBottom'),
       offsetLeft: this._activeStore.get('offsetLeft'),
       offsetRight: this._activeStore.get('offsetRight')
     };
-    return scaleInfo;
+    return viewScaleInfo;
   }
 
-  setActiveScaleInfo(scaleInfo: ViewScaleInfo) {
-    const { scale, offsetTop, offsetBottom, offsetLeft, offsetRight } = scaleInfo;
+  setActiveScaleInfo(viewScaleInfo: ViewScaleInfo) {
+    const { scale, offsetTop, offsetBottom, offsetLeft, offsetRight } = viewScaleInfo;
     this._activeStore.set('scale', scale);
     this._activeStore.set('offsetTop', offsetTop);
     this._activeStore.set('offsetBottom', offsetBottom);

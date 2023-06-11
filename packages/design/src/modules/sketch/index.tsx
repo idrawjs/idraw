@@ -47,7 +47,7 @@ export const Sketch = (props: DashboardProps) => {
       return;
     }
     const core = refCore.current;
-    const contextSize = calcElementsContextSize(state.viewDrawData.elements, { viewWidth: width, viewHeight: height });
+    const contextSize = calcElementsContextSize(state.viewDrawData.elements, { viewWidth: width, viewHeight: height, extend: true });
     core.resize({
       width,
       height,

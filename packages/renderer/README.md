@@ -32,7 +32,7 @@ renderer.render(canvas, {
       w: 200,
       h: 100,
       type: "rect",
-      desc: {
+      detail: {
         bgColor: "#f0f0f0",
         borderRadius: 20,
         borderWidth: 10,

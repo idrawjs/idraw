@@ -10,8 +10,8 @@ function parseElementToViewTreeNode(elem: Element<ElementType>): ViewTreeNode | 
       type: elem.type,
       children: []
     };
-    if (Array.isArray((elem as Element<'group'>)?.desc?.children)) {
-      (elem as Element<'group'>).desc.children.forEach((child: Element<ElementType>) => {
+    if (Array.isArray((elem as Element<'group'>)?.detail?.children)) {
+      (elem as Element<'group'>).detail.children.forEach((child: Element<ElementType>) => {
         const childNode = parseElementToViewTreeNode(child);
         if (childNode) {
           treeNode?.children?.push(childNode);
@@ -30,8 +30,8 @@ function parseComponentItemToViewTreeNode(comp: DesignComponentItem): ViewTreeNo
     children: []
   };
 
-  if (comp?.desc?.children && Array.isArray(comp?.desc?.children)) {
-    comp.desc.children.forEach((child) => {
+  if (comp?.detail?.children && Array.isArray(comp?.detail?.children)) {
+    comp.detail.children.forEach((child) => {
       let childNode: ViewTreeNode | null = null;
       if (child.type === 'component') {
         childNode = parseComponentToViewTreeNode(child as DesignComponent);
@@ -54,13 +54,13 @@ export function parseComponentToViewTreeNode(comp: DesignComponent): ViewTreeNod
     children: []
   };
 
-  if (comp?.desc?.default) {
-    const node = parseComponentItemToViewTreeNode(comp.desc.default);
+  if (comp?.detail?.default) {
+    const node = parseComponentItemToViewTreeNode(comp.detail.default);
     treeNode.children.push(node);
   }
 
-  if (Array.isArray(comp?.desc?.variants)) {
-    comp?.desc?.variants?.forEach((child: DesignComponentItem) => {
+  if (Array.isArray(comp?.detail?.variants)) {
+    comp?.detail?.variants?.forEach((child: DesignComponentItem) => {
       const node = parseComponentItemToViewTreeNode(child);
       treeNode.children.push(node);
     });

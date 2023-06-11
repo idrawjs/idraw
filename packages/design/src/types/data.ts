@@ -8,7 +8,7 @@ export type DesignComponentItem = Omit<ElementSize, 'angle'> & {
   uuid: string;
   type: 'component-item';
   name: string;
-  desc?: ElementBaseDesc & {
+  detail?: ElementBaseDesc & {
     children: Array<Element<ElementType> | DesignComponentItem>;
   };
 };
@@ -17,7 +17,7 @@ export type DesignComponent = Omit<ElementSize, 'angle'> & {
   uuid: string;
   type: 'component';
   name: string;
-  desc?: ElementBaseDesc & {
+  detail?: ElementBaseDesc & {
     default: DesignComponentItem;
     variants: DesignComponentItem[];
   };
@@ -27,7 +27,7 @@ export type DesignModule = Omit<ElementSize, 'angle'> & {
   uuid: string;
   type: 'module';
   name: string;
-  desc?: ElementBaseDesc & {
+  detail?: ElementBaseDesc & {
     children: Array<DesignComponent>;
   };
 };
@@ -36,7 +36,7 @@ export type DesignPage = Omit<ElementSize, 'angle'> & {
   uuid: string;
   type: 'page';
   name: string;
-  desc: ElementBaseDesc & {
+  detail: ElementBaseDesc & {
     children: Array<DesignModule>;
   };
 };

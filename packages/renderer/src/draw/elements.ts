@@ -51,7 +51,7 @@ export function drawElementList(ctx: ViewContext2D, elements: Data['elements'], 
   for (let i = 0; i < elements.length; i++) {
     const elem = elements[i];
     // TODO
-    if (!opts.calculator.isElementInView(elem, opts.scaleInfo, opts.viewSize)) {
+    if (!opts.calculator.isElementInView(elem, opts.viewScaleInfo, opts.viewSizeInfo)) {
       continue;
     }
     try {

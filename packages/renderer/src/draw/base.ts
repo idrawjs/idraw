@@ -18,7 +18,7 @@ export function drawBox(ctx: ViewContext2D, elem: Element<ElementType>, pattern?
     return;
   }
   const { x, y, w, h } = elem;
-  let r: number = elem.desc.borderRadius || 0;
+  let r: number = elem.detail.borderRadius || 0;
   r = Math.min(r, w / 2, h / 2);
   if (w < r * 2 || h < r * 2) {
     r = 0;
@@ -39,36 +39,36 @@ export function drawBox(ctx: ViewContext2D, elem: Element<ElementType>, pattern?
 }
 
 export function drawBoxBorder(ctx: ViewContext2D, elem: Element<ElementType>): void {
-  if (!(elem.desc.borderWidth && elem.desc.borderWidth > 0)) {
+  if (!(elem.detail.borderWidth && elem.detail.borderWidth > 0)) {
     return;
   }
-  const bw = elem.desc.borderWidth;
+  const bw = elem.detail.borderWidth;
   let borderColor = '#000000';
-  if (isColorStr(elem.desc.borderColor) === true) {
-    borderColor = elem.desc.borderColor as string;
+  if (isColorStr(elem.detail.borderColor) === true) {
+    borderColor = elem.detail.borderColor as string;
   }
   const x = elem.x - bw / 2;
   const y = elem.y - bw / 2;
   const w = elem.w + bw;
   const h = elem.h + bw;
 
-  let r: number = elem.desc.borderRadius || 0;
+  let r: number = elem.detail.borderRadius || 0;
   r = Math.min(r, w / 2, h / 2);
   if (r < w / 2 && r < h / 2) {
     r = r + bw / 2;
   }
-  const { desc } = elem;
-  if (desc.shadowColor !== undefined && isColorStr(desc.shadowColor)) {
-    ctx.shadowColor = desc.shadowColor;
+  const { detail } = elem;
+  if (detail.shadowColor !== undefined && isColorStr(detail.shadowColor)) {
+    ctx.shadowColor = detail.shadowColor;
   }
-  if (desc.shadowOffsetX !== undefined && is.number(desc.shadowOffsetX)) {
-    ctx.shadowOffsetX = desc.shadowOffsetX;
+  if (detail.shadowOffsetX !== undefined && is.number(detail.shadowOffsetX)) {
+    ctx.shadowOffsetX = detail.shadowOffsetX;
   }
-  if (desc.shadowOffsetY !== undefined && is.number(desc.shadowOffsetY)) {
-    ctx.shadowOffsetY = desc.shadowOffsetY;
+  if (detail.shadowOffsetY !== undefined && is.number(detail.shadowOffsetY)) {
+    ctx.shadowOffsetY = detail.shadowOffsetY;
   }
-  if (desc.shadowBlur !== undefined && is.number(desc.shadowBlur)) {
-    ctx.shadowBlur = desc.shadowBlur;
+  if (detail.shadowBlur !== undefined && is.number(detail.shadowBlur)) {
+    ctx.shadowBlur = detail.shadowBlur;
   }
   ctx.beginPath();
   ctx.lineWidth = bw;

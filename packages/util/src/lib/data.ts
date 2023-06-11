@@ -10,9 +10,13 @@ export function deepClone(target: any): any {
       });
       return arr;
     } else if (type === 'Object') {
-      const obj: { [key: string]: any } = {};
+      const obj: { [key: string | symbol]: any } = {};
       const keys = Object.keys(t);
       keys.forEach((key) => {
+        obj[key] = _clone(t[key]);
+      });
+      const symbolKeys = Object.getOwnPropertySymbols(t);
+      symbolKeys.forEach((key) => {
         obj[key] = _clone(t[key]);
       });
       return obj;
