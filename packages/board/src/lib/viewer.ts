@@ -1,4 +1,4 @@
-import { EventEmitter, viewScale } from '@idraw/util';
+import { EventEmitter, viewScale, viewScroll } from '@idraw/util';
 import type { BoardViewer, BoardViewerEventMap, BoardViewerOptions, ActiveStore, BoardViewerFrameSnapshot, ViewScaleInfo, ViewSizeInfo } from '@idraw/types';
 
 const { requestAnimationFrame } = window;
@@ -93,26 +93,26 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
     const { sharer, renderer } = this._opts;
     const prevViewScaleInfo: ViewScaleInfo = sharer.getActiveScaleInfo();
     const viewSizeInfo: ViewSizeInfo = sharer.getActiveViewSizeInfo();
-    const viewScaleInfo = viewScale(num, { prevViewScaleInfo, viewSizeInfo });
+    const viewScaleInfo = viewScale({ num, prevViewScaleInfo, viewSizeInfo });
     sharer.setActiveScaleInfo(viewScaleInfo);
     renderer.scale(num);
     return viewScaleInfo;
   }
 
   scrollX(num: number): ViewScaleInfo {
-    const { sharer, calculator } = this._opts;
+    const { sharer } = this._opts;
     const prevViewScaleInfo: ViewScaleInfo = sharer.getActiveScaleInfo();
     const viewSizeInfo: ViewSizeInfo = sharer.getActiveViewSizeInfo();
-    const viewScaleInfo = calculator.viewScroll({ moveX: num - (prevViewScaleInfo.offsetLeft || 0) }, prevViewScaleInfo, viewSizeInfo);
+    const viewScaleInfo = viewScroll({ moveX: num - (prevViewScaleInfo.offsetLeft || 0), viewScaleInfo: prevViewScaleInfo, viewSizeInfo });
     sharer.setActiveScaleInfo(viewScaleInfo);
     return viewScaleInfo;
   }
 
   scrollY(num: number): ViewScaleInfo {
-    const { sharer, calculator } = this._opts;
+    const { sharer } = this._opts;
     const prevViewScaleInfo: ViewScaleInfo = sharer.getActiveScaleInfo();
     const viewSizeInfo: ViewSizeInfo = sharer.getActiveViewSizeInfo();
-    const viewScaleInfo = calculator.viewScroll({ moveY: num - (prevViewScaleInfo.offsetTop || 0) }, prevViewScaleInfo, viewSizeInfo);
+    const viewScaleInfo = viewScroll({ moveY: num - (prevViewScaleInfo.offsetTop || 0), viewScaleInfo: prevViewScaleInfo, viewSizeInfo });
     sharer.setActiveScaleInfo(viewScaleInfo);
     return viewScaleInfo;
   }

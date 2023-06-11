@@ -1,11 +1,9 @@
-import { Point, Data, ViewScaleInfo, ViewSizeInfo, Element, ElementType, ElementSize } from '@idraw/types';
+import { Point, Data, ViewScaleInfo, ViewSizeInfo, Element, ElementType, ElementSize, ViewContext2D } from '@idraw/types';
 import { rotateElementVertexes } from './rotate';
-import { Context2D } from './context2d';
 import { checkRectIntersect } from './rect';
 
-export function viewScale(num: number, opts: { prevViewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }): ViewScaleInfo {
-  const scale = num;
-  const { prevViewScaleInfo, viewSizeInfo } = opts;
+export function viewScale(opts: { num: number; prevViewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }): ViewScaleInfo {
+  const { num: scale, prevViewScaleInfo, viewSizeInfo } = opts;
   const { width, height, contextWidth, contextHeight } = viewSizeInfo;
   let offsetLeft = 0;
   let offsetRight = 0;
@@ -39,9 +37,9 @@ export function viewScale(num: number, opts: { prevViewScaleInfo: ViewScaleInfo;
   };
 }
 
-export function viewScroll(opts: { moveX?: number; moveY?: number }, viewScaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): ViewScaleInfo {
+export function viewScroll(opts: { moveX?: number; moveY?: number; viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }): ViewScaleInfo {
+  const { moveX, moveY, viewScaleInfo, viewSizeInfo } = opts;
   const scale = viewScaleInfo.scale;
-  const { moveX, moveY } = opts;
   const { width, height, contextWidth, contextHeight } = viewSizeInfo;
   let offsetLeft = viewScaleInfo.offsetLeft;
   let offsetRight = viewScaleInfo.offsetRight;
@@ -113,7 +111,7 @@ export function calcElementSize(size: ElementSize, opts: { viewScaleInfo: ViewSc
 
 export function isViewPointInElement(
   p: Point,
-  opts: { context2d: Context2D; element: Element<ElementType>; viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }
+  opts: { context2d: ViewContext2D; element: Element<ElementType>; viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }
 ): boolean {
   const { context2d: ctx, element: elem, viewScaleInfo, viewSizeInfo } = opts;
 
@@ -137,7 +135,7 @@ export function isViewPointInElement(
 export function getViewPointAtElement(
   p: Point,
   opts: {
-    context2d: Context2D;
+    context2d: ViewContext2D;
     data: Data;
     viewScaleInfo: ViewScaleInfo;
     viewSizeInfo: ViewSizeInfo;
