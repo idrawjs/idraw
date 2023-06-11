@@ -3,9 +3,9 @@ import { rotateElementVertexes } from './rotate';
 
 function getGroupIndexes(elem: Element<'group'>, uuids: string[], parentIndex: string): string[] {
   let indexes: string[] = [];
-  if (elem?.type === 'group' && elem?.desc?.children?.length > 0) {
-    for (let i = 0; i < elem.desc.children.length; i++) {
-      const child = elem.desc.children[i];
+  if (elem?.type === 'group' && elem?.detail?.children?.length > 0) {
+    for (let i = 0; i < elem.detail.children.length; i++) {
+      const child = elem.detail.children[i];
       if (uuids.includes(child.uuid)) {
         indexes.push([parentIndex, i].join('.'));
       } else if (elem.type === 'group') {
@@ -43,7 +43,7 @@ function getGroupUUIDs(elements: Array<Element<ElementType>>, index: string): st
         if (elem && nums.length === 0) {
           uuids.push(elem.uuid);
         } else if (elem.type === 'group' && nums.length > 0) {
-          target = (elem as Element<'group'>)?.desc?.children || [];
+          target = (elem as Element<'group'>)?.detail?.children || [];
         }
       }
       break;
@@ -70,12 +70,12 @@ export function getSelectedElementUUIDs(data: Data, indexes: Array<number | stri
 
 function getElementInGroup(elem: Element<'group'>, uuids: string[]): Array<Element<ElementType>> {
   let elements: Array<Element<ElementType>> = [];
-  if (elem?.type === 'group' && elem?.desc?.children?.length > 0) {
-    for (let i = 0; i < elem.desc.children.length; i++) {
-      const child = elem.desc.children[i];
+  if (elem?.type === 'group' && elem?.detail?.children?.length > 0) {
+    for (let i = 0; i < elem.detail.children.length; i++) {
+      const child = elem.detail.children[i];
       if (uuids.includes(child.uuid)) {
         elements.push(child);
-      } else if (elem.type === 'group' && elem.desc?.children?.length > 0) {
+      } else if (elem.type === 'group' && elem.detail?.children?.length > 0) {
         elements = elements.concat(getElementInGroup(child as Element<'group'>, uuids));
       }
     }
@@ -115,7 +115,7 @@ export function validateElements(elements: Array<Element<ElementType>>): boolean
         console.warn('Element missing uuid', elem);
       }
       if (elem.type === 'group') {
-        isValid = validateElements((elem as Element<'group'>)?.desc?.children);
+        isValid = validateElements((elem as Element<'group'>)?.detail?.children);
       }
     });
   }

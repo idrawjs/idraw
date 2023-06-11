@@ -7,29 +7,29 @@ export function drawText(ctx: ViewContext2D, elem: Element<'text'>, opts: Render
   const { calculator, viewScaleInfo, viewSizeInfo } = opts;
   const { x, y, w, h, angle } = calculator.elementSize(elem, viewScaleInfo, viewSizeInfo);
   rotateElement(ctx, { x, y, w, h, angle }, () => {
-    drawBox(ctx, { ...elem, ...{ x, y, w, h, angle } }, elem.desc.bgColor || 'transparent');
-    const desc: Element<'text'>['desc'] = {
+    drawBox(ctx, { ...elem, ...{ x, y, w, h, angle } }, elem.detail.bgColor || 'transparent');
+    const detail: Element<'text'>['detail'] = {
       ...{
         fontSize: 12,
         fontFamily: 'sans-serif',
         textAlign: 'center'
       },
-      ...elem.desc
+      ...elem.detail
     };
-    ctx.fillStyle = elem.desc.color;
+    ctx.fillStyle = elem.detail.color;
     ctx.textBaseline = 'top';
     ctx.$setFont({
-      fontWeight: desc.fontWeight,
-      fontSize: desc.fontSize,
-      fontFamily: desc.fontFamily
+      fontWeight: detail.fontWeight,
+      fontSize: detail.fontSize,
+      fontFamily: detail.fontFamily
     });
-    const descText = desc.text.replace(/\r\n/gi, '\n');
-    const fontHeight = desc.lineHeight || desc.fontSize;
-    const descTextList = descText.split('\n');
+    const detailText = detail.text.replace(/\r\n/gi, '\n');
+    const fontHeight = detail.lineHeight || detail.fontSize;
+    const detailTextList = detailText.split('\n');
     const lines: { text: string; width: number }[] = [];
 
     let lineNum = 0;
-    descTextList.forEach((tempText: string, idx: number) => {
+    detailTextList.forEach((tempText: string, idx: number) => {
       let lineText = '';
 
       if (tempText.length > 0) {
@@ -53,7 +53,7 @@ export function drawText(ctx: ViewContext2D, elem: Element<'text'>, opts: Render
                 text: lineText,
                 width: ctx.$undoPixelRatio(ctx.measureText(lineText).width)
               });
-              if (idx < descTextList.length - 1) {
+              if (idx < detailTextList.length - 1) {
                 lineNum++;
               }
               break;
@@ -70,9 +70,9 @@ export function drawText(ctx: ViewContext2D, elem: Element<'text'>, opts: Render
 
     let startY = 0;
     if (lines.length * fontHeight < h) {
-      if (elem.desc.verticalAlign === 'top') {
+      if (elem.detail.verticalAlign === 'top') {
         startY = 0;
-      } else if (elem.desc.verticalAlign === 'bottom') {
+      } else if (elem.detail.verticalAlign === 'bottom') {
         startY += h - lines.length * fontHeight;
       } else {
         // middle and default
@@ -83,23 +83,23 @@ export function drawText(ctx: ViewContext2D, elem: Element<'text'>, opts: Render
     // draw text lines
     {
       const _y = y + startY;
-      if (desc.textShadowColor !== undefined && isColorStr(desc.textShadowColor)) {
-        ctx.shadowColor = desc.textShadowColor;
+      if (detail.textShadowColor !== undefined && isColorStr(detail.textShadowColor)) {
+        ctx.shadowColor = detail.textShadowColor;
       }
-      if (desc.textShadowOffsetX !== undefined && is.number(desc.textShadowOffsetX)) {
-        ctx.shadowOffsetX = desc.textShadowOffsetX;
+      if (detail.textShadowOffsetX !== undefined && is.number(detail.textShadowOffsetX)) {
+        ctx.shadowOffsetX = detail.textShadowOffsetX;
       }
-      if (desc.textShadowOffsetY !== undefined && is.number(desc.textShadowOffsetY)) {
-        ctx.shadowOffsetY = desc.textShadowOffsetY;
+      if (detail.textShadowOffsetY !== undefined && is.number(detail.textShadowOffsetY)) {
+        ctx.shadowOffsetY = detail.textShadowOffsetY;
       }
-      if (desc.textShadowBlur !== undefined && is.number(desc.textShadowBlur)) {
-        ctx.shadowBlur = desc.textShadowBlur;
+      if (detail.textShadowBlur !== undefined && is.number(detail.textShadowBlur)) {
+        ctx.shadowBlur = detail.textShadowBlur;
       }
       lines.forEach((line, i) => {
         let _x = x;
-        if (desc.textAlign === 'center') {
+        if (detail.textAlign === 'center') {
           _x = x + (w - line.width) / 2;
-        } else if (desc.textAlign === 'right') {
+        } else if (detail.textAlign === 'right') {
           _x = x + (w - line.width);
         }
         ctx.fillText(line.text, _x, _y + fontHeight * i);
@@ -107,20 +107,20 @@ export function drawText(ctx: ViewContext2D, elem: Element<'text'>, opts: Render
     }
 
     // draw text stroke
-    if (isColorStr(desc.strokeColor) && desc.strokeWidth !== undefined && desc.strokeWidth > 0) {
+    if (isColorStr(detail.strokeColor) && detail.strokeWidth !== undefined && detail.strokeWidth > 0) {
       const _y = y + startY;
       lines.forEach((line, i) => {
         let _x = x;
-        if (desc.textAlign === 'center') {
+        if (detail.textAlign === 'center') {
           _x = x + (w - line.width) / 2;
-        } else if (desc.textAlign === 'right') {
+        } else if (detail.textAlign === 'right') {
           _x = x + (w - line.width);
         }
-        if (desc.strokeColor !== undefined) {
-          ctx.strokeStyle = desc.strokeColor;
+        if (detail.strokeColor !== undefined) {
+          ctx.strokeStyle = detail.strokeColor;
         }
-        if (desc.strokeWidth !== undefined && desc.strokeWidth > 0) {
-          ctx.lineWidth = desc.strokeWidth;
+        if (detail.strokeWidth !== undefined && detail.strokeWidth > 0) {
+          ctx.lineWidth = detail.strokeWidth;
         }
         ctx.strokeText(line.text, _x, _y + fontHeight * i);
       });

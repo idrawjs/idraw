@@ -16,7 +16,7 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
   constructor() {
     super();
     this._registerLoadFunc<'image'>('image', async (elem: Element<'image'>) => {
-      const content = await loadImage(elem.desc.src);
+      const content = await loadImage(elem.detail.src);
       return {
         uuid: elem.uuid,
         lastModified: Date.now(),
@@ -24,9 +24,9 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
       };
     });
     this._registerLoadFunc<'html'>('html', async (elem: Element<'html'>) => {
-      const content = await loadHTML(elem.desc.html, {
-        width: elem.desc.width || elem.w,
-        height: elem.desc.height || elem.h
+      const content = await loadHTML(elem.detail.html, {
+        width: elem.detail.width || elem.w,
+        height: elem.detail.height || elem.h
       });
       return {
         uuid: elem.uuid,
@@ -35,7 +35,7 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
       };
     });
     this._registerLoadFunc<'svg'>('svg', async (elem: Element<'svg'>) => {
-      const content = await loadSVG(elem.desc.svg);
+      const content = await loadSVG(elem.detail.svg);
       return {
         uuid: elem.uuid,
         lastModified: Date.now(),
@@ -52,11 +52,11 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
   private _getLoadElementSource(element: Element<LoadElementType>): null | string {
     let source: string | null = null;
     if (element.type === 'image') {
-      source = (element as Element<'image'>)?.desc?.src || null;
+      source = (element as Element<'image'>)?.detail?.src || null;
     } else if (element.type === 'svg') {
-      source = (element as Element<'svg'>)?.desc?.svg || null;
+      source = (element as Element<'svg'>)?.detail?.svg || null;
     } else if (element.type === 'html') {
-      source = (element as Element<'html'>)?.desc?.html || null;
+      source = (element as Element<'html'>)?.detail?.html || null;
     }
     return source;
   }

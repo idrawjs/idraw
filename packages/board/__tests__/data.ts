@@ -7,7 +7,7 @@ export function getData() {
         w: 200,
         h: 120,
         type: 'rect',
-        desc: {
+        detail: {
           color: '#f0f0f0'
         }
       },
@@ -17,7 +17,7 @@ export function getData() {
         w: 200,
         h: 120,
         type: 'rect',
-        desc: {
+        detail: {
           color: '#cccccc'
         }
       },
@@ -27,7 +27,7 @@ export function getData() {
         w: 200,
         h: 120,
         type: 'rect',
-        desc: {
+        detail: {
           color: '#c0c0c0'
         }
       },
@@ -37,7 +37,7 @@ export function getData() {
         w: 200,
         h: 100,
         type: 'rect',
-        desc: {
+        detail: {
           color: '#e0e0e0'
         }
       }

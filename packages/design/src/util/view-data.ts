@@ -6,10 +6,10 @@ const baseDescKeys = ['borderWidth', 'borderColor', 'borderRadius', 'shadowColor
 
 function parseElementBaseDesc(elem: DesignComponent | DesignComponentItem | Element<ElementType>): ElementBaseDesc {
   const baseDesc: ElementBaseDesc = {};
-  if (elem?.desc) {
-    Object.keys(elem.desc).forEach((name: string) => {
+  if (elem?.detail) {
+    Object.keys(elem.detail).forEach((name: string) => {
       if (baseDescKeys.includes(name)) {
-        baseDesc[name as keyof ElementBaseDesc] = (elem.desc as any)?.[name];
+        baseDesc[name as keyof ElementBaseDesc] = (elem.detail as any)?.[name];
       }
     });
   }
@@ -25,20 +25,20 @@ function parseComponentItemToElement(item: DesignComponentItem): Element<'group'
     y: item.y,
     w: item.w,
     h: item.h,
-    desc: {
+    detail: {
       ...parseElementBaseDesc(item),
       ...{
         children: []
       }
     }
   };
-  item.desc?.children?.forEach?.((child) => {
+  item.detail?.children?.forEach?.((child) => {
     if (child.type === 'component-item') {
       const childElem = parseComponentItemToElement(child);
-      elem.desc.children.push(childElem);
+      elem.detail.children.push(childElem);
     } else {
       const childElem = deepClone(child);
-      elem.desc.children.push(childElem);
+      elem.detail.children.push(childElem);
     }
   });
   return elem;
@@ -53,7 +53,7 @@ function parseComponentToElement(comp: DesignComponent): Element<'group'> {
     y: comp.y,
     w: comp.w,
     h: comp.h,
-    desc: {
+    detail: {
       ...parseElementBaseDesc(comp),
       ...{
         children: []
@@ -61,12 +61,12 @@ function parseComponentToElement(comp: DesignComponent): Element<'group'> {
     }
   };
 
-  if (comp?.desc?.default) {
-    elem.desc.children.push(parseComponentItemToElement(comp.desc.default));
+  if (comp?.detail?.default) {
+    elem.detail.children.push(parseComponentItemToElement(comp.detail.default));
   }
-  if (comp?.desc?.variants && Array.isArray(comp?.desc?.variants)) {
-    comp.desc.variants.forEach((item) => {
-      elem.desc.children.push(parseComponentItemToElement(item));
+  if (comp?.detail?.variants && Array.isArray(comp?.detail?.variants)) {
+    comp.detail.variants.forEach((item) => {
+      elem.detail.children.push(parseComponentItemToElement(item));
     });
   }
 

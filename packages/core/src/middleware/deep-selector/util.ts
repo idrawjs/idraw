@@ -500,9 +500,9 @@ export function calcSelectedElementsArea(
 }
 
 export function isElementInGroup(elem: Element<ElementType>, group: Element<'group'>): boolean {
-  if (group?.type === 'group' && Array.isArray(group?.desc?.children)) {
-    for (let i = 0; i < group.desc.children.length; i++) {
-      const child = group.desc.children[i];
+  if (group?.type === 'group' && Array.isArray(group?.detail?.children)) {
+    for (let i = 0; i < group.detail.children.length; i++) {
+      const child = group.detail.children[i];
       if (elem.uuid === child.uuid) {
         return true;
       }

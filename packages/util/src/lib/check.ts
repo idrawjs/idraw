@@ -12,82 +12,71 @@ function attrs(attrs: any): boolean {
   return true;
 }
 
-function box(desc: any = {}): boolean {
-  const { borderColor, borderRadius, borderWidth } = desc;
-  if (desc.hasOwnProperty('borderColor') && !is.color(borderColor)) {
+function box(detail: any = {}): boolean {
+  const { borderColor, borderRadius, borderWidth } = detail;
+  if (detail.hasOwnProperty('borderColor') && !is.color(borderColor)) {
     return false;
   }
-  if (desc.hasOwnProperty('borderRadius') && !is.number(borderRadius)) {
+  if (detail.hasOwnProperty('borderRadius') && !is.number(borderRadius)) {
     return false;
   }
-  if (desc.hasOwnProperty('borderWidth') && !is.number(borderWidth)) {
-    return false;
-  }
-  return true;
-}
-
-function rectDesc(desc: any): boolean {
-  const { bgColor } = desc;
-  if (desc.hasOwnProperty('bgColor') && !is.color(bgColor)) {
-    return false;
-  }
-  if (!box(desc)) {
+  if (detail.hasOwnProperty('borderWidth') && !is.number(borderWidth)) {
     return false;
   }
   return true;
 }
 
-function circleDesc(desc: any): boolean {
-  const { bgColor, borderColor, borderWidth } = desc;
-  if (desc.hasOwnProperty('bgColor') && !is.color(bgColor)) {
+function rectDesc(detail: any): boolean {
+  const { bgColor } = detail;
+  if (detail.hasOwnProperty('bgColor') && !is.color(bgColor)) {
     return false;
   }
-  if (desc.hasOwnProperty('borderColor') && !is.color(borderColor)) {
-    return false;
-  }
-  if (desc.hasOwnProperty('borderWidth') && !is.number(borderWidth)) {
+  if (!box(detail)) {
     return false;
   }
   return true;
 }
 
-function imageDesc(desc: any): boolean {
-  const { src } = desc;
+function circleDesc(detail: any): boolean {
+  const { bgColor, borderColor, borderWidth } = detail;
+  if (detail.hasOwnProperty('bgColor') && !is.color(bgColor)) {
+    return false;
+  }
+  if (detail.hasOwnProperty('borderColor') && !is.color(borderColor)) {
+    return false;
+  }
+  if (detail.hasOwnProperty('borderWidth') && !is.number(borderWidth)) {
+    return false;
+  }
+  return true;
+}
+
+function imageDesc(detail: any): boolean {
+  const { src } = detail;
   if (!is.imageSrc(src)) {
     return false;
   }
   return true;
 }
 
-function svgDesc(desc: any): boolean {
-  const { svg } = desc;
+function svgDesc(detail: any): boolean {
+  const { svg } = detail;
   if (!is.svg(svg)) {
     return false;
   }
   return true;
 }
 
-function htmlDesc(desc: any): boolean {
-  const { html } = desc;
+function htmlDesc(detail: any): boolean {
+  const { html } = detail;
   if (!is.html(html)) {
     return false;
   }
   return true;
 }
 
-function textDesc(desc: any): boolean {
-  const {
-    text,
-    color,
-    fontSize,
-    lineHeight,
-    fontFamily,
-    textAlign,
-    fontWeight,
-    bgColor,
-    strokeWidth,
-    strokeColor
-  } = desc;
+function textDesc(detail: any): boolean {
+  const { text, color, fontSize, lineHeight, fontFamily, textAlign, fontWeight, bgColor, strokeWidth, strokeColor } = detail;
   if (!is.text(text)) {
     return false;
   }
@@ -97,29 +86,29 @@ function textDesc(desc: any): boolean {
   if (!is.fontSize(fontSize)) {
     return false;
   }
-  if (desc.hasOwnProperty('bgColor') && !is.color(bgColor)) {
+  if (detail.hasOwnProperty('bgColor') && !is.color(bgColor)) {
     return false;
   }
-  if (desc.hasOwnProperty('fontWeight') && !is.fontWeight(fontWeight)) {
+  if (detail.hasOwnProperty('fontWeight') && !is.fontWeight(fontWeight)) {
     return false;
   }
-  if (desc.hasOwnProperty('lineHeight') && !is.lineHeight(lineHeight)) {
+  if (detail.hasOwnProperty('lineHeight') && !is.lineHeight(lineHeight)) {
     return false;
   }
-  if (desc.hasOwnProperty('fontFamily') && !is.fontFamily(fontFamily)) {
+  if (detail.hasOwnProperty('fontFamily') && !is.fontFamily(fontFamily)) {
     return false;
   }
-  if (desc.hasOwnProperty('textAlign') && !is.textAlign(textAlign)) {
+  if (detail.hasOwnProperty('textAlign') && !is.textAlign(textAlign)) {
     return false;
   }
-  if (desc.hasOwnProperty('strokeWidth') && !is.strokeWidth(strokeWidth)) {
+  if (detail.hasOwnProperty('strokeWidth') && !is.strokeWidth(strokeWidth)) {
     return false;
   }
-  if (desc.hasOwnProperty('strokeColor') && !is.color(strokeColor)) {
+  if (detail.hasOwnProperty('strokeColor') && !is.color(strokeColor)) {
     return false;
   }
 
-  if (!box(desc)) {
+  if (!box(detail)) {
     return false;
   }
   return true;
