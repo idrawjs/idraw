@@ -177,11 +177,11 @@ export function drawGroupsWrapper(ctx: ViewContext2D, elemList: ElementSize[]) {
       ctx.lineWidth = 2;
       ctx.strokeStyle = wrapperColor;
       ctx.beginPath();
-      ctx.moveTo(x - bw, y - bw);
-      ctx.lineTo(x + w + bw, y - bw);
-      ctx.lineTo(x + w + bw, y + h + bw);
-      ctx.lineTo(x - bw, y + h + bw);
-      ctx.lineTo(x - bw, y - bw);
+      ctx.moveTo(totalX - bw, totalY - bw);
+      ctx.lineTo(totalX + w + bw, totalY - bw);
+      ctx.lineTo(totalX + w + bw, totalY + h + bw);
+      ctx.lineTo(totalX - bw, totalY + h + bw);
+      ctx.lineTo(totalX - bw, totalY - bw);
       ctx.closePath();
       ctx.stroke();
     });

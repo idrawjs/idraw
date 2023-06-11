@@ -111,7 +111,7 @@ export function calcElementSize(size: ElementSize, opts: { viewScaleInfo: ViewSc
 
 export function isViewPointInElement(
   p: Point,
-  opts: { context2d: ViewContext2D; element: Element<ElementType>; viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }
+  opts: { context2d: ViewContext2D; element: ElementSize; viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }
 ): boolean {
   const { context2d: ctx, element: elem, viewScaleInfo, viewSizeInfo } = opts;
 
@@ -139,13 +139,64 @@ export function getViewPointAtElement(
     data: Data;
     viewScaleInfo: ViewScaleInfo;
     viewSizeInfo: ViewSizeInfo;
+    groupQueue?: Element<'group'>[];
   }
-): { index: number; element: null | Element<ElementType> } {
-  const { context2d: ctx, data, viewScaleInfo, viewSizeInfo } = opts;
-  const result: { index: number; element: null | Element<ElementType> } = {
+): { index: number; element: null | Element<ElementType>; groupQueueIndex: number } {
+  const { context2d: ctx, data, viewScaleInfo, viewSizeInfo, groupQueue } = opts;
+
+  const result: { index: number; element: null | Element<ElementType>; groupQueueIndex: number } = {
     index: -1,
-    element: null
+    element: null,
+    groupQueueIndex: -1
   };
+
+  if (groupQueue && Array.isArray(groupQueue) && groupQueue?.length > 0) {
+    // const lastGroup = groupQueue[groupQueue.length - 1];
+
+    for (let gIdx = groupQueue.length - 1; gIdx >= 0; gIdx--) {
+      let totalX = 0;
+      let totalY = 0;
+      let totalAngle = 0;
+      for (let i = 0; i <= gIdx; i++) {
+        totalX += groupQueue[i].x;
+        totalY += groupQueue[i].y;
+        totalAngle += groupQueue[i].angle || 0;
+      }
+
+      const lastGroup = groupQueue[gIdx];
+
+      if (lastGroup && lastGroup.type === 'group' && Array.isArray(lastGroup.detail?.children)) {
+        for (let i = 0; i < lastGroup.detail.children.length; i++) {
+          const child = lastGroup.detail.children[i];
+          if (child) {
+            const elemSize = {
+              x: totalX + child.x,
+              y: totalY + child.y,
+              w: child.w,
+              h: child.h,
+              angle: totalAngle + (child.angle || 0)
+            };
+            if (isViewPointInElement(p, { context2d: ctx, element: elemSize, viewScaleInfo, viewSizeInfo })) {
+              result.element = child;
+              if (gIdx < groupQueue.length - 1 || child.type !== 'group') {
+                result.groupQueueIndex = gIdx;
+              }
+              break;
+            }
+          } else {
+            break;
+          }
+        }
+      }
+      if (result.element) {
+        break;
+      }
+    }
+  }
+  if (result.element) {
+    return result;
+  }
+
   for (let i = data.elements.length - 1; i >= 0; i--) {
     const elem = data.elements[i];
     if (isViewPointInElement(p, { context2d: ctx, element: elem, viewScaleInfo, viewSizeInfo })) {

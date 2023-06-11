@@ -134,7 +134,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
         groupQueue: sharer.getSharedStorage(keyGroupQueue)
       });
 
-      console.log('pointStart target ====== ', target);
+      // console.log('pointStart target ====== ', target);
 
       if (sharer.getSharedStorage(keyInGroup) === true) {
         if (target.type === 'in-group-element' && target?.elements?.length > 0) {
@@ -266,7 +266,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
         sharer.setSharedStorage(keyActionType, 'drag-list-end');
         needDrawFrame = true;
       } else if (data) {
-        const result = calculator.getPointElement(e.point, data, sharer.getActiveScaleInfo(), sharer.getActiveViewSizeInfo());
+        const result = calculator.getPointElement(e.point, { data, viewScaleInfo: sharer.getActiveScaleInfo(), viewSizeInfo: sharer.getActiveViewSizeInfo() });
         if (result.element) {
           sharer.setSharedStorage(keyActionType, 'select');
           needDrawFrame = true;
@@ -317,6 +317,8 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
         areaSize: null,
         groupQueue: sharer.getSharedStorage(keyGroupQueue)
       });
+      // console.log('doubleClick target ======= ', target);
+
       if (target.type === 'in-group-element' && target.elements.length > 0) {
         sharer.setSharedStorage(keyGroupQueue, target.elements as Element<'group'>[]);
         sharer.setSharedStorage(keyInGroup, true);
@@ -329,7 +331,6 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
         }
       }
       sharer.setSharedStorage(keyActionType, null);
-      console.log('doubleClick target ======= ', target);
     },
 
     beforeDrawFrame({ snapshot }) {

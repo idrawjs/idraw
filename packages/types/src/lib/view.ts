@@ -38,5 +38,8 @@ export interface ViewCalculator {
   isElementInView(elem: Element<ElementType>, viewScaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): boolean;
   isPointInElement(p: Point, elem: Element<ElementType>, viewScaleInfo: ViewScaleInfo, viewSize: ViewSizeInfo): boolean;
   elementSize(size: ElementSize, viewScaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): ElementSize;
-  getPointElement(p: Point, data: Data, viewScaleInfo: ViewScaleInfo, viewSize: ViewSizeInfo): { index: number; element: null | Element<ElementType> };
+  getPointElement(
+    p: Point,
+    opts: { data: Data; viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo; groupQueue?: Element<'group'>[] }
+  ): { index: number; element: null | Element<ElementType>; groupQueueIndex: number };
 }

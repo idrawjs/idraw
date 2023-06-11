@@ -54,23 +54,39 @@ export function getPointTarget(
 
   // in-group-element
   if (groupQueue && Array.isArray(groupQueue) && groupQueue.length > 0 && data) {
-    const { index, element } = calculator.getPointElement(p as Point, data, viewScaleInfo, viewSizeInfo);
-    if (index >= 0 && element) {
+    const { element, groupQueueIndex } = calculator.getPointElement(p as Point, { data, viewScaleInfo, viewSizeInfo, groupQueue });
+    if (groupQueueIndex >= 0) {
+      const newQueue: Element<'group'>[] = groupQueue.splice(0, groupQueueIndex + 1);
+      target.indexes = [];
+      target.elements = newQueue;
+      target.uuids = [];
+      target.type = 'in-group-element';
+      return target;
+    } else if (element) {
       const newQueue: Element<'group'>[] = [];
       for (let i = 0; i < groupQueue.length; i++) {
         const group = groupQueue[i];
         if (group.type !== 'group') {
           break;
         }
+        newQueue.push(group);
         if (element.uuid === group.uuid) {
-          // isElementInGroup(element, group)
-          // TODO  check in group
-          newQueue.push(group);
           target.indexes = [];
           target.elements = newQueue;
           target.uuids = [];
           target.type = 'in-group-element';
           return target;
+        } else if (Array.isArray(group.detail.children) && group.detail.children.length > 0) {
+          for (let j = 0; j < group.detail.children.length; j++) {
+            const child = group.detail.children[j];
+            if (element.uuid === child.uuid && element.type === 'group') {
+              newQueue.push(element as Element<'group'>);
+              target.indexes = [];
+              target.elements = newQueue;
+              target.uuids = [];
+              target.type = 'in-group-element';
+            }
+          }
         }
       }
     }
@@ -117,7 +133,7 @@ export function getPointTarget(
 
   // over-element
   if (data) {
-    const { index, element } = calculator.getPointElement(p as Point, data, viewScaleInfo, viewSizeInfo);
+    const { index, element } = calculator.getPointElement(p as Point, { data, viewScaleInfo, viewSizeInfo });
     if (index >= 0 && element) {
       target.indexes = [index];
       target.elements = [element];

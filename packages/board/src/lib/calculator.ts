@@ -1,4 +1,4 @@
-import type { Data, Point, Element, ElementType, ViewCalculator, ViewCalculatorOptions, ViewScaleInfo, ElementSize, ViewSizeInfo } from '@idraw/types';
+import type { Point, Data, Element, ElementType, ViewCalculator, ViewCalculatorOptions, ViewScaleInfo, ElementSize, ViewSizeInfo } from '@idraw/types';
 import { calcElementSize, isViewPointInElement, getViewPointAtElement, isElementInView } from '@idraw/util';
 
 export class Calculator implements ViewCalculator {
@@ -26,13 +26,11 @@ export class Calculator implements ViewCalculator {
     });
   }
 
-  getPointElement(p: Point, data: Data, viewScaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): { index: number; element: null | Element<ElementType> } {
+  getPointElement(
+    p: Point,
+    opts: { data: Data; viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }
+  ): { index: number; element: null | Element<ElementType>; groupQueueIndex: number } {
     const context2d = this._opts.viewContent.boardContext;
-    return getViewPointAtElement(p, {
-      data,
-      context2d,
-      viewScaleInfo,
-      viewSizeInfo
-    });
+    return getViewPointAtElement(p, { ...opts, ...{ context2d } });
   }
 }
