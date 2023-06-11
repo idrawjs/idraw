@@ -23,3 +23,4 @@ export {
   calcElementsViewInfo
 } from './lib/element';
 export { checkRectIntersect } from './lib/rect';
+export { viewScale, viewScroll, calcElementSize, isViewPointInElement, getViewPointAtElement, isElementInView } from './lib/view-calc';

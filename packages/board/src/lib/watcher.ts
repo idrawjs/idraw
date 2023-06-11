@@ -134,8 +134,8 @@ export class BoardWatcher extends EventEmitter<BoardWatcherEventMap> {
   }
 
   private _isVaildPoint(p: Point): boolean {
-    const viewSize = this._opts.sharer.getActiveViewSizeInfo();
-    const { width, height } = viewSize;
+    const viewSizeInfo = this._opts.sharer.getActiveViewSizeInfo();
+    const { width, height } = viewSizeInfo;
     if (isBoardAvailableNum(p.x) && isBoardAvailableNum(p.y) && p.x <= width && p.y <= height) {
       return true;
     }

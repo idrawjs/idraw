@@ -1,4 +1,4 @@
-import { keyHoverElementSize, keyActionType, keyResizeType, keyAreaStart, keyAreaEnd, keyInGroupQueue } from './config';
+import { keyHoverElementSize, keyActionType, keyResizeType, keyAreaStart, keyAreaEnd, keyGroupQueue, keyInGroup } from './config';
 
 import {
   Data,
@@ -40,7 +40,7 @@ export type ElementSizeController = Record<string, ControllerStyle>;
 
 export type ResizeType = 'resize-left' | 'resize-right' | 'resize-top' | 'resize-bottom';
 
-export type PointTargetType = null | 'list-area' | 'over-element' | ResizeType;
+export type PointTargetType = null | ResizeType | 'list-area' | 'over-element' | 'in-group-element';
 
 export interface PointTarget {
   type: PointTargetType;
@@ -55,9 +55,10 @@ export type ActionType = 'select' | 'drag-list' | 'drag-list-end' | 'drag' | 'ho
 
 export type DeepSelectorSharedStorage = {
   [keyHoverElementSize]: ElementSize | null;
-  [keyActionType]: ActionType;
+  [keyActionType]: ActionType | null;
   [keyResizeType]: ResizeType | null;
   [keyAreaStart]: Point | null;
   [keyAreaEnd]: Point | null;
-  [keyInGroupQueue]: Element<'group'>[] | null;
+  [keyGroupQueue]: Element<'group'>[] | null;
+  [keyInGroup]: boolean | null;
 };

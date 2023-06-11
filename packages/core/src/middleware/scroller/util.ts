@@ -48,9 +48,9 @@ export function isPointInScrollbar(helperContext: ViewContext2D, p: Point, sizeI
   return thumbType;
 }
 
-export function calcScrollerInfo(scaleInfo: ViewScaleInfo, sizeInfo: ViewSizeInfo) {
+export function calcScrollerInfo(viewScaleInfo: ViewScaleInfo, sizeInfo: ViewSizeInfo) {
   const { width, height } = sizeInfo;
-  const { offsetTop, offsetBottom, offsetLeft, offsetRight } = scaleInfo;
+  const { offsetTop, offsetBottom, offsetLeft, offsetRight } = viewScaleInfo;
   const sliderMinSize = scrollerLineWidth * 2.5;
   const lineSize = scrollerLineWidth;
   let xSize = 0;
@@ -138,11 +138,11 @@ function drawScrollerThumb(
   ctx.stroke();
 }
 
-function drawScrollerInfo(helperContext: ViewContext2D, opts: { scaleInfo: ViewScaleInfo; sizeInfo: ViewSizeInfo }) {
+function drawScrollerInfo(helperContext: ViewContext2D, opts: { viewScaleInfo: ViewScaleInfo; sizeInfo: ViewSizeInfo }) {
   const ctx = helperContext;
-  const { scaleInfo, sizeInfo } = opts;
+  const { viewScaleInfo, sizeInfo } = opts;
   const { width, height } = sizeInfo;
-  const wrapper = calcScrollerInfo(scaleInfo, sizeInfo);
+  const wrapper = calcScrollerInfo(viewScaleInfo, sizeInfo);
   if (wrapper.xSize > 0) {
     if (scrollConfig.showBackground === true) {
       ctx.globalAlpha = scrollerAlpha;
@@ -191,6 +191,6 @@ function drawScrollerInfo(helperContext: ViewContext2D, opts: { scaleInfo: ViewS
 export function drawScroller(ctx: ViewContext2D, opts: { snapshot: BoardViewerFrameSnapshot }) {
   const { snapshot } = opts;
   const sizeInfo = getViewSizeInfoFromSnapshot(snapshot);
-  const scaleInfo = getViewScaleInfoFromSnapshot(snapshot);
-  drawScrollerInfo(ctx, { sizeInfo, scaleInfo });
+  const viewScaleInfo = getViewScaleInfoFromSnapshot(snapshot);
+  drawScrollerInfo(ctx, { sizeInfo, viewScaleInfo });
 }

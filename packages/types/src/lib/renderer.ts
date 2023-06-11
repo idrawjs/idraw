@@ -24,14 +24,14 @@ export interface RendererLoader extends UtilEventEmitter<LoaderEventMap> {
 }
 
 export interface RendererDrawOptions {
-  viewSize: ViewSizeInfo;
-  scaleInfo: ViewScaleInfo;
+  viewSizeInfo: ViewSizeInfo;
+  viewScaleInfo: ViewScaleInfo;
 }
 
 export interface RendererDrawElementOptions extends RendererDrawOptions {
   loader: RendererLoader;
   calculator: ViewCalculator;
-  scaleInfo: ViewScaleInfo;
-  viewSize: ViewSizeInfo;
+  viewScaleInfo: ViewScaleInfo;
+  viewSizeInfo: ViewSizeInfo;
   parentElementSize: ElementSize;
 }

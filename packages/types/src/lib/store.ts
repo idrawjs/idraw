@@ -8,16 +8,16 @@ export type ActiveStore = ViewSizeInfo &
     selectedUUIDs: string[];
   };
 
-export interface StoreSharer<S extends Record<any, any>> {
+export interface StoreSharer<S extends Record<any, any> = any> {
   getActiveStorage<T extends keyof ActiveStore>(key: T): ActiveStore[T];
   setActiveStorage<T extends keyof ActiveStore>(key: T, storage: ActiveStore[T]): void;
   getActiveStoreSnapshot(): ActiveStore;
-  getSharedStorage<K extends keyof S>(key: K): S[K];
-  setSharedStorage<K extends keyof S>(key: K, storage: S[K]): void;
+  getSharedStorage<K extends keyof S = string>(key: K): S[K];
+  setSharedStorage<K extends keyof S = string>(key: K, storage: S[K]): void;
   getSharedStoreSnapshot(): Record<string, any>;
 
   getActiveScaleInfo(): ViewScaleInfo;
-  setActiveScaleInfo(scaleInfo: ViewScaleInfo): void;
+  setActiveScaleInfo(viewScaleInfo: ViewScaleInfo): void;
   setActiveViewSizeInfo(size: ViewSizeInfo): void;
   getActiveViewSizeInfo(): ViewSizeInfo;
 }

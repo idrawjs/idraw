@@ -65,7 +65,7 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
         sharer.setSharedStorage(keyHoverElementSize, null);
       } else if (data) {
         const selectedElements = getActiveElements();
-        const scaleInfo = sharer.getActiveScaleInfo();
+        const viewScaleInfo = sharer.getActiveScaleInfo();
         const viewSize = sharer.getActiveViewSizeInfo();
         const target = getPointTarget(e.point, {
           ctx: helperContext,
@@ -73,11 +73,11 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
           selectedIndexes: getIndexes(),
           selectedUUIDs: sharer.getActiveStorage('selectedUUIDs') || [],
           selectedElements: selectedElements,
-          scaleInfo,
+          viewScaleInfo,
           viewSize,
           calculator,
           areaSize: calcSelectedElementsArea(selectedElements, {
-            scaleInfo,
+            viewScaleInfo,
             viewSize,
             calculator
           })
@@ -102,7 +102,7 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
       sharer.setSharedStorage(keyHoverElementSize, null);
       const data = sharer.getActiveStorage('data');
       const listAreaSize = calcSelectedElementsArea(getActiveElements(), {
-        scaleInfo: sharer.getActiveScaleInfo(),
+        viewScaleInfo: sharer.getActiveScaleInfo(),
         viewSize: sharer.getActiveViewSizeInfo(),
         calculator
       });
@@ -112,7 +112,7 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
         selectedIndexes: getIndexes(),
         selectedUUIDs: sharer.getActiveStorage('selectedUUIDs') || [],
         selectedElements: getActiveElements(),
-        scaleInfo: sharer.getActiveScaleInfo(),
+        viewScaleInfo: sharer.getActiveScaleInfo(),
         viewSize: sharer.getActiveViewSizeInfo(),
         calculator,
         areaSize: listAreaSize
@@ -205,9 +205,9 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
       const data = sharer.getActiveStorage('data');
       const resizeType = sharer.getSharedStorage(keyResizeType);
       const actionType = sharer.getSharedStorage(keyActionType);
-      const scaleInfo = sharer.getActiveScaleInfo();
+      const viewScaleInfo = sharer.getActiveScaleInfo();
       const viewSize = sharer.getActiveViewSizeInfo();
-      const { scale, offsetLeft, offsetTop } = scaleInfo;
+      const { scale, offsetLeft, offsetTop } = viewScaleInfo;
       const { width, height, contextHeight, contextWidth, contextX, contextY } = viewSize;
       let needDrawFrame = false;
 
@@ -222,7 +222,7 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
             start,
             end,
             calculator,
-            scaleInfo: sharer.getActiveScaleInfo(),
+            viewScaleInfo: sharer.getActiveScaleInfo(),
             viewSize: sharer.getActiveViewSizeInfo()
           });
 
@@ -291,8 +291,8 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
         contextWidth,
         devicePixelRatio
       } = activeStore;
-      const scaleInfo = { scale, offsetLeft, offsetTop, offsetRight, offsetBottom };
-      const viewSize = { width, height, contextX, contextY, contextHeight, contextWidth, devicePixelRatio };
+      const viewScaleInfo = { scale, offsetLeft, offsetTop, offsetRight, offsetBottom };
+      const viewSizeInfo = { width, height, contextX, contextY, contextHeight, contextWidth, devicePixelRatio };
       // const elem = data?.elements?.[selectedIndexes?.[0] as number];
       const selectedElements = getSelectedElements(data, selectedUUIDs);
       const elem = selectedElements[0];
@@ -301,14 +301,14 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
       const areaStart: Point | null = sharedStore[keyAreaStart];
       const areaEnd: Point | null = sharedStore[keyAreaEnd];
 
-      const drawOpts = { calculator, scaleInfo, viewSize };
+      const drawOpts = { calculator, viewScaleInfo, viewSizeInfo };
       if (hoverElement && actionType !== 'drag') {
-        const hoverElemSize = calculator.elementSize(hoverElement, scaleInfo, viewSize);
+        const hoverElemSize = calculator.elementSize(hoverElement, viewScaleInfo, viewSizeInfo);
         drawHoverWrapper(helperContext, hoverElemSize);
       }
 
       if (elem && ['select', 'drag', 'resize'].includes(actionType)) {
-        const selectedElemSize = calculator.elementSize(elem, scaleInfo, viewSize);
+        const selectedElemSize = calculator.elementSize(elem, viewScaleInfo, viewSizeInfo);
         const sizeControllers = calcElementControllerStyle(selectedElemSize);
         drawPointWrapper(helperContext, selectedElemSize);
         drawElementControllers(helperContext, selectedElemSize, { ...drawOpts, sizeControllers });
@@ -316,7 +316,7 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
         drawArea(helperContext, { start: areaStart, end: areaEnd });
       } else if (['drag-list', 'drag-list-end'].includes(actionType)) {
         const listAreaSize = calcSelectedElementsArea(getActiveElements(), {
-          scaleInfo: sharer.getActiveScaleInfo(),
+          viewScaleInfo: sharer.getActiveScaleInfo(),
           viewSize: sharer.getActiveViewSizeInfo(),
           calculator
         });

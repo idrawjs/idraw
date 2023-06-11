@@ -101,7 +101,7 @@ export function drawElementListShadows(ctx: ViewContext2D, elements: Element<Ele
     const { angle = 0 } = elem;
     if (opts?.calculator) {
       const { calculator } = opts;
-      const size = calculator.elementSize({ x, y, w, h }, opts.scaleInfo, opts.viewSize);
+      const size = calculator.elementSize({ x, y, w, h }, opts.viewScaleInfo, opts.viewSizeInfo);
       x = size.x;
       y = size.y;
       w = size.w;

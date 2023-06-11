@@ -43,8 +43,8 @@ export class Renderer extends EventEmitter<RendererEventMap> implements BoardRen
     const parentElementSize = {
       x: 0,
       y: 0,
-      w: opts.viewSize.width,
-      h: opts.viewSize.height
+      w: opts.viewSizeInfo.width,
+      h: opts.viewSizeInfo.height
     };
     drawElementList(viewContext, data.elements, {
       loader,
@@ -60,14 +60,14 @@ export class Renderer extends EventEmitter<RendererEventMap> implements BoardRen
       sharer.getActiveStoreSnapshot();
     if (data) {
       this.drawData(data, {
-        scaleInfo: {
+        viewScaleInfo: {
           scale: num,
           offsetTop,
           offsetBottom,
           offsetLeft,
           offsetRight
         },
-        viewSize: {
+        viewSizeInfo: {
           width,
           height,
           contextX,

@@ -30,7 +30,7 @@ export type BoardWatherScrollYEvent = ViewScaleInfo;
 
 export type BoardWatherResizeEvent = ViewSizeInfo;
 
-export interface BoardWatcherEventMap<S extends Record<any | symbol, any>> {
+export interface BoardWatcherEventMap<S extends Record<any | symbol, any> = any> {
   hover: BoardWatcherPointEvent;
   pointStart: BoardWatcherPointEvent;
   pointMove: BoardWatcherPointEvent;
@@ -49,7 +49,7 @@ export interface BoardWatcherEventMap<S extends Record<any | symbol, any>> {
 
 export type BoardMode = 'SELECT' | 'SCROLL' | 'RULE' | 'CONNECT' | 'PENCIL' | 'PEN' | string;
 
-export interface BoardMiddlewareObject<S extends Record<any | symbol, any>> {
+export interface BoardMiddlewareObject<S extends Record<any | symbol, any> = any> {
   mode: BoardMode;
   isDefault?: boolean;
   created?: () => void;
@@ -86,7 +86,7 @@ export interface BoardOptions {
   viewContent: ViewContent;
 }
 
-export interface BoardViewerFrameSnapshot<S extends Record<any | symbol, any>> {
+export interface BoardViewerFrameSnapshot<S extends Record<any | symbol, any> = any> {
   activeStore: ActiveStore;
   sharedStore: S;
 }

@@ -38,10 +38,10 @@ export function getPointTarget(
     selectedUUIDs: Array<string>;
     selectedElements?: Element<ElementType>[];
     areaSize?: AreaSize | null;
-    scaleInfo: ViewScaleInfo;
-    viewSize: ViewSizeInfo;
+    viewScaleInfo: ViewScaleInfo;
+    viewSizeInfo: ViewSizeInfo;
     calculator: ViewCalculator;
-    groupQueue: Element<'group'>[];
+    groupQueue: Element<'group'>[] | null;
   }
 ): PointTarget {
   const target: PointTarget = {
@@ -50,7 +50,31 @@ export function getPointTarget(
     indexes: [],
     uuids: []
   };
-  const { ctx, data, calculator, selectedElements, selectedIndexes, selectedUUIDs, scaleInfo, viewSize, areaSize } = opts;
+  const { ctx, data, calculator, selectedElements, selectedIndexes, selectedUUIDs, viewScaleInfo, viewSizeInfo, areaSize, groupQueue } = opts;
+
+  // in-group-element
+  if (groupQueue && Array.isArray(groupQueue) && groupQueue.length > 0 && data) {
+    const { index, element } = calculator.getPointElement(p as Point, data, viewScaleInfo, viewSizeInfo);
+    if (index >= 0 && element) {
+      const newQueue: Element<'group'>[] = [];
+      for (let i = 0; i < groupQueue.length; i++) {
+        const group = groupQueue[i];
+        if (group.type !== 'group') {
+          break;
+        }
+        if (element.uuid === group.uuid) {
+          // isElementInGroup(element, group)
+          // TODO  check in group
+          newQueue.push(group);
+          target.indexes = [];
+          target.elements = newQueue;
+          target.uuids = [];
+          target.type = 'in-group-element';
+          return target;
+        }
+      }
+    }
+  }
 
   // list area
   if (areaSize && Array.isArray(selectedElements) && selectedElements?.length > 1 && Array.isArray(selectedIndexes) && selectedIndexes?.length > 1) {
@@ -66,7 +90,7 @@ export function getPointTarget(
 
   // resize
   if (selectedElements?.length === 1) {
-    const elemSize = calculator.elementSize(selectedElements[0], scaleInfo, viewSize);
+    const elemSize = calculator.elementSize(selectedElements[0], viewScaleInfo, viewSizeInfo);
     const ctrls = calcElementControllerStyle(elemSize);
     rotateElement(ctx, elemSize, () => {
       const ctrlKeys = Object.keys(ctrls);
@@ -93,7 +117,7 @@ export function getPointTarget(
 
   // over-element
   if (data) {
-    const { index, element } = calculator.getPointElement(p as Point, data, scaleInfo, viewSize);
+    const { index, element } = calculator.getPointElement(p as Point, data, viewScaleInfo, viewSizeInfo);
     if (index >= 0 && element) {
       target.indexes = [index];
       target.elements = [element];
@@ -383,14 +407,14 @@ export function getSelectedListArea(
   opts: {
     start: Point;
     end: Point;
-    scaleInfo: ViewScaleInfo;
-    viewSize: ViewSizeInfo;
+    viewScaleInfo: ViewScaleInfo;
+    viewSizeInfo: ViewSizeInfo;
     calculator: ViewCalculator;
   }
 ): { indexes: number[]; uuids: string[] } {
   const indexes: number[] = [];
   const uuids: string[] = [];
-  const { calculator, scaleInfo, viewSize, start, end } = opts;
+  const { calculator, viewScaleInfo, viewSizeInfo, start, end } = opts;
 
   if (!(Array.isArray(data.elements) && start && end)) {
     return { indexes, uuids };
@@ -401,7 +425,7 @@ export function getSelectedListArea(
   const endY = Math.max(start.y, end.y);
 
   data.elements.forEach((elem, idx) => {
-    const elemSize = calculator.elementSize(elem, scaleInfo, viewSize);
+    const elemSize = calculator.elementSize(elem, viewScaleInfo, viewSizeInfo);
 
     const center = calcElementCenter(elemSize);
     if (center.x >= startX && center.x <= endX && center.y >= startY && center.y <= endY) {
@@ -426,8 +450,8 @@ export function getSelectedListArea(
 export function calcSelectedElementsArea(
   elements: Element<ElementType>[],
   opts: {
-    scaleInfo: ViewScaleInfo;
-    viewSize: ViewSizeInfo;
+    viewScaleInfo: ViewScaleInfo;
+    viewSizeInfo: ViewSizeInfo;
     calculator: ViewCalculator;
   }
 ): AreaSize | null {
@@ -435,11 +459,11 @@ export function calcSelectedElementsArea(
     return null;
   }
   const area: AreaSize = { x: 0, y: 0, w: 0, h: 0 };
-  const { calculator, scaleInfo, viewSize } = opts;
+  const { calculator, viewScaleInfo, viewSizeInfo } = opts;
   let prevElemSize: ElementSize | null = null;
 
   elements.forEach((elem) => {
-    const elemSize = calculator.elementSize(elem, scaleInfo, viewSize);
+    const elemSize = calculator.elementSize(elem, viewScaleInfo, viewSizeInfo);
 
     if (elemSize.angle && (elemSize.angle > 0 || elemSize.angle < 0)) {
       const ves = rotateElementVertexes(elemSize);

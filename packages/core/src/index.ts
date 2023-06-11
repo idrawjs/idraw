@@ -76,10 +76,10 @@ export class Core {
 
   resize(newViewSize: ViewSizeInfo) {
     const sharer = this._board.getSharer();
-    const scaleInfo = sharer.getActiveScaleInfo();
+    const viewScaleInfo = sharer.getActiveScaleInfo();
     this._board.resize(newViewSize);
-    // this._board.scale(scaleInfo.scale);
-    // this._board.scrollX(scaleInfo.offsetLeft);
-    // this._board.scrollY(scaleInfo.offsetTop);
+    // this._board.scale(viewScaleInfo.scale);
+    // this._board.scrollX(viewScaleInfo.offsetLeft);
+    // this._board.scrollY(viewScaleInfo.offsetTop);
   }
 }

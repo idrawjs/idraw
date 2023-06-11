@@ -1,5 +1,14 @@
 import type { Data, Point, Element, ElementType, ViewCalculator, ViewCalculatorOptions, ViewScaleInfo, ElementSize, ViewSizeInfo } from '@idraw/types';
-import { rotateElementVertexes, checkRectIntersect } from '@idraw/util';
+import {
+  rotateElementVertexes,
+  checkRectIntersect,
+  viewScale,
+  viewScroll,
+  calcElementSize,
+  isViewPointInElement,
+  getViewPointAtElement,
+  isElementInView
+} from '@idraw/util';
 
 export class Calculator implements ViewCalculator {
   private _opts: ViewCalculatorOptions;
@@ -8,50 +17,14 @@ export class Calculator implements ViewCalculator {
     this._opts = opts;
   }
 
-  viewScale(num: number, prevScaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): ViewScaleInfo {
-    const scale = num;
-
-    const { width, height, contextWidth, contextHeight } = viewSizeInfo;
-    let offsetLeft = 0;
-    let offsetRight = 0;
-    let offsetTop = 0;
-    let offsetBottom = 0;
-
-    if (contextWidth * scale < width) {
-      offsetLeft = offsetRight = (width - contextWidth * scale) / 2;
-    } else if (contextWidth * scale > width) {
-      if (prevScaleInfo.offsetLeft < 0) {
-        offsetLeft = (prevScaleInfo.offsetLeft / prevScaleInfo.scale) * scale;
-        offsetRight = 0 - (contextWidth * scale - width - Math.abs(offsetLeft));
-      }
-    }
-
-    if (contextHeight * scale < height) {
-      offsetTop = offsetBottom = (height - contextHeight * scale) / 2;
-    } else if (contextHeight * scale > height) {
-      if (prevScaleInfo.offsetTop < 0) {
-        offsetTop = (prevScaleInfo.offsetTop / prevScaleInfo.scale) * scale;
-        offsetBottom = 0 - (contextHeight * scale - height - Math.abs(offsetTop));
-      }
-    }
-
-    return {
-      scale,
-      offsetTop,
-      offsetLeft,
-      offsetRight,
-      offsetBottom
-    };
-  }
-
-  viewScroll(opts: { moveX?: number; moveY?: number }, scaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): ViewScaleInfo {
-    const scale = scaleInfo.scale;
+  viewScroll(opts: { moveX?: number; moveY?: number }, viewScaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): ViewScaleInfo {
+    const scale = viewScaleInfo.scale;
     const { moveX, moveY } = opts;
     const { width, height, contextWidth, contextHeight } = viewSizeInfo;
-    let offsetLeft = scaleInfo.offsetLeft;
-    let offsetRight = scaleInfo.offsetRight;
-    let offsetTop = scaleInfo.offsetTop;
-    let offsetBottom = scaleInfo.offsetBottom;
+    let offsetLeft = viewScaleInfo.offsetLeft;
+    let offsetRight = viewScaleInfo.offsetRight;
+    let offsetTop = viewScaleInfo.offsetTop;
+    let offsetBottom = viewScaleInfo.offsetBottom;
     if (moveX !== undefined && (moveX > 0 || moveX <= 0)) {
       if (contextWidth * scale < width) {
         offsetLeft = offsetRight = (width - contextWidth * scale) / 2;
@@ -99,10 +72,10 @@ export class Calculator implements ViewCalculator {
     };
   }
 
-  elementSize(size: ElementSize, scaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): ElementSize {
+  elementSize(size: ElementSize, viewScaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): ElementSize {
     const { x, y, w, h, angle } = size;
     const { contextX = 0, contextY = 0 } = viewSizeInfo;
-    const { scale, offsetTop, offsetLeft } = scaleInfo;
+    const { scale, offsetTop, offsetLeft } = viewScaleInfo;
 
     const newSize = {
       x: x * scale + offsetLeft - contextX,
@@ -113,33 +86,12 @@ export class Calculator implements ViewCalculator {
     };
 
     return newSize;
-
-    // const { x, y, w, h, angle } = size;
-    // const { scale, offsetTop, offsetLeft } = scaleInfo;
-    // return {
-    //   x: x * scale + offsetLeft,
-    //   y: y * scale + offsetTop,
-    //   w: w * scale,
-    //   h: h * scale,
-    //   angle
-    // };
   }
 
-  isElementInView(elem: ElementSize, scaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): boolean {
-    // const { width, height } = viewSizeInfo;
-    // const { angle } = elem;
-    // const { x, y, w, h } = this.elementSize(elem, scaleInfo, viewSizeInfo);
-    // const ves = rotateElementVertexes({ x, y, w, h, angle });
-    // for (let i = 0; i < ves.length; i++) {
-    //   const v = ves[i];
-    //   if (v.x >= 0 && v.x <= width && v.y >= 0 && v.y <= height) {
-    //     return true;
-    //   }
-    // }
-
+  isElementInView(elem: ElementSize, viewScaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): boolean {
     const { width, height } = viewSizeInfo;
     const { angle } = elem;
-    const { x, y, w, h } = this.elementSize(elem, scaleInfo, viewSizeInfo);
+    const { x, y, w, h } = this.elementSize(elem, viewScaleInfo, viewSizeInfo);
     const ves = rotateElementVertexes({ x, y, w, h, angle });
     const viewSize = { x: 0, y: 0, w: width, h: height };
 
@@ -148,14 +100,13 @@ export class Calculator implements ViewCalculator {
     const elemEndX = Math.max(ves[0].x, ves[1].x, ves[2].x, ves[3].x);
     const elemEndY = Math.max(ves[0].y, ves[1].y, ves[2].y, ves[3].y);
     const elemSize = { x: elemStartX, y: elemStartY, w: elemEndX - elemStartX, h: elemEndY - elemStartY };
-
     return checkRectIntersect(viewSize, elemSize);
   }
 
-  isPointInElement(p: Point, elem: Element<ElementType>, scaleInfo: ViewScaleInfo, viewSize: ViewSizeInfo): boolean {
+  isPointInElement(p: Point, elem: Element<ElementType>, viewScaleInfo: ViewScaleInfo, viewSize: ViewSizeInfo): boolean {
     const ctx = this._opts.viewContent.boardContext;
     const { angle = 0 } = elem;
-    const { x, y, w, h } = this.elementSize(elem, scaleInfo, viewSize);
+    const { x, y, w, h } = this.elementSize(elem, viewScaleInfo, viewSize);
     const vertexes = rotateElementVertexes({ x, y, w, h, angle });
     if (vertexes.length >= 2) {
       ctx.beginPath();
@@ -171,14 +122,14 @@ export class Calculator implements ViewCalculator {
     return false;
   }
 
-  getPointElement(p: Point, data: Data, scaleInfo: ViewScaleInfo, viewSize: ViewSizeInfo): { index: number; element: null | Element<ElementType> } {
+  getPointElement(p: Point, data: Data, viewScaleInfo: ViewScaleInfo, viewSize: ViewSizeInfo): { index: number; element: null | Element<ElementType> } {
     const result: { index: number; element: null | Element<ElementType> } = {
       index: -1,
       element: null
     };
     for (let i = data.elements.length - 1; i >= 0; i--) {
       const elem = data.elements[i];
-      if (this.isPointInElement(p, elem, scaleInfo, viewSize)) {
+      if (this.isPointInElement(p, elem, viewScaleInfo, viewSize)) {
         result.index = i;
         result.element = elem;
         break;

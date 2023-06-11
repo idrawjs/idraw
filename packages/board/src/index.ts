@@ -259,21 +259,21 @@ export class Board {
   }
 
   scale(num: number) {
-    const scaleInfo = this._viewer.scale(num);
+    const viewScaleInfo = this._viewer.scale(num);
     this._viewer.drawFrame();
-    this._watcher.trigger('scale', scaleInfo);
+    this._watcher.trigger('scale', viewScaleInfo);
   }
 
   scrollX(num: number) {
-    const scaleInfo = this._viewer.scrollX(num);
+    const viewScaleInfo = this._viewer.scrollX(num);
     this._viewer.drawFrame();
-    this._watcher.trigger('scrollX', scaleInfo);
+    this._watcher.trigger('scrollX', viewScaleInfo);
   }
 
   scrollY(num: number) {
-    const scaleInfo = this._viewer.scrollY(num);
+    const viewScaleInfo = this._viewer.scrollY(num);
     this._viewer.drawFrame();
-    this._watcher.trigger('scrollY', scaleInfo);
+    this._watcher.trigger('scrollY', viewScaleInfo);
   }
 
   resize(newViewSize: ViewSizeInfo) {
