@@ -2,7 +2,7 @@ import { createUUID } from '@idraw/util';
 import type { ElementSize } from '@idraw/types';
 import type { DesignComponent, DesignComponentItem } from '../../../src';
 
-function createButtonItem(variantName: string) {
+function createButtonItem(variantName: string, size?: Partial<ElementSize>) {
   const componentItem: DesignComponentItem = {
     uuid: createUUID(),
     type: 'component-item',
@@ -11,6 +11,7 @@ function createButtonItem(variantName: string) {
     y: 50,
     w: 100,
     h: 100,
+    ...(size || {}),
     detail: {
       children: [
         {
@@ -86,7 +87,7 @@ export function createButton(name: string, size?: Partial<ElementSize>) {
     detail: {
       bgColor: '#aaaaaa54',
       default: createButtonItem('default'),
-      variants: [createButtonItem('primary'), createButtonItem('secondary')]
+      variants: [createButtonItem('primary', { x: 200, y: 50, angle: 30 }), createButtonItem('secondary', { x: 50, y: 180 })]
     },
     ...(size || {})
   };

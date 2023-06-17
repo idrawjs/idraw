@@ -1,5 +1,5 @@
-import type { Element, ElementSize, ElementType, PointSize, RendererDrawElementOptions, ViewContext2D } from '@idraw/types';
-import { rotateElement, rotateElementVertexes } from '@idraw/util';
+import type { Element, ElementSize, ElementType, PointSize, RendererDrawElementOptions, ViewContext2D, ViewScaleInfo, ViewSizeInfo } from '@idraw/types';
+import { rotateElement, rotateElementVertexes, calcElementSize } from '@idraw/util';
 // import { calcElementControllerStyle } from './controller';
 import type { AreaSize, ControllerStyle, ElementSizeController } from './types';
 
@@ -159,7 +159,14 @@ export function drawListArea(ctx: ViewContext2D, opts: { areaSize: AreaSize }) {
   ctx.fill();
 }
 
-export function drawGroupsWrapper(ctx: ViewContext2D, elemList: ElementSize[]) {
+export function drawGroupsWrapper(
+  ctx: ViewContext2D,
+  elemList: ElementSize[],
+  opts: {
+    viewScaleInfo: ViewScaleInfo;
+    viewSizeInfo: ViewSizeInfo;
+  }
+) {
   let totalX = 0;
   let totalY = 0;
   let totalAngle = 0;
@@ -172,16 +179,18 @@ export function drawGroupsWrapper(ctx: ViewContext2D, elemList: ElementSize[]) {
     totalY += y;
     totalAngle += angle;
 
-    rotateElement(ctx, { x: totalX, y: totalY, w, h, angle: totalAngle }, () => {
+    const size = calcElementSize({ x: totalX, y: totalY, w, h, angle: totalAngle }, opts);
+
+    rotateElement(ctx, size, () => {
       ctx.setLineDash([4, 4]);
       ctx.lineWidth = 2;
       ctx.strokeStyle = wrapperColor;
       ctx.beginPath();
-      ctx.moveTo(totalX - bw, totalY - bw);
-      ctx.lineTo(totalX + w + bw, totalY - bw);
-      ctx.lineTo(totalX + w + bw, totalY + h + bw);
-      ctx.lineTo(totalX - bw, totalY + h + bw);
-      ctx.lineTo(totalX - bw, totalY - bw);
+      ctx.moveTo(size.x - bw, size.y - bw);
+      ctx.lineTo(size.x + w + bw, size.y - bw);
+      ctx.lineTo(size.x + w + bw, size.y + h + bw);
+      ctx.lineTo(size.x - bw, size.y + h + bw);
+      ctx.lineTo(size.x - bw, size.y - bw);
       ctx.closePath();
       ctx.stroke();
     });

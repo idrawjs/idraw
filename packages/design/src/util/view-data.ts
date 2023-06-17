@@ -25,6 +25,7 @@ function parseComponentItemToElement(item: DesignComponentItem): Element<'group'
     y: item.y,
     w: item.w,
     h: item.h,
+    angle: item.angle || 0,
     detail: {
       ...parseElementBaseDesc(item),
       ...{
@@ -53,6 +54,7 @@ function parseComponentToElement(comp: DesignComponent): Element<'group'> {
     y: comp.y,
     w: comp.w,
     h: comp.h,
+    angle: comp.angle || 0,
     detail: {
       ...parseElementBaseDesc(comp),
       ...{

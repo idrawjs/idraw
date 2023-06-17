@@ -2,7 +2,7 @@ import { createUUID } from '@idraw/util';
 import type { ElementSize } from '@idraw/types';
 import type { DesignComponent, DesignComponentItem } from '../../../src';
 
-function createCheckboxItem(variantName: string) {
+function createCheckboxItem(variantName: string, size?: Partial<ElementSize>) {
   const componentItem: DesignComponentItem = {
     uuid: createUUID(),
     type: 'component-item',
@@ -11,6 +11,7 @@ function createCheckboxItem(variantName: string) {
     y: 50,
     w: 100,
     h: 100,
+    ...(size || {}),
     detail: {
       children: [
         {
@@ -86,7 +87,7 @@ export function createCheckbox(name: string, size?: Partial<ElementSize>) {
     detail: {
       bgColor: '#aaaaaa54',
       default: createCheckboxItem('default'),
-      variants: [createCheckboxItem('primary'), createCheckboxItem('secondary')]
+      variants: [createCheckboxItem('primary', { x: 200, y: 50 }), createCheckboxItem('secondary', { x: 50, y: 180 })]
     },
     ...(size || {})
   };

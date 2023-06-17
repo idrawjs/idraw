@@ -45,6 +45,7 @@ export type PointTargetType = null | ResizeType | 'list-area' | 'over-element' |
 export interface PointTarget {
   type: PointTargetType;
   elements: Element<ElementType>[];
+  groupQueue: Element<'group'>[];
   indexes: Array<number | string>;
   uuids: string[];
 }

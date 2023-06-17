@@ -14,7 +14,7 @@ import type {
   AreaSize,
   ViewSizeInfo
 } from './types';
-import { rotateElement, calcElementCenter, rotateElementVertexes } from '@idraw/util';
+import { rotateElement, calcElementCenter, rotateElementVertexes, calcElementSize } from '@idraw/util';
 import { calcElementControllerStyle } from './controller';
 
 function parseRadian(angle: number) {
@@ -47,6 +47,7 @@ export function getPointTarget(
   const target: PointTarget = {
     type: null,
     elements: [],
+    groupQueue: [],
     indexes: [],
     uuids: []
   };
@@ -58,7 +59,7 @@ export function getPointTarget(
     if (groupQueueIndex >= 0) {
       const newQueue: Element<'group'>[] = groupQueue.splice(0, groupQueueIndex + 1);
       target.indexes = [];
-      target.elements = newQueue;
+      target.groupQueue = newQueue;
       target.uuids = [];
       target.type = 'in-group-element';
       return target;
@@ -72,7 +73,8 @@ export function getPointTarget(
         newQueue.push(group);
         if (element.uuid === group.uuid) {
           target.indexes = [];
-          target.elements = newQueue;
+          target.elements = [];
+          target.groupQueue = newQueue;
           target.uuids = [];
           target.type = 'in-group-element';
           return target;
@@ -82,9 +84,11 @@ export function getPointTarget(
             if (element.uuid === child.uuid && element.type === 'group') {
               newQueue.push(element as Element<'group'>);
               target.indexes = [];
-              target.elements = newQueue;
+              target.groupQueue = newQueue;
               target.uuids = [];
               target.type = 'in-group-element';
+            } else {
+              target.elements = [element];
             }
           }
         }
@@ -526,3 +530,40 @@ export function isElementInGroup(elem: Element<ElementType>, group: Element<'gro
   }
   return false;
 }
+
+// function getViewElementSizeInGroup(groupQueue: Element<'group'>, target?: Element<ElementType>): ElementSize {}
+
+// export function isPointInTargetGroup(
+//   point: PointSize,
+//   groupQueue: Element<'group'>[],
+//   opts: {
+//     viewScaleInfo: ViewScaleInfo;
+//     viewSizeInfo: ViewSizeInfo;
+//   }
+// ): boolean {
+//   // let totalX = 0;
+//   // let totalY = 0;
+//   // let totalAngle = 0;
+//   // for (let i = 0; i < elemList.length; i++) {
+//   //   const elem = elemList[i];
+//   //   const bw = 0;
+//   //   const { x, y, w, h, angle = 0 } = elem;
+//   //   totalX += x;
+//   //   totalY += y;
+//   //   totalAngle += angle;
+//   //   const size = calcElementSize({ x: totalX, y: totalY, w, h, angle: totalAngle }, opts);
+//   //   rotateElement(ctx, size, () => {
+//   //     ctx.setLineDash([4, 4]);
+//   //     ctx.lineWidth = 2;
+//   //     ctx.strokeStyle = wrapperColor;
+//   //     ctx.beginPath();
+//   //     ctx.moveTo(size.x - bw, size.y - bw);
+//   //     ctx.lineTo(size.x + w + bw, size.y - bw);
+//   //     ctx.lineTo(size.x + w + bw, size.y + h + bw);
+//   //     ctx.lineTo(size.x - bw, size.y + h + bw);
+//   //     ctx.lineTo(size.x - bw, size.y - bw);
+//   //     ctx.closePath();
+//   //     ctx.stroke();
+//   //   });
+//   // }
+// }

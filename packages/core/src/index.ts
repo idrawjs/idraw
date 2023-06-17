@@ -57,7 +57,6 @@ export class Core {
       ...currentViewSize,
       ...newViewContextSize
     });
-
     this.scrollX(newViewContextSize.contextX);
     this.scrollY(newViewContextSize.contextY);
   }
@@ -75,8 +74,8 @@ export class Core {
   }
 
   resize(newViewSize: ViewSizeInfo) {
-    const sharer = this._board.getSharer();
-    const viewScaleInfo = sharer.getActiveScaleInfo();
+    // const sharer = this._board.getSharer();
+    // const viewScaleInfo = sharer.getActiveScaleInfo();
     this._board.resize(newViewSize);
     // this._board.scale(viewScaleInfo.scale);
     // this._board.scrollX(viewScaleInfo.offsetLeft);

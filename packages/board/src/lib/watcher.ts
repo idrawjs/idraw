@@ -22,7 +22,7 @@ export class BoardWatcher extends EventEmitter<BoardWatcherEventMap> {
       if (!this._isInTarget(e)) {
         return;
       }
-      if (this._store.get('hasPointDown') === true) {
+      if (!this._store.get('hasPointDown')) {
         return;
       }
       e.preventDefault();
