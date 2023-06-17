@@ -2,9 +2,8 @@ import { getSelectedElementIndexes, getSelectedElements, calcElementsViewInfo } 
 import type { Point, PointWatcherEvent, BoardMiddleware, Element, ElementSize, ActionType, ResizeType, DeepSelectorSharedStorage } from './types';
 import { drawPointWrapper, drawHoverWrapper, drawElementControllers, drawArea, drawListArea, drawGroupsWrapper } from './draw-wrapper';
 import { calcElementControllerStyle } from './controller';
-import { getPointTarget, resizeElement, getSelectedListArea, calcSelectedElementsArea, isElementInGroup } from './util';
+import { getPointTarget, resizeElement, getSelectedListArea, calcSelectedElementsArea, isElementInGroup, calcElementSizeFromGroup } from './util';
 import { key, keyHoverElementSize, keyActionType, keyResizeType, keyAreaStart, keyAreaEnd, keyGroupQueue, keyInGroup } from './config';
-import { calcElementSizeInGroup } from '../../util/group';
 
 export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (opts) => {
   const { viewer, sharer, viewContent, calculator } = opts;
@@ -96,7 +95,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
             return;
           }
           if (target?.elements?.length === 1) {
-            const hoverElemSize = calcElementSizeInGroup(target.elements[0], sharer.getSharedStorage(keyGroupQueue) || []);
+            const hoverElemSize = calcElementSizeFromGroup(target.elements[0], sharer.getSharedStorage(keyGroupQueue) || []);
             sharer.setSharedStorage(keyHoverElementSize, hoverElemSize);
             viewer.drawFrame();
           }
@@ -403,6 +402,17 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
         contextWidth,
         devicePixelRatio
       } = activeStore;
+
+      // TODO mock start
+      if (data) {
+        sharer.setSharedStorage(keyInGroup, true);
+        sharer.setSharedStorage(keyGroupQueue, [
+          data?.elements?.[0] as Element<'group'>,
+          (data?.elements?.[1] as Element<'group'>)?.detail?.children[0] as Element<'group'>
+        ]);
+      }
+      // TODO mock end
+
       const viewScaleInfo = { scale, offsetLeft, offsetTop, offsetRight, offsetBottom };
       const viewSizeInfo = { width, height, contextX, contextY, contextHeight, contextWidth, devicePixelRatio };
       // const elem = data?.elements?.[selectedIndexes?.[0] as number];

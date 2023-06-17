@@ -86,8 +86,12 @@ export function createButton(name: string, size?: Partial<ElementSize>) {
     h: 200,
     detail: {
       bgColor: '#aaaaaa54',
-      default: createButtonItem('default'),
-      variants: [createButtonItem('primary', { x: 200, y: 50, angle: 30 }), createButtonItem('secondary', { x: 50, y: 180 })]
+      default: createButtonItem('default', { angle: 0 }),
+      variants: [
+        // createButtonItem('primary', { x: 200, y: 50, angle: 30 }),
+        createButtonItem('primary', { x: 200, y: 50 }),
+        createButtonItem('secondary', { x: 50, y: 180 })
+      ]
     },
     ...(size || {})
   };

@@ -14,7 +14,7 @@ import type {
   AreaSize,
   ViewSizeInfo
 } from './types';
-import { rotateElement, calcElementCenter, rotateElementVertexes, calcElementSize } from '@idraw/util';
+import { rotateElement, calcElementCenter, rotateElementVertexes, calcElementCenterFromVertexes } from '@idraw/util';
 import { calcElementControllerStyle } from './controller';
 
 function parseRadian(angle: number) {
@@ -531,7 +531,44 @@ export function isElementInGroup(elem: Element<ElementType>, group: Element<'gro
   return false;
 }
 
-// function getViewElementSizeInGroup(groupQueue: Element<'group'>, target?: Element<ElementType>): ElementSize {}
+export function calcElementSizeFromGroup(element: Element<ElementType>, groupQueue: Element<'group'>[]): ElementSize {
+  let totalX = 0;
+  let totalY = 0;
+  let totalAngle = 0;
+  // let preGroupSize: ElementSize = { x: 0, y: 0, w: 0, h: 0 };
+
+  for (let i = 0; i < groupQueue.length; i++) {
+    const elem = groupQueue[i];
+    const { x, y, angle = 0 } = elem;
+    // if (i === 0) {
+    totalX += x;
+    totalY += y;
+    totalAngle += angle;
+    // } else {
+    //   const { moveX, moveY } = calcRotateGroupChildMoveInfo(preGroupSize, groupQueue[i]);
+    //   console.log(' moveX, moveY ======', moveX, moveY);
+    //   totalX += x + moveX;
+    //   totalY += y + moveY;
+    //   totalAngle += angle;
+    // }
+    // preGroupSize = {
+    //   x: totalX,
+    //   y: totalY,
+    //   w: elem.w,
+    //   h: elem.h,
+    //   angle: totalAngle
+    // };
+  }
+  // const { moveX, moveY } = calcRotateGroupChildMoveInfo(preGroupSize, element);
+  const { x, y, w, h, angle = 0 } = element;
+  return {
+    x: x + totalX,
+    y: y + totalY,
+    h,
+    w,
+    angle: angle + totalAngle
+  };
+}
 
 // export function isPointInTargetGroup(
 //   point: PointSize,

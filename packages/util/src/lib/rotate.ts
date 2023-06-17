@@ -1,4 +1,4 @@
-import type { ViewContext2D, PointSize, ElementSize } from '@idraw/types';
+import type { ViewContext2D, PointSize, ElementSize, Element, ElementType } from '@idraw/types';
 import { calcDistance } from './point';
 
 export function parseRadianToAngle(radian: number): number {
@@ -9,20 +9,20 @@ export function parseAngleToRadian(angle: number): number {
   return (angle / 180) * Math.PI;
 }
 
-export function calcElementRotateCenter(elem: ElementSize): PointSize {
-  const p = {
-    x: elem.x + elem.w / 2,
-    y: elem.y + elem.h / 2
-  };
-  return p;
-}
+// export function calcElementCenter(elem: ElementSize): PointSize {
+//   const p = {
+//     x: elem.x + elem.w / 2,
+//     y: elem.y + elem.h / 2
+//   };
+//   return p;
+// }
 
 export function rotateElement(
   ctx: ViewContext2D | CanvasRenderingContext2D | ViewContext2D,
   elemSize: ElementSize,
   callback: (ctx: ViewContext2D | CanvasRenderingContext2D) => void
 ): void {
-  const center = calcElementRotateCenter(elemSize);
+  const center = calcElementCenter(elemSize);
   const radian = parseAngleToRadian(elemSize.angle || 0);
   if (center && (radian > 0 || radian < 0)) {
     ctx.translate(center.x, center.y);
@@ -45,6 +45,20 @@ export function calcElementCenter(elem: ElementSize): PointSize {
     y: elem.y + elem.h / 2
   };
   return p;
+}
+
+export function calcElementCenterFromVertexes(ves: [PointSize, PointSize, PointSize, PointSize]): PointSize {
+  const startX = Math.min(ves[0].x, ves[1].x, ves[2].x, ves[3].x);
+  const startY = Math.min(ves[0].y, ves[1].y, ves[2].y, ves[3].y);
+  const endX = Math.max(ves[0].x, ves[1].x, ves[2].x, ves[3].x);
+  const endY = Math.max(ves[0].y, ves[1].y, ves[2].y, ves[3].y);
+  const elemSize = {
+    x: startX,
+    y: startY,
+    w: endX - startX,
+    h: endY - endY
+  };
+  return calcElementCenter(elemSize);
 }
 
 export function calcRadian(center: PointSize, start: PointSize, end: PointSize): number {
@@ -145,15 +159,14 @@ export function rotatePoint(center: PointSize, start: PointSize, radian: number)
   return { x, y };
 }
 
-export function rotateElementVertexes(elemSize: ElementSize): PointSize[] {
-  const { x, y, w, h, angle } = elemSize;
+export function getElementRotateVertexes(elemSize: ElementSize, center: PointSize, angle: number): [PointSize, PointSize, PointSize, PointSize] {
+  const { x, y, w, h } = elemSize;
   let p1 = { x, y };
   let p2 = { x: x + w, y };
   let p3 = { x: x + w, y: y + h };
   let p4 = { x, y: y + h };
   if (angle && (angle > 0 || angle < 0)) {
-    const radian = parseAngleToRadian(angle);
-    const center = calcElementCenter(elemSize);
+    const radian = parseAngleToRadian(limitAngle(angle));
     p1 = rotatePoint(center, p1, radian);
     p2 = rotatePoint(center, p2, radian);
     p3 = rotatePoint(center, p3, radian);
@@ -161,3 +174,37 @@ export function rotateElementVertexes(elemSize: ElementSize): PointSize[] {
   }
   return [p1, p2, p3, p4];
 }
+
+export function rotateElementVertexes(elemSize: ElementSize): [PointSize, PointSize, PointSize, PointSize] {
+  const { angle = 0 } = elemSize;
+  const center = calcElementCenter(elemSize);
+  return getElementRotateVertexes(elemSize, center, angle);
+}
+
+// [0, 360], eg. 370 to 10, -10 to 350
+export function limitAngle(angle: number): number {
+  if (!(angle > 0 || angle < 0) || angle === 0) {
+    return 0;
+  }
+  let num = angle % 360;
+  if (num < 0) {
+    num += 360;
+  }
+  return num;
+}
+
+// export function calcRotateGroupChildMoveInfo(group: Element<'group'> | ElementSize, child: Element<ElementType>): { moveX: number; moveY: number } {
+//   let moveX = 0;
+//   let moveY = 0;
+//   const groupAngle = limitAngle(group.angle || 0);
+//   if (groupAngle === 0) {
+//     return { moveX, moveY };
+//   }
+//   const radian = parseAngleToRadian(groupAngle);
+//   const groupCenter = calcElementCenter(group);
+//   const childCenter = calcElementCenter(child);
+//   const newChildCenter = rotatePoint(groupCenter, childCenter, radian);
+//   moveX = newChildCenter.x - childCenter.x;
+//   moveY = newChildCenter.y - childCenter.y;
+//   return { moveX, moveY };
+// }

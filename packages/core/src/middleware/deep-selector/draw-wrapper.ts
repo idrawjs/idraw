@@ -1,5 +1,12 @@
 import type { Element, ElementSize, ElementType, PointSize, RendererDrawElementOptions, ViewContext2D, ViewScaleInfo, ViewSizeInfo } from '@idraw/types';
-import { rotateElement, rotateElementVertexes, calcElementSize } from '@idraw/util';
+import {
+  rotateElement,
+  rotateElementVertexes,
+  getElementRotateVertexes,
+  calcViewPointSize,
+  calcElementCenter,
+  calcElementCenterFromVertexes
+} from '@idraw/util';
 // import { calcElementControllerStyle } from './controller';
 import type { AreaSize, ControllerStyle, ElementSizeController } from './types';
 
@@ -161,38 +168,54 @@ export function drawListArea(ctx: ViewContext2D, opts: { areaSize: AreaSize }) {
 
 export function drawGroupsWrapper(
   ctx: ViewContext2D,
-  elemList: ElementSize[],
+  groupQueue: Element<'group'>[],
   opts: {
     viewScaleInfo: ViewScaleInfo;
     viewSizeInfo: ViewSizeInfo;
   }
 ) {
+  const vesList: Array<[PointSize, PointSize, PointSize, PointSize]> = [];
+  let prevCenter = { x: 0, y: 0 };
+  let prevAngle = 0;
   let totalX = 0;
   let totalY = 0;
-  let totalAngle = 0;
 
-  for (let i = 0; i < elemList.length; i++) {
-    const elem = elemList[i];
-    const bw = 0;
-    const { x, y, w, h, angle = 0 } = elem;
+  for (let i = 0; i < groupQueue.length; i++) {
+    const { x, y, w, h, angle = 0 } = groupQueue[i];
     totalX += x;
     totalY += y;
-    totalAngle += angle;
 
-    const size = calcElementSize({ x: totalX, y: totalY, w, h, angle: totalAngle }, opts);
+    if (i === 0) {
+      prevCenter = calcElementCenter({ x, y, w, h, angle });
+      prevAngle = angle;
+    }
+    const elemSize: ElementSize = { x: totalX, y: totalY, w, h, angle };
 
-    rotateElement(ctx, size, () => {
-      ctx.setLineDash([4, 4]);
-      ctx.lineWidth = 2;
-      ctx.strokeStyle = wrapperColor;
-      ctx.beginPath();
-      ctx.moveTo(size.x - bw, size.y - bw);
-      ctx.lineTo(size.x + w + bw, size.y - bw);
-      ctx.lineTo(size.x + w + bw, size.y + h + bw);
-      ctx.lineTo(size.x - bw, size.y + h + bw);
-      ctx.lineTo(size.x - bw, size.y - bw);
-      ctx.closePath();
-      ctx.stroke();
-    });
+    const ves: [PointSize, PointSize, PointSize, PointSize] = getElementRotateVertexes(elemSize, prevCenter, prevAngle);
+    vesList.push(ves);
+    if (i > 0) {
+      prevCenter = calcElementCenterFromVertexes(ves);
+      prevAngle = angle;
+    }
+  }
+
+  for (let i = 0; i < vesList.length; i++) {
+    const ves = vesList[i];
+    const v0 = calcViewPointSize(ves[0], opts);
+    const v1 = calcViewPointSize(ves[1], opts);
+    const v2 = calcViewPointSize(ves[2], opts);
+    const v3 = calcViewPointSize(ves[3], opts);
+
+    ctx.setLineDash([4, 4]);
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = wrapperColor;
+    ctx.beginPath();
+    ctx.moveTo(v0.x, v0.y);
+    ctx.lineTo(v1.x, v1.y);
+    ctx.lineTo(v2.x, v2.y);
+    ctx.lineTo(v3.x, v3.y);
+    ctx.lineTo(v0.x, v0.y);
+    ctx.closePath();
+    ctx.stroke();
   }
 }

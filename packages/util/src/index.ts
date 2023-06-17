@@ -13,7 +13,15 @@ export { calcDistance, calcSpeed, equalPoint, equalTouchPoint, vaildPoint, vaild
 export { Store } from './lib/store';
 export { getViewScaleInfoFromSnapshot, getViewSizeInfoFromSnapshot } from './lib/middleware';
 export { Context2D } from './lib/context2d';
-export { rotateElement, parseRadianToAngle, parseAngleToRadian, rotateElementVertexes, calcElementCenter } from './lib/rotate';
+export {
+  rotateElement,
+  parseRadianToAngle,
+  parseAngleToRadian,
+  rotateElementVertexes,
+  getElementRotateVertexes,
+  calcElementCenter,
+  calcElementCenterFromVertexes
+} from './lib/rotate';
 export {
   getSelectedElementIndexes,
   getSelectedElementUUIDs,
@@ -23,4 +31,5 @@ export {
   calcElementsViewInfo
 } from './lib/element';
 export { checkRectIntersect } from './lib/rect';
-export { viewScale, viewScroll, calcElementSize, isViewPointInElement, getViewPointAtElement, isElementInView } from './lib/view-calc';
+export { viewScale, viewScroll, calcViewElementSize, calcViewPointSize, isViewPointInElement, getViewPointAtElement, isElementInView } from './lib/view-calc';
+export { rotatePoint } from './lib/rotate';
