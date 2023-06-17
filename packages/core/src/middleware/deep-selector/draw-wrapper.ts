@@ -5,7 +5,9 @@ import {
   getElementRotateVertexes,
   calcViewPointSize,
   calcElementCenter,
-  calcElementCenterFromVertexes
+  calcElementCenterFromVertexes,
+  rotatePoint,
+  parseAngleToRadian
 } from '@idraw/util';
 // import { calcElementControllerStyle } from './controller';
 import type { AreaSize, ControllerStyle, ElementSizeController } from './types';
@@ -192,11 +194,20 @@ export function drawGroupsWrapper(
     const elemSize: ElementSize = { x: totalX, y: totalY, w, h, angle };
 
     const ves: [PointSize, PointSize, PointSize, PointSize] = getElementRotateVertexes(elemSize, prevCenter, prevAngle);
-    vesList.push(ves);
+
     if (i > 0) {
-      prevCenter = calcElementCenterFromVertexes(ves);
+      const vesCenter = calcElementCenterFromVertexes(ves);
+      if (angle > 0 || angle < 0) {
+        const radian = parseAngleToRadian(angle);
+        ves[0] = rotatePoint(vesCenter, ves[0], radian);
+        ves[1] = rotatePoint(vesCenter, ves[1], radian);
+        ves[2] = rotatePoint(vesCenter, ves[2], radian);
+        ves[3] = rotatePoint(vesCenter, ves[3], radian);
+      }
+      prevCenter = vesCenter;
       prevAngle = angle;
     }
+    vesList.push(ves);
   }
 
   for (let i = 0; i < vesList.length; i++) {

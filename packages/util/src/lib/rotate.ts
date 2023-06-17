@@ -56,7 +56,7 @@ export function calcElementCenterFromVertexes(ves: [PointSize, PointSize, PointS
     x: startX,
     y: startY,
     w: endX - startX,
-    h: endY - endY
+    h: endY - startY
   };
   return calcElementCenter(elemSize);
 }
