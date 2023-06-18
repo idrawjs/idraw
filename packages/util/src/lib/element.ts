@@ -229,13 +229,3 @@ export function calcElementsViewInfo(
     changeContextBottom
   };
 }
-
-export function getElementVertexes(elemSize: ElementSize): ViewRectVertexes {
-  const { x, y, h, w } = elemSize;
-  return [
-    { x, y },
-    { x: x + w, y },
-    { x: x + w, y: y + h },
-    { x, y: y + h }
-  ];
-}

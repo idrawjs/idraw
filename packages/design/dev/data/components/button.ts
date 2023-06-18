@@ -13,6 +13,7 @@ function createButtonItem(variantName: string, size?: Partial<ElementSize>) {
     h: 100,
     ...(size || {}),
     detail: {
+      bgColor: '#ff98001F',
       children: [
         {
           uuid: createUUID(),
@@ -22,6 +23,7 @@ function createButtonItem(variantName: string, size?: Partial<ElementSize>) {
           w: 80,
           h: 50,
           detail: {
+            bgColor: '#0382761F',
             children: [
               {
                 uuid: createUUID(),

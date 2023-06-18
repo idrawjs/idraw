@@ -1,16 +1,15 @@
-import type { Element, ElementSize, ElementType, PointSize, RendererDrawElementOptions, ViewContext2D, ViewScaleInfo, ViewSizeInfo } from '@idraw/types';
-import {
-  rotateElement,
-  rotateElementVertexes,
-  getElementRotateVertexes,
-  calcViewPointSize,
-  calcElementCenter,
-  calcElementCenterFromVertexes,
-  rotatePoint,
-  rotateVertexes,
-  getElementVertexes,
-  parseAngleToRadian
-} from '@idraw/util';
+import type {
+  Element,
+  ElementSize,
+  ElementType,
+  PointSize,
+  RendererDrawElementOptions,
+  ViewContext2D,
+  ViewRectVertexes,
+  ViewScaleInfo,
+  ViewSizeInfo
+} from '@idraw/types';
+import { rotateElement, rotateElementVertexes, calcViewPointSize, calcElementQueueVertexesQueueInGroup } from '@idraw/util';
 // import { calcElementControllerStyle } from './controller';
 import type { AreaSize, ControllerStyle, ElementSizeController } from './types';
 
@@ -178,52 +177,7 @@ export function drawGroupsWrapper(
     viewSizeInfo: ViewSizeInfo;
   }
 ) {
-  const vesList: Array<[PointSize, PointSize, PointSize, PointSize]> = [];
-  // let prevCenter = { x: 0, y: 0 };
-  // let prevAngle = 0;
-  let totalX = 0;
-  let totalY = 0;
-
-  const rotateActionList: Array<{
-    center: PointSize;
-    angle: number;
-    radian: number;
-  }> = [];
-
-  for (let i = 0; i < groupQueue.length; i++) {
-    const { x, y, w, h, angle = 0 } = groupQueue[i];
-    totalX += x;
-    totalY += y;
-    let ves: [PointSize, PointSize, PointSize, PointSize];
-    if (i === 0) {
-      const elemSize: ElementSize = { x: totalX, y: totalY, w, h, angle };
-      ves = getElementRotateVertexes(elemSize, calcElementCenter({ x, y, w, h, angle }), angle);
-      rotateActionList.push({
-        center: calcElementCenter(elemSize),
-        angle,
-        radian: parseAngleToRadian(angle)
-      });
-    } else {
-      const elemSize: ElementSize = { x: totalX, y: totalY, w, h, angle };
-      ves = getElementVertexes(elemSize);
-      for (let aIdx = 0; aIdx < rotateActionList.length; aIdx++) {
-        const { center, radian } = rotateActionList[aIdx];
-        ves = rotateVertexes(center, ves, radian);
-      }
-      const vesCenter = calcElementCenterFromVertexes(ves);
-      if (angle > 0 || angle < 0) {
-        const radian = parseAngleToRadian(angle);
-        ves = rotateVertexes(vesCenter, ves, radian);
-      }
-      rotateActionList.push({
-        center: vesCenter,
-        angle,
-        radian: parseAngleToRadian(angle)
-      });
-    }
-
-    vesList.push(ves);
-  }
+  const vesList: ViewRectVertexes[] = calcElementQueueVertexesQueueInGroup(groupQueue);
 
   for (let i = 0; i < vesList.length; i++) {
     const ves = vesList[i];
