@@ -7,6 +7,8 @@ import {
   calcElementCenter,
   calcElementCenterFromVertexes,
   rotatePoint,
+  rotateVertexes,
+  getElementVertexes,
   parseAngleToRadian
 } from '@idraw/util';
 // import { calcElementControllerStyle } from './controller';
@@ -177,36 +179,49 @@ export function drawGroupsWrapper(
   }
 ) {
   const vesList: Array<[PointSize, PointSize, PointSize, PointSize]> = [];
-  let prevCenter = { x: 0, y: 0 };
-  let prevAngle = 0;
+  // let prevCenter = { x: 0, y: 0 };
+  // let prevAngle = 0;
   let totalX = 0;
   let totalY = 0;
+
+  const rotateActionList: Array<{
+    center: PointSize;
+    angle: number;
+    radian: number;
+  }> = [];
 
   for (let i = 0; i < groupQueue.length; i++) {
     const { x, y, w, h, angle = 0 } = groupQueue[i];
     totalX += x;
     totalY += y;
-
+    let ves: [PointSize, PointSize, PointSize, PointSize];
     if (i === 0) {
-      prevCenter = calcElementCenter({ x, y, w, h, angle });
-      prevAngle = angle;
-    }
-    const elemSize: ElementSize = { x: totalX, y: totalY, w, h, angle };
-
-    const ves: [PointSize, PointSize, PointSize, PointSize] = getElementRotateVertexes(elemSize, prevCenter, prevAngle);
-
-    if (i > 0) {
+      const elemSize: ElementSize = { x: totalX, y: totalY, w, h, angle };
+      ves = getElementRotateVertexes(elemSize, calcElementCenter({ x, y, w, h, angle }), angle);
+      rotateActionList.push({
+        center: calcElementCenter(elemSize),
+        angle,
+        radian: parseAngleToRadian(angle)
+      });
+    } else {
+      const elemSize: ElementSize = { x: totalX, y: totalY, w, h, angle };
+      ves = getElementVertexes(elemSize);
+      for (let aIdx = 0; aIdx < rotateActionList.length; aIdx++) {
+        const { center, radian } = rotateActionList[aIdx];
+        ves = rotateVertexes(center, ves, radian);
+      }
       const vesCenter = calcElementCenterFromVertexes(ves);
       if (angle > 0 || angle < 0) {
         const radian = parseAngleToRadian(angle);
-        ves[0] = rotatePoint(vesCenter, ves[0], radian);
-        ves[1] = rotatePoint(vesCenter, ves[1], radian);
-        ves[2] = rotatePoint(vesCenter, ves[2], radian);
-        ves[3] = rotatePoint(vesCenter, ves[3], radian);
+        ves = rotateVertexes(vesCenter, ves, radian);
       }
-      prevCenter = vesCenter;
-      prevAngle = angle;
+      rotateActionList.push({
+        center: vesCenter,
+        angle,
+        radian: parseAngleToRadian(angle)
+      });
     }
+
     vesList.push(ves);
   }
 

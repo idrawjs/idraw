@@ -1,4 +1,4 @@
-import type { Data, Element, ElementType, ElementSize, ViewContextSize, ViewSizeInfo } from '@idraw/types';
+import type { Data, Element, ElementType, ElementSize, ViewContextSize, ViewSizeInfo, ViewRectVertexes } from '@idraw/types';
 import { rotateElementVertexes } from './rotate';
 
 function getGroupIndexes(elem: Element<'group'>, uuids: string[], parentIndex: string): string[] {
@@ -228,4 +228,14 @@ export function calcElementsViewInfo(
     changeContextTop,
     changeContextBottom
   };
+}
+
+export function getElementVertexes(elemSize: ElementSize): ViewRectVertexes {
+  const { x, y, h, w } = elemSize;
+  return [
+    { x, y },
+    { x: x + w, y },
+    { x: x + w, y: y + h },
+    { x, y: y + h }
+  ];
 }

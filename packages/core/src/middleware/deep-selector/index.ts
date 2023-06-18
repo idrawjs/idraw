@@ -408,7 +408,8 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
         sharer.setSharedStorage(keyInGroup, true);
         sharer.setSharedStorage(keyGroupQueue, [
           data?.elements?.[0] as Element<'group'>,
-          (data?.elements?.[1] as Element<'group'>)?.detail?.children[0] as Element<'group'>
+          (data?.elements?.[0] as Element<'group'>)?.detail?.children[0] as Element<'group'>,
+          ((data?.elements?.[0] as Element<'group'>)?.detail?.children[0] as Element<'group'>)?.detail?.children[0] as Element<'group'>
         ]);
       }
       // TODO mock end

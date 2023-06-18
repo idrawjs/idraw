@@ -28,8 +28,9 @@ export {
   getSelectedElements,
   validateElements,
   calcElementsContextSize,
-  calcElementsViewInfo
+  calcElementsViewInfo,
+  getElementVertexes
 } from './lib/element';
 export { checkRectIntersect } from './lib/rect';
 export { viewScale, viewScroll, calcViewElementSize, calcViewPointSize, isViewPointInElement, getViewPointAtElement, isElementInView } from './lib/view-calc';
-export { rotatePoint } from './lib/rotate';
+export { rotatePoint, rotateVertexes } from './lib/rotate';

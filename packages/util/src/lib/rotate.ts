@@ -1,4 +1,4 @@
-import type { ViewContext2D, PointSize, ElementSize, Element, ElementType } from '@idraw/types';
+import type { ViewContext2D, PointSize, ElementSize, ViewRectVertexes, Element, ElementType } from '@idraw/types';
 import { calcDistance } from './point';
 
 export function parseRadianToAngle(radian: number): number {
@@ -47,7 +47,7 @@ export function calcElementCenter(elem: ElementSize): PointSize {
   return p;
 }
 
-export function calcElementCenterFromVertexes(ves: [PointSize, PointSize, PointSize, PointSize]): PointSize {
+export function calcElementCenterFromVertexes(ves: ViewRectVertexes): PointSize {
   const startX = Math.min(ves[0].x, ves[1].x, ves[2].x, ves[3].x);
   const startY = Math.min(ves[0].y, ves[1].y, ves[2].y, ves[3].y);
   const endX = Math.max(ves[0].x, ves[1].x, ves[2].x, ves[3].x);
@@ -159,7 +159,7 @@ export function rotatePoint(center: PointSize, start: PointSize, radian: number)
   return { x, y };
 }
 
-export function getElementRotateVertexes(elemSize: ElementSize, center: PointSize, angle: number): [PointSize, PointSize, PointSize, PointSize] {
+export function getElementRotateVertexes(elemSize: ElementSize, center: PointSize, angle: number): ViewRectVertexes {
   const { x, y, w, h } = elemSize;
   let p1 = { x, y };
   let p2 = { x: x + w, y };
@@ -175,10 +175,19 @@ export function getElementRotateVertexes(elemSize: ElementSize, center: PointSiz
   return [p1, p2, p3, p4];
 }
 
-export function rotateElementVertexes(elemSize: ElementSize): [PointSize, PointSize, PointSize, PointSize] {
+export function rotateElementVertexes(elemSize: ElementSize): ViewRectVertexes {
   const { angle = 0 } = elemSize;
   const center = calcElementCenter(elemSize);
   return getElementRotateVertexes(elemSize, center, angle);
+}
+
+export function rotateVertexes(center: PointSize, ves: ViewRectVertexes, radian: number): ViewRectVertexes {
+  return [
+    rotatePoint(center, { x: ves[0].x, y: ves[0].y }, radian),
+    rotatePoint(center, { x: ves[1].x, y: ves[1].y }, radian),
+    rotatePoint(center, { x: ves[2].x, y: ves[2].y }, radian),
+    rotatePoint(center, { x: ves[3].x, y: ves[3].y }, radian)
+  ];
 }
 
 // [0, 360], eg. 370 to 10, -10 to 350

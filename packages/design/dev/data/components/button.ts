@@ -16,59 +16,86 @@ function createButtonItem(variantName: string, size?: Partial<ElementSize>) {
       children: [
         {
           uuid: createUUID(),
-          type: 'circle',
-          x: -40,
-          y: 0,
-          w: 100,
-          h: 100,
+          type: 'group',
+          x: 8,
+          y: 8,
+          w: 80,
+          h: 50,
           detail: {
-            bgColor: '#f44336'
-          }
-        },
-        {
-          uuid: createUUID(),
-          type: 'circle',
-          x: -20,
-          y: 0,
-          w: 100,
-          h: 100,
-          detail: {
-            bgColor: '#ff9800'
-          }
-        },
-        {
-          uuid: createUUID(),
-          type: 'circle',
-          x: 0,
-          y: 0,
-          w: 100,
-          h: 100,
-          detail: {
-            bgColor: '#ffc106'
-          }
-        },
-        {
-          uuid: createUUID(),
-          type: 'circle',
-          x: 20,
-          y: 0,
-          w: 100,
-          h: 100,
-          detail: {
-            bgColor: '#cddc39'
-          }
-        },
-        {
-          uuid: createUUID(),
-          type: 'circle',
-          x: 40,
-          y: 0,
-          w: 100,
-          h: 100,
-          detail: {
-            bgColor: '#4caf50'
+            children: [
+              {
+                uuid: createUUID(),
+                type: 'rect',
+                x: 5,
+                y: 8,
+                w: 70,
+                h: 32,
+                detail: {
+                  bgColor: '#038276',
+                  borderRadius: 4
+                }
+              },
+              {
+                uuid: createUUID(),
+                type: 'text',
+                x: 5,
+                y: 8,
+                w: 70,
+                h: 32,
+                detail: {
+                  color: '#ffffff',
+                  fontSize: 14,
+                  text: 'Button'
+                }
+              }
+            ]
           }
         }
+
+        // {
+        //   uuid: createUUID(),
+        //   type: 'circle',
+        //   x: -20,
+        //   y: 0,
+        //   w: 100,
+        //   h: 100,
+        //   detail: {
+        //     bgColor: '#ff9800'
+        //   }
+        // },
+        // {
+        //   uuid: createUUID(),
+        //   type: 'circle',
+        //   x: 0,
+        //   y: 0,
+        //   w: 100,
+        //   h: 100,
+        //   detail: {
+        //     bgColor: '#ffc106'
+        //   }
+        // },
+        // {
+        //   uuid: createUUID(),
+        //   type: 'circle',
+        //   x: 20,
+        //   y: 0,
+        //   w: 100,
+        //   h: 100,
+        //   detail: {
+        //     bgColor: '#cddc39'
+        //   }
+        // },
+        // {
+        //   uuid: createUUID(),
+        //   type: 'circle',
+        //   x: 40,
+        //   y: 0,
+        //   w: 100,
+        //   h: 100,
+        //   detail: {
+        //     bgColor: '#4caf50'
+        //   }
+        // }
       ]
     }
   };
