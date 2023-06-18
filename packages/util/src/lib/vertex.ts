@@ -60,8 +60,8 @@ export function calcElementQueueVertexesQueueInGroup(groupQueue: ElementSize[]):
   return vesList;
 }
 
-export function calcElementVertexesQueueInGroup(targetElem: ElementSize, options: { groupQueue: Element<'group'>[] }): ViewRectVertexes[] {
-  const { groupQueue } = options;
+export function calcElementVertexesQueueInGroup(targetElem: ElementSize, opts: { groupQueue: Element<'group'>[] }): ViewRectVertexes[] {
+  const { groupQueue } = opts;
   const elemQueue = [...groupQueue, ...[targetElem]];
   const vesList = calcElementQueueVertexesQueueInGroup(elemQueue);
   return vesList;

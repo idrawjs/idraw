@@ -1,8 +1,8 @@
 import { getSelectedElementIndexes, getSelectedElements, calcElementsViewInfo } from '@idraw/util';
 import type { Point, PointWatcherEvent, BoardMiddleware, Element, ElementSize, ActionType, ResizeType, DeepSelectorSharedStorage } from './types';
-import { drawPointWrapper, drawHoverWrapper, drawElementControllers, drawArea, drawListArea, drawGroupsWrapper } from './draw-wrapper';
+import { drawPointWrapper, drawHoverWrapper, drawElementControllers, drawArea, drawListArea, drawGroupsWrapper, drawHoverWrapperInGroup } from './draw-wrapper';
 import { calcElementControllerStyle } from './controller';
-import { getPointTarget, resizeElement, getSelectedListArea, calcSelectedElementsArea, isElementInGroup, calcElementSizeFromGroup } from './util';
+import { getPointTarget, resizeElement, getSelectedListArea, calcSelectedElementsArea, isElementInGroup, isPointInViewActiveGroup } from './util';
 import { key, keyHoverElementSize, keyActionType, keyResizeType, keyAreaStart, keyAreaEnd, keyGroupQueue, keyInGroup } from './config';
 
 export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (opts) => {
@@ -74,6 +74,16 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
       if (sharer.getSharedStorage(keyInGroup) === true) {
         // in group
         // TODO
+        if (
+          !isPointInViewActiveGroup(e.point, {
+            ctx: helperContext,
+            viewScaleInfo: sharer.getActiveScaleInfo(),
+            viewSizeInfo: sharer.getActiveViewSizeInfo(),
+            groupQueue: sharer.getSharedStorage(keyGroupQueue)
+          })
+        ) {
+          return;
+        }
 
         const target = getPointTarget(e.point, {
           ctx: helperContext,
@@ -95,8 +105,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
             return;
           }
           if (target?.elements?.length === 1) {
-            const hoverElemSize = calcElementSizeFromGroup(target.elements[0], sharer.getSharedStorage(keyGroupQueue) || []);
-            sharer.setSharedStorage(keyHoverElementSize, hoverElemSize);
+            sharer.setSharedStorage(keyHoverElementSize, target.elements[0]);
             viewer.drawFrame();
           }
         } else {
@@ -403,16 +412,16 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
         devicePixelRatio
       } = activeStore;
 
-      // TODO mock start
-      if (data) {
-        sharer.setSharedStorage(keyInGroup, true);
-        sharer.setSharedStorage(keyGroupQueue, [
-          data?.elements?.[0] as Element<'group'>,
-          (data?.elements?.[0] as Element<'group'>)?.detail?.children[0] as Element<'group'>,
-          ((data?.elements?.[0] as Element<'group'>)?.detail?.children[0] as Element<'group'>)?.detail?.children[0] as Element<'group'>
-        ]);
-      }
-      // TODO mock end
+      // // TODO mock start
+      // if (data) {
+      //   sharer.setSharedStorage(keyInGroup, true);
+      //   sharer.setSharedStorage(keyGroupQueue, [
+      //     data?.elements?.[0] as Element<'group'>,
+      //     (data?.elements?.[0] as Element<'group'>)?.detail?.children[0] as Element<'group'>,
+      //     ((data?.elements?.[0] as Element<'group'>)?.detail?.children[0] as Element<'group'>)?.detail?.children[0] as Element<'group'>
+      //   ]);
+      // }
+      // // TODO mock end
 
       const viewScaleInfo = { scale, offsetLeft, offsetTop, offsetRight, offsetBottom };
       const viewSizeInfo = { width, height, contextX, contextY, contextHeight, contextWidth, devicePixelRatio };
@@ -426,14 +435,11 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
       const inGroup: boolean | null = sharedStore[keyInGroup];
       const groupQueue: Element<'group'>[] | null = sharedStore[keyGroupQueue];
 
-      // console.log('beforeDrawFrame groupQueue ===== ', groupQueue?.length);
-
       if (inGroup && groupQueue && groupQueue?.length > 0) {
         // in group
         drawGroupsWrapper(helperContext, groupQueue, { viewScaleInfo, viewSizeInfo });
         if (hoverElement && actionType !== 'drag') {
-          const hoverElemSize = calculator.elementSize(hoverElement, viewScaleInfo, viewSizeInfo);
-          drawHoverWrapper(helperContext, hoverElemSize);
+          drawHoverWrapperInGroup(helperContext, hoverElement, groupQueue, { viewScaleInfo, viewSizeInfo });
         }
       } else {
         // in root

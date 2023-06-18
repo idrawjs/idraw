@@ -1,4 +1,4 @@
-import type { Data, Element, ElementType, ElementSize, ViewContextSize, ViewSizeInfo, ViewRectVertexes } from '@idraw/types';
+import type { Data, Element, ElementType, ElementSize, ViewContextSize, ViewSizeInfo } from '@idraw/types';
 import { rotateElementVertexes } from './rotate';
 
 function getGroupIndexes(elem: Element<'group'>, uuids: string[], parentIndex: string): string[] {
@@ -106,12 +106,14 @@ export function validateElements(elements: Array<Element<ElementType>>): boolean
       if (typeof elem.uuid === 'string' && elem.uuid) {
         if (uuids.includes(elem.uuid)) {
           isValid = false;
+          // eslint-disable-next-line no-console
           console.warn(`Duplicate uuids: ${elem.uuid}`);
         } else {
           uuids.push(elem.uuid);
         }
       } else {
         isValid = false;
+        // eslint-disable-next-line no-console
         console.warn('Element missing uuid', elem);
       }
       if (elem.type === 'group') {
