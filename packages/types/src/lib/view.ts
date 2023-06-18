@@ -1,5 +1,5 @@
 import type { Element, ElementType, ElementSize } from './element';
-import type { Point } from './point';
+import type { Point, PointSize } from './point';
 import type { Data } from './data';
 import type { ViewContext2D } from './context2d';
 
@@ -43,3 +43,5 @@ export interface ViewCalculator {
     opts: { data: Data; viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo; groupQueue?: Element<'group'>[] }
   ): { index: number; element: null | Element<ElementType>; groupQueueIndex: number };
 }
+
+export type ViewRectVertexes = [PointSize, PointSize, PointSize, PointSize];

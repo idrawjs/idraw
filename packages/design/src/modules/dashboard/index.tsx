@@ -49,7 +49,37 @@ export const Dashboard = (props: DashboardProps) => {
   return (
     <div className={classnames(prefixName(), className)} style={{ ...style, ...{ width, height, padding: 0 } }}>
       <div className={prefixName('header')} style={{ height: headerHeight }}>
-        <Header />
+        <Header
+          openLeftSider={openLeftSider}
+          openRightSider={openRightSider}
+          onClickToggleLayer={() => {
+            const open = openLeftSider ? false : true;
+
+            let newLeftWidth = leftWidth;
+            if (open) {
+              newLeftWidth = leftSiderDefaultWidth;
+            } else {
+              newLeftWidth = 0;
+            }
+            setLeftWidth(newLeftWidth);
+            setCenterWidth(width - newLeftWidth - rightWidth);
+            setRightWidth(rightWidth);
+            setOpenLeftSider(open);
+          }}
+          onClickToggleSetting={() => {
+            const open = openRightSider ? false : true;
+            let newRightWidth = rightWidth;
+            if (open) {
+              newRightWidth = rightSiderDefaultWidth;
+            } else {
+              newRightWidth = 0;
+            }
+            setLeftWidth(leftWidth);
+            setCenterWidth(width - leftWidth - newRightWidth);
+            setRightWidth(newRightWidth);
+            setOpenRightSider(open);
+          }}
+        />
       </div>
       <div className={prefixName('content')} style={{ top: headerHeight }}>
         <SplitPane
@@ -76,7 +106,7 @@ export const Dashboard = (props: DashboardProps) => {
           </div>
         </SplitPane>
       </div>
-      <Toolbar
+      {/* <Toolbar
         className={prefixName('toolbar-position')}
         openLeftSider={openLeftSider}
         openRightSider={openRightSider}
@@ -107,7 +137,7 @@ export const Dashboard = (props: DashboardProps) => {
           setRightWidth(newRightWidth);
           setOpenRightSider(open);
         }}
-      />
+      /> */}
     </div>
   );
 };

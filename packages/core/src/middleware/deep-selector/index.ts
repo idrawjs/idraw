@@ -1,8 +1,8 @@
 import { getSelectedElementIndexes, getSelectedElements, calcElementsViewInfo } from '@idraw/util';
 import type { Point, PointWatcherEvent, BoardMiddleware, Element, ElementSize, ActionType, ResizeType, DeepSelectorSharedStorage } from './types';
-import { drawPointWrapper, drawHoverWrapper, drawElementControllers, drawArea, drawListArea, drawGroupsWrapper } from './draw-wrapper';
+import { drawPointWrapper, drawHoverWrapper, drawElementControllers, drawArea, drawListArea, drawGroupsWrapper, drawHoverWrapperInGroup } from './draw-wrapper';
 import { calcElementControllerStyle } from './controller';
-import { getPointTarget, resizeElement, getSelectedListArea, calcSelectedElementsArea, isElementInGroup } from './util';
+import { getPointTarget, resizeElement, getSelectedListArea, calcSelectedElementsArea, isElementInGroup, isPointInViewActiveGroup } from './util';
 import { key, keyHoverElementSize, keyActionType, keyResizeType, keyAreaStart, keyAreaEnd, keyGroupQueue, keyInGroup } from './config';
 
 export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (opts) => {
@@ -70,6 +70,54 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
       const data = sharer.getActiveStorage('data');
       const resizeType = sharer.getSharedStorage(keyResizeType);
       const actionType = sharer.getSharedStorage(keyActionType);
+
+      if (sharer.getSharedStorage(keyInGroup) === true) {
+        // in group
+        // TODO
+        if (
+          !isPointInViewActiveGroup(e.point, {
+            ctx: helperContext,
+            viewScaleInfo: sharer.getActiveScaleInfo(),
+            viewSizeInfo: sharer.getActiveViewSizeInfo(),
+            groupQueue: sharer.getSharedStorage(keyGroupQueue)
+          })
+        ) {
+          return;
+        }
+
+        const target = getPointTarget(e.point, {
+          ctx: helperContext,
+          data,
+          selectedIndexes: getIndexes(),
+          selectedUUIDs: sharer.getActiveStorage('selectedUUIDs') || [],
+          selectedElements: getActiveElements(),
+          viewScaleInfo: sharer.getActiveScaleInfo(),
+          viewSizeInfo: sharer.getActiveViewSizeInfo(),
+          calculator,
+          areaSize: null,
+          groupQueue: sharer.getSharedStorage(keyGroupQueue)
+        });
+
+        if (target.type === 'in-group-element') {
+          if (resizeType || (['area', 'drag', 'drag-list'] as ActionType[]).includes(actionType)) {
+            sharer.setSharedStorage(keyHoverElementSize, null);
+            viewer.drawFrame();
+            return;
+          }
+          if (target?.elements?.length === 1) {
+            sharer.setSharedStorage(keyHoverElementSize, target.elements[0]);
+            viewer.drawFrame();
+          }
+        } else {
+          // TODO
+          // sharer.setSharedStorage(keyHoverElementSize, null);
+          // viewer.drawFrame();
+          // return;
+        }
+        return;
+      }
+
+      // not in group
       if (resizeType || (['area', 'drag', 'drag-list'] as ActionType[]).includes(actionType)) {
         sharer.setSharedStorage(keyHoverElementSize, null);
         return;
@@ -114,6 +162,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
     pointStart: (e: PointWatcherEvent) => {
       // reset all shared storage
       // clear();
+
       sharer.setSharedStorage(keyHoverElementSize, null);
       const data = sharer.getActiveStorage('data');
       const listAreaSize = calcSelectedElementsArea(getActiveElements(), {
@@ -134,17 +183,18 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
         groupQueue: sharer.getSharedStorage(keyGroupQueue)
       });
 
-      // console.log('pointStart target ====== ', target);
+      // console.log('pointStart target ====== ', sharer.getSharedStorage(keyInGroup), target, sharer.getSharedStorage(keyGroupQueue));
 
       if (sharer.getSharedStorage(keyInGroup) === true) {
-        if (target.type === 'in-group-element' && target?.elements?.length > 0) {
+        if (target.type === 'in-group-element' && target?.groupQueue?.length > 0) {
           // TODO
-          sharer.setSharedStorage(keyGroupQueue, target.elements as Element<'group'>[]);
+          // sharer.setSharedStorage(keyGroupQueue, target.groupQueue);
           return;
-        } else {
-          sharer.setSharedStorage(keyInGroup, false);
-          sharer.setSharedStorage(keyGroupQueue, null);
         }
+        sharer.setSharedStorage(keyInGroup, false);
+        sharer.setActiveStorage('selectedUUIDs', []);
+        sharer.setSharedStorage(keyGroupQueue, null);
+        // return;
       }
 
       if (target.type === 'list-area') {
@@ -234,10 +284,15 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
       const data = sharer.getActiveStorage('data');
       const resizeType = sharer.getSharedStorage(keyResizeType);
       const actionType = sharer.getSharedStorage(keyActionType);
+      const inGroup: boolean | null = sharer.getSharedStorage(keyInGroup);
       const viewScaleInfo = sharer.getActiveScaleInfo();
       const viewSizeInfo = sharer.getActiveViewSizeInfo();
       const { offsetLeft, offsetTop } = viewScaleInfo;
       let needDrawFrame = false;
+
+      if (inGroup === true) {
+        return;
+      }
 
       if (actionType === 'resize' && resizeType) {
         sharer.setSharedStorage(keyResizeType, null);
@@ -317,15 +372,20 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
         areaSize: null,
         groupQueue: sharer.getSharedStorage(keyGroupQueue)
       });
-      // console.log('doubleClick target ======= ', target);
 
-      if (target.type === 'in-group-element' && target.elements.length > 0) {
-        sharer.setSharedStorage(keyGroupQueue, target.elements as Element<'group'>[]);
+      // console.log('doubleClick target =====', target);
+
+      if (target.type === 'in-group-element' && target.groupQueue.length > 0) {
+        sharer.setSharedStorage(keyGroupQueue, target.groupQueue as Element<'group'>[]);
         sharer.setSharedStorage(keyInGroup, true);
+        sharer.setSharedStorage(keyActionType, null);
+        viewer.drawFrame();
+        return;
       } else if (target.elements.length === 1 && target.elements[0]?.type === 'group') {
         const pushResult = pushGroupQueue(target.elements[0] as Element<'group'>);
         sharer.setSharedStorage(keyInGroup, pushResult);
         if (pushResult === true) {
+          sharer.setSharedStorage(keyActionType, null);
           viewer.drawFrame();
           return;
         }
@@ -351,6 +411,18 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
         contextWidth,
         devicePixelRatio
       } = activeStore;
+
+      // // TODO mock start
+      // if (data) {
+      //   sharer.setSharedStorage(keyInGroup, true);
+      //   sharer.setSharedStorage(keyGroupQueue, [
+      //     data?.elements?.[0] as Element<'group'>,
+      //     (data?.elements?.[0] as Element<'group'>)?.detail?.children[0] as Element<'group'>,
+      //     ((data?.elements?.[0] as Element<'group'>)?.detail?.children[0] as Element<'group'>)?.detail?.children[0] as Element<'group'>
+      //   ]);
+      // }
+      // // TODO mock end
+
       const viewScaleInfo = { scale, offsetLeft, offsetTop, offsetRight, offsetBottom };
       const viewSizeInfo = { width, height, contextX, contextY, contextHeight, contextWidth, devicePixelRatio };
       // const elem = data?.elements?.[selectedIndexes?.[0] as number];
@@ -365,7 +437,10 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
 
       if (inGroup && groupQueue && groupQueue?.length > 0) {
         // in group
-        drawGroupsWrapper(helperContext, groupQueue);
+        drawGroupsWrapper(helperContext, groupQueue, { viewScaleInfo, viewSizeInfo });
+        if (hoverElement && actionType !== 'drag') {
+          drawHoverWrapperInGroup(helperContext, hoverElement, groupQueue, { viewScaleInfo, viewSizeInfo });
+        }
       } else {
         // in root
         const drawOpts = { calculator, viewScaleInfo, viewSizeInfo };

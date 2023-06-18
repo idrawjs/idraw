@@ -4,7 +4,7 @@ export type DesignItemType = 'component' | 'component-item' | 'module' | 'page';
 
 export type DesignDrawDataType = 'component' | 'module' | 'page';
 
-export type DesignComponentItem = Omit<ElementSize, 'angle'> & {
+export type DesignComponentItem = ElementSize & {
   uuid: string;
   type: 'component-item';
   name: string;
@@ -13,7 +13,7 @@ export type DesignComponentItem = Omit<ElementSize, 'angle'> & {
   };
 };
 
-export type DesignComponent = Omit<ElementSize, 'angle'> & {
+export type DesignComponent = ElementSize & {
   uuid: string;
   type: 'component';
   name: string;
@@ -23,7 +23,7 @@ export type DesignComponent = Omit<ElementSize, 'angle'> & {
   };
 };
 
-export type DesignModule = Omit<ElementSize, 'angle'> & {
+export type DesignModule = ElementSize & {
   uuid: string;
   type: 'module';
   name: string;
@@ -32,7 +32,7 @@ export type DesignModule = Omit<ElementSize, 'angle'> & {
   };
 };
 
-export type DesignPage = Omit<ElementSize, 'angle'> & {
+export type DesignPage = ElementSize & {
   uuid: string;
   type: 'page';
   name: string;

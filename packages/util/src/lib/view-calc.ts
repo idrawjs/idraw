@@ -1,4 +1,4 @@
-import { Point, Data, ViewScaleInfo, ViewSizeInfo, Element, ElementType, ElementSize, ViewContext2D } from '@idraw/types';
+import { Point, PointSize, Data, ViewScaleInfo, ViewSizeInfo, Element, ElementType, ElementSize, ViewContext2D } from '@idraw/types';
 import { rotateElementVertexes } from './rotate';
 import { checkRectIntersect } from './rect';
 
@@ -92,7 +92,7 @@ export function viewScroll(opts: { moveX?: number; moveY?: number; viewScaleInfo
   };
 }
 
-export function calcElementSize(size: ElementSize, opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }): ElementSize {
+export function calcViewElementSize(size: ElementSize, opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }): ElementSize {
   const { viewScaleInfo, viewSizeInfo } = opts;
   const { x, y, w, h, angle } = size;
   const { contextX = 0, contextY = 0 } = viewSizeInfo;
@@ -105,7 +105,19 @@ export function calcElementSize(size: ElementSize, opts: { viewScaleInfo: ViewSc
     h: h * scale,
     angle
   };
+  return newSize;
+}
 
+export function calcViewPointSize(size: PointSize, opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }): PointSize {
+  const { viewScaleInfo, viewSizeInfo } = opts;
+  const { x, y } = size;
+  const { contextX = 0, contextY = 0 } = viewSizeInfo;
+  const { scale, offsetTop, offsetLeft } = viewScaleInfo;
+
+  const newSize = {
+    x: x * scale + offsetLeft - contextX,
+    y: y * scale + offsetTop - contextY
+  };
   return newSize;
 }
 
@@ -116,7 +128,7 @@ export function isViewPointInElement(
   const { context2d: ctx, element: elem, viewScaleInfo, viewSizeInfo } = opts;
 
   const { angle = 0 } = elem;
-  const { x, y, w, h } = calcElementSize(elem, { viewScaleInfo, viewSizeInfo });
+  const { x, y, w, h } = calcViewElementSize(elem, { viewScaleInfo, viewSizeInfo });
   const vertexes = rotateElementVertexes({ x, y, w, h, angle });
   if (vertexes.length >= 2) {
     ctx.beginPath();
@@ -212,7 +224,7 @@ export function isElementInView(elem: ElementSize, opts: { viewScaleInfo: ViewSc
   const { viewSizeInfo, viewScaleInfo } = opts;
   const { width, height } = viewSizeInfo;
   const { angle } = elem;
-  const { x, y, w, h } = calcElementSize(elem, { viewScaleInfo, viewSizeInfo });
+  const { x, y, w, h } = calcViewElementSize(elem, { viewScaleInfo, viewSizeInfo });
   const ves = rotateElementVertexes({ x, y, w, h, angle });
   const viewSize = { x: 0, y: 0, w: width, h: height };
 

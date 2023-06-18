@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
-import data from './data';
 import { Design } from '../src/index';
+import data from './data';
 
 const dom = document.querySelector('#lab') as HTMLDivElement;
 const root = createRoot(dom);

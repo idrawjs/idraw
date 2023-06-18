@@ -1,3 +1,13 @@
+import {
+  rotateElement,
+  calcElementCenter,
+  rotateElementVertexes,
+  calcElementCenterFromVertexes,
+  calcElementVertexesInGroup,
+  calcElementQueueVertexesQueueInGroup,
+  calcViewPointSize
+} from '@idraw/util';
+import { calcElementControllerStyle } from './controller';
 import type {
   Data,
   Element,
@@ -14,8 +24,7 @@ import type {
   AreaSize,
   ViewSizeInfo
 } from './types';
-import { rotateElement, calcElementCenter, rotateElementVertexes } from '@idraw/util';
-import { calcElementControllerStyle } from './controller';
+import { ViewRectVertexes } from '@idraw/types';
 
 function parseRadian(angle: number) {
   return (angle * Math.PI) / 180;
@@ -27,6 +36,45 @@ function calcMoveDist(moveX: number, moveY: number) {
 
 function changeMoveDistDirect(moveDist: number, moveDirect: number) {
   return moveDirect > 0 ? Math.abs(moveDist) : 0 - Math.abs(moveDist);
+}
+
+export function isPointInViewActiveVertexes(
+  p: PointSize,
+  opts: { ctx: ViewContext2D; vertexes: ViewRectVertexes; viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }
+): boolean {
+  const { ctx, viewScaleInfo, viewSizeInfo, vertexes } = opts;
+  const v0 = calcViewPointSize(vertexes[0], { viewScaleInfo, viewSizeInfo });
+  const v1 = calcViewPointSize(vertexes[1], { viewScaleInfo, viewSizeInfo });
+  const v2 = calcViewPointSize(vertexes[2], { viewScaleInfo, viewSizeInfo });
+  const v3 = calcViewPointSize(vertexes[3], { viewScaleInfo, viewSizeInfo });
+  ctx.beginPath();
+  ctx.moveTo(v0.x, v0.y);
+  ctx.lineTo(v1.x, v1.y);
+  ctx.lineTo(v2.x, v2.y);
+  ctx.lineTo(v3.x, v3.y);
+
+  ctx.lineTo(v0.x, v0.y);
+  ctx.closePath();
+  if (ctx.isPointInPath(p.x, p.y)) {
+    return true;
+  }
+  return false;
+}
+
+export function isPointInViewActiveGroup(
+  p: PointSize,
+  opts: { ctx: ViewContext2D; viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo; groupQueue: Element<'group'>[] | null }
+): boolean {
+  const { ctx, viewScaleInfo, viewSizeInfo, groupQueue } = opts;
+  if (!groupQueue || !(groupQueue?.length > 0)) {
+    return false;
+  }
+  const vesQueue = calcElementQueueVertexesQueueInGroup(groupQueue);
+  const vertexes = vesQueue[vesQueue.length - 1];
+  if (!vertexes) {
+    return false;
+  }
+  return isPointInViewActiveVertexes(p, { ctx, vertexes, viewScaleInfo, viewSizeInfo });
 }
 
 export function getPointTarget(
@@ -47,6 +95,7 @@ export function getPointTarget(
   const target: PointTarget = {
     type: null,
     elements: [],
+    groupQueue: [],
     indexes: [],
     uuids: []
   };
@@ -54,39 +103,17 @@ export function getPointTarget(
 
   // in-group-element
   if (groupQueue && Array.isArray(groupQueue) && groupQueue.length > 0 && data) {
-    const { element, groupQueueIndex } = calculator.getPointElement(p as Point, { data, viewScaleInfo, viewSizeInfo, groupQueue });
-    if (groupQueueIndex >= 0) {
-      const newQueue: Element<'group'>[] = groupQueue.splice(0, groupQueueIndex + 1);
-      target.indexes = [];
-      target.elements = newQueue;
-      target.uuids = [];
-      target.type = 'in-group-element';
-      return target;
-    } else if (element) {
-      const newQueue: Element<'group'>[] = [];
-      for (let i = 0; i < groupQueue.length; i++) {
-        const group = groupQueue[i];
-        if (group.type !== 'group') {
-          break;
-        }
-        newQueue.push(group);
-        if (element.uuid === group.uuid) {
-          target.indexes = [];
-          target.elements = newQueue;
-          target.uuids = [];
+    // return target;
+    const lastGroup = groupQueue[groupQueue.length - 1];
+    if (lastGroup?.detail?.children && Array.isArray(lastGroup?.detail?.children)) {
+      for (let i = lastGroup.detail.children.length - 1; i >= 0; i--) {
+        const child = lastGroup.detail.children[i];
+        const vertexes = calcElementVertexesInGroup(child, { groupQueue });
+        if (vertexes && isPointInViewActiveVertexes(p, { ctx, vertexes, viewScaleInfo, viewSizeInfo })) {
           target.type = 'in-group-element';
+          target.groupQueue = groupQueue;
+          target.elements = [child];
           return target;
-        } else if (Array.isArray(group.detail.children) && group.detail.children.length > 0) {
-          for (let j = 0; j < group.detail.children.length; j++) {
-            const child = group.detail.children[j];
-            if (element.uuid === child.uuid && element.type === 'group') {
-              newQueue.push(element as Element<'group'>);
-              target.indexes = [];
-              target.elements = newQueue;
-              target.uuids = [];
-              target.type = 'in-group-element';
-            }
-          }
         }
       }
     }

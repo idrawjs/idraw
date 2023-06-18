@@ -36,14 +36,13 @@ export const Sketch = (props: DashboardProps) => {
         const core = new Core(ref.current, options);
         core.use(MiddlewareScroller);
         core.use(MiddlewareSelector);
-        core.setData(state.viewDrawData);
         refCore.current = core;
       }
     }
   }, []);
 
   useEffect(() => {
-    if (!refCore?.current) {
+    if (!refCore?.current || !state.viewDrawData) {
       return;
     }
     const core = refCore.current;
@@ -54,15 +53,8 @@ export const Sketch = (props: DashboardProps) => {
       devicePixelRatio,
       ...contextSize
     });
-  }, [height, width]);
-
-  useEffect(() => {
-    if (!refCore?.current || !state.viewDrawData) {
-      return;
-    }
-    const core = refCore.current;
     core.setData(state.viewDrawData);
-  }, [state.viewDrawData]);
+  }, [state.viewDrawData, height, width]);
 
   return <div ref={ref} className={classnames(prefixName(), className)} style={{ ...style, ...{ width, height, padding: 0 } }}></div>;
 };

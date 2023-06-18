@@ -56,6 +56,7 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
       const data = sharer.getActiveStorage('data');
       const resizeType = sharer.getSharedStorage(keyResizeType);
       const actionType = sharer.getSharedStorage(keyActionType);
+
       if (resizeType || ['area', 'drag', 'drag-list'].includes(actionType)) {
         sharer.setSharedStorage(keyHoverElementSize, null);
         return;
@@ -66,7 +67,7 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
       } else if (data) {
         const selectedElements = getActiveElements();
         const viewScaleInfo = sharer.getActiveScaleInfo();
-        const viewSize = sharer.getActiveViewSizeInfo();
+        const viewSizeInfo = sharer.getActiveViewSizeInfo();
         const target = getPointTarget(e.point, {
           ctx: helperContext,
           data,
@@ -74,11 +75,11 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
           selectedUUIDs: sharer.getActiveStorage('selectedUUIDs') || [],
           selectedElements: selectedElements,
           viewScaleInfo,
-          viewSize,
+          viewSizeInfo,
           calculator,
           areaSize: calcSelectedElementsArea(selectedElements, {
             viewScaleInfo,
-            viewSize,
+            viewSizeInfo,
             calculator
           })
         });
@@ -103,7 +104,7 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
       const data = sharer.getActiveStorage('data');
       const listAreaSize = calcSelectedElementsArea(getActiveElements(), {
         viewScaleInfo: sharer.getActiveScaleInfo(),
-        viewSize: sharer.getActiveViewSizeInfo(),
+        viewSizeInfo: sharer.getActiveViewSizeInfo(),
         calculator
       });
       const target = getPointTarget(e.point, {
@@ -113,7 +114,7 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
         selectedUUIDs: sharer.getActiveStorage('selectedUUIDs') || [],
         selectedElements: getActiveElements(),
         viewScaleInfo: sharer.getActiveScaleInfo(),
-        viewSize: sharer.getActiveViewSizeInfo(),
+        viewSizeInfo: sharer.getActiveViewSizeInfo(),
         calculator,
         areaSize: listAreaSize
       });
@@ -207,8 +208,7 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
       const actionType = sharer.getSharedStorage(keyActionType);
       const viewScaleInfo = sharer.getActiveScaleInfo();
       const viewSize = sharer.getActiveViewSizeInfo();
-      const { scale, offsetLeft, offsetTop } = viewScaleInfo;
-      const { width, height, contextHeight, contextWidth, contextX, contextY } = viewSize;
+      const { offsetLeft, offsetTop } = viewScaleInfo;
       let needDrawFrame = false;
 
       if (actionType === 'resize' && resizeType) {
@@ -223,7 +223,7 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
             end,
             calculator,
             viewScaleInfo: sharer.getActiveScaleInfo(),
-            viewSize: sharer.getActiveViewSizeInfo()
+            viewSizeInfo: sharer.getActiveViewSizeInfo()
           });
 
           if (uuids.length > 0) {
@@ -236,7 +236,7 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
         sharer.setSharedStorage(keyActionType, 'drag-list-end');
         needDrawFrame = true;
       } else if (data) {
-        const result = calculator.getPointElement(e.point, data, sharer.getActiveScaleInfo(), sharer.getActiveViewSizeInfo());
+        const result = calculator.getPointElement(e.point, { data, viewScaleInfo: sharer.getActiveScaleInfo(), viewSizeInfo: sharer.getActiveViewSizeInfo() });
         if (result.element) {
           sharer.setSharedStorage(keyActionType, 'select');
           needDrawFrame = true;
@@ -317,7 +317,7 @@ export const MiddlewareSelector: BoardMiddleware = (opts) => {
       } else if (['drag-list', 'drag-list-end'].includes(actionType)) {
         const listAreaSize = calcSelectedElementsArea(getActiveElements(), {
           viewScaleInfo: sharer.getActiveScaleInfo(),
-          viewSize: sharer.getActiveViewSizeInfo(),
+          viewSizeInfo: sharer.getActiveViewSizeInfo(),
           calculator
         });
         if (listAreaSize) {

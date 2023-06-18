@@ -1,5 +1,5 @@
 import type { Point, Data, Element, ElementType, ViewCalculator, ViewCalculatorOptions, ViewScaleInfo, ElementSize, ViewSizeInfo } from '@idraw/types';
-import { calcElementSize, isViewPointInElement, getViewPointAtElement, isElementInView } from '@idraw/util';
+import { calcViewElementSize, isViewPointInElement, getViewPointAtElement, isElementInView } from '@idraw/util';
 
 export class Calculator implements ViewCalculator {
   private _opts: ViewCalculatorOptions;
@@ -9,7 +9,7 @@ export class Calculator implements ViewCalculator {
   }
 
   elementSize(size: ElementSize, viewScaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): ElementSize {
-    return calcElementSize(size, { viewScaleInfo, viewSizeInfo });
+    return calcViewElementSize(size, { viewScaleInfo, viewSizeInfo });
   }
 
   isElementInView(elem: ElementSize, viewScaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): boolean {

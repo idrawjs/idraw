@@ -1,5 +1,15 @@
-import type { Element, ElementSize, ElementType, PointSize, RendererDrawElementOptions, ViewContext2D } from '@idraw/types';
-import { rotateElement, rotateElementVertexes } from '@idraw/util';
+import type {
+  Element,
+  ElementSize,
+  ElementType,
+  PointSize,
+  RendererDrawElementOptions,
+  ViewContext2D,
+  ViewRectVertexes,
+  ViewScaleInfo,
+  ViewSizeInfo
+} from '@idraw/types';
+import { rotateElement, rotateElementVertexes, calcViewPointSize, calcElementQueueVertexesQueueInGroup, calcElementVertexesInGroup } from '@idraw/util';
 // import { calcElementControllerStyle } from './controller';
 import type { AreaSize, ControllerStyle, ElementSizeController } from './types';
 
@@ -159,31 +169,63 @@ export function drawListArea(ctx: ViewContext2D, opts: { areaSize: AreaSize }) {
   ctx.fill();
 }
 
-export function drawGroupsWrapper(ctx: ViewContext2D, elemList: ElementSize[]) {
-  let totalX = 0;
-  let totalY = 0;
-  let totalAngle = 0;
+export function drawGroupsWrapper(
+  ctx: ViewContext2D,
+  groupQueue: Element<'group'>[],
+  opts: {
+    viewScaleInfo: ViewScaleInfo;
+    viewSizeInfo: ViewSizeInfo;
+  }
+) {
+  const vesList: ViewRectVertexes[] = calcElementQueueVertexesQueueInGroup(groupQueue);
 
-  for (let i = 0; i < elemList.length; i++) {
-    const elem = elemList[i];
-    const bw = 0;
-    const { x, y, w, h, angle = 0 } = elem;
-    totalX += x;
-    totalY += y;
-    totalAngle += angle;
+  for (let i = 0; i < vesList.length; i++) {
+    const ves = vesList[i];
+    const v0 = calcViewPointSize(ves[0], opts);
+    const v1 = calcViewPointSize(ves[1], opts);
+    const v2 = calcViewPointSize(ves[2], opts);
+    const v3 = calcViewPointSize(ves[3], opts);
 
-    rotateElement(ctx, { x: totalX, y: totalY, w, h, angle: totalAngle }, () => {
-      ctx.setLineDash([4, 4]);
-      ctx.lineWidth = 2;
-      ctx.strokeStyle = wrapperColor;
-      ctx.beginPath();
-      ctx.moveTo(totalX - bw, totalY - bw);
-      ctx.lineTo(totalX + w + bw, totalY - bw);
-      ctx.lineTo(totalX + w + bw, totalY + h + bw);
-      ctx.lineTo(totalX - bw, totalY + h + bw);
-      ctx.lineTo(totalX - bw, totalY - bw);
-      ctx.closePath();
-      ctx.stroke();
-    });
+    ctx.setLineDash([4, 4]);
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = wrapperColor;
+    ctx.beginPath();
+    ctx.moveTo(v0.x, v0.y);
+    ctx.lineTo(v1.x, v1.y);
+    ctx.lineTo(v2.x, v2.y);
+    ctx.lineTo(v3.x, v3.y);
+    ctx.lineTo(v0.x, v0.y);
+    ctx.closePath();
+    ctx.stroke();
+  }
+}
+
+export function drawHoverWrapperInGroup(
+  ctx: ViewContext2D,
+  elem: ElementSize,
+  groupQueue: Element<'group'>[],
+  opts: {
+    viewScaleInfo: ViewScaleInfo;
+    viewSizeInfo: ViewSizeInfo;
+  }
+) {
+  const ves = calcElementVertexesInGroup(elem, { groupQueue });
+  if (ves) {
+    const v0 = calcViewPointSize(ves[0], opts);
+    const v1 = calcViewPointSize(ves[1], opts);
+    const v2 = calcViewPointSize(ves[2], opts);
+    const v3 = calcViewPointSize(ves[3], opts);
+
+    ctx.setLineDash([]);
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = wrapperColor;
+    ctx.beginPath();
+    ctx.moveTo(v0.x, v0.y);
+    ctx.lineTo(v1.x, v1.y);
+    ctx.lineTo(v2.x, v2.y);
+    ctx.lineTo(v3.x, v3.y);
+    ctx.lineTo(v0.x, v0.y);
+    ctx.closePath();
+    ctx.stroke();
   }
 }

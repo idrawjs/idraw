@@ -6,23 +6,31 @@ import { createPrefixName } from '../../css';
 import IconDark from '../../icons/dark';
 import IconLight from '../../icons/light';
 import { Context } from '../../context';
+import { Toolbar } from '../toolbar';
+import type { ToolbarProps } from '../toolbar';
 
 const modName = 'mod-header';
 
 const prefixName = createPrefixName(modName);
 
-export interface ModProps {
+export interface ModProps extends ToolbarProps {
   className?: string;
   style?: CSSProperties;
 }
 
 export const Header = (props: ModProps) => {
-  const { className, style } = props;
+  const { className, style, openLeftSider, openRightSider, onClickToggleLayer, onClickToggleSetting } = props;
   const { state, dispatch } = useContext(Context);
 
   return (
     <div style={style} className={classnames(prefixName(), className)}>
       <span>@idraw/design</span>
+      <Toolbar
+        openLeftSider={openLeftSider}
+        openRightSider={openRightSider}
+        onClickToggleLayer={onClickToggleLayer}
+        onClickToggleSetting={onClickToggleSetting}
+      />
       <Switch
         className={prefixName('theme', 'switch')}
         checkedChildren={<IconLight style={{ height: '100%' }} />}
