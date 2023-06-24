@@ -9,7 +9,7 @@ export { is } from './lib/is';
 export { check } from './lib/check';
 export { createBoardContexts, createContext2D, createOffscreenContext2D } from './lib/canvas';
 export { EventEmitter } from './lib/event';
-export { calcDistance, calcSpeed, equalPoint, equalTouchPoint, vaildPoint, vaildTouchPoint } from './lib/point';
+export { calcDistance, calcSpeed, equalPoint, equalTouchPoint, vaildPoint, vaildTouchPoint, getCenterFromTwoPoints } from './lib/point';
 export { Store } from './lib/store';
 export { getViewScaleInfoFromSnapshot, getViewSizeInfoFromSnapshot } from './lib/middleware';
 export { Context2D } from './lib/context2d';
@@ -20,15 +20,16 @@ export {
   rotateElementVertexes,
   getElementRotateVertexes,
   calcElementCenter,
-  calcElementCenterFromVertexes
+  calcElementCenterFromVertexes,
+  rotatePointInGroup
 } from './lib/rotate';
 export {
-  getSelectedElementIndexes,
+  // getSelectedElementIndexes,
   getSelectedElementUUIDs,
   validateElements,
   calcElementsContextSize,
-  calcElementsViewInfo,
-  getSelectedElements
+  calcElementsViewInfo
+  // getSelectedElements
 } from './lib/element';
 export { checkRectIntersect } from './lib/rect';
 export {

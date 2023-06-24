@@ -10,7 +10,7 @@ export class BoardWatcher extends EventEmitter<BoardWatcherEventMap> {
   private _store: Store<BoardWatcherStore>;
   constructor(opts: BoardWatcherOptions) {
     super();
-    const store = new Store<BoardWatcherStore>({ defaultStorage: { hasPointDown: true, prevClickPoint: null } });
+    const store = new Store<BoardWatcherStore>({ defaultStorage: { hasPointDown: false, prevClickPoint: null } });
     this._store = store;
     this._opts = opts;
     this._init();
@@ -22,9 +22,9 @@ export class BoardWatcher extends EventEmitter<BoardWatcherEventMap> {
       if (!this._isInTarget(e)) {
         return;
       }
-      if (!this._store.get('hasPointDown')) {
-        return;
-      }
+      // if (!this._store.get('hasPointDown')) {
+      //   return;
+      // }
       e.preventDefault();
       const point = this._getPoint(e);
       if (!this._isVaildPoint(point)) {
@@ -37,11 +37,11 @@ export class BoardWatcher extends EventEmitter<BoardWatcherEventMap> {
         return;
       }
       e.preventDefault();
-      this._store.set('hasPointDown', true);
       const point = this._getPoint(e);
       if (!this._isVaildPoint(point)) {
         return;
       }
+      this._store.set('hasPointDown', true);
       this.trigger('pointStart', { point });
     });
     container.addEventListener('mousemove', (e: MouseEvent) => {
@@ -58,18 +58,22 @@ export class BoardWatcher extends EventEmitter<BoardWatcherEventMap> {
         }
         return;
       }
+      if (this._store.get('hasPointDown') !== true) {
+        return;
+      }
       this.trigger('pointMove', { point });
     });
     container.addEventListener('mouseup', (e: MouseEvent) => {
+      this._store.set('hasPointDown', false);
       if (!this._isInTarget(e)) {
         return;
       }
       e.preventDefault();
-      this._store.set('hasPointDown', false);
       const point = this._getPoint(e);
       this.trigger('pointEnd', { point });
     });
     container.addEventListener('mouseleave', (e: MouseEvent) => {
+      this._store.set('hasPointDown', false);
       if (!this._isInTarget(e)) {
         return;
       }
@@ -102,7 +106,6 @@ export class BoardWatcher extends EventEmitter<BoardWatcherEventMap> {
         return;
       }
       e.preventDefault();
-      this._store.set('hasPointDown', true);
       const point = this._getPoint(e);
       if (!this._isVaildPoint(point)) {
         return;

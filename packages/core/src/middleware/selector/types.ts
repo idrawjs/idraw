@@ -1,3 +1,18 @@
+import type { ElementSizeController } from '@idraw/types';
+import {
+  keyActionType,
+  keyResizeType,
+  keyAreaStart,
+  keyAreaEnd,
+  keyGroupQueue,
+  keyGroupQueueVertexesList,
+  keyHoverElement,
+  keyHoverElementVertexes,
+  keySelectedElementList,
+  keySelectedElementListVertexes,
+  keySelectedElementController
+} from './config';
+
 import {
   Data,
   ElementSize,
@@ -10,7 +25,8 @@ import {
   ViewSizeInfo,
   ViewCalculator,
   PointWatcherEvent,
-  BoardMiddleware
+  BoardMiddleware,
+  ViewRectVertexes
 } from '@idraw/types';
 
 export {
@@ -34,17 +50,34 @@ export type ControllerStyle = ElementSize & {
   bgColor: string;
 };
 
-export type ElementSizeController = Record<string, ControllerStyle>;
+export type SelectedElementSizeController = Record<string, ControllerStyle>;
 
 export type ResizeType = 'resize-left' | 'resize-right' | 'resize-top' | 'resize-bottom';
 
-export type PointTargetType = null | 'list-area' | 'over-element' | ResizeType;
+export type PointTargetType = null | ResizeType | 'list-area' | 'over-element';
 
 export interface PointTarget {
   type: PointTargetType;
   elements: Element<ElementType>[];
-  indexes: Array<number | string>;
-  uuids: string[];
+  groupQueue: Element<'group'>[];
+  elementVertexesList: ViewRectVertexes[];
+  groupQueueVertexesList: ViewRectVertexes[];
 }
 
 export type AreaSize = ElementSize;
+
+export type ActionType = 'select' | 'drag-list' | 'drag-list-end' | 'drag' | 'hover' | 'resize' | 'area' | null;
+
+export type DeepSelectorSharedStorage = {
+  [keyActionType]: ActionType | null;
+  [keyResizeType]: ResizeType | null;
+  [keyAreaStart]: Point | null;
+  [keyAreaEnd]: Point | null;
+  [keyGroupQueue]: Element<'group'>[];
+  [keyGroupQueueVertexesList]: ViewRectVertexes[];
+  [keyHoverElement]: Element<ElementType> | null;
+  [keyHoverElementVertexes]: ViewRectVertexes | null;
+  [keySelectedElementList]: Array<Element<ElementType>>;
+  [keySelectedElementListVertexes]: ViewRectVertexes | null;
+  [keySelectedElementController]: ElementSizeController | null;
+};

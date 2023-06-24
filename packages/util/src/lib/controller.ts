@@ -1,6 +1,19 @@
 import { createUUID } from './uuid';
-import { calcElementVertexesInGroup } from './vertex';
-import type { Element, ElementSize, ElementSizeController, ViewRectVertexes } from '@idraw/types';
+import { getCenterFromTwoPoints } from './point';
+import { calcElementVertexesInGroup, calcElementVertexes } from './vertex';
+import type { Element, ElementSize, ElementSizeController, ViewRectVertexes, PointSize } from '@idraw/types';
+
+function createControllerElementSizeFromCenter(center: PointSize, opts: { size: number; angle: number }) {
+  const { x, y } = center;
+  const { size, angle } = opts;
+  return {
+    x: x - size / 2,
+    y: y - size / 2,
+    w: size,
+    h: size,
+    angle
+  };
+}
 
 export function calcElementSizeController(
   elemSize: ElementSize,
@@ -11,34 +24,8 @@ export function calcElementSizeController(
 ): ElementSizeController {
   const { groupQueue, controllerSize } = opts;
 
-  const bw = 0; // TODO
   const ctrlSize = controllerSize && controllerSize > 0 ? controllerSize : 8;
   const { x, y, w, h, angle = 0 } = elemSize;
-  const topSize: ElementSize = {
-    x: 0 - bw + w / 2 - ctrlSize / 2,
-    y: 0 - bw - ctrlSize / 2,
-    w: ctrlSize,
-    h: ctrlSize
-  };
-  const rightSize: ElementSize = {
-    x: 0 + w - bw - ctrlSize / 2,
-    y: 0 + h / 2 - bw - ctrlSize / 2,
-    w: ctrlSize,
-    h: ctrlSize
-  };
-  const bottomSize: ElementSize = {
-    x: 0 + w / 2 - bw - ctrlSize / 2,
-    y: 0 + h - bw - ctrlSize / 2,
-    w: ctrlSize,
-    h: ctrlSize
-  };
-  const leftSize: ElementSize = {
-    x: 0 - bw - ctrlSize / 2,
-    y: 0 + h / 2 - bw - ctrlSize / 2,
-    w: ctrlSize,
-    h: ctrlSize
-  };
-
   const ctrlGroupQueue = [
     ...[
       {
@@ -54,26 +41,39 @@ export function calcElementSizeController(
     ],
     ...groupQueue
   ];
+  let totalAngle = 0;
+  ctrlGroupQueue.forEach(({ angle = 0 }) => {
+    totalAngle += angle;
+  });
 
-  // const ctrlGroupQueue = [...groupQueue] as Element<'group'>[];
+  const vertexes = calcElementVertexesInGroup(elemSize, { groupQueue }) as ViewRectVertexes;
+  const topCenter = getCenterFromTwoPoints(vertexes[0], vertexes[1]);
+  const rightCenter = getCenterFromTwoPoints(vertexes[1], vertexes[2]);
+  const bottomCenter = getCenterFromTwoPoints(vertexes[2], vertexes[3]);
+  const leftCenter = getCenterFromTwoPoints(vertexes[3], vertexes[0]);
+
+  const topSize = createControllerElementSizeFromCenter(topCenter, { size: ctrlSize, angle: totalAngle });
+  const rightSize = createControllerElementSizeFromCenter(rightCenter, { size: ctrlSize, angle: totalAngle });
+  const bottomSize = createControllerElementSizeFromCenter(bottomCenter, { size: ctrlSize, angle: totalAngle });
+  const leftSize = createControllerElementSizeFromCenter(leftCenter, { size: ctrlSize, angle: totalAngle });
 
   const sizeController: ElementSizeController = {
-    elementWrapper: calcElementVertexesInGroup(elemSize, { groupQueue }) as ViewRectVertexes,
+    elementWrapper: vertexes,
     left: {
       type: 'left',
-      vertexes: calcElementVertexesInGroup(leftSize, { groupQueue: ctrlGroupQueue }) as ViewRectVertexes
+      vertexes: calcElementVertexes(leftSize)
     },
     right: {
       type: 'right',
-      vertexes: calcElementVertexesInGroup(rightSize, { groupQueue: ctrlGroupQueue }) as ViewRectVertexes
+      vertexes: calcElementVertexes(rightSize)
     },
     top: {
       type: 'top',
-      vertexes: calcElementVertexesInGroup(topSize, { groupQueue: ctrlGroupQueue }) as ViewRectVertexes
+      vertexes: calcElementVertexes(topSize)
     },
     bottom: {
       type: 'bottom',
-      vertexes: calcElementVertexesInGroup(bottomSize, { groupQueue: ctrlGroupQueue }) as ViewRectVertexes
+      vertexes: calcElementVertexes(bottomSize)
     }
   };
   return sizeController;

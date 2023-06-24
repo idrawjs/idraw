@@ -1,3 +1,12 @@
+import {
+  calcElementCenter,
+  rotateElementVertexes,
+  calcElementVertexesInGroup,
+  calcElementQueueVertexesQueueInGroup,
+  calcViewPointSize,
+  rotatePointInGroup
+} from '@idraw/util';
+import type { ViewRectVertexes, ElementSizeController } from '@idraw/types';
 import type {
   Data,
   Element,
@@ -14,8 +23,6 @@ import type {
   AreaSize,
   ViewSizeInfo
 } from './types';
-import { rotateElement, calcElementCenter, rotateElementVertexes } from '@idraw/util';
-import { calcElementControllerStyle } from './controller';
 
 function parseRadian(angle: number) {
   return (angle * Math.PI) / 180;
@@ -29,63 +36,109 @@ function changeMoveDistDirect(moveDist: number, moveDirect: number) {
   return moveDirect > 0 ? Math.abs(moveDist) : 0 - Math.abs(moveDist);
 }
 
+export function isPointInViewActiveVertexes(
+  p: PointSize,
+  opts: { ctx: ViewContext2D; vertexes: ViewRectVertexes; viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }
+): boolean {
+  const { ctx, viewScaleInfo, viewSizeInfo, vertexes } = opts;
+  const v0 = calcViewPointSize(vertexes[0], { viewScaleInfo, viewSizeInfo });
+  const v1 = calcViewPointSize(vertexes[1], { viewScaleInfo, viewSizeInfo });
+  const v2 = calcViewPointSize(vertexes[2], { viewScaleInfo, viewSizeInfo });
+  const v3 = calcViewPointSize(vertexes[3], { viewScaleInfo, viewSizeInfo });
+  ctx.beginPath();
+  ctx.moveTo(v0.x, v0.y);
+  ctx.lineTo(v1.x, v1.y);
+  ctx.lineTo(v2.x, v2.y);
+  ctx.lineTo(v3.x, v3.y);
+
+  ctx.lineTo(v0.x, v0.y);
+  ctx.closePath();
+  if (ctx.isPointInPath(p.x, p.y)) {
+    return true;
+  }
+  return false;
+}
+
+export function isPointInViewActiveGroup(
+  p: PointSize,
+  opts: { ctx: ViewContext2D; viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo; groupQueue: Element<'group'>[] | null }
+): boolean {
+  const { ctx, viewScaleInfo, viewSizeInfo, groupQueue } = opts;
+  if (!groupQueue || !(groupQueue?.length > 0)) {
+    return false;
+  }
+  const vesQueue = calcElementQueueVertexesQueueInGroup(groupQueue);
+  const vertexes = vesQueue[vesQueue.length - 1];
+  if (!vertexes) {
+    return false;
+  }
+  return isPointInViewActiveVertexes(p, { ctx, vertexes, viewScaleInfo, viewSizeInfo });
+}
+
 export function getPointTarget(
   p: PointSize,
   opts: {
     ctx: ViewContext2D;
     data?: Data | null;
-    selectedIndexes?: Array<number | string>;
-    selectedUUIDs: Array<string>;
     selectedElements?: Element<ElementType>[];
     areaSize?: AreaSize | null;
     viewScaleInfo: ViewScaleInfo;
     viewSizeInfo: ViewSizeInfo;
     calculator: ViewCalculator;
+    groupQueue: Element<'group'>[] | null;
+    selectedElementController: ElementSizeController | null;
   }
 ): PointTarget {
   const target: PointTarget = {
     type: null,
     elements: [],
-    indexes: [],
-    uuids: []
+    elementVertexesList: [],
+    groupQueue: [],
+    groupQueueVertexesList: []
   };
-  const { ctx, data, calculator, selectedElements, selectedIndexes, selectedUUIDs, viewScaleInfo, viewSizeInfo, areaSize } = opts;
+  const { ctx, data, calculator, selectedElements, viewScaleInfo, viewSizeInfo, areaSize, groupQueue, selectedElementController } = opts;
 
-  // list area
-  if (areaSize && Array.isArray(selectedElements) && selectedElements?.length > 1 && Array.isArray(selectedIndexes) && selectedIndexes?.length > 1) {
-    const { x, y, w, h } = areaSize;
-    if (p.x >= x && p.x <= x + w && p.y >= y && p.y <= y + h) {
-      target.type = 'list-area';
-      target.elements = selectedElements;
-      target.indexes = selectedIndexes;
-      target.uuids = selectedUUIDs;
+  // resize
+  if (selectedElementController) {
+    const { left, right, top, bottom } = selectedElementController;
+    const ctrls = [left, right, top, bottom];
+    for (let i = 0; i < ctrls.length; i++) {
+      const ctrl = ctrls[i];
+      if (isPointInViewActiveVertexes(p, { ctx, vertexes: ctrl.vertexes, viewSizeInfo, viewScaleInfo })) {
+        target.type = `resize-${ctrl.type}` as PointTargetType;
+        break;
+      }
+    }
+    if (target.type !== null) {
       return target;
     }
   }
 
-  // resize
-  if (selectedElements?.length === 1) {
-    const elemSize = calculator.elementSize(selectedElements[0], viewScaleInfo, viewSizeInfo);
-    const ctrls = calcElementControllerStyle(elemSize);
-    rotateElement(ctx, elemSize, () => {
-      const ctrlKeys = Object.keys(ctrls);
-      for (let i = 0; i < ctrlKeys.length; i++) {
-        const key = ctrlKeys[i];
-        const ctrl = ctrls[key];
-        const { x, y, w, h } = ctrl;
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-        ctx.lineTo(x + w, y);
-        ctx.lineTo(x + w, y + h);
-        ctx.lineTo(x, y + h);
-        ctx.closePath();
-        if (ctx.isPointInPath(p.x, p.y)) {
-          target.type = `resize-${key}` as PointTargetType;
-          break;
+  // in group
+  if (groupQueue && Array.isArray(groupQueue) && groupQueue.length > 0) {
+    // return target;
+    const lastGroup = groupQueue[groupQueue.length - 1];
+    if (lastGroup?.detail?.children && Array.isArray(lastGroup?.detail?.children)) {
+      for (let i = lastGroup.detail.children.length - 1; i >= 0; i--) {
+        const child = lastGroup.detail.children[i];
+        const vertexes = calcElementVertexesInGroup(child, { groupQueue });
+        if (vertexes && isPointInViewActiveVertexes(p, { ctx, vertexes, viewScaleInfo, viewSizeInfo })) {
+          target.type = 'over-element';
+          target.groupQueue = groupQueue;
+          target.elements = [child];
+          return target;
         }
       }
-    });
-    if (target.type !== null) {
+    }
+    return target;
+  }
+
+  // list area
+  if (areaSize && Array.isArray(selectedElements) && selectedElements?.length > 1) {
+    const { x, y, w, h } = areaSize;
+    if (p.x >= x && p.x <= x + w && p.y >= y && p.y <= y + h) {
+      target.type = 'list-area';
+      target.elements = selectedElements;
       return target;
     }
   }
@@ -94,9 +147,7 @@ export function getPointTarget(
   if (data) {
     const { index, element } = calculator.getPointElement(p as Point, { data, viewScaleInfo, viewSizeInfo });
     if (index >= 0 && element) {
-      target.indexes = [index];
       target.elements = [element];
-      target.uuids = [element.uuid];
       target.type = 'over-element';
       return target;
     }
@@ -386,13 +437,14 @@ export function getSelectedListArea(
     viewSizeInfo: ViewSizeInfo;
     calculator: ViewCalculator;
   }
-): { indexes: number[]; uuids: string[] } {
+): { indexes: number[]; uuids: string[]; elements: Element<ElementType>[] } {
   const indexes: number[] = [];
   const uuids: string[] = [];
+  const elements: Element<ElementType>[] = [];
   const { calculator, viewScaleInfo, viewSizeInfo, start, end } = opts;
 
   if (!(Array.isArray(data.elements) && start && end)) {
-    return { indexes, uuids };
+    return { indexes, uuids, elements };
   }
   const startX = Math.min(start.x, end.x);
   const endX = Math.max(start.x, end.x);
@@ -406,6 +458,7 @@ export function getSelectedListArea(
     if (center.x >= startX && center.x <= endX && center.y >= startY && center.y <= endY) {
       indexes.push(idx);
       uuids.push(elem.uuid);
+      elements.push(elem);
       if (elemSize.angle && (elemSize.angle > 0 || elemSize.angle < 0)) {
         const ves = rotateElementVertexes(elemSize);
         if (ves.length === 4) {
@@ -419,7 +472,7 @@ export function getSelectedListArea(
       }
     }
   });
-  return { indexes, uuids };
+  return { indexes, uuids, elements };
 }
 
 export function calcSelectedElementsArea(
@@ -472,4 +525,44 @@ export function calcSelectedElementsArea(
     prevElemSize = elemSize;
   });
   return area;
+}
+
+export function isElementInGroup(elem: Element<ElementType>, group: Element<'group'>): boolean {
+  if (group?.type === 'group' && Array.isArray(group?.detail?.children)) {
+    for (let i = 0; i < group.detail.children.length; i++) {
+      const child = group.detail.children[i];
+      if (elem.uuid === child.uuid) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+export function calcMoveInGroup(start: PointSize, end: PointSize, groupQueue: Element<'group'>[]): { moveX: number; moveY: number } {
+  let moveX = end.x - start.x;
+  let moveY = end.y - start.y;
+  const pointGroupQueue: Element<'group'>[] = [];
+  groupQueue.forEach((group) => {
+    const { x, y, w, h, angle = 0 } = group;
+    pointGroupQueue.push({
+      x,
+      y,
+      w,
+      h,
+      angle: 0 - angle
+    } as Element<'group'>);
+  });
+
+  if (groupQueue?.length > 0) {
+    const startInGroup = rotatePointInGroup(start, pointGroupQueue);
+    const endInGroup = rotatePointInGroup(end, pointGroupQueue);
+    moveX = endInGroup.x - startInGroup.x;
+    moveY = endInGroup.y - startInGroup.y;
+  }
+
+  return {
+    moveX,
+    moveY
+  };
 }

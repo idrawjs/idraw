@@ -1,5 +1,6 @@
 import type { ViewContext2D, PointSize, ElementSize, ViewRectVertexes, Element, ElementType } from '@idraw/types';
 import { calcDistance } from './point';
+// import { calcElementVertexes } from './vertex';
 
 export function parseRadianToAngle(radian: number): number {
   return (radian / Math.PI) * 180;
@@ -159,6 +160,25 @@ export function rotatePoint(center: PointSize, start: PointSize, radian: number)
   return { x, y };
 }
 
+export function rotatePointInGroup(point: PointSize, groupQueue: Element<'group'>[]): PointSize {
+  if (groupQueue?.length > 0) {
+    let resultX = point.x;
+    let resultY = point.y;
+    groupQueue.forEach((group) => {
+      const { x, y, w, h, angle = 0 } = group;
+      const center = calcElementCenter({ x, y, w, h, angle });
+      const temp = rotatePoint(center, { x: resultX, y: resultY }, parseAngleToRadian(angle));
+      resultX = temp.x;
+      resultY = temp.y;
+    });
+    return {
+      x: resultX,
+      y: resultY
+    };
+  }
+  return point;
+}
+
 export function getElementRotateVertexes(elemSize: ElementSize, center: PointSize, angle: number): ViewRectVertexes {
   const { x, y, w, h } = elemSize;
   let p1 = { x, y };
@@ -201,19 +221,3 @@ export function limitAngle(angle: number): number {
   }
   return num;
 }
-
-// export function calcRotateGroupChildMoveInfo(group: Element<'group'> | ElementSize, child: Element<ElementType>): { moveX: number; moveY: number } {
-//   let moveX = 0;
-//   let moveY = 0;
-//   const groupAngle = limitAngle(group.angle || 0);
-//   if (groupAngle === 0) {
-//     return { moveX, moveY };
-//   }
-//   const radian = parseAngleToRadian(groupAngle);
-//   const groupCenter = calcElementCenter(group);
-//   const childCenter = calcElementCenter(child);
-//   const newChildCenter = rotatePoint(groupCenter, childCenter, radian);
-//   moveX = newChildCenter.x - childCenter.x;
-//   moveY = newChildCenter.y - childCenter.y;
-//   return { moveX, moveY };
-// }

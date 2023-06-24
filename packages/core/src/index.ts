@@ -3,7 +3,7 @@ import { Board } from '@idraw/board';
 import { createBoardContexts, validateElements, calcElementsContextSize } from '@idraw/util';
 
 // export { MiddlewareSelector } from './middleware/selector';
-export { MiddlewareSelector } from './middleware/deep-selector';
+export { MiddlewareSelector } from './middleware/selector';
 export { MiddlewareScroller } from './middleware/scroller';
 export { MiddlewareRuler } from './middleware/rule';
 
