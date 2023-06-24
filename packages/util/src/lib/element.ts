@@ -16,21 +16,21 @@ function getGroupIndexes(elem: Element<'group'>, uuids: string[], parentIndex: s
   return indexes;
 }
 
-// TODO need to be deprecated
-export function getSelectedElementIndexes(data: Data, uuids: string[]): Array<string | number> {
-  let indexes: Array<string | number> = [];
-  if (Array.isArray(data?.elements) && data?.elements?.length > 0 && Array.isArray(uuids) && uuids.length > 0) {
-    for (let i = 0; i < data.elements.length; i++) {
-      const elem = data.elements[i];
-      if (uuids.includes(elem.uuid)) {
-        indexes.push(i);
-      } else if (elem.type === 'group') {
-        indexes = indexes.concat(getGroupIndexes(elem as Element<'group'>, uuids, `${i}`));
-      }
-    }
-  }
-  return indexes;
-}
+// // TODO need to be deprecated
+// export function getSelectedElementIndexes(data: Data, uuids: string[]): Array<string | number> {
+//   let indexes: Array<string | number> = [];
+//   if (Array.isArray(data?.elements) && data?.elements?.length > 0 && Array.isArray(uuids) && uuids.length > 0) {
+//     for (let i = 0; i < data.elements.length; i++) {
+//       const elem = data.elements[i];
+//       if (uuids.includes(elem.uuid)) {
+//         indexes.push(i);
+//       } else if (elem.type === 'group') {
+//         indexes = indexes.concat(getGroupIndexes(elem as Element<'group'>, uuids, `${i}`));
+//       }
+//     }
+//   }
+//   return indexes;
+// }
 
 function getGroupUUIDs(elements: Array<Element<ElementType>>, index: string): string[] {
   const uuids: string[] = [];
@@ -84,21 +84,21 @@ function getElementInGroup(elem: Element<'group'>, uuids: string[]): Array<Eleme
   return elements;
 }
 
-// TODO need to be deprecated
-export function getSelectedElements(data: Data | null | undefined, uuids: string[], groupQueue?: Element<'group'>[]): Array<Element<ElementType>> {
-  let elements: Array<Element<ElementType>> = [];
-  if (Array.isArray(groupQueue) && groupQueue.length > 0) {
-    elements = getElementInGroup(groupQueue[groupQueue.length - 1], uuids);
-  } else if (data && Array.isArray(data?.elements) && data?.elements?.length > 0 && Array.isArray(uuids) && uuids.length > 0) {
-    for (let i = 0; i < data.elements.length; i++) {
-      const elem = data.elements[i];
-      if (uuids.includes(elem.uuid)) {
-        elements.push(elem);
-      }
-    }
-  }
-  return elements;
-}
+// // TODO need to be deprecated
+// export function getSelectedElements(data: Data | null | undefined, uuids: string[], groupQueue?: Element<'group'>[]): Array<Element<ElementType>> {
+//   let elements: Array<Element<ElementType>> = [];
+//   if (Array.isArray(groupQueue) && groupQueue.length > 0) {
+//     elements = getElementInGroup(groupQueue[groupQueue.length - 1], uuids);
+//   } else if (data && Array.isArray(data?.elements) && data?.elements?.length > 0 && Array.isArray(uuids) && uuids.length > 0) {
+//     for (let i = 0; i < data.elements.length; i++) {
+//       const elem = data.elements[i];
+//       if (uuids.includes(elem.uuid)) {
+//         elements.push(elem);
+//       }
+//     }
+//   }
+//   return elements;
+// }
 
 export function validateElements(elements: Array<Element<ElementType>>): boolean {
   let isValid = true;

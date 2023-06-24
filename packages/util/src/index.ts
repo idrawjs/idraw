@@ -24,12 +24,12 @@ export {
   rotatePointInGroup
 } from './lib/rotate';
 export {
-  getSelectedElementIndexes,
+  // getSelectedElementIndexes,
   getSelectedElementUUIDs,
   validateElements,
   calcElementsContextSize,
-  calcElementsViewInfo,
-  getSelectedElements
+  calcElementsViewInfo
+  // getSelectedElements
 } from './lib/element';
 export { checkRectIntersect } from './lib/rect';
 export {
