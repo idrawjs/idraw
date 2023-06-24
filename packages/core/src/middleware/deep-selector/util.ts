@@ -1,4 +1,12 @@
-import { calcElementCenter, rotateElementVertexes, calcElementVertexesInGroup, calcElementQueueVertexesQueueInGroup, calcViewPointSize } from '@idraw/util';
+import {
+  calcElementCenter,
+  rotateElementVertexes,
+  calcElementVertexesInGroup,
+  calcElementQueueVertexesQueueInGroup,
+  calcViewPointSize,
+  rotatePointInGroup,
+  createUUID
+} from '@idraw/util';
 import type { ViewRectVertexes, ElementSizeController } from '@idraw/types';
 import type {
   Data,
@@ -530,4 +538,32 @@ export function isElementInGroup(elem: Element<ElementType>, group: Element<'gro
     }
   }
   return false;
+}
+
+export function calcMoveInGroup(start: PointSize, end: PointSize, groupQueue: Element<'group'>[]): { moveX: number; moveY: number } {
+  let moveX = end.x - start.x;
+  let moveY = end.y - start.y;
+  const pointGroupQueue: Element<'group'>[] = [];
+  groupQueue.forEach((group) => {
+    const { x, y, w, h, angle = 0 } = group;
+    pointGroupQueue.push({
+      x,
+      y,
+      w,
+      h,
+      angle: 0 - angle
+    } as Element<'group'>);
+  });
+
+  if (groupQueue?.length > 0) {
+    const startInGroup = rotatePointInGroup(start, pointGroupQueue);
+    const endInGroup = rotatePointInGroup(end, pointGroupQueue);
+    moveX = endInGroup.x - startInGroup.x;
+    moveY = endInGroup.y - startInGroup.y;
+  }
+
+  return {
+    moveX,
+    moveY
+  };
 }

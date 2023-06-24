@@ -24,7 +24,6 @@ export function calcElementSizeController(
 ): ElementSizeController {
   const { groupQueue, controllerSize } = opts;
 
-  const bw = 0; // TODO
   const ctrlSize = controllerSize && controllerSize > 0 ? controllerSize : 8;
   const { x, y, w, h, angle = 0 } = elemSize;
   const ctrlGroupQueue = [

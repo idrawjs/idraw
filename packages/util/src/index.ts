@@ -20,7 +20,8 @@ export {
   rotateElementVertexes,
   getElementRotateVertexes,
   calcElementCenter,
-  calcElementCenterFromVertexes
+  calcElementCenterFromVertexes,
+  rotatePointInGroup
 } from './lib/rotate';
 export {
   getSelectedElementIndexes,

@@ -1,7 +1,21 @@
-import { calcElementsViewInfo, calcElementVertexesInGroup, calcElementQueueVertexesQueueInGroup, calcElementSizeController } from '@idraw/util';
+import {
+  calcElementsViewInfo,
+  calcElementVertexesInGroup,
+  calcElementQueueVertexesQueueInGroup,
+  calcElementSizeController,
+  rotatePointInGroup
+} from '@idraw/util';
 import type { Point, PointWatcherEvent, BoardMiddleware, Element, ElementSize, ActionType, ResizeType, DeepSelectorSharedStorage, ElementType } from './types';
 import { drawHoverVertexesWrapper, drawArea, drawListArea, drawGroupQueueVertexesWrappers, drawSelectedElementControllersVertexes } from './draw-wrapper';
-import { getPointTarget, resizeElement, getSelectedListArea, calcSelectedElementsArea, isElementInGroup, isPointInViewActiveGroup } from './util';
+import {
+  getPointTarget,
+  resizeElement,
+  getSelectedListArea,
+  calcSelectedElementsArea,
+  isElementInGroup,
+  isPointInViewActiveGroup,
+  calcMoveInGroup
+} from './util';
 import {
   key,
   keyActionType,
@@ -67,7 +81,6 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
         groupQueue: sharer.getSharedStorage(keyGroupQueue),
         controllerSize: 10
       });
-      // console.log('update target?.elements ==========', list, controller);
       sharer.setSharedStorage(keySelectedElementController, controller);
     } else {
       sharer.setSharedStorage(keySelectedElementController, null);
@@ -182,6 +195,8 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
     },
 
     pointStart: (e: PointWatcherEvent) => {
+      prevPoint = e.point;
+
       updateHoverElement(null);
       const groupQueue = sharer.getSharedStorage(keyGroupQueue);
 
@@ -236,11 +251,12 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
         sharer.setSharedStorage(keyAreaStart, e.point);
         updateSelectedElementList([]);
       }
-      if (target.type) {
-        prevPoint = e.point;
-      } else {
-        prevPoint = null;
-      }
+      // if (target.type) {
+      //   prevPoint = e.point;
+      // } else {
+      //   prevPoint = null;
+      // }
+
       viewer.drawFrame();
     },
 
@@ -252,16 +268,14 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
       const end = e.point;
       const resizeType = sharer.getSharedStorage(keyResizeType);
       const actionType = sharer.getSharedStorage(keyActionType);
-      const isInGroup = sharer.getSharedStorage(keyGroupQueue)?.length > 0;
+      const groupQueue = sharer.getSharedStorage(keyGroupQueue);
 
       if (actionType === 'drag') {
         if (data && elems?.length === 1 && start && end) {
-          elems[0].x += (end.x - start.x) / scale;
-          elems[0].y += (end.y - start.y) / scale;
+          const { moveX, moveY } = calcMoveInGroup(start, end, groupQueue);
+          elems[0].x += moveX / scale;
+          elems[0].y += moveY / scale;
           updateSelectedElementList([elems[0]]);
-          prevPoint = e.point;
-        } else {
-          prevPoint = null;
         }
         viewer.drawFrame();
       } else if (actionType === 'drag-list') {
@@ -274,11 +288,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
               elem.y += moveY;
             }
           });
-
           sharer.setActiveStorage('data', data);
-          prevPoint = e.point;
-        } else {
-          prevPoint = null;
         }
         viewer.drawFrame();
       } else if (actionType === 'resize') {
@@ -288,7 +298,6 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
           elems[0].y = resizedElemSize.y;
           elems[0].w = resizedElemSize.w;
           elems[0].h = resizedElemSize.h;
-          prevPoint = e.point;
           updateSelectedElementList([elems[0]]);
           viewer.drawFrame();
         }
@@ -296,6 +305,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
         sharer.setSharedStorage(keyAreaEnd, e.point);
         viewer.drawFrame();
       }
+      prevPoint = e.point;
     },
 
     pointEnd(e: PointWatcherEvent) {
@@ -306,7 +316,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
       const viewSizeInfo = sharer.getActiveViewSizeInfo();
       const { offsetLeft, offsetTop } = viewScaleInfo;
       let needDrawFrame = false;
-
+      prevPoint = null;
       if (actionType === 'resize' && resizeType) {
         sharer.setSharedStorage(keyResizeType, null);
       } else if (actionType === 'area') {
@@ -367,6 +377,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
     },
 
     pointLeave() {
+      prevPoint = null;
       clear();
       viewer.drawFrame();
     },
