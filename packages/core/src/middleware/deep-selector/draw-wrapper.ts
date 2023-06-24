@@ -1,108 +1,69 @@
 import type {
   Element,
-  ElementSize,
   ElementType,
   PointSize,
   RendererDrawElementOptions,
   ViewContext2D,
   ViewRectVertexes,
   ViewScaleInfo,
-  ViewSizeInfo
+  ViewSizeInfo,
+  ElementSizeController
 } from '@idraw/types';
-import { rotateElement, rotateElementVertexes, calcViewPointSize, calcElementQueueVertexesQueueInGroup, calcElementVertexesInGroup } from '@idraw/util';
-// import { calcElementControllerStyle } from './controller';
-import type { AreaSize, ControllerStyle, ElementSizeController } from './types';
+import { rotateElementVertexes, calcViewVertexes } from '@idraw/util';
+import type { AreaSize } from './types';
 
-const wrapperColor = '#1973ba';
+import { resizeControllerBorderWidth, wrapperColor } from './config';
 
-export function drawPointWrapper(ctx: ViewContext2D, elem: ElementSize) {
-  const bw = 0;
-  const { x, y, w, h } = elem;
-  const { angle = 0 } = elem;
-
-  rotateElement(ctx, { x, y, w, h, angle }, () => {
-    ctx.setLineDash([]);
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = wrapperColor;
-
-    ctx.beginPath();
-    ctx.moveTo(x - bw, y - bw);
-    ctx.lineTo(x + w + bw, y - bw);
-    ctx.lineTo(x + w + bw, y + h + bw);
-    ctx.lineTo(x - bw, y + h + bw);
-    ctx.lineTo(x - bw, y - bw);
-    ctx.closePath();
-    ctx.stroke();
-  });
-}
-
-export function drawHoverWrapper(ctx: ViewContext2D, elem: ElementSize) {
-  const bw = 0;
-  const { x, y, w, h } = elem;
-  const { angle = 0 } = elem;
-  rotateElement(ctx, { x, y, w, h, angle }, () => {
-    // ctx.setLineDash([4, 4]);
-    ctx.setLineDash([]);
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = wrapperColor;
-    ctx.beginPath();
-    ctx.moveTo(x - bw, y - bw);
-    ctx.lineTo(x + w + bw, y - bw);
-    ctx.lineTo(x + w + bw, y + h + bw);
-    ctx.lineTo(x - bw, y + h + bw);
-    ctx.lineTo(x - bw, y - bw);
-    ctx.closePath();
-    ctx.stroke();
-  });
-}
-
-function drawController(ctx: ViewContext2D, style: ControllerStyle) {
-  const { x, y, w, h, borderColor, borderWidth, bgColor } = style;
-
+function drawVertexes(ctx: ViewContext2D, vertexes: ViewRectVertexes, opts: { borderColor: string; borderWidth: number; bgColor: string; lineDash: number[] }) {
+  const { borderColor, borderWidth, bgColor, lineDash } = opts;
   ctx.setLineDash([]);
   ctx.lineWidth = borderWidth;
   ctx.strokeStyle = borderColor;
   ctx.fillStyle = bgColor;
+  ctx.setLineDash(lineDash);
   ctx.beginPath();
-  ctx.moveTo(x, y);
-  ctx.lineTo(x + w, y);
-  ctx.lineTo(x + w, y + h);
-  ctx.lineTo(x, y + h);
-  ctx.lineTo(x, y);
+  ctx.moveTo(vertexes[0].x, vertexes[0].y);
+  ctx.lineTo(vertexes[1].x, vertexes[1].y);
+  ctx.lineTo(vertexes[2].x, vertexes[2].y);
+  ctx.lineTo(vertexes[3].x, vertexes[3].y);
+  ctx.lineTo(vertexes[0].x, vertexes[0].y);
   ctx.closePath();
   ctx.stroke();
   ctx.fill();
 }
 
-export function drawElementControllers(
+export function drawHoverVertexesWrapper(
   ctx: ViewContext2D,
-  elem: ElementSize,
-  opts: Omit<RendererDrawElementOptions, 'loader' | 'parentElementSize'> & { sizeControllers: ElementSizeController }
+  vertexes: ViewRectVertexes | null,
+  opts: {
+    viewScaleInfo: ViewScaleInfo;
+    viewSizeInfo: ViewSizeInfo;
+  }
 ) {
-  const bw = 0;
-  const { x, y, w, h } = elem;
-  const { angle = 0 } = elem;
-  const { sizeControllers } = opts;
+  if (!vertexes) {
+    return;
+  }
+  const wrapperOpts = { borderColor: wrapperColor, borderWidth: 1, bgColor: 'transparent', lineDash: [] };
+  drawVertexes(ctx, calcViewVertexes(vertexes, opts), wrapperOpts);
+}
 
-  rotateElement(ctx, { x, y, w, h, angle }, () => {
-    ctx.setLineDash([]);
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = wrapperColor;
-
-    ctx.beginPath();
-    ctx.moveTo(x - bw, y - bw);
-    ctx.lineTo(x + w + bw, y - bw);
-    ctx.lineTo(x + w + bw, y + h + bw);
-    ctx.lineTo(x - bw, y + h + bw);
-    ctx.lineTo(x - bw, y - bw);
-    ctx.closePath();
-    ctx.stroke();
-
-    Object.keys(sizeControllers).forEach((name: string) => {
-      const ctrl = sizeControllers[name];
-      drawController(ctx, { ...ctrl, ...{} });
-    });
-  });
+export function drawSelectedElementControllersVertexes(
+  ctx: ViewContext2D,
+  controller: ElementSizeController | null,
+  opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }
+) {
+  if (!controller) {
+    return;
+  }
+  const { elementWrapper, left, right, top, bottom } = controller;
+  // const wrapperColor = 'red'; // TODO
+  const wrapperOpts = { borderColor: wrapperColor, borderWidth: 1, bgColor: 'transparent', lineDash: [] };
+  const ctrlOpts = { ...wrapperOpts, borderWidth: resizeControllerBorderWidth, bgColor: '#FFFFFF' };
+  drawVertexes(ctx, calcViewVertexes(elementWrapper, opts), wrapperOpts);
+  drawVertexes(ctx, calcViewVertexes(left.vertexes, opts), ctrlOpts);
+  drawVertexes(ctx, calcViewVertexes(right.vertexes, opts), ctrlOpts);
+  drawVertexes(ctx, calcViewVertexes(top.vertexes, opts), ctrlOpts);
+  drawVertexes(ctx, calcViewVertexes(bottom.vertexes, opts), ctrlOpts);
 }
 
 export function drawElementListShadows(ctx: ViewContext2D, elements: Element<ElementType>[], opts?: Omit<RendererDrawElementOptions, 'loader'>) {
@@ -140,7 +101,7 @@ export function drawArea(ctx: ViewContext2D, opts: { start: PointSize; end: Poin
   const { start, end } = opts;
   ctx.setLineDash([]);
   ctx.lineWidth = 1;
-  ctx.strokeStyle = '#1976d2';
+  ctx.strokeStyle = wrapperColor;
   ctx.fillStyle = '#1976d24f';
   ctx.beginPath();
   ctx.moveTo(start.x, start.y);
@@ -157,7 +118,7 @@ export function drawListArea(ctx: ViewContext2D, opts: { areaSize: AreaSize }) {
   const { x, y, w, h } = areaSize;
   ctx.setLineDash([]);
   ctx.lineWidth = 1;
-  ctx.strokeStyle = '#1976d2';
+  ctx.strokeStyle = wrapperColor;
   ctx.fillStyle = '#1976d21c';
   ctx.beginPath();
   ctx.moveTo(x, y);
@@ -169,63 +130,17 @@ export function drawListArea(ctx: ViewContext2D, opts: { areaSize: AreaSize }) {
   ctx.fill();
 }
 
-export function drawGroupsWrapper(
+export function drawGroupQueueVertexesWrappers(
   ctx: ViewContext2D,
-  groupQueue: Element<'group'>[],
+  vertexesList: ViewRectVertexes[],
   opts: {
     viewScaleInfo: ViewScaleInfo;
     viewSizeInfo: ViewSizeInfo;
   }
 ) {
-  const vesList: ViewRectVertexes[] = calcElementQueueVertexesQueueInGroup(groupQueue);
-
-  for (let i = 0; i < vesList.length; i++) {
-    const ves = vesList[i];
-    const v0 = calcViewPointSize(ves[0], opts);
-    const v1 = calcViewPointSize(ves[1], opts);
-    const v2 = calcViewPointSize(ves[2], opts);
-    const v3 = calcViewPointSize(ves[3], opts);
-
-    ctx.setLineDash([4, 4]);
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = wrapperColor;
-    ctx.beginPath();
-    ctx.moveTo(v0.x, v0.y);
-    ctx.lineTo(v1.x, v1.y);
-    ctx.lineTo(v2.x, v2.y);
-    ctx.lineTo(v3.x, v3.y);
-    ctx.lineTo(v0.x, v0.y);
-    ctx.closePath();
-    ctx.stroke();
-  }
-}
-
-export function drawHoverWrapperInGroup(
-  ctx: ViewContext2D,
-  elem: ElementSize,
-  groupQueue: Element<'group'>[],
-  opts: {
-    viewScaleInfo: ViewScaleInfo;
-    viewSizeInfo: ViewSizeInfo;
-  }
-) {
-  const ves = calcElementVertexesInGroup(elem, { groupQueue });
-  if (ves) {
-    const v0 = calcViewPointSize(ves[0], opts);
-    const v1 = calcViewPointSize(ves[1], opts);
-    const v2 = calcViewPointSize(ves[2], opts);
-    const v3 = calcViewPointSize(ves[3], opts);
-
-    ctx.setLineDash([]);
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = wrapperColor;
-    ctx.beginPath();
-    ctx.moveTo(v0.x, v0.y);
-    ctx.lineTo(v1.x, v1.y);
-    ctx.lineTo(v2.x, v2.y);
-    ctx.lineTo(v3.x, v3.y);
-    ctx.lineTo(v0.x, v0.y);
-    ctx.closePath();
-    ctx.stroke();
+  for (let i = 0; i < vertexesList.length; i++) {
+    const vertexes = vertexesList[i];
+    const wrapperOpts = { borderColor: wrapperColor, borderWidth: 2, bgColor: 'transparent', lineDash: [4, 4] };
+    drawVertexes(ctx, calcViewVertexes(vertexes, opts), wrapperOpts);
   }
 }

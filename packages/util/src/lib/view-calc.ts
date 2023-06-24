@@ -1,4 +1,4 @@
-import { Point, PointSize, Data, ViewScaleInfo, ViewSizeInfo, Element, ElementType, ElementSize, ViewContext2D } from '@idraw/types';
+import { Point, PointSize, Data, ViewScaleInfo, ViewSizeInfo, Element, ElementType, ElementSize, ViewContext2D, ViewRectVertexes } from '@idraw/types';
 import { rotateElementVertexes } from './rotate';
 import { checkRectIntersect } from './rect';
 
@@ -119,6 +119,15 @@ export function calcViewPointSize(size: PointSize, opts: { viewScaleInfo: ViewSc
     y: y * scale + offsetTop - contextY
   };
   return newSize;
+}
+
+export function calcViewVertexes(vertexes: ViewRectVertexes, opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }): ViewRectVertexes {
+  return [
+    calcViewPointSize(vertexes[0], opts),
+    calcViewPointSize(vertexes[1], opts),
+    calcViewPointSize(vertexes[2], opts),
+    calcViewPointSize(vertexes[3], opts)
+  ];
 }
 
 export function isViewPointInElement(

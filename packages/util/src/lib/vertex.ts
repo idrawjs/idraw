@@ -11,6 +11,14 @@ export function getElementVertexes(elemSize: ElementSize): ViewRectVertexes {
   ];
 }
 
+export function calcElementVertexes(elemSize: ElementSize) {
+  const { x, y, w, h, angle = 0 } = elemSize;
+  if (angle === 0) {
+    return getElementVertexes(elemSize);
+  }
+  return getElementRotateVertexes(elemSize, calcElementCenter({ x, y, w, h, angle }), angle);
+}
+
 export function calcElementQueueVertexesQueueInGroup(groupQueue: ElementSize[]): ViewRectVertexes[] {
   const vesList: ViewRectVertexes[] = [];
   let totalX = 0;
@@ -30,7 +38,7 @@ export function calcElementQueueVertexesQueueInGroup(groupQueue: ElementSize[]):
     let ves: [PointSize, PointSize, PointSize, PointSize];
     if (i === 0) {
       const elemSize: ElementSize = { x: totalX, y: totalY, w, h, angle };
-      ves = getElementRotateVertexes(elemSize, calcElementCenter({ x, y, w, h, angle }), angle);
+      ves = calcElementVertexes({ x, y, w, h, angle });
       rotateActionList.push({
         center: calcElementCenter(elemSize),
         angle,
@@ -62,6 +70,9 @@ export function calcElementQueueVertexesQueueInGroup(groupQueue: ElementSize[]):
 
 export function calcElementVertexesQueueInGroup(targetElem: ElementSize, opts: { groupQueue: Element<'group'>[] }): ViewRectVertexes[] {
   const { groupQueue } = opts;
+  if (!(groupQueue.length > 0)) {
+    return [calcElementVertexes(targetElem)];
+  }
   const elemQueue = [...groupQueue, ...[targetElem]];
   const vesList = calcElementQueueVertexesQueueInGroup(elemQueue);
   return vesList;

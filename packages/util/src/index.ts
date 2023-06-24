@@ -25,12 +25,22 @@ export {
 export {
   getSelectedElementIndexes,
   getSelectedElementUUIDs,
-  getSelectedElements,
   validateElements,
   calcElementsContextSize,
-  calcElementsViewInfo
+  calcElementsViewInfo,
+  getSelectedElements
 } from './lib/element';
 export { checkRectIntersect } from './lib/rect';
-export { viewScale, viewScroll, calcViewElementSize, calcViewPointSize, isViewPointInElement, getViewPointAtElement, isElementInView } from './lib/view-calc';
+export {
+  viewScale,
+  viewScroll,
+  calcViewElementSize,
+  calcViewPointSize,
+  calcViewVertexes,
+  isViewPointInElement,
+  getViewPointAtElement,
+  isElementInView
+} from './lib/view-calc';
 export { rotatePoint, rotateVertexes } from './lib/rotate';
 export { getElementVertexes, calcElementVertexesInGroup, calcElementVertexesQueueInGroup, calcElementQueueVertexesQueueInGroup } from './lib/vertex';
+export { calcElementSizeController } from './lib/controller';
