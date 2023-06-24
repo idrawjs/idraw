@@ -16,6 +16,7 @@ function getGroupIndexes(elem: Element<'group'>, uuids: string[], parentIndex: s
   return indexes;
 }
 
+// TODO need to be deprecated
 export function getSelectedElementIndexes(data: Data, uuids: string[]): Array<string | number> {
   let indexes: Array<string | number> = [];
   if (Array.isArray(data?.elements) && data?.elements?.length > 0 && Array.isArray(uuids) && uuids.length > 0) {
@@ -83,15 +84,16 @@ function getElementInGroup(elem: Element<'group'>, uuids: string[]): Array<Eleme
   return elements;
 }
 
-export function getSelectedElements(data: Data | null | undefined, uuids: string[]): Array<Element<ElementType>> {
+// TODO need to be deprecated
+export function getSelectedElements(data: Data | null | undefined, uuids: string[], groupQueue?: Element<'group'>[]): Array<Element<ElementType>> {
   let elements: Array<Element<ElementType>> = [];
-  if (data && Array.isArray(data?.elements) && data?.elements?.length > 0 && Array.isArray(uuids) && uuids.length > 0) {
+  if (Array.isArray(groupQueue) && groupQueue.length > 0) {
+    elements = getElementInGroup(groupQueue[groupQueue.length - 1], uuids);
+  } else if (data && Array.isArray(data?.elements) && data?.elements?.length > 0 && Array.isArray(uuids) && uuids.length > 0) {
     for (let i = 0; i < data.elements.length; i++) {
       const elem = data.elements[i];
       if (uuids.includes(elem.uuid)) {
         elements.push(elem);
-      } else if (elem.type === 'group') {
-        elements = elements.concat(getElementInGroup(elem as Element<'group'>, uuids));
       }
     }
   }

@@ -1,13 +1,5 @@
-import {
-  rotateElement,
-  calcElementCenter,
-  rotateElementVertexes,
-  calcElementCenterFromVertexes,
-  calcElementVertexesInGroup,
-  calcElementQueueVertexesQueueInGroup,
-  calcViewPointSize
-} from '@idraw/util';
-import { calcElementControllerStyle } from './controller';
+import { calcElementCenter, rotateElementVertexes, calcElementVertexesInGroup, calcElementQueueVertexesQueueInGroup, calcViewPointSize } from '@idraw/util';
+import type { ViewRectVertexes, ElementSizeController } from '@idraw/types';
 import type {
   Data,
   Element,
@@ -24,7 +16,6 @@ import type {
   AreaSize,
   ViewSizeInfo
 } from './types';
-import { ViewRectVertexes } from '@idraw/types';
 
 function parseRadian(angle: number) {
   return (angle * Math.PI) / 180;
@@ -82,27 +73,26 @@ export function getPointTarget(
   opts: {
     ctx: ViewContext2D;
     data?: Data | null;
-    selectedIndexes?: Array<number | string>;
-    selectedUUIDs: Array<string>;
     selectedElements?: Element<ElementType>[];
     areaSize?: AreaSize | null;
     viewScaleInfo: ViewScaleInfo;
     viewSizeInfo: ViewSizeInfo;
     calculator: ViewCalculator;
     groupQueue: Element<'group'>[] | null;
+    selectedElementController: ElementSizeController | null;
   }
 ): PointTarget {
   const target: PointTarget = {
     type: null,
     elements: [],
+    elementVertexesList: [],
     groupQueue: [],
-    indexes: [],
-    uuids: []
+    groupQueueVertexesList: []
   };
-  const { ctx, data, calculator, selectedElements, selectedIndexes, selectedUUIDs, viewScaleInfo, viewSizeInfo, areaSize, groupQueue } = opts;
+  const { ctx, data, calculator, selectedElements, viewScaleInfo, viewSizeInfo, areaSize, groupQueue, selectedElementController } = opts;
 
   // in-group-element
-  if (groupQueue && Array.isArray(groupQueue) && groupQueue.length > 0 && data) {
+  if (groupQueue && Array.isArray(groupQueue) && groupQueue.length > 0) {
     // return target;
     const lastGroup = groupQueue[groupQueue.length - 1];
     if (lastGroup?.detail?.children && Array.isArray(lastGroup?.detail?.children)) {
@@ -117,42 +107,30 @@ export function getPointTarget(
         }
       }
     }
+    return target;
   }
 
   // list area
-  if (areaSize && Array.isArray(selectedElements) && selectedElements?.length > 1 && Array.isArray(selectedIndexes) && selectedIndexes?.length > 1) {
+  if (areaSize && Array.isArray(selectedElements) && selectedElements?.length > 1) {
     const { x, y, w, h } = areaSize;
     if (p.x >= x && p.x <= x + w && p.y >= y && p.y <= y + h) {
       target.type = 'list-area';
       target.elements = selectedElements;
-      target.indexes = selectedIndexes;
-      target.uuids = selectedUUIDs;
       return target;
     }
   }
 
   // resize
-  if (selectedElements?.length === 1) {
-    const elemSize = calculator.elementSize(selectedElements[0], viewScaleInfo, viewSizeInfo);
-    const ctrls = calcElementControllerStyle(elemSize);
-    rotateElement(ctx, elemSize, () => {
-      const ctrlKeys = Object.keys(ctrls);
-      for (let i = 0; i < ctrlKeys.length; i++) {
-        const key = ctrlKeys[i];
-        const ctrl = ctrls[key];
-        const { x, y, w, h } = ctrl;
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-        ctx.lineTo(x + w, y);
-        ctx.lineTo(x + w, y + h);
-        ctx.lineTo(x, y + h);
-        ctx.closePath();
-        if (ctx.isPointInPath(p.x, p.y)) {
-          target.type = `resize-${key}` as PointTargetType;
-          break;
-        }
+  if (selectedElementController) {
+    const { left, right, top, bottom } = selectedElementController;
+    const ctrls = [left, right, top, bottom];
+    for (let i = 0; i < ctrls.length; i++) {
+      const ctrl = ctrls[i];
+      if (isPointInViewActiveVertexes(p, { ctx, vertexes: ctrl.vertexes, viewSizeInfo, viewScaleInfo })) {
+        target.type = `resize-${ctrl.type}` as PointTargetType;
+        break;
       }
-    });
+    }
     if (target.type !== null) {
       return target;
     }
@@ -162,9 +140,7 @@ export function getPointTarget(
   if (data) {
     const { index, element } = calculator.getPointElement(p as Point, { data, viewScaleInfo, viewSizeInfo });
     if (index >= 0 && element) {
-      target.indexes = [index];
       target.elements = [element];
-      target.uuids = [element.uuid];
       target.type = 'over-element';
       return target;
     }
@@ -454,13 +430,14 @@ export function getSelectedListArea(
     viewSizeInfo: ViewSizeInfo;
     calculator: ViewCalculator;
   }
-): { indexes: number[]; uuids: string[] } {
+): { indexes: number[]; uuids: string[]; elements: Element<ElementType>[] } {
   const indexes: number[] = [];
   const uuids: string[] = [];
+  const elements: Element<ElementType>[] = [];
   const { calculator, viewScaleInfo, viewSizeInfo, start, end } = opts;
 
   if (!(Array.isArray(data.elements) && start && end)) {
-    return { indexes, uuids };
+    return { indexes, uuids, elements };
   }
   const startX = Math.min(start.x, end.x);
   const endX = Math.max(start.x, end.x);
@@ -474,6 +451,7 @@ export function getSelectedListArea(
     if (center.x >= startX && center.x <= endX && center.y >= startY && center.y <= endY) {
       indexes.push(idx);
       uuids.push(elem.uuid);
+      elements.push(elem);
       if (elemSize.angle && (elemSize.angle > 0 || elemSize.angle < 0)) {
         const ves = rotateElementVertexes(elemSize);
         if (ves.length === 4) {
@@ -487,7 +465,7 @@ export function getSelectedListArea(
       }
     }
   });
-  return { indexes, uuids };
+  return { indexes, uuids, elements };
 }
 
 export function calcSelectedElementsArea(
