@@ -30,3 +30,10 @@ export function vaildPoint(p: Point) {
 export function vaildTouchPoint(p: TouchPoint) {
   return vaildPoint(p) === true && p.f >= 0;
 }
+
+export function getCenterFromTwoPoints(p1: PointSize, p2: PointSize): PointSize {
+  return {
+    x: p1.x + (p2.x - p1.x) / 2,
+    y: p1.y + (p2.y - p1.y) / 2
+  };
+}

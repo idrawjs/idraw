@@ -67,6 +67,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
         groupQueue: sharer.getSharedStorage(keyGroupQueue),
         controllerSize: 10
       });
+      // console.log('update target?.elements ==========', list, controller);
       sharer.setSharedStorage(keySelectedElementController, controller);
     } else {
       sharer.setSharedStorage(keySelectedElementController, null);
@@ -194,10 +195,12 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
           })
         ) {
           const target = getPointTarget(e.point, pointTargetBaseOptions());
-          if (target?.elements?.length > 0) {
-            updateHoverElement(null);
+          updateHoverElement(null);
+          if (target?.elements?.length === 1) {
+            updateSelectedElementList([target.elements[0]]);
+            sharer.setSharedStorage(keyActionType, 'drag');
+          } else {
             updateSelectedElementList([]);
-            // sharer.setSharedStorage(keyActionType, 'drag');
           }
         } else {
           // TODO
@@ -304,10 +307,6 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
       const { offsetLeft, offsetTop } = viewScaleInfo;
       let needDrawFrame = false;
 
-      // if (groupQueue?.length > 0) {
-      //   return;
-      // }
-
       if (actionType === 'resize' && resizeType) {
         sharer.setSharedStorage(keyResizeType, null);
       } else if (actionType === 'area') {
@@ -412,8 +411,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
           drawHoverVertexesWrapper(helperContext, hoverElementVertexes, drawBaseOpts);
         }
         if (elem && (['select', 'drag', 'resize'] as ActionType[]).includes(actionType)) {
-          // TODO drawPointElementVertexesWrapper
-          // const selectedElemSize = calculator.elementSize(elem, viewScaleInfo, viewSizeInfo);
+          drawSelectedElementControllersVertexes(helperContext, selectedElementController, { ...drawBaseOpts });
         }
       } else {
         // in root

@@ -1,4 +1,4 @@
-import type { Data, Element, ElementType, ElementSize, ViewContextSize, ViewSizeInfo } from '@idraw/types';
+import type { Data, Element, ElementType, ElementSize, ViewContextSize, ViewSizeInfo, PointSize } from '@idraw/types';
 import { rotateElementVertexes } from './rotate';
 
 function getGroupIndexes(elem: Element<'group'>, uuids: string[], parentIndex: string): string[] {
