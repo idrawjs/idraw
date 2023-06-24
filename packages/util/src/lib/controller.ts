@@ -1,4 +1,5 @@
-import { calcElementVertexesInGroup, createUUID } from '@idraw/util';
+import { createUUID } from './uuid';
+import { calcElementVertexesInGroup } from './vertex';
 import type { Element, ElementSize, ElementSizeController, ViewRectVertexes } from '@idraw/types';
 
 export function calcElementSizeController(
