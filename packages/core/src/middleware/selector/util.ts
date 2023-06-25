@@ -159,8 +159,8 @@ export function getPointTarget(
 export function resizeElement(
   elem: Element<ElementType>,
   opts: {
-    start: Point;
-    end: Point;
+    start: PointSize;
+    end: PointSize;
     resizeType: ResizeType;
     scale: number;
   }

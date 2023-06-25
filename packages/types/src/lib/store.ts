@@ -4,7 +4,6 @@ import { ViewScaleInfo, ViewSizeInfo } from './view';
 export type ActiveStore = ViewSizeInfo &
   ViewScaleInfo & {
     data: Data | null;
-    selectedUUIDs: string[]; // TODO need to be deprecated
   };
 
 export interface StoreSharer<S extends Record<any, any> = any> {

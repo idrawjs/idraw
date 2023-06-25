@@ -45,6 +45,7 @@ export interface BoardWatcherEventMap<S extends Record<any | symbol, any> = any>
   resize: BoardWatherResizeEvent;
   beforeDrawFrame: BoardWatherDrawFrameEvent<S>;
   afterDrawFrame: BoardWatherDrawFrameEvent<S>;
+  clear: void;
 }
 
 export type BoardMode = 'SELECT' | 'SCROLL' | 'RULE' | 'CONNECT' | 'PENCIL' | 'PEN' | string;
@@ -71,6 +72,8 @@ export interface BoardMiddlewareObject<S extends Record<any | symbol, any> = any
   // draw
   beforeDrawFrame?(e: BoardWatcherEventMap<S>['beforeDrawFrame']): void | boolean;
   afterDrawFrame?(e: BoardWatcherEventMap<S>['afterDrawFrame']): void | boolean;
+
+  clear?(e: BoardWatcherEventMap<S>['clear']): void | boolean;
 }
 
 export interface BoardMiddlewareOptions<S extends Record<any | symbol, any>> {
