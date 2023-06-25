@@ -1,5 +1,22 @@
-import { calcElementsViewInfo, calcElementVertexesInGroup, calcElementQueueVertexesQueueInGroup, calcElementSizeController } from '@idraw/util';
-import type { Point, PointWatcherEvent, BoardMiddleware, Element, ElementSize, ActionType, ResizeType, DeepSelectorSharedStorage, ElementType } from './types';
+import {
+  calcElementsViewInfo,
+  calcElementVertexesInGroup,
+  calcElementQueueVertexesQueueInGroup,
+  calcElementSizeController,
+  rotatePointInGroup
+} from '@idraw/util';
+import type {
+  Point,
+  PointSize,
+  PointWatcherEvent,
+  BoardMiddleware,
+  Element,
+  ElementSize,
+  ActionType,
+  ResizeType,
+  DeepSelectorSharedStorage,
+  ElementType
+} from './types';
 import { drawHoverVertexesWrapper, drawArea, drawListArea, drawGroupQueueVertexesWrappers, drawSelectedElementControllersVertexes } from './draw-wrapper';
 import {
   getPointTarget,
@@ -286,7 +303,25 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
         viewer.drawFrame();
       } else if (actionType === 'resize') {
         if (data && elems?.length === 1 && start && resizeType?.startsWith('resize-')) {
-          const resizedElemSize = resizeElement(elems[0], { scale, start, end, resizeType });
+          const pointGroupQueue: Element<'group'>[] = [];
+          groupQueue.forEach((group) => {
+            const { x, y, w, h, angle = 0 } = group;
+            pointGroupQueue.push({
+              x,
+              y,
+              w,
+              h,
+              angle: 0 - angle
+            } as Element<'group'>);
+          });
+          let resizeStart: PointSize = start;
+          let resizeEnd: PointSize = end;
+          if (groupQueue.length > 0) {
+            resizeStart = rotatePointInGroup(start, pointGroupQueue);
+            resizeEnd = rotatePointInGroup(end, pointGroupQueue);
+          }
+          const resizedElemSize = resizeElement(elems[0], { scale, start: resizeStart, end: resizeEnd, resizeType });
+          // const resizedElemSize = resizeElement(elems[0], { scale, start, end, resizeType });
           elems[0].x = resizedElemSize.x;
           elems[0].y = resizedElemSize.y;
           elems[0].w = resizedElemSize.w;

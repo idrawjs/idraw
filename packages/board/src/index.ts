@@ -201,6 +201,16 @@ export class Board {
     }
   }
 
+  private _handleClear(e: BoardWatcherEventMap['clear']) {
+    for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
+      const obj = this._activeMiddlewareObjs[i];
+      const result = obj?.clear?.(e);
+      if (result === false) {
+        return;
+      }
+    }
+  }
+
   // draw event
   private _handleBeforeDrawFrame(e: BoardWatcherEventMap['beforeDrawFrame']) {
     for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
@@ -289,5 +299,14 @@ export class Board {
     this._viewer.drawFrame();
     this._watcher.trigger('resize', viewSize);
     this._sharer.setActiveViewSizeInfo(newViewSize);
+  }
+
+  clear() {
+    const { viewContent } = this._opts;
+    const { helperContext, viewContext, boardContext } = viewContent;
+    helperContext.clearRect(0, 0, helperContext.canvas.width, helperContext.canvas.height);
+    viewContext.clearRect(0, 0, viewContext.canvas.width, viewContext.canvas.height);
+    boardContext.clearRect(0, 0, boardContext.canvas.width, boardContext.canvas.height);
+    this._handleClear();
   }
 }

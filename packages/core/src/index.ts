@@ -81,4 +81,8 @@ export class Core {
     // this._board.scrollX(viewScaleInfo.offsetLeft);
     // this._board.scrollY(viewScaleInfo.offsetTop);
   }
+
+  clear() {
+    this._board.clear();
+  }
 }
