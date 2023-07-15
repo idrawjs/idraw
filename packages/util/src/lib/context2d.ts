@@ -121,6 +121,21 @@ export class Context2D implements ViewContext2D {
     this._ctx.shadowBlur = this.$doPixelRatio(blur);
   }
 
+  get lineCap() {
+    return this._ctx.lineCap;
+  }
+  set lineCap(lineCap: CanvasLineCap) {
+    this._ctx.lineCap = lineCap;
+  }
+
+  get globalCompositeOperation(): GlobalCompositeOperation {
+    return this._ctx.globalCompositeOperation;
+  }
+
+  set globalCompositeOperation(operation: GlobalCompositeOperation) {
+    this._ctx.globalCompositeOperation = operation;
+  }
+
   fill(...args: [fillRule?: CanvasFillRule | undefined] | [path: Path2D, fillRule?: CanvasFillRule | undefined]): void {
     return this._ctx.fill(...(args as [path: Path2D, fillRule?: CanvasFillRule | undefined]));
   }
@@ -247,7 +262,7 @@ export class Context2D implements ViewContext2D {
     this._ctx.scale(ratioX, ratioY);
   }
 
-  ellipse(
+  circle(
     x: number,
     y: number,
     radiusX: number,
@@ -277,5 +292,12 @@ export class Context2D implements ViewContext2D {
   // clip(path: Path2D, fillRule?: CanvasFillRule): void;
   clip(...args: [fillRule?: CanvasFillRule | undefined] | [path: Path2D, fillRule?: CanvasFillRule | undefined]) {
     return this._ctx.clip(...(args as any[]));
+  }
+
+  setTransform(a: number, b: number, c: number, d: number, e: number, f: number) {
+    return this._ctx.setTransform(a, b, c, d, e, f);
+  }
+  getTransform(): DOMMatrix2DInit {
+    return this._ctx.getTransform();
   }
 }

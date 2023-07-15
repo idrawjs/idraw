@@ -13,3 +13,5 @@ export * from './lib/idraw';
 export * from './lib/middleware';
 export * from './lib/context2d';
 export * from './lib/controller';
+export * from './lib/html';
+export * from './lib/svg-path';

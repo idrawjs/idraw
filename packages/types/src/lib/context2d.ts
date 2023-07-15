@@ -48,12 +48,16 @@ export interface ViewContext2D {
   drawImage(image: CanvasImageSource, sx: number, sy: number, sw: number, sh: number, dx: number, dy: number, dw: number, dh: number): void;
   createPattern(image: CanvasImageSource, repetition: string | null): CanvasPattern | null;
   globalAlpha: number;
+  globalCompositeOperation: GlobalCompositeOperation;
   shadowBlur: number;
   shadowColor: string;
   shadowOffsetX: number;
   shadowOffsetY: number;
-  ellipse(x: number, y: number, radiusX: number, radiusY: number, rotation: number, startAngle: number, endAngle: number, counterclockwise?: boolean): void;
+  circle(x: number, y: number, radiusX: number, radiusY: number, rotation: number, startAngle: number, endAngle: number, counterclockwise?: boolean): void;
   isPointInPath(x: number, y: number, fillRule?: CanvasFillRule): boolean;
   clip(fillRule?: CanvasFillRule): void;
   clip(path: Path2D, fillRule?: CanvasFillRule): void;
+  lineCap: CanvasLineCap;
+  setTransform(a: number, b: number, c: number, d: number, e: number, f: number): void;
+  getTransform(): DOMMatrix2DInit;
 }

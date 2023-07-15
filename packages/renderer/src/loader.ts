@@ -1,6 +1,5 @@
 import type { RendererLoader, LoaderEventMap, LoadFunc, LoadContent, LoadItem, LoadElementType, Element } from '@idraw/types';
-import { loadImage, loadHTML, loadSVG, EventEmitter } from '@idraw/util';
-import { deepClone } from '@idraw/util';
+import { loadImage, loadHTML, loadSVG, EventEmitter, deepClone } from '@idraw/util';
 
 interface LoadItemMap {
   [uuid: string]: LoadItem;

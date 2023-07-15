@@ -45,3 +45,6 @@ export {
 export { rotatePoint, rotateVertexes } from './lib/rotate';
 export { getElementVertexes, calcElementVertexesInGroup, calcElementVertexesQueueInGroup, calcElementQueueVertexesQueueInGroup } from './lib/vertex';
 export { calcElementSizeController } from './lib/controller';
+export { generateSVGPath, parseSVGPath } from './lib/svg-path';
+export { parseSVGCodeToFlatGroupElement, flatSVGNode, parseSVGCodeToGroupElement } from './lib/svg';
+export { generateHTML, parseHTML } from './lib/html';
