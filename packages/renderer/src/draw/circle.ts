@@ -20,7 +20,7 @@ export function drawCircle(ctx: ViewContext2D, elem: Element<'circle'>, opts: Re
       ctx.beginPath();
       ctx.strokeStyle = borderColor;
       ctx.lineWidth = borderWidth;
-      ctx.ellipse(centerX, centerY, ba, bb, 0, 0, 2 * Math.PI);
+      ctx.circle(centerX, centerY, ba, bb, 0, 0, 2 * Math.PI);
       ctx.closePath();
       ctx.stroke();
     }
@@ -28,7 +28,7 @@ export function drawCircle(ctx: ViewContext2D, elem: Element<'circle'>, opts: Re
     // draw content
     ctx.beginPath();
     ctx.fillStyle = bgColor;
-    ctx.ellipse(centerX, centerY, a, b, 0, 0, 2 * Math.PI);
+    ctx.circle(centerX, centerY, a, b, 0, 0, 2 * Math.PI);
     ctx.closePath();
     ctx.fill();
   });

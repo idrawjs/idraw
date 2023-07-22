@@ -37,10 +37,7 @@ function color(value: any) {
 }
 
 function imageURL(value: any) {
-  return (
-    typeof value === 'string' &&
-    /^(http:\/\/|https:\/\/|\.\/|\/)/.test(`${value}`)
-  );
+  return typeof value === 'string' && /^(http:\/\/|https:\/\/|\.\/|\/)/.test(`${value}`);
 }
 
 function imageBase64(value: any) {
@@ -52,11 +49,7 @@ function imageSrc(value: any) {
 }
 
 function svg(value: any) {
-  return (
-    typeof value === 'string' &&
-    /^(<svg[\s]{1,}|<svg>)/i.test(`${value}`.trim()) &&
-    /<\/[\s]{0,}svg>$/i.test(`${value}`.trim())
-  );
+  return typeof value === 'string' && /^(<svg[\s]{1,}|<svg>)/i.test(`${value}`.trim()) && /<\/[\s]{0,}svg>$/i.test(`${value}`.trim());
 }
 
 function html(value: any) {
@@ -100,6 +93,10 @@ function fontWeight(value: any) {
   return ['bold'].includes(value);
 }
 
+function numberStr(value: any): boolean {
+  return /^(-?\d+(?:\.\d+)?)$/.test(`${value}`);
+}
+
 export const is = {
   x,
   y,
@@ -107,6 +104,7 @@ export const is = {
   h,
   angle,
   number,
+  numberStr,
   borderWidth,
   borderRadius,
   color,

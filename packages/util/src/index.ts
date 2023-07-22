@@ -1,6 +1,6 @@
 export { delay, compose, throttle } from './lib/time';
 export { downloadImageFromCanvas } from './lib/file';
-export { toColorHexStr, toColorHexNum, isColorStr } from './lib/color';
+export { toColorHexStr, toColorHexNum, isColorStr, colorNameToHex } from './lib/color';
 export { createUUID } from './lib/uuid';
 export { deepClone } from './lib/data';
 export { istype } from './lib/istype';
@@ -45,3 +45,5 @@ export {
 export { rotatePoint, rotateVertexes } from './lib/rotate';
 export { getElementVertexes, calcElementVertexesInGroup, calcElementVertexesQueueInGroup, calcElementQueueVertexesQueueInGroup } from './lib/vertex';
 export { calcElementSizeController } from './lib/controller';
+export { generateSVGPath, parseSVGPath } from './lib/svg-path';
+export { generateHTML, parseHTML } from './lib/html';

@@ -5,6 +5,7 @@ import { drawImage } from './image';
 import { drawText } from './text';
 import { drawSVG } from './svg';
 import { drawHTML } from './html';
+import { drawPath } from './path';
 import { drawGroup } from './group';
 
 export function drawElement(ctx: ViewContext2D, elem: Element<ElementType>, opts: RendererDrawElementOptions) {
@@ -32,6 +33,10 @@ export function drawElement(ctx: ViewContext2D, elem: Element<ElementType>, opts
       }
       case 'html': {
         drawHTML(ctx, elem as Element<'html'>, opts);
+        break;
+      }
+      case 'path': {
+        drawPath(ctx, elem as Element<'path'>, opts);
         break;
       }
       case 'group': {

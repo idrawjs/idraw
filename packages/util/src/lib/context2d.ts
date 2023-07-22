@@ -121,6 +121,21 @@ export class Context2D implements ViewContext2D {
     this._ctx.shadowBlur = this.$doPixelRatio(blur);
   }
 
+  get lineCap() {
+    return this._ctx.lineCap;
+  }
+  set lineCap(lineCap: CanvasLineCap) {
+    this._ctx.lineCap = lineCap;
+  }
+
+  get globalCompositeOperation(): GlobalCompositeOperation {
+    return this._ctx.globalCompositeOperation;
+  }
+
+  set globalCompositeOperation(operation: GlobalCompositeOperation) {
+    this._ctx.globalCompositeOperation = operation;
+  }
+
   fill(...args: [fillRule?: CanvasFillRule | undefined] | [path: Path2D, fillRule?: CanvasFillRule | undefined]): void {
     return this._ctx.fill(...(args as [path: Path2D, fillRule?: CanvasFillRule | undefined]));
   }
@@ -169,8 +184,8 @@ export class Context2D implements ViewContext2D {
     return this._ctx.setLineDash(nums.map((n) => this.$doPixelRatio(n)));
   }
 
-  stroke() {
-    return this._ctx.stroke();
+  stroke(path?: Path2D) {
+    return path ? this._ctx.stroke(path) : this._ctx.stroke();
   }
 
   translate(x: number, y: number) {
@@ -247,7 +262,7 @@ export class Context2D implements ViewContext2D {
     this._ctx.scale(ratioX, ratioY);
   }
 
-  ellipse(
+  circle(
     x: number,
     y: number,
     radiusX: number,
@@ -277,5 +292,29 @@ export class Context2D implements ViewContext2D {
   // clip(path: Path2D, fillRule?: CanvasFillRule): void;
   clip(...args: [fillRule?: CanvasFillRule | undefined] | [path: Path2D, fillRule?: CanvasFillRule | undefined]) {
     return this._ctx.clip(...(args as any[]));
+  }
+
+  setTransform(a: number, b: number, c: number, d: number, e: number, f: number) {
+    return this._ctx.setTransform(a, b, c, d, e, f);
+  }
+  getTransform(): DOMMatrix2DInit {
+    return this._ctx.getTransform();
+  }
+
+  createLinearGradient(x0: number, y0: number, x1: number, y1: number): CanvasGradient {
+    return this._ctx.createLinearGradient(this.$doPixelRatio(x0), this.$doPixelRatio(y0), this.$doPixelRatio(x1), this.$doPixelRatio(y1));
+  }
+  createRadialGradient(x0: number, y0: number, r0: number, x1: number, y1: number, r1: number): CanvasGradient {
+    return this._ctx.createRadialGradient(
+      this.$doPixelRatio(x0),
+      this.$doPixelRatio(y0),
+      this.$doPixelRatio(r0),
+      this.$doPixelRatio(x1),
+      this.$doPixelRatio(y1),
+      this.$doPixelRatio(r1)
+    );
+  }
+  createConicGradient(startAngle: number, x: number, y: number): CanvasGradient {
+    return this._ctx.createConicGradient(startAngle, this.$doPixelRatio(x), this.$doPixelRatio(y));
   }
 }
