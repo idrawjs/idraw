@@ -184,8 +184,8 @@ export class Context2D implements ViewContext2D {
     return this._ctx.setLineDash(nums.map((n) => this.$doPixelRatio(n)));
   }
 
-  stroke() {
-    return this._ctx.stroke();
+  stroke(path?: Path2D) {
+    return path ? this._ctx.stroke(path) : this._ctx.stroke();
   }
 
   translate(x: number, y: number) {
@@ -299,5 +299,22 @@ export class Context2D implements ViewContext2D {
   }
   getTransform(): DOMMatrix2DInit {
     return this._ctx.getTransform();
+  }
+
+  createLinearGradient(x0: number, y0: number, x1: number, y1: number): CanvasGradient {
+    return this._ctx.createLinearGradient(this.$doPixelRatio(x0), this.$doPixelRatio(y0), this.$doPixelRatio(x1), this.$doPixelRatio(y1));
+  }
+  createRadialGradient(x0: number, y0: number, r0: number, x1: number, y1: number, r1: number): CanvasGradient {
+    return this._ctx.createRadialGradient(
+      this.$doPixelRatio(x0),
+      this.$doPixelRatio(y0),
+      this.$doPixelRatio(r0),
+      this.$doPixelRatio(x1),
+      this.$doPixelRatio(y1),
+      this.$doPixelRatio(r1)
+    );
+  }
+  createConicGradient(startAngle: number, x: number, y: number): CanvasGradient {
+    return this._ctx.createConicGradient(startAngle, this.$doPixelRatio(x), this.$doPixelRatio(y));
   }
 }

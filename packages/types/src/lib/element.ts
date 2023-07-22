@@ -1,3 +1,4 @@
+import { PointSize } from './point';
 import type { SVGPathCommand } from './svg-path';
 
 export interface ElementSize {
@@ -8,18 +9,72 @@ export interface ElementSize {
   angle?: number;
 }
 
+export type ElementClipPath = Pick<ElementPathDetail, 'commands' | 'originX' | 'originY' | 'originW' | 'originH'>;
+
+export interface TransformMatrix {
+  method: 'matrix';
+  args: [number, number, number, number, number];
+}
+
+export interface TransformTranslate {
+  method: 'translate';
+  args: [number, number];
+}
+
+export interface TransformRotate {
+  method: 'rotate';
+  args: [number];
+}
+
+export interface TransformScale {
+  method: 'scale';
+  args: [number, number];
+}
+
+export type TransformAction = TransformMatrix | TransformTranslate | TransformRotate | TransformScale;
+
+export interface LinearGradientColor {
+  type: 'linearGradient';
+  start: PointSize;
+  end: PointSize;
+  stops: Array<{
+    offset: number;
+    color: string;
+  }>;
+  transform?: TransformAction[];
+}
+
+type GadialCircle = PointSize & {
+  radius: number;
+};
+
+export interface RadialGradientColor {
+  type: 'radialGradient';
+  inner: GadialCircle;
+  outer: GadialCircle;
+  stops: Array<{
+    offset: number;
+    color: string;
+  }>;
+  transform?: TransformAction[];
+}
+
 export interface ElementBaseDetail {
   borderWidth?: number;
   borderColor?: string;
   borderRadius?: number;
+  borderTop?: number;
+  borderBottom?: number;
+  borderLeft?: number;
+  borderRight?: number;
   shadowColor?: string;
   shadowOffsetX?: number;
   shadowOffsetY?: number;
   shadowBlur?: number;
   color?: string;
-  bgColor?: string;
+  bgColor?: string | LinearGradientColor | RadialGradientColor;
   opacity?: number;
-  clipPath?: ElementPathDetail;
+  clipPath?: ElementClipPath;
 }
 
 // interface ElementRectDetail extends ElementBaseDetail {
@@ -38,9 +93,8 @@ interface ElemenTextDetail extends ElementBaseDetail {
   fontFamily?: string;
   textAlign?: 'center' | 'left' | 'right';
   verticalAlign?: 'middle' | 'top' | 'bottom';
-  bgColor?: string;
-  strokeColor?: string;
-  strokeWidth?: number;
+  // strokeColor?: string;
+  // strokeWidth?: number;
   textShadowColor?: string;
   textShadowOffsetX?: number;
   textShadowOffsetY?: number;
@@ -69,6 +123,7 @@ interface ElementSVGDetail extends ElementBaseDetail {
 interface ElementGroupDetail extends ElementBaseDetail {
   bgColor?: string;
   children: Element<ElementType>[];
+  overflow?: 'hidden';
 }
 
 interface ElementPathDetail extends ElementBaseDetail {

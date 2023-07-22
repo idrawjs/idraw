@@ -1,6 +1,6 @@
 import type { Element, RendererDrawElementOptions, ViewContext2D } from '@idraw/types';
 import { rotateElement } from '@idraw/util';
-import { drawBox } from './base';
+import { drawBox, drawBoxShadow } from './base';
 
 export function drawRect(ctx: ViewContext2D, elem: Element<'rect'>, opts: RendererDrawElementOptions) {
   // const { detail } = elem;
@@ -8,12 +8,19 @@ export function drawRect(ctx: ViewContext2D, elem: Element<'rect'>, opts: Render
   const { x, y, w, h, angle } = calculator.elementSize(elem, viewScaleInfo, viewSizeInfo);
   const viewElem = { ...elem, ...{ x, y, w, h, angle } };
   rotateElement(ctx, { x, y, w, h, angle }, () => {
-    drawBox(ctx, viewElem, {
-      originElem: elem,
-      calcElemSize: { x, y, w, h, angle },
-      totalScale: viewScaleInfo.scale * viewSizeInfo.devicePixelRatio,
+    drawBoxShadow(ctx, viewElem, {
+      viewScaleInfo,
+      viewSizeInfo,
       renderContent: () => {
-        // TODO
+        drawBox(ctx, viewElem, {
+          originElem: elem,
+          calcElemSize: { x, y, w, h, angle },
+          viewScaleInfo,
+          viewSizeInfo,
+          renderContent: () => {
+            // empty
+          }
+        });
       }
     });
   });

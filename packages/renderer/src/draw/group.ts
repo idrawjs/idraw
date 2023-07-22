@@ -61,7 +61,8 @@ export function drawGroup(ctx: ViewContext2D, elem: Element<'group'>, opts: Rend
     drawBox(ctx, viewElem, {
       originElem: elem,
       calcElemSize: { x, y, w, h, angle },
-      totalScale: viewScaleInfo.scale * viewSizeInfo.devicePixelRatio,
+      viewScaleInfo,
+      viewSizeInfo,
       renderContent: () => {
         if (Array.isArray(elem.detail.children)) {
           const { parentElementSize: parentSize } = opts;
@@ -74,14 +75,16 @@ export function drawGroup(ctx: ViewContext2D, elem: Element<'group'>, opts: Rend
           };
           const { calculator } = opts;
 
-          ctx.save();
-          ctx.beginPath();
-          ctx.moveTo(x, y);
-          ctx.lineTo(x + w, y);
-          ctx.lineTo(x + w, y + h);
-          ctx.lineTo(x, y + h);
-          ctx.closePath();
-          ctx.clip();
+          if (elem.detail.overflow === 'hidden') {
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + w, y);
+            ctx.lineTo(x + w, y + h);
+            ctx.lineTo(x, y + h);
+            ctx.closePath();
+            ctx.clip();
+          }
 
           for (let i = 0; i < elem.detail.children.length; i++) {
             let child = elem.detail.children[i];

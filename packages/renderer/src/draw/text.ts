@@ -11,7 +11,8 @@ export function drawText(ctx: ViewContext2D, elem: Element<'text'>, opts: Render
     drawBox(ctx, viewElem, {
       originElem: elem,
       calcElemSize: { x, y, w, h, angle },
-      totalScale: viewScaleInfo.scale * viewSizeInfo.devicePixelRatio,
+      viewScaleInfo,
+      viewSizeInfo,
       renderContent: () => {
         const detail: Element<'text'>['detail'] = {
           ...{
@@ -111,25 +112,25 @@ export function drawText(ctx: ViewContext2D, elem: Element<'text'>, opts: Render
           });
         }
 
-        // draw text stroke
-        if (isColorStr(detail.strokeColor) && detail.strokeWidth !== undefined && detail.strokeWidth > 0) {
-          const _y = y + startY;
-          lines.forEach((line, i) => {
-            let _x = x;
-            if (detail.textAlign === 'center') {
-              _x = x + (w - line.width) / 2;
-            } else if (detail.textAlign === 'right') {
-              _x = x + (w - line.width);
-            }
-            if (detail.strokeColor !== undefined) {
-              ctx.strokeStyle = detail.strokeColor;
-            }
-            if (detail.strokeWidth !== undefined && detail.strokeWidth > 0) {
-              ctx.lineWidth = detail.strokeWidth;
-            }
-            ctx.strokeText(line.text, _x, _y + fontHeight * i);
-          });
-        }
+        // // draw text stroke
+        // if (isColorStr(detail.strokeColor) && detail.strokeWidth !== undefined && detail.strokeWidth > 0) {
+        //   const _y = y + startY;
+        //   lines.forEach((line, i) => {
+        //     let _x = x;
+        //     if (detail.textAlign === 'center') {
+        //       _x = x + (w - line.width) / 2;
+        //     } else if (detail.textAlign === 'right') {
+        //       _x = x + (w - line.width);
+        //     }
+        //     if (detail.strokeColor !== undefined) {
+        //       ctx.strokeStyle = detail.strokeColor;
+        //     }
+        //     if (detail.strokeWidth !== undefined && detail.strokeWidth > 0) {
+        //       ctx.lineWidth = detail.strokeWidth;
+        //     }
+        //     ctx.strokeText(line.text, _x, _y + fontHeight * i);
+        //   });
+        // }
       }
     });
   });

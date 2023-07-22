@@ -60,4 +60,7 @@ export interface ViewContext2D {
   lineCap: CanvasLineCap;
   setTransform(a: number, b: number, c: number, d: number, e: number, f: number): void;
   getTransform(): DOMMatrix2DInit;
+  createLinearGradient(x0: number, y0: number, x1: number, y1: number): CanvasGradient;
+  createRadialGradient(x0: number, y0: number, r0: number, x1: number, y1: number, r1: number): CanvasGradient;
+  createConicGradient(startAngle: number, x: number, y: number): CanvasGradient;
 }

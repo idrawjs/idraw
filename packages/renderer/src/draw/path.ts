@@ -1,6 +1,6 @@
 import type { Element, RendererDrawElementOptions, ViewContext2D } from '@idraw/types';
 import { rotateElement, generateSVGPath } from '@idraw/util';
-import { drawBox } from './base';
+import { drawBox, drawBoxShadow } from './base';
 
 export function drawPath(ctx: ViewContext2D, elem: Element<'path'>, opts: RendererDrawElementOptions) {
   const { detail } = elem;
@@ -21,32 +21,40 @@ export function drawPath(ctx: ViewContext2D, elem: Element<'path'>, opts: Render
     drawBox(ctx, viewElem, {
       originElem: elem,
       calcElemSize: { x, y, w, h, angle },
-      totalScale: viewScaleInfo.scale * viewSizeInfo.devicePixelRatio,
+      viewScaleInfo,
+      viewSizeInfo,
       renderContent: () => {
-        ctx.save();
-        ctx.translate(internalX, internalY);
-        ctx.beginPath();
-        ctx.moveTo(viewOriginX, viewOriginY);
-        ctx.lineTo(viewOriginX + w, viewOriginY);
-        ctx.lineTo(viewOriginX + w, viewOriginY + h);
-        ctx.lineTo(viewOriginX, viewOriginY + h);
-        ctx.closePath();
-        ctx.clip();
-        ctx.scale(scaleNum * scaleW, scaleNum * scaleH);
-        const pathStr = generateSVGPath(detail.commands || []);
-        const path2d = new Path2D(pathStr);
-        if (detail.fill) {
-          ctx.fillStyle = detail.fill;
-          ctx.fill(path2d);
-        }
-        if (detail.stroke) {
-          ctx.strokeStyle = detail.stroke;
-          ctx.lineWidth = detail.strokeWidth || 1;
-          ctx.lineCap = detail.strokeLineCap || 'square';
-          ctx.stroke(path2d);
-        }
-        ctx.translate(-internalX, -internalY);
-        ctx.restore();
+        drawBoxShadow(ctx, viewElem, {
+          viewScaleInfo,
+          viewSizeInfo,
+          renderContent: () => {
+            ctx.save();
+            ctx.translate(internalX, internalY);
+            // ctx.beginPath();
+            // ctx.moveTo(viewOriginX, viewOriginY);
+            // ctx.lineTo(viewOriginX + w, viewOriginY);
+            // ctx.lineTo(viewOriginX + w, viewOriginY + h);
+            // ctx.lineTo(viewOriginX, viewOriginY + h);
+            // ctx.closePath();
+            // ctx.clip();
+            ctx.scale(scaleNum * scaleW, scaleNum * scaleH);
+            const pathStr = generateSVGPath(detail.commands || []);
+            const path2d = new Path2D(pathStr);
+            if (detail.fill) {
+              ctx.fillStyle = detail.fill;
+              ctx.fill(path2d);
+            }
+
+            if (detail.stroke && detail.strokeWidth !== 0) {
+              ctx.strokeStyle = detail.stroke;
+              ctx.lineWidth = detail.strokeWidth || 1;
+              ctx.lineCap = detail.strokeLineCap || 'square';
+              ctx.stroke(path2d);
+            }
+            ctx.translate(-internalX, -internalY);
+            ctx.restore();
+          }
+        });
       }
     });
   });

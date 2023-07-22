@@ -1,4 +1,4 @@
-import type { PointSize, SVGPathCommand, ElementSize, ViewScaleInfo, ViewSizeInfo } from '@idraw/types';
+import type { SVGPathCommand, ElementSize } from '@idraw/types';
 
 const cmdReg = /([astvzqmhlc])([^astvzqmhlc]*)/gi;
 // const numReg = /-?[0-9]*\.?[0-9]+(?:e[-+]?\d+)?/gi;
