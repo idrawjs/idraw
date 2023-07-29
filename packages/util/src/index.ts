@@ -1,8 +1,8 @@
 export { delay, compose, throttle } from './lib/time';
 export { downloadImageFromCanvas } from './lib/file';
 export { toColorHexStr, toColorHexNum, isColorStr, colorNameToHex } from './lib/color';
-export { createUUID } from './lib/uuid';
-export { deepClone } from './lib/data';
+export { createUUID, isAssetId, createAssetId } from './lib/uuid';
+export { deepClone, sortDataAsserts } from './lib/data';
 export { istype } from './lib/istype';
 export { loadImage, loadSVG, loadHTML } from './lib/load';
 export { is } from './lib/is';
@@ -23,14 +23,7 @@ export {
   calcElementCenterFromVertexes,
   rotatePointInGroup
 } from './lib/rotate';
-export {
-  // getSelectedElementIndexes,
-  getSelectedElementUUIDs,
-  validateElements,
-  calcElementsContextSize,
-  calcElementsViewInfo
-  // getSelectedElements
-} from './lib/element';
+export { getSelectedElementUUIDs, validateElements, calcElementsContextSize, calcElementsViewInfo, getElemenetsAssetIds } from './lib/element';
 export { checkRectIntersect } from './lib/rect';
 export {
   viewScale,
@@ -47,3 +40,4 @@ export { getElementVertexes, calcElementVertexesInGroup, calcElementVertexesQueu
 export { calcElementSizeController } from './lib/controller';
 export { generateSVGPath, parseSVGPath } from './lib/svg-path';
 export { generateHTML, parseHTML } from './lib/html';
+export { compressImage } from './lib/image';

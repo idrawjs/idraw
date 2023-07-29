@@ -52,7 +52,8 @@ export function drawElement(ctx: ViewContext2D, elem: Element<ElementType>, opts
   }
 }
 
-export function drawElementList(ctx: ViewContext2D, elements: Data['elements'], opts: RendererDrawElementOptions) {
+export function drawElementList(ctx: ViewContext2D, data: Data, opts: RendererDrawElementOptions) {
+  const { elements = [] } = data;
   for (let i = 0; i < elements.length; i++) {
     const elem = elements[i];
     // TODO

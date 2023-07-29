@@ -1,7 +1,8 @@
-import type { Element, ElementType } from './element';
+import type { Element, ElementType, ElementAssets } from './element';
 
 export interface Data {
   elements: Element<ElementType>[];
+  assets?: ElementAssets;
 }
 
 export type ColorMatrix = [

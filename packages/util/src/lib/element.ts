@@ -1,20 +1,22 @@
-import type { Data, Element, ElementType, ElementSize, ViewContextSize, ViewSizeInfo, PointSize } from '@idraw/types';
+import type { Data, Element, Elements, ElementType, ElementSize, ViewContextSize, ViewSizeInfo } from '@idraw/types';
 import { rotateElementVertexes } from './rotate';
+import { isAssetId } from './uuid';
 
-function getGroupIndexes(elem: Element<'group'>, uuids: string[], parentIndex: string): string[] {
-  let indexes: string[] = [];
-  if (elem?.type === 'group' && elem?.detail?.children?.length > 0) {
-    for (let i = 0; i < elem.detail.children.length; i++) {
-      const child = elem.detail.children[i];
-      if (uuids.includes(child.uuid)) {
-        indexes.push([parentIndex, i].join('.'));
-      } else if (elem.type === 'group') {
-        indexes = indexes.concat(getGroupIndexes(child as Element<'group'>, uuids, [parentIndex, i].join('.')));
-      }
-    }
-  }
-  return indexes;
-}
+// // TODO need to be deprecated
+// function getGroupIndexes(elem: Element<'group'>, uuids: string[], parentIndex: string): string[] {
+//   let indexes: string[] = [];
+//   if (elem?.type === 'group' && elem?.detail?.children?.length > 0) {
+//     for (let i = 0; i < elem.detail.children.length; i++) {
+//       const child = elem.detail.children[i];
+//       if (uuids.includes(child.uuid)) {
+//         indexes.push([parentIndex, i].join('.'));
+//       } else if (elem.type === 'group') {
+//         indexes = indexes.concat(getGroupIndexes(child as Element<'group'>, uuids, [parentIndex, i].join('.')));
+//       }
+//     }
+//   }
+//   return indexes;
+// }
 
 // // TODO need to be deprecated
 // export function getSelectedElementIndexes(data: Data, uuids: string[]): Array<string | number> {
@@ -69,20 +71,21 @@ export function getSelectedElementUUIDs(data: Data, indexes: Array<number | stri
   return uuids;
 }
 
-function getElementInGroup(elem: Element<'group'>, uuids: string[]): Array<Element<ElementType>> {
-  let elements: Array<Element<ElementType>> = [];
-  if (elem?.type === 'group' && elem?.detail?.children?.length > 0) {
-    for (let i = 0; i < elem.detail.children.length; i++) {
-      const child = elem.detail.children[i];
-      if (uuids.includes(child.uuid)) {
-        elements.push(child);
-      } else if (elem.type === 'group' && elem.detail?.children?.length > 0) {
-        elements = elements.concat(getElementInGroup(child as Element<'group'>, uuids));
-      }
-    }
-  }
-  return elements;
-}
+// // TODO need to be deprecated
+// function getElementInGroup(elem: Element<'group'>, uuids: string[]): Array<Element<ElementType>> {
+//   let elements: Array<Element<ElementType>> = [];
+//   if (elem?.type === 'group' && elem?.detail?.children?.length > 0) {
+//     for (let i = 0; i < elem.detail.children.length; i++) {
+//       const child = elem.detail.children[i];
+//       if (uuids.includes(child.uuid)) {
+//         elements.push(child);
+//       } else if (elem.type === 'group' && elem.detail?.children?.length > 0) {
+//         elements = elements.concat(getElementInGroup(child as Element<'group'>, uuids));
+//       }
+//     }
+//   }
+//   return elements;
+// }
 
 // // TODO need to be deprecated
 // export function getSelectedElements(data: Data | null | undefined, uuids: string[], groupQueue?: Element<'group'>[]): Array<Element<ElementType>> {
@@ -232,4 +235,23 @@ export function calcElementsViewInfo(
     changeContextTop,
     changeContextBottom
   };
+}
+
+export function getElemenetsAssetIds(elements: Elements): string[] {
+  const assetIds: string[] = [];
+  const _scanElements = (elems: Elements) => {
+    elems.forEach((elem: Element<ElementType>) => {
+      if (elem.type === 'image' && isAssetId((elem as Element<'image'>).detail.src)) {
+        assetIds.push((elem as Element<'image'>).detail.src);
+      } else if (elem.type === 'svg' && isAssetId((elem as Element<'svg'>).detail.svg)) {
+        assetIds.push((elem as Element<'svg'>).detail.svg);
+      } else if (elem.type === 'html' && (elem as Element<'html'>).detail.html) {
+        assetIds.push((elem as Element<'html'>).detail.html);
+      } else if (elem.type === 'group' && Array.isArray((elem as Element<'group'>).detail.children)) {
+        _scanElements((elem as Element<'group'>).detail.children);
+      }
+    });
+  };
+  _scanElements(elements);
+  return assetIds;
 }

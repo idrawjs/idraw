@@ -1,4 +1,4 @@
-import type { ElementType, Element } from './element';
+import type { ElementType, Element, ElementAssets } from './element';
 
 export type LoadElementType = 'image' | 'svg' | 'html';
 
@@ -29,4 +29,4 @@ export interface LoadResult<C> {
 
 export type LoadContent = HTMLImageElement | HTMLCanvasElement;
 
-export type LoadFunc<T extends ElementType, C extends LoadContent> = (element: Element<T>) => Promise<LoadResult<C>>;
+export type LoadFunc<T extends ElementType, C extends LoadContent> = (element: Element<T>, assets: ElementAssets) => Promise<LoadResult<C>>;

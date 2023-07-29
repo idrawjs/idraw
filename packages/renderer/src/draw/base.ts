@@ -31,6 +31,7 @@ export function drawBox(
       renderContent?.();
     }
   });
+  ctx.globalAlpha = 1;
 }
 
 function drawClipPath(
@@ -179,9 +180,10 @@ function drawBoxBorder(ctx: ViewContext2D, viewElem: Element<ElementType>, opts:
   if (isColorStr(viewElem.detail.borderColor) === true) {
     borderColor = viewElem.detail.borderColor as string;
   }
-  const bw = viewElem.detail.borderWidth || 1;
+  const bw = (viewElem.detail.borderWidth || 1) * viewScaleInfo.scale;
   let r: number = viewElem.detail.borderRadius || 0;
   ctx.strokeStyle = borderColor;
+  ctx.setLineDash(viewElem.detail.borderDash || []);
 
   const { borderLeft, borderRight, borderTop, borderBottom } = viewElem.detail;
   if (borderLeft || borderRight || borderTop || borderBottom) {
@@ -219,10 +221,20 @@ function drawBoxBorder(ctx: ViewContext2D, viewElem: Element<ElementType>, opts:
       ctx.stroke();
     }
   } else {
-    const x = viewElem.x - bw / 2;
-    const y = viewElem.y - bw / 2;
-    const w = viewElem.w + bw;
-    const h = viewElem.h + bw;
+    let { x, y, w, h } = viewElem;
+    const { boxSizing } = viewElem.detail;
+
+    if (boxSizing === 'border-box') {
+      x = viewElem.x;
+      y = viewElem.y;
+      w = viewElem.w;
+      h = viewElem.h;
+    } else {
+      x = viewElem.x - bw;
+      y = viewElem.y - bw;
+      w = viewElem.w + bw * 2;
+      h = viewElem.h + bw * 2;
+    }
 
     r = Math.min(r, w / 2, h / 2);
     if (r < w / 2 && r < h / 2) {

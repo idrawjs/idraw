@@ -7,7 +7,7 @@ export interface ViewContext2D {
 
   // extend API
   $getContext(): CanvasRenderingContext2D;
-  $setFont(opts: { fontSize: number; fontFamily?: string; fontWeight?: string }): void;
+  $setFont(opts: { fontSize: number; fontFamily?: string; fontWeight?: string | number }): void;
   $resize(opts: { width: number; height: number; devicePixelRatio: number }): void;
 
   $undoPixelRatio(num: number): number;

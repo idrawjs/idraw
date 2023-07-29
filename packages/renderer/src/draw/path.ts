@@ -47,7 +47,7 @@ export function drawPath(ctx: ViewContext2D, elem: Element<'path'>, opts: Render
 
             if (detail.stroke && detail.strokeWidth !== 0) {
               ctx.strokeStyle = detail.stroke;
-              ctx.lineWidth = detail.strokeWidth || 1;
+              ctx.lineWidth = (detail.strokeWidth || 1) / viewSizeInfo.devicePixelRatio;
               ctx.lineCap = detail.strokeLineCap || 'square';
               ctx.stroke(path2d);
             }

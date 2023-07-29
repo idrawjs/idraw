@@ -1,3 +1,6 @@
+import type { Data, ElementAssets, Elements, ElementType, Element } from '@idraw/types';
+import { createAssetId } from './uuid';
+
 export function deepClone(target: any): any {
   function _clone(t: any) {
     const type = is(t);
@@ -25,9 +28,65 @@ export function deepClone(target: any): any {
   return _clone(target);
 }
 
-function is(data: any): string {
+function is(target: any): string {
   return Object.prototype.toString
-    .call(data)
+    .call(target)
     .replace(/[\]|\[]{1,1}/gi, '')
     .split(' ')[1];
+}
+
+export function sortDataAsserts(data: Data, opts?: { clone?: boolean }): Data {
+  const assets: ElementAssets = data.assets || {};
+  let sortedData = data;
+  if (opts?.clone === true) {
+    sortedData = deepClone(data);
+  }
+  const _scanElements = (elems: Elements) => {
+    elems.forEach((elem: Element<ElementType>) => {
+      if (elem.type === 'image' && (elem as Element<'image'>).detail.src) {
+        const src = (elem as Element<'image'>).detail.src;
+        const assetUUID = createAssetId(src);
+        if (!assets[assetUUID]) {
+          assets[assetUUID] = {
+            type: 'image',
+            value: src
+          };
+        }
+        (elem as Element<'image'>).detail.src = assetUUID;
+      } else if (elem.type === 'svg') {
+        const svg = (elem as Element<'svg'>).detail.svg;
+        const assetUUID = createAssetId(svg);
+        if (!assets[assetUUID]) {
+          assets[assetUUID] = {
+            type: 'svg',
+            value: svg
+          };
+        }
+        (elem as Element<'svg'>).detail.svg = assetUUID;
+      } else if (elem.type === 'html') {
+        const html = (elem as Element<'html'>).detail.html;
+        const assetUUID = createAssetId(html);
+        if (!assets[assetUUID]) {
+          assets[assetUUID] = {
+            type: 'svg',
+            value: html
+          };
+        }
+        (elem as Element<'html'>).detail.html = assetUUID;
+      } else if (elem.type === 'group' && Array.isArray((elem as Element<'group'>).detail.children)) {
+        const groupAssets = (elem as Element<'group'>).detail.assets || {};
+        Object.keys(groupAssets).forEach((assetId) => {
+          if (!assets[assetId]) {
+            assets[assetId] = groupAssets[assetId];
+          }
+        });
+        delete (elem as Element<'group'>).detail.assets;
+        _scanElements((elem as Element<'group'>).detail.children);
+      }
+    });
+  };
+
+  _scanElements(sortedData.elements);
+  sortedData.assets = assets;
+  return sortedData;
 }

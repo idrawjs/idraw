@@ -1,4 +1,4 @@
-import type { RendererLoader, LoaderEventMap, LoadFunc, LoadContent, LoadItem, LoadElementType, Element } from '@idraw/types';
+import type { RendererLoader, LoaderEventMap, LoadFunc, LoadContent, LoadItem, LoadElementType, Element, ElementAssets } from '@idraw/types';
 import { loadImage, loadHTML, loadSVG, EventEmitter, deepClone } from '@idraw/util';
 
 interface LoadItemMap {
@@ -14,16 +14,18 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
 
   constructor() {
     super();
-    this._registerLoadFunc<'image'>('image', async (elem: Element<'image'>) => {
-      const content = await loadImage(elem.detail.src);
+    this._registerLoadFunc<'image'>('image', async (elem: Element<'image'>, assets: ElementAssets) => {
+      const src = assets[elem.detail.src]?.value || elem.detail.src;
+      const content = await loadImage(src);
       return {
         uuid: elem.uuid,
         lastModified: Date.now(),
         content
       };
     });
-    this._registerLoadFunc<'html'>('html', async (elem: Element<'html'>) => {
-      const content = await loadHTML(elem.detail.html, {
+    this._registerLoadFunc<'html'>('html', async (elem: Element<'html'>, assets: ElementAssets) => {
+      const html = assets[elem.detail.html]?.value || elem.detail.html;
+      const content = await loadHTML(html, {
         width: elem.detail.width || elem.w,
         height: elem.detail.height || elem.h
       });
@@ -33,8 +35,9 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
         content
       };
     });
-    this._registerLoadFunc<'svg'>('svg', async (elem: Element<'svg'>) => {
-      const content = await loadSVG(elem.detail.svg);
+    this._registerLoadFunc<'svg'>('svg', async (elem: Element<'svg'>, assets: ElementAssets) => {
+      const svg = assets[elem.detail.svg]?.value || elem.detail.svg;
+      const content = await loadSVG(svg);
       return {
         uuid: elem.uuid,
         lastModified: Date.now(),
@@ -100,14 +103,14 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
     }
   }
 
-  private _loadResource(element: Element<LoadElementType>) {
+  private _loadResource(element: Element<LoadElementType>, assets: ElementAssets) {
     const item = this._createLoadItem(element);
 
     this._currentLoadItemMap[element.uuid] = item;
     const loadFunc = this._loadFuncMap[element.type];
     if (typeof loadFunc === 'function') {
       item.startTime = Date.now();
-      loadFunc(element)
+      loadFunc(element, assets)
         .then((result) => {
           item.content = result.content;
           item.endTime = Date.now();
@@ -132,13 +135,13 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
     return false;
   }
 
-  load(element: Element<LoadElementType>) {
+  load(element: Element<LoadElementType>, assets: ElementAssets) {
     if (this._isExistingErrorStorage(element)) {
       return;
     }
     if (supportElementTypes.includes(element.type)) {
       const elem = deepClone(element);
-      this._loadResource(elem);
+      this._loadResource(elem, assets);
     }
   }
 
