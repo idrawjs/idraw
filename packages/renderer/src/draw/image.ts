@@ -7,7 +7,7 @@ export function drawImage(ctx: ViewContext2D, elem: Element<'image'>, opts: Rend
   const { x, y, w, h, angle } = calculator.elementSize(elem, viewScaleInfo, viewSizeInfo);
   rotateElement(ctx, { x, y, w, h, angle }, () => {
     if (!content) {
-      opts.loader.load(elem as Element<'image'>);
+      opts.loader.load(elem as Element<'image'>, opts.elementAssets || {});
     }
     if (elem.type === 'image' && content) {
       ctx.drawImage(content, x, y, w, h);

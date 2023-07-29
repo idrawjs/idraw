@@ -46,10 +46,11 @@ export class Renderer extends EventEmitter<RendererEventMap> implements BoardRen
       w: opts.viewSizeInfo.width,
       h: opts.viewSizeInfo.height
     };
-    drawElementList(viewContext, data.elements, {
+    drawElementList(viewContext, data, {
       loader,
       calculator,
       parentElementSize,
+      elementAssets: data.assets,
       ...opts
     });
   }

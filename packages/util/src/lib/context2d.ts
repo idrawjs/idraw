@@ -26,9 +26,9 @@ export class Context2D implements ViewContext2D {
     return this._ctx;
   }
 
-  $setFont(opts: { fontSize: number; fontFamily?: string; fontWeight?: 'bold' }): void {
+  $setFont(opts: { fontSize: number; fontFamily?: string; fontWeight?: 'bold' | number | string }): void {
     const strList: string[] = [];
-    if (opts.fontWeight === 'bold') {
+    if (opts.fontWeight) {
       strList.push(`${opts.fontWeight}`);
     }
     strList.push(`${this.$doPixelRatio(opts.fontSize || 12)}px`);

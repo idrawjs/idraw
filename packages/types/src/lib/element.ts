@@ -16,6 +16,15 @@ export interface TransformMatrix {
   args: [number, number, number, number, number];
 }
 
+export interface ElementAssetsItem {
+  type: 'svg' | 'image';
+  value: string;
+}
+
+export interface ElementAssets {
+  [assetId: string]: ElementAssetsItem;
+}
+
 export interface TransformTranslate {
   method: 'translate';
   args: [number, number];
@@ -60,6 +69,7 @@ export interface RadialGradientColor {
 }
 
 export interface ElementBaseDetail {
+  boxSizing?: 'content-box' | 'border-box'; // default content-box
   borderWidth?: number;
   borderColor?: string;
   borderRadius?: number;
@@ -67,6 +77,7 @@ export interface ElementBaseDetail {
   borderBottom?: number;
   borderLeft?: number;
   borderRight?: number;
+  borderDash?: number[];
   shadowColor?: string;
   shadowOffsetX?: number;
   shadowOffsetY?: number;
@@ -82,14 +93,14 @@ export interface ElementBaseDetail {
 //   // bgColor?: string;
 // }
 
-type ElementRectDetail = ElementBaseDetail;
+interface ElementRectDetail extends ElementBaseDetail {}
 
 interface ElemenTextDetail extends ElementBaseDetail {
   text: string;
   color: string;
   fontSize: number;
   lineHeight?: number;
-  fontWeight?: 'bold' | string;
+  fontWeight?: 'bold' | string | number;
   fontFamily?: string;
   textAlign?: 'center' | 'left' | 'right';
   verticalAlign?: 'middle' | 'top' | 'bottom';
@@ -124,6 +135,7 @@ interface ElementGroupDetail extends ElementBaseDetail {
   bgColor?: string;
   children: Element<ElementType>[];
   overflow?: 'hidden';
+  assets?: ElementAssets;
 }
 
 interface ElementPathDetail extends ElementBaseDetail {
