@@ -90,7 +90,8 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
     if (list.length === 1) {
       const controller = calcElementSizeController(list[0], {
         groupQueue: sharer.getSharedStorage(keyGroupQueue),
-        controllerSize: 10
+        controllerSize: 10,
+        viewScaleInfo: sharer.getActiveScaleInfo()
       });
       sharer.setSharedStorage(keySelectedElementController, controller);
     } else {

@@ -84,6 +84,12 @@ export class Board {
         this._handleWheelY(e);
       }, frameTime)
     );
+    this._watcher.on(
+      'wheelScale',
+      throttle((e) => {
+        this._handleWheelScale(e);
+      }, frameTime)
+    );
     this._watcher.on('scale', this._handleScale.bind(this));
     this._watcher.on('scrollX', this._handleScrollX.bind(this));
     this._watcher.on('scrollY', this._handleScrollY.bind(this));
@@ -155,6 +161,16 @@ export class Board {
     for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
       const obj = this._activeMiddlewareObjs[i];
       const result = obj?.wheelY?.(e);
+      if (result === false) {
+        return;
+      }
+    }
+  }
+
+  private _handleWheelScale(e: BoardWatcherEventMap['wheelScale']) {
+    for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
+      const obj = this._activeMiddlewareObjs[i];
+      const result = obj?.wheelScale?.(e);
       if (result === false) {
         return;
       }

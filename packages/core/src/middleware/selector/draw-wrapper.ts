@@ -59,6 +59,7 @@ export function drawSelectedElementControllersVertexes(
   // const wrapperColor = 'red'; // TODO
   const wrapperOpts = { borderColor: wrapperColor, borderWidth: 1, bgColor: 'transparent', lineDash: [] };
   const ctrlOpts = { ...wrapperOpts, borderWidth: resizeControllerBorderWidth, bgColor: '#FFFFFF' };
+
   drawVertexes(ctx, calcViewVertexes(elementWrapper, opts), wrapperOpts);
   drawVertexes(ctx, calcViewVertexes(left.vertexes, opts), ctrlOpts);
   drawVertexes(ctx, calcViewVertexes(right.vertexes, opts), ctrlOpts);

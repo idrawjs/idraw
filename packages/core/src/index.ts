@@ -5,7 +5,7 @@ import { createBoardContexts, validateElements, calcElementsContextSize } from '
 // export { MiddlewareSelector } from './middleware/selector';
 export { MiddlewareSelector } from './middleware/selector';
 export { MiddlewareScroller } from './middleware/scroller';
-export { MiddlewareRuler } from './middleware/rule';
+export { MiddlewareScaler } from './middleware/scaler';
 
 export class Core {
   private _board: Board;

@@ -1,7 +1,7 @@
 import { createUUID } from './uuid';
 import { getCenterFromTwoPoints } from './point';
 import { calcElementVertexesInGroup, calcElementVertexes } from './vertex';
-import type { Element, ElementSize, ElementSizeController, ViewRectVertexes, PointSize } from '@idraw/types';
+import type { Element, ElementSize, ElementSizeController, ViewRectVertexes, PointSize, ViewScaleInfo } from '@idraw/types';
 
 function createControllerElementSizeFromCenter(center: PointSize, opts: { size: number; angle: number }) {
   const { x, y } = center;
@@ -20,11 +20,12 @@ export function calcElementSizeController(
   opts: {
     groupQueue: Element<'group'>[];
     controllerSize?: number;
+    viewScaleInfo: ViewScaleInfo;
   }
 ): ElementSizeController {
-  const { groupQueue, controllerSize } = opts;
+  const { groupQueue, controllerSize, viewScaleInfo } = opts;
 
-  const ctrlSize = controllerSize && controllerSize > 0 ? controllerSize : 8;
+  const ctrlSize = (controllerSize && controllerSize > 0 ? controllerSize : 8) / viewScaleInfo.scale;
   const { x, y, w, h, angle = 0 } = elemSize;
   const ctrlGroupQueue = [
     ...[

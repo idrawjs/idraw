@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useContext } from 'react';
 import classnames from 'classnames';
-import { Core, MiddlewareScroller, MiddlewareSelector } from '@idraw/core';
+import { Core, MiddlewareScroller, MiddlewareSelector, MiddlewareScaler } from '@idraw/core';
 import { calcElementsContextSize } from '@idraw/util';
 import { createPrefixName } from '../../css';
 import { Context } from '../../context';
@@ -36,6 +36,7 @@ export const Sketch = (props: DashboardProps) => {
         const core = new Core(ref.current, options);
         core.use(MiddlewareScroller);
         core.use(MiddlewareSelector);
+        core.use(MiddlewareScaler);
         refCore.current = core;
       }
     }

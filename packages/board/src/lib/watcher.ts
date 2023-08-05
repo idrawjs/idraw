@@ -92,11 +92,15 @@ export class BoardWatcher extends EventEmitter<BoardWatcherEventMap> {
           return;
         }
         e.preventDefault();
-        if (this.has('wheelX') && (e.deltaX > 0 || e.deltaX < 0)) {
-          this.trigger('wheelX', { deltaX: e.deltaX, point });
-        }
-        if (this.has('wheelY') && (e.deltaY > 0 || e.deltaY < 0)) {
-          this.trigger('wheelY', { deltaY: e.deltaY, point });
+        const deltaX = e.deltaX > 0 || e.deltaX < 0 ? e.deltaX : 0;
+        const deltaY = e.deltaY > 0 || e.deltaY < 0 ? e.deltaY : 0;
+
+        if (e.ctrlKey === true && this.has('wheelScale')) {
+          this.trigger('wheelScale', { deltaX, deltaY, point });
+        } else if (this.has('wheelX') && deltaX !== 0) {
+          this.trigger('wheelX', { deltaX, point });
+        } else if (this.has('wheelY') && deltaY !== 0) {
+          this.trigger('wheelY', { deltaY, point });
         }
       },
       { passive: false }
@@ -118,6 +122,18 @@ export class BoardWatcher extends EventEmitter<BoardWatcherEventMap> {
       } else {
         this._store.set('prevClickPoint', point);
       }
+    });
+
+    container.addEventListener('contextmenu', (e: MouseEvent) => {
+      if (!this._isInTarget(e)) {
+        return;
+      }
+      e.preventDefault();
+      const point = this._getPoint(e);
+      if (!this._isVaildPoint(point)) {
+        return;
+      }
+      // TODO
     });
   }
 
