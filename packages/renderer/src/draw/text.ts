@@ -22,15 +22,18 @@ export function drawText(ctx: ViewContext2D, elem: Element<'text'>, opts: Render
           },
           ...elem.detail
         };
+        const fontSize = detail.fontSize * viewScaleInfo.scale;
+        const lineHeight = detail.lineHeight ? detail.lineHeight * viewScaleInfo.scale : fontSize;
+
         ctx.fillStyle = elem.detail.color;
         ctx.textBaseline = 'top';
         ctx.$setFont({
           fontWeight: detail.fontWeight,
-          fontSize: detail.fontSize,
+          fontSize: fontSize,
           fontFamily: detail.fontFamily
         });
         const detailText = detail.text.replace(/\r\n/gi, '\n');
-        const fontHeight = detail.lineHeight || detail.fontSize;
+        const fontHeight = lineHeight;
         const detailTextList = detailText.split('\n');
         const lines: { text: string; width: number }[] = [];
 
