@@ -2,7 +2,7 @@ import ts from 'typescript';
 import { Project } from 'ts-morph';
 import type { CompilerOptions } from 'ts-morph';
 import path from 'path';
-import glob from 'glob';
+import * as glob from 'glob';
 import { packages } from './config';
 import { joinPackagePath, joinProjectPath } from './util/project';
 import { removeFullDir } from './util/file';
