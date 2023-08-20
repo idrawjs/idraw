@@ -1,10 +1,10 @@
 import { deepClone } from '@idraw/util';
 import type { Data, Element, ElementType, ElementBaseDesc } from '@idraw/types';
-import type { DesignComponent, DesignComponentItem } from '../types';
+import type { LabComponent, LabComponentItem } from '../types';
 
 const baseDescKeys = ['borderWidth', 'borderColor', 'borderRadius', 'shadowColor', 'shadowOffsetX', 'shadowOffsetY', 'shadowBlur', 'color', 'bgColor'];
 
-function parseElementBaseDesc(elem: DesignComponent | DesignComponentItem | Element<ElementType>): ElementBaseDesc {
+function parseElementBaseDesc(elem: LabComponent | LabComponentItem | Element<ElementType>): ElementBaseDesc {
   const baseDesc: ElementBaseDesc = {};
   if (elem?.detail) {
     Object.keys(elem.detail).forEach((name: string) => {
@@ -16,7 +16,7 @@ function parseElementBaseDesc(elem: DesignComponent | DesignComponentItem | Elem
   return baseDesc;
 }
 
-function parseComponentItemToElement(item: DesignComponentItem): Element<'group'> {
+function parseComponentItemToElement(item: LabComponentItem): Element<'group'> {
   const elem: Element<'group'> = {
     uuid: item.uuid,
     name: item.name,
@@ -45,7 +45,7 @@ function parseComponentItemToElement(item: DesignComponentItem): Element<'group'
   return elem;
 }
 
-function parseComponentToElement(comp: DesignComponent): Element<'group'> {
+function parseComponentToElement(comp: LabComponent): Element<'group'> {
   const elem: Element<'group'> = {
     uuid: comp.uuid,
     name: comp.name,
@@ -75,11 +75,11 @@ function parseComponentToElement(comp: DesignComponent): Element<'group'> {
   return elem;
 }
 
-export function parseComponentsToDrawData(components: DesignComponent[]): Data {
+export function parseComponentsToDrawData(components: LabComponent[]): Data {
   const data: Data = {
     elements: []
   };
-  components.forEach((comp: DesignComponent) => {
+  components.forEach((comp: LabComponent) => {
     const elem = parseComponentToElement(comp);
     data.elements.push(elem);
   });

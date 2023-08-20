@@ -8,7 +8,7 @@ import { parseComponentViewTree } from '../../util/component';
 
 import type { CSSProperties } from 'react';
 import type { DataNode, TreeProps } from 'antd/es/tree';
-import type { DesignDrawDataType } from '../../types';
+import type { LabDrawDataType } from '../../types';
 
 const { DirectoryTree } = Tree;
 const baseName = 'layer-tree';
@@ -16,7 +16,7 @@ const baseName = 'layer-tree';
 export interface LayerTreeProps {
   className?: string;
   style?: CSSProperties;
-  type: DesignDrawDataType;
+  type: LabDrawDataType;
 }
 
 export const LayerTree = (props: LayerTreeProps) => {
@@ -30,7 +30,7 @@ export const LayerTree = (props: LayerTreeProps) => {
 
   let treeData: DataNode[] = [];
   if (type === 'component') {
-    treeData = parseComponentViewTree(state?.designData || null);
+    treeData = parseComponentViewTree(state?.labData || null);
   }
 
   return (

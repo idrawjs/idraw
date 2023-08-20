@@ -1,9 +1,9 @@
 import { createUUID } from '@idraw/util';
 import type { ElementSize } from '@idraw/types';
-import type { DesignComponent, DesignComponentItem } from '../../../src';
+import type { LabComponent, LabComponentItem } from '../../../src';
 
 function createButtonItem(variantName: string, size?: Partial<ElementSize>) {
-  const componentItem: DesignComponentItem = {
+  const componentItem: LabComponentItem = {
     uuid: createUUID(),
     type: 'component-item',
     name: `Button ${variantName}`,
@@ -105,7 +105,7 @@ function createButtonItem(variantName: string, size?: Partial<ElementSize>) {
 }
 
 export function createButton(name: string, size?: Partial<ElementSize>) {
-  const button: DesignComponent = {
+  const button: LabComponent = {
     uuid: createUUID(),
     type: 'component',
     name: `Button ${name}`,

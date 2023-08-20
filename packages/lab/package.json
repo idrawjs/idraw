@@ -1,5 +1,5 @@
 {
-  "name": "@idraw/design",
+  "name": "@idraw/lab",
   "version": "0.4.0-alpha.0",
   "dependencies": {
     "@ant-design/icons": "^5.1.3",

@@ -1,8 +1,8 @@
-import type { DesignData } from '../../src';
+import type { LabData } from '../../src';
 import { createButton } from './components/button';
 import { createCheckbox } from './components/checkbox';
 
-const data: DesignData = {
+const data: LabData = {
   components: [
     createButton('001', { angle: 45 }),
     // createButton('001', {}),

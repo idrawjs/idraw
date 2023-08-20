@@ -24,7 +24,7 @@ export const Header = (props: ModProps) => {
 
   return (
     <div style={style} className={classnames(prefixName(), className)}>
-      <span>@idraw/design</span>
+      <span>@idraw/lab</span>
       <Toolbar
         openLeftSider={openLeftSider}
         openRightSider={openRightSider}

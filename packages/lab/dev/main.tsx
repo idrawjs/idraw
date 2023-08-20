@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Design } from '../src/index';
+import { Lab } from '../src/index';
 import data from './data';
 
 const dom = document.querySelector('#lab') as HTMLDivElement;
@@ -21,7 +21,7 @@ const App = () => {
   // const width = 800;
   // const height = 600;
 
-  return <Design width={width} height={height} style={style} designData={data} />;
+  return <Lab width={width} height={height} style={style} labData={data} />;
 };
 
 root.render(<App />);
