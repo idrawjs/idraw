@@ -1,9 +1,9 @@
 import { createUUID } from '@idraw/util';
 import type { ElementSize } from '@idraw/types';
-import type { DesignComponent, DesignComponentItem } from '../../../src';
+import type { LabComponent, LabComponentItem } from '../../../src';
 
 function createCheckboxItem(variantName: string, size?: Partial<ElementSize>) {
-  const componentItem: DesignComponentItem = {
+  const componentItem: LabComponentItem = {
     uuid: createUUID(),
     type: 'component-item',
     name: `Checkbox ${variantName}`,
@@ -76,7 +76,7 @@ function createCheckboxItem(variantName: string, size?: Partial<ElementSize>) {
 }
 
 export function createCheckbox(name: string, size?: Partial<ElementSize>) {
-  const checkbox: DesignComponent = {
+  const checkbox: LabComponent = {
     uuid: createUUID(),
     type: 'component',
     name: `Checkbox ${name}`,

@@ -1,9 +1,9 @@
 import { createContext } from 'react';
 import type { Data } from '@idraw/types';
-import { DesignData, DesignState, DesignAction, DesignContext, DesignDrawDataType } from './types';
+import { LabData, LabState, LabAction, LabContext, LabDrawDataType } from './types';
 import { parseComponentsToDrawData } from './util/view-data';
 
-export function createDesignData(): DesignData {
+export function createLabData(): LabData {
   return {
     components: [],
     modules: [],
@@ -11,21 +11,21 @@ export function createDesignData(): DesignData {
   };
 }
 
-function parseDrawData(drawDataType: DesignDrawDataType, designData: DesignData | null): Data {
+function parseDrawData(drawDataType: LabDrawDataType, labData: LabData | null): Data {
   let drawData: Data = { elements: [] };
   if (drawDataType === 'component') {
-    drawData = parseComponentsToDrawData(designData?.components || []);
+    drawData = parseComponentsToDrawData(labData?.components || []);
   }
   return drawData;
 }
 
-export function createDesignContextState(opts?: Partial<DesignState>): DesignState {
-  const activeDrawDataType: DesignDrawDataType = 'component';
-  const designData: DesignData = opts?.designData || createDesignData();
-  const viewDrawData = parseDrawData(activeDrawDataType, designData);
+export function createLabContextState(opts?: Partial<LabState>): LabState {
+  const activeDrawDataType: LabDrawDataType = 'component';
+  const labData: LabData = opts?.labData || createLabData();
+  const viewDrawData = parseDrawData(activeDrawDataType, labData);
 
   return {
-    designData: designData,
+    labData: labData,
     activeDrawDataType: activeDrawDataType,
     themeMode: opts?.themeMode || 'light',
     viewDrawData: viewDrawData,
@@ -33,7 +33,7 @@ export function createDesignContextState(opts?: Partial<DesignState>): DesignSta
   };
 }
 
-export function createDesignReducer(state: DesignState, action: DesignAction): DesignState {
+export function createLabReducer(state: LabState, action: LabAction): LabState {
   switch (action.type) {
     case 'updateThemeMode': {
       if (!action?.payload?.themeMode) {
@@ -46,14 +46,14 @@ export function createDesignReducer(state: DesignState, action: DesignAction): D
         }
       };
     }
-    case 'updateDesignData': {
-      if (!action?.payload?.designData) {
+    case 'updateLabData': {
+      if (!action?.payload?.labData) {
         return state;
       }
       return {
         ...state,
         ...{
-          designData: action?.payload?.designData
+          labData: action?.payload?.labData
         }
       };
     }
@@ -65,7 +65,7 @@ export function createDesignReducer(state: DesignState, action: DesignAction): D
         ...state,
         ...{
           activeDrawDataType: action?.payload.activeDrawDataType,
-          viewDrawData: parseDrawData(action?.payload?.activeDrawDataType, state.designData)
+          viewDrawData: parseDrawData(action?.payload?.activeDrawDataType, state.labData)
         }
       };
       return newState;
@@ -76,8 +76,8 @@ export function createDesignReducer(state: DesignState, action: DesignAction): D
   }
 }
 
-export const Context = createContext<DesignContext>({
-  state: createDesignContextState(),
+export const Context = createContext<LabContext>({
+  state: createLabContextState(),
   dispatch: () => {
     return;
   }

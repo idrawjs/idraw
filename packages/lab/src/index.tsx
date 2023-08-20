@@ -4,33 +4,33 @@ import theme from 'antd/es/theme';
 import classnames from 'classnames';
 import { Dashboard } from './modules';
 import { createPrefixName } from './css';
-import { Provider, createDesignContextState, createDesignReducer } from './context';
-import type { DesignData } from './types';
+import { Provider, createLabContextState, createLabReducer } from './context';
+import type { LabData } from './types';
 import type { DashboardProps } from './modules';
 import './css/index.less';
 
 const themeName = 'theme';
 const themePrefixName = createPrefixName(themeName);
 
-export type DesignProps = DashboardProps & {
-  designData?: DesignData;
+export type LabProps = DashboardProps & {
+  labData?: LabData;
   locale?: string; // TODO
   themeMode?: 'light' | 'dark';
 };
 
-export const Design = (props: DesignProps) => {
-  const { width = 1000, height = 600, style, className, designData, themeMode } = props;
+export const Lab = (props: LabProps) => {
+  const { width = 1000, height = 600, style, className, labData, themeMode } = props;
 
-  const [state, dispatch] = useReducer(createDesignReducer, createDesignContextState({ designData, themeMode }));
+  const [state, dispatch] = useReducer(createLabReducer, createLabContextState({ labData, themeMode }));
 
   useEffect(() => {
-    if (designData) {
+    if (labData) {
       dispatch({
-        type: 'updateDesignData',
-        payload: { designData }
+        type: 'updateLabData',
+        payload: { labData }
       });
     }
-  }, [designData]);
+  }, [labData]);
 
   return (
     <Provider value={{ state, dispatch }}>

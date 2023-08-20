@@ -9,7 +9,7 @@ import CalculatorOutlined from '@ant-design/icons/CalculatorOutlined';
 import { prefixName } from './config';
 import { LayerTree } from './layer-tree';
 import { Context } from '../../context';
-import { DesignDrawDataType } from '../../types';
+import { LabDrawDataType } from '../../types';
 
 const items: TabsProps['items'] = [
   {
@@ -46,7 +46,7 @@ export const PanelLayer = (props: PanelLayerProps) => {
           items={items}
           size="small"
           onTabClick={(activeKey: string) => {
-            dispatch({ type: 'switchDrawDataType', payload: { activeDrawDataType: activeKey as DesignDrawDataType } });
+            dispatch({ type: 'switchDrawDataType', payload: { activeDrawDataType: activeKey as LabDrawDataType } });
           }}
         />
       </div>

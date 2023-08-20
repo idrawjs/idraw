@@ -1,5 +1,5 @@
 import type { Element, ElementType } from '@idraw/types';
-import { ViewTreeNode, DesignComponent, DesignComponentItem } from '../types';
+import { ViewTreeNode, LabComponent, LabComponentItem } from '../types';
 
 function parseElementToViewTreeNode(elem: Element<ElementType>): ViewTreeNode | null {
   let treeNode: ViewTreeNode | null = null;
@@ -22,7 +22,7 @@ function parseElementToViewTreeNode(elem: Element<ElementType>): ViewTreeNode | 
   return treeNode;
 }
 
-function parseComponentItemToViewTreeNode(comp: DesignComponentItem): ViewTreeNode {
+function parseComponentItemToViewTreeNode(comp: LabComponentItem): ViewTreeNode {
   const treeNode: Required<ViewTreeNode> = {
     key: comp.uuid,
     title: comp.name || 'Unamed',
@@ -34,7 +34,7 @@ function parseComponentItemToViewTreeNode(comp: DesignComponentItem): ViewTreeNo
     comp.detail.children.forEach((child) => {
       let childNode: ViewTreeNode | null = null;
       if (child.type === 'component') {
-        childNode = parseComponentToViewTreeNode(child as DesignComponent);
+        childNode = parseComponentToViewTreeNode(child as LabComponent);
       } else {
         childNode = parseElementToViewTreeNode(child as Element<ElementType>);
       }
@@ -46,7 +46,7 @@ function parseComponentItemToViewTreeNode(comp: DesignComponentItem): ViewTreeNo
   return treeNode;
 }
 
-export function parseComponentToViewTreeNode(comp: DesignComponent): ViewTreeNode {
+export function parseComponentToViewTreeNode(comp: LabComponent): ViewTreeNode {
   const treeNode: Required<ViewTreeNode> = {
     key: comp.uuid,
     title: comp.name || 'Unamed',
@@ -60,7 +60,7 @@ export function parseComponentToViewTreeNode(comp: DesignComponent): ViewTreeNod
   }
 
   if (Array.isArray(comp?.detail?.variants)) {
-    comp?.detail?.variants?.forEach((child: DesignComponentItem) => {
+    comp?.detail?.variants?.forEach((child: LabComponentItem) => {
       const node = parseComponentItemToViewTreeNode(child);
       treeNode.children.push(node);
     });
