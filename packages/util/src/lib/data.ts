@@ -1,31 +1,31 @@
 import type { Data, ElementAssets, Elements, ElementType, Element } from '@idraw/types';
 import { createAssetId } from './uuid';
 
-export function deepClone(target: any): any {
-  function _clone(t: any) {
+export function deepClone<T extends any = any>(target: T): T {
+  function _clone(t: T) {
     const type = is(t);
     if (['Null', 'Number', 'String', 'Boolean', 'Undefined'].indexOf(type) >= 0) {
       return t;
     } else if (type === 'Array') {
       const arr: any[] = [];
-      t.forEach((item: any) => {
+      (t as any[]).forEach((item: any) => {
         arr.push(_clone(item));
       });
       return arr;
     } else if (type === 'Object') {
       const obj: { [key: string | symbol]: any } = {};
-      const keys = Object.keys(t);
+      const keys = Object.keys(t as any);
       keys.forEach((key) => {
-        obj[key] = _clone(t[key]);
+        obj[key] = _clone((t as Record<string, any>)[key]);
       });
       const symbolKeys = Object.getOwnPropertySymbols(t);
       symbolKeys.forEach((key) => {
-        obj[key] = _clone(t[key]);
+        obj[key] = _clone((t as Record<symbol, any>)[key]);
       });
       return obj;
     }
   }
-  return _clone(target);
+  return _clone(target) as T;
 }
 
 function is(target: any): string {
