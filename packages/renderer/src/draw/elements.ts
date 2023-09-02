@@ -1,56 +1,6 @@
-import type { Element, ElementType, Data, RendererDrawElementOptions, ViewContext2D } from '@idraw/types';
-import { drawCircle } from './circle';
-import { drawRect } from './rect';
-import { drawImage } from './image';
-import { drawText } from './text';
-import { drawSVG } from './svg';
-import { drawHTML } from './html';
-import { drawPath } from './path';
-import { drawGroup } from './group';
+import type { Data, RendererDrawElementOptions, ViewContext2D } from '@idraw/types';
 
-export function drawElement(ctx: ViewContext2D, elem: Element<ElementType>, opts: RendererDrawElementOptions) {
-  try {
-    switch (elem.type) {
-      case 'rect': {
-        drawRect(ctx, elem as Element<'rect'>, opts);
-        break;
-      }
-      case 'circle': {
-        drawCircle(ctx, elem as Element<'circle'>, opts);
-        break;
-      }
-      case 'text': {
-        drawText(ctx, elem as Element<'text'>, opts);
-        break;
-      }
-      case 'image': {
-        drawImage(ctx, elem as Element<'image'>, opts);
-        break;
-      }
-      case 'svg': {
-        drawSVG(ctx, elem as Element<'svg'>, opts);
-        break;
-      }
-      case 'html': {
-        drawHTML(ctx, elem as Element<'html'>, opts);
-        break;
-      }
-      case 'path': {
-        drawPath(ctx, elem as Element<'path'>, opts);
-        break;
-      }
-      case 'group': {
-        drawGroup(ctx, elem as Element<'group'>, opts);
-        break;
-      }
-      default: {
-        break;
-      }
-    }
-  } catch (err) {
-    console.error(err);
-  }
-}
+import { drawElement } from './group';
 
 export function drawElementList(ctx: ViewContext2D, data: Data, opts: RendererDrawElementOptions) {
   const { elements = [] } = data;

@@ -4,4 +4,4 @@ export { drawImage } from './image';
 export { drawSVG } from './svg';
 export { drawHTML } from './html';
 export { drawText } from './text';
-export { drawElementList, drawElement } from './elements';
+export { drawElementList } from './elements';

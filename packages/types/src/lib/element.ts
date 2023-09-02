@@ -132,7 +132,6 @@ interface ElementSVGDetail extends ElementBaseDetail {
 }
 
 interface ElementGroupDetail extends ElementBaseDetail {
-  bgColor?: string;
   children: Element<ElementType>[];
   overflow?: 'hidden';
   assets?: ElementAssets;
@@ -165,7 +164,7 @@ interface ElementDetailMap {
 // export type ElementType = 'text' | 'rect' | 'circle' | 'image' | 'svg' | 'html' | 'group';
 export type ElementType = keyof ElementDetailMap;
 
-export interface ElementOperation {
+export interface ElementOperations {
   lock?: boolean;
   invisible?: boolean;
   disableScale?: boolean;
@@ -174,12 +173,13 @@ export interface ElementOperation {
   lastModified?: number;
 }
 
-export interface Element<T extends ElementType> extends ElementSize {
+export interface Element<T extends ElementType, E extends Record<string, any> = Record<string, any>> extends ElementSize {
   uuid: string;
   name?: string;
   type: T;
   detail: ElementDetailMap[T];
-  operation?: ElementOperation;
+  operations?: ElementOperations;
+  extends?: E;
 }
 
 export type Elements = Element<ElementType>[];

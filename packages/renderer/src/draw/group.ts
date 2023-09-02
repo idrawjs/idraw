@@ -10,6 +10,9 @@ import { drawBox } from './base';
 import { drawPath } from './path';
 
 export function drawElement(ctx: ViewContext2D, elem: Element<ElementType>, opts: RendererDrawElementOptions) {
+  if (elem?.operations?.invisible === true) {
+    return;
+  }
   try {
     switch (elem.type) {
       case 'rect': {

@@ -176,7 +176,7 @@ export function resizeElement(
   let moveX = (end.x - start.x) / scale;
   let moveY = (end.y - start.y) / scale;
 
-  if (elem.operation?.limitRatio === true) {
+  if (elem.operations?.limitRatio === true) {
     const maxDist = Math.max(Math.abs(moveX), Math.abs(moveY));
     moveX = (moveX >= 0 ? 1 : -1) * maxDist;
     moveY = (((moveY >= 0 ? 1 : -1) * maxDist) / elem.w) * elem.h;
@@ -188,7 +188,7 @@ export function resizeElement(
         if (h - moveY > 0) {
           y += moveY;
           h -= moveY;
-          if (elem.operation?.limitRatio === true) {
+          if (elem.operations?.limitRatio === true) {
             x += ((moveY / elem.h) * elem.w) / 2;
             w -= (moveY / elem.h) * elem.w;
           }
@@ -224,7 +224,7 @@ export function resizeElement(
           centerY = centerY - centerMoveDist * Math.sin(radian);
         }
         if (h + moveDist > 0) {
-          if (elem.operation?.limitRatio === true) {
+          if (elem.operations?.limitRatio === true) {
             w = w + (moveDist / elem.h) * elem.w;
           }
           h = h + moveDist;
@@ -235,7 +235,7 @@ export function resizeElement(
         if (h - moveY > 0) {
           y += moveY;
           h -= moveY;
-          if (elem.operation?.limitRatio === true) {
+          if (elem.operations?.limitRatio === true) {
             x -= moveX / 2;
             w += moveX;
           }
@@ -247,7 +247,7 @@ export function resizeElement(
       if (elem.angle === 0) {
         if (elem.h + moveY > 0) {
           h += moveY;
-          if (elem.operation?.limitRatio === true) {
+          if (elem.operations?.limitRatio === true) {
             x -= ((moveY / elem.h) * elem.w) / 2;
             w += (moveY / elem.h) * elem.w;
           }
@@ -283,7 +283,7 @@ export function resizeElement(
           centerY = centerY + centerMoveDist * Math.sin(radian);
         }
         if (h + moveDist > 0) {
-          if (elem.operation?.limitRatio === true) {
+          if (elem.operations?.limitRatio === true) {
             w = w + (moveDist / elem.h) * elem.w;
           }
           h = h + moveDist;
@@ -293,7 +293,7 @@ export function resizeElement(
       } else {
         if (elem.h + moveY > 0) {
           h += moveY;
-          if (elem.operation?.limitRatio === true) {
+          if (elem.operations?.limitRatio === true) {
             x -= ((moveY / elem.h) * elem.w) / 2;
             w += (moveY / elem.h) * elem.w;
           }
@@ -306,7 +306,7 @@ export function resizeElement(
         if (elem.w - moveX > 0) {
           x += moveX;
           w -= moveX;
-          if (elem.operation?.limitRatio === true) {
+          if (elem.operations?.limitRatio === true) {
             h -= (moveX / elem.w) * elem.h;
             y += ((moveX / elem.w) * elem.h) / 2;
           }
@@ -342,7 +342,7 @@ export function resizeElement(
           centerY = centerY + centerMoveDist * Math.cos(radian);
         }
         if (w + moveDist > 0) {
-          if (elem.operation?.limitRatio === true) {
+          if (elem.operations?.limitRatio === true) {
             h = h + (moveDist / elem.w) * elem.h;
           }
           w = w + moveDist;
@@ -353,7 +353,7 @@ export function resizeElement(
         if (elem.w - moveX > 0) {
           x += moveX;
           w -= moveX;
-          if (elem.operation?.limitRatio === true) {
+          if (elem.operations?.limitRatio === true) {
             h -= (moveX / elem.w) * elem.h;
             y += ((moveX / elem.w) * elem.h) / 2;
           }
@@ -365,7 +365,7 @@ export function resizeElement(
       if (angle === 0 || !angle) {
         if (elem.w + moveX > 0) {
           w += moveX;
-          if (elem.operation?.limitRatio === true) {
+          if (elem.operations?.limitRatio === true) {
             y -= (moveX * elem.h) / elem.w / 2;
             h += (moveX * elem.h) / elem.w;
           }
@@ -402,7 +402,7 @@ export function resizeElement(
           centerY = centerY - centerMoveDist * Math.cos(radian);
         }
         if (w + moveDist > 0) {
-          if (elem.operation?.limitRatio === true) {
+          if (elem.operations?.limitRatio === true) {
             h = h + (moveDist / elem.w) * elem.h;
           }
           w = w + moveDist;
@@ -412,7 +412,7 @@ export function resizeElement(
       } else {
         if (elem.w + moveX > 0) {
           w += moveX;
-          if (elem.operation?.limitRatio === true) {
+          if (elem.operations?.limitRatio === true) {
             h += (moveX * elem.h) / elem.w;
             y -= (moveX * elem.h) / elem.w / 2;
           }

@@ -1,7 +1,7 @@
 import type { Element, ElementType, ElementAssets } from './element';
 
-export interface Data {
-  elements: Element<ElementType>[];
+export interface Data<E extends Record<string, any> = Record<string, any>> {
+  elements: Element<ElementType, E>[];
   assets?: ElementAssets;
 }
 

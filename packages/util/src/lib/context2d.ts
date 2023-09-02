@@ -132,8 +132,8 @@ export class Context2D implements ViewContext2D {
     return this._ctx.globalCompositeOperation;
   }
 
-  set globalCompositeOperation(operation: GlobalCompositeOperation) {
-    this._ctx.globalCompositeOperation = operation;
+  set globalCompositeOperation(operations: GlobalCompositeOperation) {
+    this._ctx.globalCompositeOperation = operations;
   }
 
   fill(...args: [fillRule?: CanvasFillRule | undefined] | [path: Path2D, fillRule?: CanvasFillRule | undefined]): void {
