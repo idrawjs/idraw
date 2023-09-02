@@ -37,7 +37,7 @@ export function drawPath(ctx: ViewContext2D, elem: Element<'path'>, opts: Render
             // ctx.lineTo(viewOriginX, viewOriginY + h);
             // ctx.closePath();
             // ctx.clip();
-            ctx.scale(scaleNum * scaleW, scaleNum * scaleH);
+            ctx.scale((scaleNum * scaleW) / viewScaleInfo.scale, (scaleNum * scaleH) / viewScaleInfo.scale);
             const pathStr = generateSVGPath(detail.commands || []);
             const path2d = new Path2D(pathStr);
             if (detail.fill) {

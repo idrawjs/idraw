@@ -87,7 +87,7 @@ function drawBoxBackground(
   let transform: TransformAction[] = [];
   if (viewElem.detail.bgColor || pattern) {
     const { x, y, w, h } = viewElem;
-    let r: number = viewElem.detail.borderRadius || 0;
+    let r: number = (viewElem.detail.borderRadius || 0) * viewScaleInfo.scale;
     r = Math.min(r, w / 2, h / 2);
     if (w < r * 2 || h < r * 2) {
       r = 0;
