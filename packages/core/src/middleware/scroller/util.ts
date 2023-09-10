@@ -1,4 +1,4 @@
-import type { Point, BoardViewerFrameSnapshot, ViewScaleInfo, ViewSizeInfo, ViewContext2D } from '@idraw/types';
+import type { Point, BoardViewerFrameSnapshot, ViewScaleInfo, ViewSizeInfo, ViewContext2D, ElementSize } from '@idraw/types';
 import { getViewScaleInfoFromSnapshot, getViewSizeInfoFromSnapshot } from '@idraw/util';
 
 const minScrollerWidth = 12;
@@ -48,40 +48,98 @@ export function isPointInScrollbar(helperContext: ViewContext2D, p: Point, viewS
   return thumbType;
 }
 
-export function calcScrollerInfo(viewScaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo) {
+function isPointAtRect(helperContext: ViewContext2D, p: Point, rect: ElementSize): boolean {
+  const ctx = helperContext;
+  const { x, y, w, h } = rect;
+  ctx.beginPath();
+  ctx.rect(x, y, w, h);
+  ctx.closePath();
+  if (ctx.isPointInPath(p.x, p.y)) {
+    return true;
+  }
+  return false;
+}
+
+export function isPointInScrollThumb(
+  helperContext: ViewContext2D,
+  p: Point,
+  opts: {
+    xThumbRect?: ElementSize | null;
+    yThumbRect?: ElementSize | null;
+  }
+): ScrollbarThumbType | null {
+  let thumbType: ScrollbarThumbType | null = null;
+  const { xThumbRect, yThumbRect } = opts;
+  if (xThumbRect && isPointAtRect(helperContext, p, xThumbRect)) {
+    thumbType = 'X';
+  } else if (yThumbRect && isPointAtRect(helperContext, p, yThumbRect)) {
+    thumbType = 'Y';
+  }
+  return thumbType;
+}
+
+function calcScrollerInfo(viewScaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo) {
   const { width, height } = viewSizeInfo;
   const { offsetTop, offsetBottom, offsetLeft, offsetRight } = viewScaleInfo;
   const sliderMinSize = scrollerLineWidth * 2.5;
   const lineSize = scrollerLineWidth;
+
   let xSize = 0;
   let ySize = 0;
-  if (offsetLeft <= 0 && offsetRight <= 0) {
-    xSize = Math.max(sliderMinSize, width - (Math.abs(offsetLeft) + Math.abs(offsetRight)));
-    if (xSize >= width) xSize = 0;
+  xSize = Math.max(sliderMinSize, width - (Math.abs(offsetLeft) + Math.abs(offsetRight)));
+  if (xSize >= width) {
+    xSize = width;
   }
-  if (offsetTop <= 0 || offsetBottom <= 0) {
-    ySize = Math.max(sliderMinSize, height - (Math.abs(offsetTop) + Math.abs(offsetBottom)));
-    if (ySize >= height) ySize = 0;
+  ySize = Math.max(sliderMinSize, height - (Math.abs(offsetTop) + Math.abs(offsetBottom)));
+  if (ySize >= height) {
+    ySize = width;
   }
 
-  let translateX = 0;
-  if (xSize > 0) {
+  const xStart = lineSize / 2;
+  const xEnd = width - xSize - lineSize;
+  let translateX = xStart;
+
+  if (offsetLeft > 0) {
+    translateX = xStart;
+  } else if (offsetRight > 0) {
+    translateX = xEnd;
+  } else if (offsetLeft <= 0 && xSize > 0 && !(offsetLeft === 0 && offsetRight === 0)) {
     translateX = xSize / 2 + ((width - xSize) * Math.abs(offsetLeft)) / (Math.abs(offsetLeft) + Math.abs(offsetRight));
     translateX = Math.min(Math.max(0, translateX - xSize / 2), width - xSize);
   }
 
-  let translateY = 0;
-  if (ySize > 0) {
+  const yStart = lineSize / 2;
+  const yEnd = width - xSize - lineSize;
+  let translateY = yStart;
+  if (offsetTop > 0) {
+    translateY = yStart;
+  } else if (offsetBottom > 0) {
+    translateY = yEnd;
+  } else if (offsetTop <= 0 && ySize > 0 && !(offsetTop === 0 && offsetBottom === 0)) {
     translateY = ySize / 2 + ((height - ySize) * Math.abs(offsetTop)) / (Math.abs(offsetTop) + Math.abs(offsetBottom));
     translateY = Math.min(Math.max(0, translateY - ySize / 2), height - ySize);
   }
+  const xThumbRect: ElementSize = {
+    x: translateX,
+    y: height - lineSize,
+    w: xSize,
+    h: lineSize
+  };
+  const yThumbRect: ElementSize = {
+    x: width - lineSize,
+    y: translateY,
+    w: lineSize,
+    h: ySize
+  };
   const scrollWrapper = {
     lineSize,
     xSize,
     ySize,
     translateY,
     translateX,
-    color: '#0000007A'
+    color: '#0000007A',
+    xThumbRect,
+    yThumbRect
   };
   return scrollWrapper;
 }
@@ -143,6 +201,7 @@ function drawScrollerInfo(helperContext: ViewContext2D, opts: { viewScaleInfo: V
   const { viewScaleInfo, viewSizeInfo } = opts;
   const { width, height } = viewSizeInfo;
   const wrapper = calcScrollerInfo(viewScaleInfo, viewSizeInfo);
+  const { xThumbRect, yThumbRect } = wrapper;
   if (wrapper.xSize > 0) {
     if (scrollConfig.showBackground === true) {
       ctx.globalAlpha = scrollerAlpha;
@@ -155,10 +214,7 @@ function drawScrollerInfo(helperContext: ViewContext2D, opts: { viewScaleInfo: V
     // x-slider
     drawScrollerThumb(ctx, {
       axis: 'X',
-      x: wrapper.translateX,
-      y: height - wrapper.lineSize,
-      w: wrapper.xSize,
-      h: wrapper.lineSize,
+      ...xThumbRect,
       r: wrapper.lineSize / 2,
       color: wrapper.color
     });
@@ -176,21 +232,23 @@ function drawScrollerInfo(helperContext: ViewContext2D, opts: { viewScaleInfo: V
     // y-slider
     drawScrollerThumb(ctx, {
       axis: 'Y',
-      x: width - wrapper.lineSize,
-      y: wrapper.translateY,
-      w: wrapper.lineSize,
-      h: wrapper.ySize,
+      ...yThumbRect,
       r: wrapper.lineSize / 2,
       color: wrapper.color
     });
   }
 
   ctx.globalAlpha = 1;
+  return {
+    xThumbRect,
+    yThumbRect
+  };
 }
 
 export function drawScroller(ctx: ViewContext2D, opts: { snapshot: BoardViewerFrameSnapshot }) {
   const { snapshot } = opts;
   const viewSizeInfo = getViewSizeInfoFromSnapshot(snapshot);
   const viewScaleInfo = getViewScaleInfoFromSnapshot(snapshot);
-  drawScrollerInfo(ctx, { viewSizeInfo, viewScaleInfo });
+  const { xThumbRect, yThumbRect } = drawScrollerInfo(ctx, { viewSizeInfo, viewScaleInfo });
+  return { xThumbRect, yThumbRect };
 }

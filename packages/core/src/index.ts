@@ -1,4 +1,4 @@
-import type { Data, CoreOptions, BoardMiddleware, ViewSizeInfo } from '@idraw/types';
+import type { Data, PointSize, CoreOptions, BoardMiddleware, ViewSizeInfo } from '@idraw/types';
 import { Board } from '@idraw/board';
 import { createBoardContexts, validateElements, calcElementsContextSize } from '@idraw/util';
 
@@ -45,37 +45,19 @@ export class Core {
   setData(data: Data) {
     validateElements(data?.elements || []);
     this._board.setData(data);
-    const sharer = this._board.getSharer();
-    const currentViewSize = sharer.getActiveViewSizeInfo();
-    // const currentScaleInfo = sharer.getActiveScaleInfo();
-    const newViewContextSize = calcElementsContextSize(data.elements, {
-      viewWidth: currentViewSize.width,
-      viewHeight: currentViewSize.height,
-      extend: true
-    });
-    this.resize({
-      ...currentViewSize,
-      ...newViewContextSize
-    });
-    this.scrollX(newViewContextSize.contextX);
-    this.scrollY(newViewContextSize.contextY);
   }
 
-  scale(num: number) {
-    this._board.scale(num);
+  scale(opts: { scale: number; point: PointSize }) {
+    this._board.scale(opts);
   }
 
-  scrollX(num: number) {
-    this._board.scrollX(num);
-  }
-
-  scrollY(num: number) {
-    this._board.scrollY(num);
-  }
+  // scroll(num: number) {
+  //   this._board.scroll(num);
+  // }
 
   resize(newViewSize: ViewSizeInfo) {
     // const sharer = this._board.getSharer();
-    // const viewScaleInfo = sharer.getActiveScaleInfo();
+    // const viewScaleInfo = sharer.getActiveViewScaleInfo();
     this._board.resize(newViewSize);
     // this._board.scale(viewScaleInfo.scale);
     // this._board.scrollX(viewScaleInfo.offsetLeft);

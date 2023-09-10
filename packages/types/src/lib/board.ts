@@ -1,4 +1,4 @@
-import type { Point } from './point';
+import type { Point, PointSize } from './point';
 import type { ViewContent, ViewCalculator, ViewScaleInfo, ViewSizeInfo } from './view';
 import type { UtilEventEmitter } from './util';
 import type { ActiveStore, StoreSharer } from './store';
@@ -23,7 +23,7 @@ export interface BoardWatherDrawFrameEvent<S extends Record<any | symbol, any>> 
   snapshot: BoardViewerFrameSnapshot<S>;
 }
 
-export type BoardWatherScaleEvent = ViewScaleInfo;
+export type BoardWatherScaleEvent = { scale: number };
 
 export type BoardWatherScrollXEvent = ViewScaleInfo;
 
@@ -41,7 +41,7 @@ export interface BoardWatcherEventMap<S extends Record<any | symbol, any> = any>
   wheelX: BoardWatherWheelXEvent;
   wheelY: BoardWatherWheelYEvent;
   wheelScale: BoardWatherWheelScaleEvent;
-  scale: BoardWatherScaleEvent;
+  // scale: BoardWatherScaleEvent;
   scrollX: BoardWatherScrollXEvent;
   scrollY: BoardWatherScrollYEvent;
   resize: BoardWatherResizeEvent;
@@ -67,7 +67,7 @@ export interface BoardMiddlewareObject<S extends Record<any | symbol, any> = any
   wheelY?: (e: BoardWatcherEventMap<S>['wheelY']) => void | boolean;
   wheelScale?: (e: BoardWatcherEventMap<S>['wheelScale']) => void | boolean;
 
-  scale?: (e: BoardWatcherEventMap<S>['scale']) => void | boolean;
+  // scale?: (e: BoardWatcherEventMap<S>['scale']) => void | boolean;
   scrollX?: (e: BoardWatcherEventMap<S>['scrollX']) => void | boolean;
   scrollY?: (e: BoardWatcherEventMap<S>['scrollY']) => void | boolean;
   resize?: (e: BoardWatcherEventMap<S>['resize']) => void | boolean;
@@ -113,9 +113,10 @@ export interface BoardViewerOptions {
 
 export interface BoardViewer extends UtilEventEmitter<BoardViewerEventMap> {
   drawFrame(): void;
-  scale(num: number): ViewScaleInfo;
-  scrollX(num: number): ViewScaleInfo;
-  scrollY(num: number): ViewScaleInfo;
+  scale(opts: { scale: number; point: PointSize }): { moveX: number; moveY: number };
+  scroll(opts: { moveX?: number; moveY?: number }): ViewScaleInfo;
+  // scrollX(num: number): ViewScaleInfo;
+  // scrollY(num: number): ViewScaleInfo;
   resize(viewSize: Partial<ViewSizeInfo>): ViewSizeInfo;
 }
 

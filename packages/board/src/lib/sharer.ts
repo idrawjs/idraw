@@ -60,7 +60,7 @@ export class Sharer implements StoreSharer<Record<string | number | symbol, any>
 
   // get/set active info
 
-  getActiveScaleInfo(): ViewScaleInfo {
+  getActiveViewScaleInfo(): ViewScaleInfo {
     const viewScaleInfo: ViewScaleInfo = {
       scale: this._activeStore.get('scale'),
       offsetTop: this._activeStore.get('offsetTop'),
@@ -71,7 +71,7 @@ export class Sharer implements StoreSharer<Record<string | number | symbol, any>
     return viewScaleInfo;
   }
 
-  setActiveScaleInfo(viewScaleInfo: ViewScaleInfo) {
+  setActiveViewScaleInfo(viewScaleInfo: ViewScaleInfo) {
     const { scale, offsetTop, offsetBottom, offsetLeft, offsetRight } = viewScaleInfo;
     this._activeStore.set('scale', scale);
     this._activeStore.set('offsetTop', offsetTop);
