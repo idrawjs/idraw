@@ -1,5 +1,6 @@
-import type { Point, BoardViewerFrameSnapshot, ViewScaleInfo, ViewSizeInfo, ViewContext2D, ElementSize } from '@idraw/types';
+import type { Point, PointSize, BoardViewerFrameSnapshot, ViewScaleInfo, ViewSizeInfo, ViewContext2D, ElementSize } from '@idraw/types';
 import { getViewScaleInfoFromSnapshot, getViewSizeInfoFromSnapshot } from '@idraw/util';
+import { keyActivePoint, keyActiveThumbType, keyPrevPoint, keyXThumbRect, keyYThumbRect } from './config';
 
 const minScrollerWidth = 12;
 const scrollerLineWidth = 16;
@@ -13,40 +14,6 @@ const scrollConfig = {
   color: '#000000',
   showBackground: true
 };
-
-function isPointAtScrollbarY(helperContext: ViewContext2D, p: Point, viewSizeInfo: ViewSizeInfo): boolean {
-  const { width, height } = viewSizeInfo;
-  const ctx = helperContext;
-  ctx.beginPath();
-  ctx.rect(width - scrollConfig.width, 0, scrollConfig.width, height);
-  ctx.closePath();
-  if (ctx.isPointInPath(p.x, p.y)) {
-    return true;
-  }
-  return false;
-}
-
-function isPointAtScrollbarX(helperContext: ViewContext2D, p: Point, viewSizeInfo: ViewSizeInfo): boolean {
-  const { width, height } = viewSizeInfo;
-  const ctx = helperContext;
-  ctx.beginPath();
-  ctx.rect(0, height - scrollConfig.width, width - scrollConfig.width, scrollConfig.width);
-  ctx.closePath();
-  if (ctx.isPointInPath(p.x, p.y)) {
-    return true;
-  }
-  return false;
-}
-
-export function isPointInScrollbar(helperContext: ViewContext2D, p: Point, viewSizeInfo: ViewSizeInfo): ScrollbarThumbType | null {
-  let thumbType: ScrollbarThumbType | null = null;
-  if (isPointAtScrollbarX(helperContext, p, viewSizeInfo)) {
-    thumbType = 'X';
-  } else if (isPointAtScrollbarY(helperContext, p, viewSizeInfo)) {
-    thumbType = 'Y';
-  }
-  return thumbType;
-}
 
 function isPointAtRect(helperContext: ViewContext2D, p: Point, rect: ElementSize): boolean {
   const ctx = helperContext;
@@ -76,6 +43,25 @@ export function isPointInScrollThumb(
     thumbType = 'Y';
   }
   return thumbType;
+}
+
+interface ScrollInfo {
+  activePoint: Point | null;
+  prevPoint: Point | null;
+  activeThumbType: ScrollbarThumbType | null;
+  xThumbRect: ElementSize | null;
+  yThumbRect: ElementSize | null;
+}
+function getScrollInfoFromSnapshot(snapshot: BoardViewerFrameSnapshot): ScrollInfo {
+  const { sharedStore } = snapshot;
+  const info: ScrollInfo = {
+    activePoint: sharedStore[keyActivePoint] || null,
+    prevPoint: sharedStore[keyPrevPoint] || null,
+    activeThumbType: sharedStore[keyActiveThumbType] || null,
+    xThumbRect: sharedStore[keyXThumbRect] || null,
+    yThumbRect: sharedStore[keyYThumbRect] || null
+  };
+  return info;
 }
 
 function calcScrollerInfo(viewScaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo) {
@@ -196,47 +182,58 @@ function drawScrollerThumb(
   ctx.stroke();
 }
 
-function drawScrollerInfo(helperContext: ViewContext2D, opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }) {
+function drawScrollerInfo(helperContext: ViewContext2D, opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo; scrollInfo: ScrollInfo }) {
   const ctx = helperContext;
-  const { viewScaleInfo, viewSizeInfo } = opts;
+  const { viewScaleInfo, viewSizeInfo, scrollInfo } = opts;
+  const { activeThumbType, prevPoint, activePoint } = scrollInfo;
   const { width, height } = viewSizeInfo;
   const wrapper = calcScrollerInfo(viewScaleInfo, viewSizeInfo);
-  const { xThumbRect, yThumbRect } = wrapper;
-  if (wrapper.xSize > 0) {
-    if (scrollConfig.showBackground === true) {
-      ctx.globalAlpha = scrollerAlpha;
-      ctx.fillStyle = wrapper.color;
-      // x-line
-      ctx.fillRect(0, height - wrapper.lineSize, width, wrapper.lineSize);
-    }
+  let xThumbRect: ElementSize = { ...wrapper.xThumbRect };
+  let yThumbRect: ElementSize = { ...wrapper.yThumbRect };
 
-    // ctx.globalAlpha = 1;
-    // x-slider
-    drawScrollerThumb(ctx, {
-      axis: 'X',
-      ...xThumbRect,
-      r: wrapper.lineSize / 2,
-      color: wrapper.color
-    });
+  if (activeThumbType && prevPoint && activePoint) {
+    if (activeThumbType === 'X' && scrollInfo.xThumbRect) {
+      xThumbRect = { ...scrollInfo.xThumbRect };
+      xThumbRect.x = xThumbRect.x + (activePoint.x - prevPoint.x);
+    } else if (activeThumbType === 'Y' && scrollInfo.yThumbRect) {
+      yThumbRect = { ...scrollInfo.yThumbRect };
+      yThumbRect.y = yThumbRect.y + (activePoint.y - prevPoint.y);
+    }
   }
 
-  if (wrapper.ySize > 0) {
-    if (scrollConfig.showBackground === true) {
-      ctx.globalAlpha = scrollerAlpha;
-      ctx.fillStyle = wrapper.color;
-      // y-line
-      ctx.fillRect(width - wrapper.lineSize, 0, wrapper.lineSize, height);
-    }
-
-    // ctx.globalAlpha = 1;
-    // y-slider
-    drawScrollerThumb(ctx, {
-      axis: 'Y',
-      ...yThumbRect,
-      r: wrapper.lineSize / 2,
-      color: wrapper.color
-    });
+  // x-bar
+  if (scrollConfig.showBackground === true) {
+    ctx.globalAlpha = scrollerAlpha;
+    ctx.fillStyle = wrapper.color;
+    // x-line
+    ctx.fillRect(0, height - wrapper.lineSize, width, wrapper.lineSize);
   }
+
+  // ctx.globalAlpha = 1;
+  // x-thumb
+  drawScrollerThumb(ctx, {
+    axis: 'X',
+    ...xThumbRect,
+    r: wrapper.lineSize / 2,
+    color: wrapper.color
+  });
+
+  // y-bar
+  if (scrollConfig.showBackground === true) {
+    ctx.globalAlpha = scrollerAlpha;
+    ctx.fillStyle = wrapper.color;
+    // y-line
+    ctx.fillRect(width - wrapper.lineSize, 0, wrapper.lineSize, height);
+  }
+
+  // ctx.globalAlpha = 1;
+  // y-thumb
+  drawScrollerThumb(ctx, {
+    axis: 'Y',
+    ...yThumbRect,
+    r: wrapper.lineSize / 2,
+    color: wrapper.color
+  });
 
   ctx.globalAlpha = 1;
   return {
@@ -249,6 +246,7 @@ export function drawScroller(ctx: ViewContext2D, opts: { snapshot: BoardViewerFr
   const { snapshot } = opts;
   const viewSizeInfo = getViewSizeInfoFromSnapshot(snapshot);
   const viewScaleInfo = getViewScaleInfoFromSnapshot(snapshot);
-  const { xThumbRect, yThumbRect } = drawScrollerInfo(ctx, { viewSizeInfo, viewScaleInfo });
+  const scrollInfo = getScrollInfoFromSnapshot(snapshot);
+  const { xThumbRect, yThumbRect } = drawScrollerInfo(ctx, { viewSizeInfo, viewScaleInfo, scrollInfo });
   return { xThumbRect, yThumbRect };
 }
