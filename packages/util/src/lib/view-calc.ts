@@ -2,86 +2,41 @@ import { Point, PointSize, Data, ViewScaleInfo, ViewSizeInfo, Element, ElementTy
 import { rotateElementVertexes } from './rotate';
 import { checkRectIntersect } from './rect';
 
-export function viewScale(opts: { num: number; prevViewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }): ViewScaleInfo {
-  const { num: scale, prevViewScaleInfo, viewSizeInfo } = opts;
-  const { width, height, contextWidth, contextHeight } = viewSizeInfo;
-  let offsetLeft = 0;
-  let offsetRight = 0;
-  let offsetTop = 0;
-  let offsetBottom = 0;
-
-  if (contextWidth * scale < width) {
-    offsetLeft = offsetRight = (width - contextWidth * scale) / 2;
-  } else if (contextWidth * scale > width) {
-    if (prevViewScaleInfo.offsetLeft < 0) {
-      offsetLeft = (prevViewScaleInfo.offsetLeft / prevViewScaleInfo.scale) * scale;
-      offsetRight = 0 - (contextWidth * scale - width - Math.abs(offsetLeft));
-    }
-  }
-
-  if (contextHeight * scale < height) {
-    offsetTop = offsetBottom = (height - contextHeight * scale) / 2;
-  } else if (contextHeight * scale > height) {
-    if (prevViewScaleInfo.offsetTop < 0) {
-      offsetTop = (prevViewScaleInfo.offsetTop / prevViewScaleInfo.scale) * scale;
-      offsetBottom = 0 - (contextHeight * scale - height - Math.abs(offsetTop));
-    }
-  }
-
+export function viewScale(opts: { scale: number; point: PointSize; viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }): {
+  moveX: number;
+  moveY: number;
+} {
+  const { scale, point, viewScaleInfo: prevViewScaleInfo } = opts;
+  const { offsetLeft, offsetTop } = prevViewScaleInfo;
+  const scaleDiff = scale / prevViewScaleInfo.scale;
+  const x0 = point.x;
+  const y0 = point.y;
+  const moveX = x0 - x0 * scaleDiff + (offsetLeft * scaleDiff - offsetLeft);
+  const moveY = y0 - y0 * scaleDiff + (offsetTop * scaleDiff - offsetTop);
   return {
-    scale,
-    offsetTop,
-    offsetLeft,
-    offsetRight,
-    offsetBottom
+    moveX,
+    moveY
   };
 }
 
 export function viewScroll(opts: { moveX?: number; moveY?: number; viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }): ViewScaleInfo {
-  const { moveX, moveY, viewScaleInfo, viewSizeInfo } = opts;
-  const scale = viewScaleInfo.scale;
+  const { moveX = 0, moveY = 0, viewScaleInfo, viewSizeInfo } = opts;
+
+  const { scale } = viewScaleInfo;
   const { width, height, contextWidth, contextHeight } = viewSizeInfo;
   let offsetLeft = viewScaleInfo.offsetLeft;
   let offsetRight = viewScaleInfo.offsetRight;
   let offsetTop = viewScaleInfo.offsetTop;
   let offsetBottom = viewScaleInfo.offsetBottom;
-  if (moveX !== undefined && (moveX > 0 || moveX <= 0)) {
-    if (contextWidth * scale < width) {
-      offsetLeft = offsetRight = (width - contextWidth * scale) / 2;
-    } else if (contextWidth * scale > width) {
-      if (offsetLeft + moveX >= 0) {
-        offsetLeft = 0;
-        offsetRight = width - contextWidth * scale;
-      } else if (offsetLeft + moveX < width - contextWidth * scale) {
-        offsetLeft = width - contextWidth * scale;
-        offsetRight = 0;
-      } else {
-        offsetLeft += moveX;
-        offsetRight = width - contextWidth * scale - offsetLeft;
-      }
-    } else {
-      offsetLeft = offsetRight = 0;
-    }
-  }
 
-  if (moveY !== undefined && (moveY > 0 || moveY <= 0)) {
-    if (contextHeight * scale < height) {
-      offsetTop = offsetBottom = (height - contextHeight * scale) / 2;
-    } else if (contextHeight * scale > height) {
-      if (offsetTop + moveY >= 0) {
-        offsetTop = 0;
-        offsetBottom = height - contextHeight * scale;
-      } else if (offsetTop + moveY < height - contextHeight * scale) {
-        offsetTop = height - contextHeight * scale;
-        offsetBottom = 0;
-      } else {
-        offsetTop += moveY;
-        offsetBottom = height - contextHeight * scale - offsetTop;
-      }
-    } else {
-      offsetTop = offsetBottom = 0;
-    }
-  }
+  offsetLeft += moveX;
+  offsetTop += moveY;
+
+  const w = contextWidth * scale;
+  const h = contextHeight * scale;
+
+  offsetRight = width - (w + offsetLeft);
+  offsetBottom = height - (h + offsetTop);
 
   return {
     scale,

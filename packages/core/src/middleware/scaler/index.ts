@@ -1,4 +1,4 @@
-import type { Point, BoardMiddleware, PointWatcherEvent, BoardWatherWheelXEvent, BoardWatherWheelYEvent } from '@idraw/types';
+import type { PointSize, BoardMiddleware, ViewScaleInfo, ViewSizeInfo } from '@idraw/types';
 
 export const MiddlewareScaler: BoardMiddleware = (opts) => {
   const key = 'SCALE';
@@ -7,16 +7,17 @@ export const MiddlewareScaler: BoardMiddleware = (opts) => {
     mode: key,
     isDefault: true,
     wheelScale(e) {
-      // console.log(' wheelScale ============= ', e);
-      const { deltaY } = e;
-      const { scale } = sharer.getActiveScaleInfo();
+      const { deltaY, point } = e;
+      const { scale } = sharer.getActiveViewScaleInfo();
+      let newScaleNum = scale;
       if (deltaY < 0) {
-        viewer.scale(scale * 1.1);
-        viewer.drawFrame();
+        newScaleNum = scale * 1.1;
       } else if (deltaY > 0) {
-        viewer.scale(scale * 0.9);
-        viewer.drawFrame();
+        newScaleNum = scale * 0.9;
       }
+      const { moveX, moveY } = viewer.scale({ scale: newScaleNum, point });
+      viewer.scroll({ moveX, moveY });
+      viewer.drawFrame();
     }
   };
 };

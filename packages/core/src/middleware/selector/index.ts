@@ -91,7 +91,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
       const controller = calcElementSizeController(list[0], {
         groupQueue: sharer.getSharedStorage(keyGroupQueue),
         controllerSize: 10,
-        viewScaleInfo: sharer.getActiveScaleInfo()
+        viewScaleInfo: sharer.getActiveViewScaleInfo()
       });
       sharer.setSharedStorage(keySelectedElementController, controller);
     } else {
@@ -105,7 +105,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
       calculator,
       data: sharer.getActiveStorage('data'),
       selectedElements: getActiveElements(),
-      viewScaleInfo: sharer.getActiveScaleInfo(),
+      viewScaleInfo: sharer.getActiveViewScaleInfo(),
       viewSizeInfo: sharer.getActiveViewSizeInfo(),
       groupQueue: sharer.getSharedStorage(keyGroupQueue),
       areaSize: null,
@@ -140,7 +140,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
         // in group
         const isInActiveGroup = isPointInViewActiveGroup(e.point, {
           ctx: helperContext,
-          viewScaleInfo: sharer.getActiveScaleInfo(),
+          viewScaleInfo: sharer.getActiveViewScaleInfo(),
           viewSizeInfo: sharer.getActiveViewSizeInfo(),
           groupQueue: sharer.getSharedStorage(keyGroupQueue)
         });
@@ -177,7 +177,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
       }
 
       const selectedElements = getActiveElements();
-      const viewScaleInfo = sharer.getActiveScaleInfo();
+      const viewScaleInfo = sharer.getActiveViewScaleInfo();
       const viewSizeInfo = sharer.getActiveViewSizeInfo();
       const target = getPointTarget(e.point, {
         ...pointTargetBaseOptions(),
@@ -212,7 +212,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
         if (
           isPointInViewActiveGroup(e.point, {
             ctx: helperContext,
-            viewScaleInfo: sharer.getActiveScaleInfo(),
+            viewScaleInfo: sharer.getActiveViewScaleInfo(),
             viewSizeInfo: sharer.getActiveViewSizeInfo(),
             groupQueue
           })
@@ -238,7 +238,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
 
       // not in group
       const listAreaSize = calcSelectedElementsArea(getActiveElements(), {
-        viewScaleInfo: sharer.getActiveScaleInfo(),
+        viewScaleInfo: sharer.getActiveViewScaleInfo(),
         viewSizeInfo: sharer.getActiveViewSizeInfo(),
         calculator
       });
@@ -341,9 +341,9 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
       const data = sharer.getActiveStorage('data');
       const resizeType = sharer.getSharedStorage(keyResizeType);
       const actionType = sharer.getSharedStorage(keyActionType);
-      const viewScaleInfo = sharer.getActiveScaleInfo();
+      // const viewScaleInfo = sharer.getActiveViewScaleInfo();
       const viewSizeInfo = sharer.getActiveViewSizeInfo();
-      const { offsetLeft, offsetTop } = viewScaleInfo;
+      // const { offsetLeft, offsetTop } = viewScaleInfo;
       let needDrawFrame = false;
       prevPoint = null;
       if (actionType === 'resize' && resizeType) {
@@ -358,7 +358,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
               start,
               end,
               calculator,
-              viewScaleInfo: sharer.getActiveScaleInfo(),
+              viewScaleInfo: sharer.getActiveViewScaleInfo(),
               viewSizeInfo: sharer.getActiveViewSizeInfo()
             });
 
@@ -373,7 +373,11 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
         sharer.setSharedStorage(keyActionType, 'drag-list-end');
         needDrawFrame = true;
       } else if (data) {
-        const result = calculator.getPointElement(e.point, { data, viewScaleInfo: sharer.getActiveScaleInfo(), viewSizeInfo: sharer.getActiveViewSizeInfo() });
+        const result = calculator.getPointElement(e.point, {
+          data,
+          viewScaleInfo: sharer.getActiveViewScaleInfo(),
+          viewSizeInfo: sharer.getActiveViewSizeInfo()
+        });
         if (result.element) {
           sharer.setSharedStorage(keyActionType, 'select');
           needDrawFrame = true;
@@ -396,8 +400,9 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
           sharer.setActiveStorage('contextY', viewInfo.contextSize.contextY);
           sharer.setActiveStorage('contextHeight', viewInfo.contextSize.contextHeight);
           sharer.setActiveStorage('contextWidth', viewInfo.contextSize.contextWidth);
-          viewer.scrollX(offsetLeft + viewInfo.changeContextLeft);
-          viewer.scrollY(offsetTop + viewInfo.changeContextTop);
+          // TODO
+          // viewer.scrollX(offsetLeft + viewInfo.changeContextLeft);
+          // viewer.scrollY(offsetTop + viewInfo.changeContextTop);
         }
         viewer.drawFrame();
       };
@@ -464,7 +469,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
           drawArea(helperContext, { start: areaStart, end: areaEnd });
         } else if ((['drag-list', 'drag-list-end'] as ActionType[]).includes(actionType)) {
           const listAreaSize = calcSelectedElementsArea(getActiveElements(), {
-            viewScaleInfo: sharer.getActiveScaleInfo(),
+            viewScaleInfo: sharer.getActiveViewScaleInfo(),
             viewSizeInfo: sharer.getActiveViewSizeInfo(),
             calculator
           });

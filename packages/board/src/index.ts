@@ -1,6 +1,6 @@
 import { Renderer } from '@idraw/renderer';
-import { throttle } from '@idraw/util';
-import type { Data, BoardMode, BoardOptions, BoardMiddleware, BoardMiddlewareObject, BoardWatcherEventMap, ViewSizeInfo } from '@idraw/types';
+import { throttle, calcElementsContextSize } from '@idraw/util';
+import type { Data, BoardMode, BoardOptions, BoardMiddleware, BoardMiddlewareObject, BoardWatcherEventMap, ViewSizeInfo, PointSize } from '@idraw/types';
 import { Calculator } from './lib/calculator';
 import { BoardWatcher } from './lib/watcher';
 import { Sharer } from './lib/sharer';
@@ -90,7 +90,7 @@ export class Board {
         this._handleWheelScale(e);
       }, frameTime)
     );
-    this._watcher.on('scale', this._handleScale.bind(this));
+    // this._watcher.on('scale', this._handleScale.bind(this));
     this._watcher.on('scrollX', this._handleScrollX.bind(this));
     this._watcher.on('scrollY', this._handleScrollY.bind(this));
     this._watcher.on('resize', this._handleResize.bind(this));
@@ -177,15 +177,15 @@ export class Board {
     }
   }
 
-  private _handleScale(e: BoardWatcherEventMap['scale']) {
-    for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
-      const obj = this._activeMiddlewareObjs[i];
-      const result = obj?.scale?.(e);
-      if (result === false) {
-        return;
-      }
-    }
-  }
+  // private _handleScale(e: BoardWatcherEventMap['scale']) {
+  //   for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
+  //     const obj = this._activeMiddlewareObjs[i];
+  //     const result = obj?.scale?.(e);
+  //     if (result === false) {
+  //       return;
+  //     }
+  //   }
+  // }
 
   private _handleScrollX(e: BoardWatcherEventMap['scrollX']) {
     for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
@@ -266,9 +266,24 @@ export class Board {
     return this._sharer;
   }
 
-  setData(data: Data) {
+  setData(data: Data): { viewSizeInfo: ViewSizeInfo } {
+    const sharer = this._sharer;
     this._sharer.setActiveStorage('data', data);
+    const viewSizeInfo = sharer.getActiveViewSizeInfo();
+    // const currentScaleInfo = sharer.getActiveViewScaleInfo();
+    const newViewContextSize = calcElementsContextSize(data.elements, {
+      viewWidth: viewSizeInfo.width,
+      viewHeight: viewSizeInfo.height,
+      extend: true
+    });
     this._viewer.drawFrame();
+    const newViewSizeInfo = {
+      ...viewSizeInfo,
+      ...newViewContextSize
+    };
+
+    this._sharer.setActiveViewSizeInfo(newViewSizeInfo);
+    return { viewSizeInfo: newViewSizeInfo };
   }
 
   getData(): Data | null {
@@ -284,22 +299,14 @@ export class Board {
     this._activeMiddlewareObjs.push(obj);
   }
 
-  scale(num: number) {
-    const viewScaleInfo = this._viewer.scale(num);
-    this._viewer.drawFrame();
-    this._watcher.trigger('scale', viewScaleInfo);
+  scale(opts: { scale: number; point: PointSize }) {
+    const { _viewer: viewer } = this;
+    const { moveX, moveY } = viewer.scale(opts);
+    viewer.scroll({ moveX, moveY });
   }
 
-  scrollX(num: number) {
-    const viewScaleInfo = this._viewer.scrollX(num);
-    this._viewer.drawFrame();
-    this._watcher.trigger('scrollX', viewScaleInfo);
-  }
-
-  scrollY(num: number) {
-    const viewScaleInfo = this._viewer.scrollY(num);
-    this._viewer.drawFrame();
-    this._watcher.trigger('scrollY', viewScaleInfo);
+  scroll(opts: { moveX: number; moveY: number }) {
+    return this._viewer.scroll(opts);
   }
 
   resize(newViewSize: ViewSizeInfo) {

@@ -1,5 +1,14 @@
 import { EventEmitter, viewScale, viewScroll } from '@idraw/util';
-import type { BoardViewer, BoardViewerEventMap, BoardViewerOptions, ActiveStore, BoardViewerFrameSnapshot, ViewScaleInfo, ViewSizeInfo } from '@idraw/types';
+import type {
+  PointSize,
+  BoardViewer,
+  BoardViewerEventMap,
+  BoardViewerOptions,
+  ActiveStore,
+  BoardViewerFrameSnapshot,
+  ViewScaleInfo,
+  ViewSizeInfo
+} from '@idraw/types';
 
 const { requestAnimationFrame } = window;
 
@@ -89,33 +98,58 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
     this._drawAnimationFrame();
   }
 
-  scale(num: number): ViewScaleInfo {
-    const { sharer, renderer } = this._opts;
-    const prevViewScaleInfo: ViewScaleInfo = sharer.getActiveScaleInfo();
+  scale(opts: { scale: number; point: PointSize }): { moveX: number; moveY: number } {
+    const { scale, point } = opts;
+    const { sharer } = this._opts;
+    const { moveX, moveY } = viewScale({
+      scale,
+      point,
+      viewScaleInfo: sharer.getActiveViewScaleInfo(),
+      viewSizeInfo: sharer.getActiveViewSizeInfo()
+    });
+    sharer.setActiveStorage('scale', scale);
+    // renderer.scale(scale);
+    return { moveX, moveY };
+  }
+
+  scroll(opts: { moveX: number; moveY: number }): ViewScaleInfo {
+    const { sharer } = this._opts;
+    const prevViewScaleInfo: ViewScaleInfo = sharer.getActiveViewScaleInfo();
+    const { moveX, moveY } = opts;
     const viewSizeInfo: ViewSizeInfo = sharer.getActiveViewSizeInfo();
-    const viewScaleInfo = viewScale({ num, prevViewScaleInfo, viewSizeInfo });
-    sharer.setActiveScaleInfo(viewScaleInfo);
-    renderer.scale(num);
+    const viewScaleInfo = viewScroll({
+      moveX,
+      moveY,
+      viewScaleInfo: prevViewScaleInfo,
+      viewSizeInfo
+    });
+    sharer.setActiveViewScaleInfo(viewScaleInfo);
     return viewScaleInfo;
   }
 
-  scrollX(num: number): ViewScaleInfo {
-    const { sharer } = this._opts;
-    const prevViewScaleInfo: ViewScaleInfo = sharer.getActiveScaleInfo();
-    const viewSizeInfo: ViewSizeInfo = sharer.getActiveViewSizeInfo();
-    const viewScaleInfo = viewScroll({ moveX: num - (prevViewScaleInfo.offsetLeft || 0), viewScaleInfo: prevViewScaleInfo, viewSizeInfo });
-    sharer.setActiveScaleInfo(viewScaleInfo);
-    return viewScaleInfo;
-  }
+  // scrollX(num: number): ViewScaleInfo {
+  //   // TODO
+  //   const { sharer } = this._opts;
+  //   return sharer.getActiveViewScaleInfo();
+  //   // const { sharer } = this._opts;
+  //   // const prevViewScaleInfo: ViewScaleInfo = sharer.getActiveViewScaleInfo();
+  //   // const viewSizeInfo: ViewSizeInfo = sharer.getActiveViewSizeInfo();
+  //   // const viewScaleInfo = viewScroll({ moveX: num - (prevViewScaleInfo.offsetLeft || 0), viewScaleInfo: prevViewScaleInfo, viewSizeInfo });
+  //   // sharer.setActiveViewScaleInfo(viewScaleInfo);
+  //   // return viewScaleInfo;
+  // }
 
-  scrollY(num: number): ViewScaleInfo {
-    const { sharer } = this._opts;
-    const prevViewScaleInfo: ViewScaleInfo = sharer.getActiveScaleInfo();
-    const viewSizeInfo: ViewSizeInfo = sharer.getActiveViewSizeInfo();
-    const viewScaleInfo = viewScroll({ moveY: num - (prevViewScaleInfo.offsetTop || 0), viewScaleInfo: prevViewScaleInfo, viewSizeInfo });
-    sharer.setActiveScaleInfo(viewScaleInfo);
-    return viewScaleInfo;
-  }
+  // scrollY(num: number): ViewScaleInfo {
+  //   // TODO
+  //   const { sharer } = this._opts;
+  //   return sharer.getActiveViewScaleInfo();
+  //   // const { sharer } = this._opts;
+  //   // const prevViewScaleInfo: ViewScaleInfo = sharer.getActiveViewScaleInfo();
+  //   // const viewSizeInfo: ViewSizeInfo = sharer.getActiveViewSizeInfo();
+  //   // const viewScaleInfo = viewScroll({ moveY: num - (prevViewScaleInfo.offsetTop || 0), viewScaleInfo: prevViewScaleInfo, viewSizeInfo });
+  //   // sharer.setActiveViewScaleInfo(viewScaleInfo);
+  //   // return viewScaleInfo;
+  // }
 
   resize(viewSize: Partial<ViewSizeInfo> = {}): ViewSizeInfo {
     const { sharer } = this._opts;

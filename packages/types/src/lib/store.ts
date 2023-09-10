@@ -14,8 +14,8 @@ export interface StoreSharer<S extends Record<any, any> = any> {
   setSharedStorage<K extends keyof S = string>(key: K, storage: S[K]): void;
   getSharedStoreSnapshot(): Record<string, any>;
 
-  getActiveScaleInfo(): ViewScaleInfo;
-  setActiveScaleInfo(viewScaleInfo: ViewScaleInfo): void;
+  getActiveViewScaleInfo(): ViewScaleInfo;
+  setActiveViewScaleInfo(viewScaleInfo: ViewScaleInfo): void;
   setActiveViewSizeInfo(size: ViewSizeInfo): void;
   getActiveViewSizeInfo(): ViewSizeInfo;
 }
