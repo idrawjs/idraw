@@ -1,6 +1,6 @@
 import { ViewRectVertexes } from './view';
 
-export type ElementSizeControllerType = 'left' | 'right' | 'top' | 'bottom';
+export type ElementSizeControllerType = 'left' | 'right' | 'top' | 'bottom' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
 
 export interface ElementSizeControllerItem {
   type: ElementSizeControllerType;
@@ -9,8 +9,12 @@ export interface ElementSizeControllerItem {
 
 export interface ElementSizeController {
   elementWrapper: ViewRectVertexes;
-  left: ElementSizeControllerItem;
-  right: ElementSizeControllerItem;
   top: ElementSizeControllerItem;
   bottom: ElementSizeControllerItem;
+  left: ElementSizeControllerItem;
+  right: ElementSizeControllerItem;
+  topLeft: ElementSizeControllerItem;
+  topRight: ElementSizeControllerItem;
+  bottomLeft: ElementSizeControllerItem;
+  bottomRight: ElementSizeControllerItem;
 }

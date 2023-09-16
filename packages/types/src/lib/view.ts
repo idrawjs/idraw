@@ -12,8 +12,6 @@ export interface ViewScaleInfo {
 }
 
 export interface ViewContextSize {
-  contextX: number;
-  contextY: number;
   contextWidth: number;
   contextHeight: number;
 }

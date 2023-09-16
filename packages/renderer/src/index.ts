@@ -57,7 +57,7 @@ export class Renderer extends EventEmitter<RendererEventMap> implements BoardRen
 
   scale(num: number) {
     const { sharer } = this._opts;
-    const { data, offsetTop, offsetBottom, offsetLeft, offsetRight, width, height, contextX, contextY, contextHeight, contextWidth, devicePixelRatio } =
+    const { data, offsetTop, offsetBottom, offsetLeft, offsetRight, width, height, contextHeight, contextWidth, devicePixelRatio } =
       sharer.getActiveStoreSnapshot();
     if (data) {
       this.drawData(data, {
@@ -71,8 +71,6 @@ export class Renderer extends EventEmitter<RendererEventMap> implements BoardRen
         viewSizeInfo: {
           width,
           height,
-          contextX,
-          contextY,
           contextHeight,
           contextWidth,
           devicePixelRatio

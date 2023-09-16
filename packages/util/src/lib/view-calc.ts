@@ -48,14 +48,13 @@ export function viewScroll(opts: { moveX?: number; moveY?: number; viewScaleInfo
 }
 
 export function calcViewElementSize(size: ElementSize, opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }): ElementSize {
-  const { viewScaleInfo, viewSizeInfo } = opts;
+  const { viewScaleInfo } = opts;
   const { x, y, w, h, angle } = size;
-  const { contextX = 0, contextY = 0 } = viewSizeInfo;
   const { scale, offsetTop, offsetLeft } = viewScaleInfo;
 
   const newSize = {
-    x: x * scale + offsetLeft - contextX,
-    y: y * scale + offsetTop - contextY,
+    x: x * scale + offsetLeft,
+    y: y * scale + offsetTop,
     w: w * scale,
     h: h * scale,
     angle
@@ -64,14 +63,13 @@ export function calcViewElementSize(size: ElementSize, opts: { viewScaleInfo: Vi
 }
 
 export function calcViewPointSize(size: PointSize, opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }): PointSize {
-  const { viewScaleInfo, viewSizeInfo } = opts;
+  const { viewScaleInfo } = opts;
   const { x, y } = size;
-  const { contextX = 0, contextY = 0 } = viewSizeInfo;
   const { scale, offsetTop, offsetLeft } = viewScaleInfo;
 
   const newSize = {
-    x: x * scale + offsetLeft - contextX,
-    y: y * scale + offsetTop - contextY
+    x: x * scale + offsetLeft,
+    y: y * scale + offsetTop
   };
   return newSize;
 }
@@ -144,6 +142,9 @@ export function getViewPointAtElement(
       if (lastGroup && lastGroup.type === 'group' && Array.isArray(lastGroup.detail?.children)) {
         for (let i = 0; i < lastGroup.detail.children.length; i++) {
           const child = lastGroup.detail.children[i];
+          if (child?.operations?.invisible === true) {
+            continue;
+          }
           if (child) {
             const elemSize = {
               x: totalX + child.x,
@@ -175,6 +176,9 @@ export function getViewPointAtElement(
 
   for (let i = data.elements.length - 1; i >= 0; i--) {
     const elem = data.elements[i];
+    if (elem?.operations?.invisible === true) {
+      continue;
+    }
     if (isViewPointInElement(p, { context2d: ctx, element: elem, viewScaleInfo, viewSizeInfo })) {
       result.index = i;
       result.element = elem;

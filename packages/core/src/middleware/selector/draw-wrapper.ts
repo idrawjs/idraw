@@ -55,7 +55,7 @@ export function drawSelectedElementControllersVertexes(
   if (!controller) {
     return;
   }
-  const { elementWrapper, left, right, top, bottom } = controller;
+  const { elementWrapper, left, right, top, bottom, topLeft, topRight, bottomLeft, bottomRight } = controller;
   // const wrapperColor = 'red'; // TODO
   const wrapperOpts = { borderColor: wrapperColor, borderWidth: 1, bgColor: 'transparent', lineDash: [] };
   const ctrlOpts = { ...wrapperOpts, borderWidth: resizeControllerBorderWidth, bgColor: '#FFFFFF' };
@@ -65,6 +65,10 @@ export function drawSelectedElementControllersVertexes(
   drawVertexes(ctx, calcViewVertexes(right.vertexes, opts), ctrlOpts);
   drawVertexes(ctx, calcViewVertexes(top.vertexes, opts), ctrlOpts);
   drawVertexes(ctx, calcViewVertexes(bottom.vertexes, opts), ctrlOpts);
+  drawVertexes(ctx, calcViewVertexes(topLeft.vertexes, opts), ctrlOpts);
+  drawVertexes(ctx, calcViewVertexes(topRight.vertexes, opts), ctrlOpts);
+  drawVertexes(ctx, calcViewVertexes(bottomLeft.vertexes, opts), ctrlOpts);
+  drawVertexes(ctx, calcViewVertexes(bottomRight.vertexes, opts), ctrlOpts);
 }
 
 export function drawElementListShadows(ctx: ViewContext2D, elements: Element<ElementType>[], opts?: Omit<RendererDrawElementOptions, 'loader'>) {

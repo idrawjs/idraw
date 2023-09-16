@@ -5,8 +5,6 @@ const defaultActiveStorage: ActiveStore = {
   width: 0,
   height: 0,
   devicePixelRatio: 1,
-  contextX: 0,
-  contextY: 0,
   contextWidth: 0,
   contextHeight: 0,
   data: null,
@@ -84,8 +82,6 @@ export class Sharer implements StoreSharer<Record<string | number | symbol, any>
     this._activeStore.set('width', size.width);
     this._activeStore.set('height', size.height);
     this._activeStore.set('devicePixelRatio', size.devicePixelRatio);
-    this._activeStore.set('contextX', size.contextX);
-    this._activeStore.set('contextY', size.contextY);
     this._activeStore.set('contextWidth', size.contextWidth);
     this._activeStore.set('contextHeight', size.contextHeight);
   }
@@ -95,8 +91,6 @@ export class Sharer implements StoreSharer<Record<string | number | symbol, any>
       width: this._activeStore.get('width'),
       height: this._activeStore.get('height'),
       devicePixelRatio: this._activeStore.get('devicePixelRatio'),
-      contextX: this._activeStore.get('contextX'),
-      contextY: this._activeStore.get('contextY'),
       contextWidth: this._activeStore.get('contextWidth'),
       contextHeight: this._activeStore.get('contextHeight')
     };
