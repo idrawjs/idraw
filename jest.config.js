@@ -26,6 +26,9 @@ module.exports = {
     '(/packages/renderer/__tests__/.*)\\.test.ts$',
     '(/packages/types/__tests__/.*)\\.test.ts$'
   ],
+  moduleNameMapper: {
+    '@idraw/util': '<rootDir>/packages/util/src/index.ts'
+  },
   // "testRegex": "(/packages/idraw/__tests__/.*)\\.test.ts$",
   setupFiles: ['jest-canvas-mock']
 };
