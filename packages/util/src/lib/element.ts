@@ -173,8 +173,6 @@ export function calcElementsContextSize(
   }
 
   const ctxSize: ViewContextSize = {
-    contextX: area.x,
-    contextY: area.y,
     contextWidth: area.w,
     contextHeight: area.h
   };
@@ -198,42 +196,14 @@ export function calcElementsViewInfo(
   }
 ): {
   contextSize: ViewContextSize;
-  changeContextLeft: number;
-  changeContextRight: number;
-  changeContextTop: number;
-  changeContextBottom: number;
 } {
   const contextSize = calcElementsContextSize(elements, { viewWidth: prevViewSize.width, viewHeight: prevViewSize.height, extend: options?.extend });
-
   if (options?.extend === true) {
-    contextSize.contextX = Math.min(0, contextSize.contextX, prevViewSize.contextX);
-    contextSize.contextY = Math.min(0, contextSize.contextY, prevViewSize.contextY);
     contextSize.contextWidth = Math.max(contextSize.contextWidth, prevViewSize.contextWidth);
     contextSize.contextHeight = Math.max(contextSize.contextHeight, prevViewSize.contextHeight);
   }
-
-  let changeContextLeft = 0;
-  let changeContextRight = 0;
-  let changeContextTop = 0;
-  let changeContextBottom = 0;
-
-  if (contextSize.contextX !== prevViewSize.contextX) {
-    changeContextLeft = contextSize.contextX - prevViewSize.contextX;
-  } else if (contextSize.contextWidth !== prevViewSize.contextWidth) {
-    changeContextRight = contextSize.contextWidth - prevViewSize.contextWidth;
-  }
-  if (contextSize.contextY !== prevViewSize.contextY) {
-    changeContextTop = contextSize.contextY - prevViewSize.contextY;
-  } else if (contextSize.contextHeight !== prevViewSize.contextHeight) {
-    changeContextBottom = contextSize.contextHeight - prevViewSize.contextHeight;
-  }
-
   return {
-    contextSize,
-    changeContextLeft,
-    changeContextRight,
-    changeContextTop,
-    changeContextBottom
+    contextSize
   };
 }
 

@@ -78,7 +78,7 @@ function calcScrollerInfo(viewScaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeIn
   }
   ySize = Math.max(sliderMinSize, height - (Math.abs(offsetTop) + Math.abs(offsetBottom)));
   if (ySize >= height) {
-    ySize = width;
+    ySize = height;
   }
 
   const xStart = lineSize / 2;
@@ -95,7 +95,7 @@ function calcScrollerInfo(viewScaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeIn
   }
 
   const yStart = lineSize / 2;
-  const yEnd = width - xSize - lineSize;
+  const yEnd = height - ySize - lineSize;
   let translateY = yStart;
   if (offsetTop > 0) {
     translateY = yStart;

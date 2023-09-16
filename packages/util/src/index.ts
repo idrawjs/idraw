@@ -21,7 +21,8 @@ export {
   getElementRotateVertexes,
   calcElementCenter,
   calcElementCenterFromVertexes,
-  rotatePointInGroup
+  rotatePointInGroup,
+  limitAngle
 } from './lib/rotate';
 export { getSelectedElementUUIDs, validateElements, calcElementsContextSize, calcElementsViewInfo, getElemenetsAssetIds } from './lib/element';
 export { checkRectIntersect } from './lib/rect';

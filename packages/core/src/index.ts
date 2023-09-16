@@ -29,8 +29,6 @@ export class Core {
       width,
       height,
       devicePixelRatio,
-      contextX: 0,
-      contextY: 0,
       contextWidth: width,
       contextHeight: height
     });

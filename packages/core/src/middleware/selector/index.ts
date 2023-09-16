@@ -321,8 +321,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
             resizeStart = rotatePointInGroup(start, pointGroupQueue);
             resizeEnd = rotatePointInGroup(end, pointGroupQueue);
           }
-          const resizedElemSize = resizeElement(elems[0], { scale, start: resizeStart, end: resizeEnd, resizeType });
-          // const resizedElemSize = resizeElement(elems[0], { scale, start, end, resizeType });
+          const resizedElemSize = resizeElement(elems[0], { scale, start: resizeStart, end: resizeEnd, resizeType, sharer });
           elems[0].x = resizedElemSize.x;
           elems[0].y = resizedElemSize.y;
           elems[0].w = resizedElemSize.w;
@@ -396,8 +395,6 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
         }
         if (data && Array.isArray(data?.elements) && (['drag', 'drag-list'] as ActionType[]).includes(actionType)) {
           const viewInfo = calcElementsViewInfo(data.elements, viewSizeInfo, { extend: true });
-          sharer.setActiveStorage('contextX', viewInfo.contextSize.contextX);
-          sharer.setActiveStorage('contextY', viewInfo.contextSize.contextY);
           sharer.setActiveStorage('contextHeight', viewInfo.contextSize.contextHeight);
           sharer.setActiveStorage('contextWidth', viewInfo.contextSize.contextWidth);
           // TODO
@@ -432,11 +429,10 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
 
     beforeDrawFrame({ snapshot }) {
       const { activeStore, sharedStore } = snapshot;
-      const { scale, offsetLeft, offsetTop, offsetRight, offsetBottom, width, height, contextX, contextY, contextHeight, contextWidth, devicePixelRatio } =
-        activeStore;
+      const { scale, offsetLeft, offsetTop, offsetRight, offsetBottom, width, height, contextHeight, contextWidth, devicePixelRatio } = activeStore;
 
       const viewScaleInfo = { scale, offsetLeft, offsetTop, offsetRight, offsetBottom };
-      const viewSizeInfo = { width, height, contextX, contextY, contextHeight, contextWidth, devicePixelRatio };
+      const viewSizeInfo = { width, height, contextHeight, contextWidth, devicePixelRatio };
       const selectedElements = sharedStore[keySelectedElementList];
       const elem = selectedElements[0];
       const hoverElement: ElementSize = sharedStore[keyHoverElement] as ElementSize;
@@ -478,6 +474,39 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage> = (o
           }
         }
       }
+
+      // // TODO mock data
+      // const sharer = opts.sharer;
+      // const elemCenter: any = sharer.getSharedStorage('TODO_elemCenter');
+      // const startVertical = sharer.getSharedStorage('TODO_startVertical');
+      // const endVertical: any = sharer.getSharedStorage('TODO_endVertical');
+      // const startHorizontal = sharer.getSharedStorage('TODO_startHorizontal');
+      // const endHorizontal: any = sharer.getSharedStorage('TODO_endHorizontal');
+      // const end0: any = sharer.getSharedStorage('TODO_end0');
+      // if (elemCenter && end0) {
+      //   helperContext.beginPath();
+      //   helperContext.moveTo(elemCenter.x, elemCenter.y);
+      //   helperContext.lineTo(end0.x, end0.y);
+      //   helperContext.closePath();
+      //   helperContext.strokeStyle = 'black';
+      //   helperContext.stroke();
+      // }
+      // if (elemCenter && endVertical) {
+      //   helperContext.beginPath();
+      //   helperContext.moveTo(elemCenter.x, elemCenter.y);
+      //   helperContext.lineTo(endVertical.x, endVertical.y);
+      //   helperContext.closePath();
+      //   helperContext.strokeStyle = 'red';
+      //   helperContext.stroke();
+      // }
+      // if (elemCenter && endHorizontal) {
+      //   helperContext.beginPath();
+      //   helperContext.moveTo(elemCenter.x, elemCenter.y);
+      //   helperContext.lineTo(endHorizontal.x, endHorizontal.y);
+      //   helperContext.closePath();
+      //   helperContext.strokeStyle = 'blue';
+      //   helperContext.stroke();
+      // }
     }
   };
 };

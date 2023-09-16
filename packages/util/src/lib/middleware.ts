@@ -18,8 +18,6 @@ export function getViewSizeInfoFromSnapshot(snapshot: BoardViewerFrameSnapshot) 
     devicePixelRatio: activeStore.devicePixelRatio,
     width: activeStore?.width,
     height: activeStore?.height,
-    contextX: activeStore?.contextX,
-    contextY: activeStore?.contextY,
     contextWidth: activeStore?.contextWidth,
     contextHeight: activeStore?.contextHeight
   };

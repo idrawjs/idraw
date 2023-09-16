@@ -52,7 +52,15 @@ export type ControllerStyle = ElementSize & {
 
 export type SelectedElementSizeController = Record<string, ControllerStyle>;
 
-export type ResizeType = 'resize-left' | 'resize-right' | 'resize-top' | 'resize-bottom';
+export type ResizeType =
+  | 'resize-left'
+  | 'resize-right'
+  | 'resize-top'
+  | 'resize-bottom'
+  | 'resize-top-left'
+  | 'resize-top-right'
+  | 'resize-bottom-left'
+  | 'resize-bottom-right';
 
 export type PointTargetType = null | ResizeType | 'list-area' | 'over-element';
 

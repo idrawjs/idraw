@@ -99,17 +99,13 @@ export const MiddlewareScroller: BoardMiddleware = (opts) => {
       }
     },
     pointEnd: (e: PointWatcherEvent) => {
-      // const { point } = e;
-      // if (activeThumbType === 'X' || activeThumbType === 'Y') {
-      //   if (activeThumbType === 'X') {
-      //     scrollX(point);
-      //   } else if (activeThumbType === 'Y') {
-      //     scrollY(point);
-      //   }
-      //   activeThumbType = null;
-      //   return false;
-      // }
+      const activeThumbType = sharer.getSharedStorage(keyActiveThumbType);
       clear();
+      if (activeThumbType === 'X' || activeThumbType === 'Y') {
+        viewer.scroll({ moveX: 0, moveY: 0 });
+        viewer.drawFrame();
+        return false;
+      }
     },
     beforeDrawFrame({ snapshot }) {
       const { xThumbRect, yThumbRect } = drawScroller(helperContext, { snapshot });
