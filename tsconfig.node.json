@@ -18,6 +18,7 @@
     "__tests__/e2e.test.ts",
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "scripts/**/*.js"
   ]
 }
