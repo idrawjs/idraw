@@ -1,6 +1,17 @@
 import { Renderer } from '@idraw/renderer';
-import { throttle, calcElementsContextSize } from '@idraw/util';
-import type { Data, BoardMode, BoardOptions, BoardMiddleware, BoardMiddlewareObject, BoardWatcherEventMap, ViewSizeInfo, PointSize } from '@idraw/types';
+import { throttle, calcElementsContextSize, EventEmitter } from '@idraw/util';
+import type {
+  Data,
+  BoardMode,
+  BoardOptions,
+  BoardMiddleware,
+  BoardMiddlewareObject,
+  BoardWatcherEventMap,
+  ViewSizeInfo,
+  PointSize,
+  BoardExtendEvent,
+  UtilEventEmitter
+} from '@idraw/types';
 import { Calculator } from './lib/calculator';
 import { BoardWatcher } from './lib/watcher';
 import { Sharer } from './lib/sharer';
@@ -10,7 +21,7 @@ const frameTime = 16; // ms
 
 const LOCK_MODES: BoardMode[] = ['RULER'];
 
-export class Board {
+export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
   private _opts: BoardOptions;
   private _middlewares: BoardMiddleware[] = [];
   private _middlewareObjs: BoardMiddlewareObject[] = [];
@@ -20,6 +31,7 @@ export class Board {
   private _renderer: Renderer;
   private _viewer: Viewer;
   private _calculator: Calculator;
+  private _eventHub: EventEmitter<T> = new EventEmitter<T>();
   private _activeMode: BoardMode = 'SELECT';
   constructor(opts: BoardOptions) {
     const { viewContent } = opts;
@@ -291,10 +303,10 @@ export class Board {
     return data;
   }
 
-  use(middleware: BoardMiddleware) {
+  use(middleware: BoardMiddleware<any, any>) {
     const { viewContent } = this._opts;
-    const { _sharer: sharer, _viewer: viewer, _calculator: calculator } = this;
-    const obj = middleware({ viewContent, sharer, viewer, calculator });
+    const { _sharer: sharer, _viewer: viewer, _calculator: calculator, _eventHub: eventHub } = this;
+    const obj = middleware({ viewContent, sharer, viewer, calculator, eventHub: eventHub as UtilEventEmitter<any> });
     this._middlewares.push(middleware);
     this._activeMiddlewareObjs.push(obj);
   }
@@ -331,5 +343,9 @@ export class Board {
     viewContext.clearRect(0, 0, viewContext.canvas.width, viewContext.canvas.height);
     boardContext.clearRect(0, 0, boardContext.canvas.width, boardContext.canvas.height);
     this._handleClear();
+  }
+
+  getEventHub(): EventEmitter<T> {
+    return this._eventHub;
   }
 }

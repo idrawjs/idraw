@@ -79,14 +79,17 @@ export interface BoardMiddlewareObject<S extends Record<any | symbol, any> = any
   clear?(e: BoardWatcherEventMap<S>['clear']): void | boolean;
 }
 
-export interface BoardMiddlewareOptions<S extends Record<any | symbol, any>> {
+export interface BoardMiddlewareOptions<S extends Record<any | symbol, any> = Record<any | symbol, any>, E extends BoardExtendEvent = Record<string, any>> {
   viewContent: ViewContent;
   sharer: StoreSharer<S>;
   viewer: BoardViewer;
   calculator: ViewCalculator;
+  eventHub: UtilEventEmitter<E>;
 }
 
-export type BoardMiddleware<S extends Record<any | symbol, any> = any> = (opts: BoardMiddlewareOptions<S>) => BoardMiddlewareObject<S>;
+export type BoardMiddleware<S extends Record<any | symbol, any> = any, E extends BoardExtendEvent = Record<string, any>> = (
+  opts: BoardMiddlewareOptions<S, E>
+) => BoardMiddlewareObject<S>;
 
 export interface BoardOptions {
   viewContent: ViewContent;
@@ -135,3 +138,5 @@ export interface BoardWatcherStore {
   hasPointDown: boolean;
   prevClickPoint: Point | null;
 }
+
+export type BoardExtendEvent = Record<string, any> & {};

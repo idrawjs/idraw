@@ -109,11 +109,12 @@ export function getPointTarget(
       const ctrl = ctrls[i];
       if (isPointInViewActiveVertexes(p, { ctx, vertexes: ctrl.vertexes, viewSizeInfo, viewScaleInfo })) {
         target.type = `resize-${ctrl.type}` as PointTargetType;
+        if (selectedElements && selectedElements?.length > 0) {
+          target.groupQueue = groupQueue || [];
+          target.elements = [selectedElements[0]];
+        }
         break;
       }
-    }
-    if (target.type !== null) {
-      return target;
     }
   }
 
@@ -129,13 +130,19 @@ export function getPointTarget(
         // }
         const vertexes = calcElementVertexesInGroup(child, { groupQueue });
         if (vertexes && isPointInViewActiveVertexes(p, { ctx, vertexes, viewScaleInfo, viewSizeInfo })) {
-          target.type = 'over-element';
+          if (!target.type) {
+            target.type = 'over-element';
+          }
           target.groupQueue = groupQueue;
           target.elements = [child];
           return target;
         }
       }
     }
+    return target;
+  }
+
+  if (target.type !== null) {
     return target;
   }
 
