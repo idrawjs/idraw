@@ -1,5 +1,5 @@
 import { EventEmitter } from '@idraw/util';
-import { drawElementList } from './draw';
+import { drawElementList } from './draw/index';
 import { Loader } from './loader';
 import type { Data, BoardRenderer, RendererOptions, RendererEventMap, RendererDrawOptions } from '@idraw/types';
 

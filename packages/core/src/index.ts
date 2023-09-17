@@ -1,6 +1,7 @@
-import type { Data, PointSize, CoreOptions, BoardMiddleware, ViewSizeInfo } from '@idraw/types';
+import type { Data, PointSize, CoreOptions, BoardMiddleware, ViewSizeInfo, CoreEvent } from '@idraw/types';
 import { Board } from '@idraw/board';
-import { createBoardContexts, validateElements, calcElementsContextSize } from '@idraw/util';
+import { createBoardContexts, validateElements } from '@idraw/util';
+import { Cursor } from './lib/cursor';
 
 // export { MiddlewareSelector } from './middleware/selector';
 export { MiddlewareSelector } from './middleware/selector';
@@ -8,22 +9,22 @@ export { MiddlewareScroller } from './middleware/scroller';
 export { MiddlewareScaler } from './middleware/scaler';
 
 export class Core {
-  private _board: Board;
+  private _board: Board<CoreEvent>;
   private _opts: CoreOptions;
-  private _mount: HTMLDivElement;
+  private _container: HTMLDivElement;
   private _canvas: HTMLCanvasElement;
-  constructor(mount: HTMLDivElement, opts: CoreOptions) {
+  constructor(container: HTMLDivElement, opts: CoreOptions) {
     const { devicePixelRatio = 1, width, height } = opts;
 
     this._opts = opts;
-    this._mount = mount;
+    this._container = container;
     const canvas = document.createElement('canvas');
     this._canvas = canvas;
-    mount.appendChild(canvas);
+    container.appendChild(canvas);
 
     const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
     const viewContent = createBoardContexts(ctx, { devicePixelRatio });
-    const board = new Board({ viewContent });
+    const board = new Board<CoreEvent>({ viewContent });
     const sharer = board.getSharer();
     sharer.setActiveViewSizeInfo({
       width,
@@ -34,9 +35,13 @@ export class Core {
     });
     this._board = board;
     this.resize(sharer.getActiveViewSizeInfo());
+    const eventHub = board.getEventHub();
+    new Cursor(container, {
+      eventHub
+    });
   }
 
-  use(middleware: BoardMiddleware) {
+  use(middleware: BoardMiddleware<any, any>) {
     this._board.use(middleware);
   }
 
