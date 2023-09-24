@@ -50,6 +50,10 @@ export class Core {
     this._board.setData(data);
   }
 
+  getData(): Data | null {
+    return this._board.getData();
+  }
+
   scale(opts: { scale: number; point: PointSize }) {
     this._board.scale(opts);
   }
@@ -58,10 +62,16 @@ export class Core {
   //   this._board.scroll(num);
   // }
 
-  resize(newViewSize: ViewSizeInfo) {
+  resize(newViewSize: Partial<ViewSizeInfo>) {
+    const { _board: board } = this;
+    const sharer = board.getSharer();
+    const viewSizeInfo = sharer.getActiveViewSizeInfo();
     // const sharer = this._board.getSharer();
     // const viewScaleInfo = sharer.getActiveViewScaleInfo();
-    this._board.resize(newViewSize);
+    board.resize({
+      ...viewSizeInfo,
+      ...newViewSize
+    });
     // this._board.scale(viewScaleInfo.scale);
     // this._board.scrollX(viewScaleInfo.offsetLeft);
     // this._board.scrollY(viewScaleInfo.offsetTop);
