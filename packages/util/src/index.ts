@@ -24,7 +24,17 @@ export {
   rotatePointInGroup,
   limitAngle
 } from './lib/rotate';
-export { getSelectedElementUUIDs, validateElements, calcElementsContextSize, calcElementsViewInfo, getElemenetsAssetIds } from './lib/element';
+export {
+  getSelectedElementUUIDs,
+  validateElements,
+  calcElementsContextSize,
+  calcElementsViewInfo,
+  getElemenetsAssetIds,
+  findElementFromList,
+  findElementsFromList,
+  updateElementInList,
+  getGroupQueueFromList
+} from './lib/element';
 export { checkRectIntersect } from './lib/rect';
 export {
   viewScale,
@@ -42,3 +52,4 @@ export { calcElementSizeController } from './lib/controller';
 export { generateSVGPath, parseSVGPath } from './lib/svg-path';
 export { generateHTML, parseHTML } from './lib/html';
 export { compressImage } from './lib/image';
+export { formatNumber } from './lib/number';

@@ -71,35 +71,43 @@ export function calcElementSizeController(
     elementWrapper: vertexes,
     left: {
       type: 'left',
-      vertexes: calcElementVertexes(leftSize)
+      vertexes: calcElementVertexes(leftSize),
+      center: leftCenter
     },
     right: {
       type: 'right',
-      vertexes: calcElementVertexes(rightSize)
+      vertexes: calcElementVertexes(rightSize),
+      center: rightCenter
     },
     top: {
       type: 'top',
-      vertexes: calcElementVertexes(topSize)
+      vertexes: calcElementVertexes(topSize),
+      center: topCenter
     },
     bottom: {
       type: 'bottom',
-      vertexes: calcElementVertexes(bottomSize)
+      vertexes: calcElementVertexes(bottomSize),
+      center: bottomCenter
     },
     topLeft: {
       type: 'top-left',
-      vertexes: calcElementVertexes(topLeftSize)
+      vertexes: calcElementVertexes(topLeftSize),
+      center: topLeftCenter
     },
     topRight: {
       type: 'top-right',
-      vertexes: calcElementVertexes(topRightSize)
+      vertexes: calcElementVertexes(topRightSize),
+      center: topRightCenter
     },
     bottomLeft: {
       type: 'bottom-left',
-      vertexes: calcElementVertexes(bottomLeftSize)
+      vertexes: calcElementVertexes(bottomLeftSize),
+      center: bottomLeftCenter
     },
     bottomRight: {
       type: 'bottom-right',
-      vertexes: calcElementVertexes(bottomRightSize)
+      vertexes: calcElementVertexes(bottomRightSize),
+      center: bottomRightCenter
     }
   };
   return sizeController;

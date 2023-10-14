@@ -1,4 +1,4 @@
-import type { Data, Element, Elements, ElementType, ElementSize, ViewContextSize, ViewSizeInfo } from '@idraw/types';
+import type { Data, Element, Elements, ElementType, ElementSize, ViewContextSize, ViewSizeInfo, RecursivePartial } from '@idraw/types';
 import { rotateElementVertexes } from './rotate';
 import { isAssetId } from './uuid';
 
@@ -224,4 +224,104 @@ export function getElemenetsAssetIds(elements: Elements): string[] {
   };
   _scanElements(elements);
   return assetIds;
+}
+
+export function findElementFromList(uuid: string, list: Element<ElementType>[]): Element<ElementType> | null {
+  let result: Element<ElementType> | null = null;
+  for (let i = 0; i < list.length; i++) {
+    const elem = list[i];
+    if (elem.uuid === uuid) {
+      result = elem;
+      break;
+    } else if (!result && elem.type === 'group') {
+      const resultInGroup = findElementFromList(uuid, (elem as Element<'group'>)?.detail?.children || []);
+      if (resultInGroup?.uuid === uuid) {
+        result = resultInGroup;
+        break;
+      }
+    }
+  }
+  return result;
+}
+
+export function findElementsFromList(uuids: string[], list: Element<ElementType>[]): Element<ElementType>[] {
+  const result: Element<ElementType>[] = [];
+
+  function _find(elements: Element<ElementType>[]) {
+    for (let i = 0; i < elements.length; i++) {
+      const elem = elements[i];
+      if (uuids.includes(elem.uuid)) {
+        result.push(elem);
+      } else if (elem.type === 'group') {
+        _find((elem as Element<'group'>)?.detail?.children || []);
+      }
+    }
+  }
+  _find(list);
+  return result;
+}
+
+export function getGroupQueueFromList(uuid: string, elements: Element<ElementType>[]): Element<'group'>[] {
+  const groupQueue: Element<'group'>[] = [];
+
+  function _scan(uuid: string, elements: Element<ElementType>[]): Element<ElementType> | null {
+    let result: Element<ElementType> | null = null;
+    for (let i = 0; i < elements.length; i++) {
+      const elem = elements[i];
+      if (elem.uuid === uuid) {
+        result = elem;
+        break;
+      } else if (!result && elem.type === 'group') {
+        groupQueue.push(elem as Element<'group'>);
+        const resultInGroup = _scan(uuid, (elem as Element<'group'>)?.detail?.children || []);
+        if (resultInGroup?.uuid === uuid) {
+          result = resultInGroup;
+          break;
+        }
+        groupQueue.pop();
+      }
+    }
+    return result;
+  }
+  _scan(uuid, elements);
+  return groupQueue;
+}
+
+function mergeElement<T extends Element<ElementType> = Element<ElementType>>(originElem: T, updateContent: RecursivePartial<T>): T {
+  const commonKeys = Object.keys(updateContent);
+  for (let i = 0; i < commonKeys.length; i++) {
+    const commonKey = commonKeys[i];
+    if (['x', 'y', 'w', 'h', 'angle', 'name'].includes(commonKey)) {
+      // @ts-ignore
+      originElem[commonKey] = updateContent[commonKey];
+    } else if (['detail', 'operations'].includes(commonKey)) {
+      // @ts-ignore
+      if (istype.json(updateContent[commonKey] as any) && istype.json(originElem[commonKey])) {
+        // @ts-ignore
+        originElem[commonKey] = { ...originElem[commonKey], ...updateContent[commonKey] };
+        // @ts-ignore
+      } else if (istype.array(updateContent[commonKey] as any) && istype.array(originElem[commonKey])) {
+        // @ts-ignore
+        originElem[commonKey] = { ...originElem[commonKey], ...updateContent[commonKey] };
+      }
+    }
+  }
+  return originElem;
+}
+
+export function updateElementInList(
+  uuid: string,
+  updateContent: RecursivePartial<Element<ElementType>>,
+  elements: Element<ElementType>[]
+): Element<ElementType>[] {
+  for (let i = 0; i < elements.length; i++) {
+    const elem = elements[i];
+    if (elem.uuid === uuid) {
+      mergeElement(elem, updateContent);
+      break;
+    } else if (elem.type === 'group') {
+      updateElementInList(uuid, updateContent, (elem as Element<'group'>)?.detail?.children || []);
+    }
+  }
+  return elements;
 }
