@@ -1,4 +1,5 @@
 import type { Element, ElementType } from './element';
+import type { Data } from './data';
 
 export interface CoreOptions {
   width: number;
@@ -23,10 +24,14 @@ export interface CoreEventCursor {
 }
 
 export interface CoreEventSelect {
-  elements: Element<ElementType>[];
+  uuids: string[];
+}
+export interface CoreEventChange {
+  data: Data;
 }
 
 export type CoreEvent = {
   cursor: CoreEventCursor;
   select: CoreEventSelect;
+  change: CoreEventChange;
 };
