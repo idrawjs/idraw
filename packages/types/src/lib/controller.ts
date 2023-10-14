@@ -1,10 +1,12 @@
 import { ViewRectVertexes } from './view';
+import { PointSize } from './point';
 
 export type ElementSizeControllerType = 'left' | 'right' | 'top' | 'bottom' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
 
 export interface ElementSizeControllerItem {
   type: ElementSizeControllerType;
   vertexes: ViewRectVertexes;
+  center: PointSize;
 }
 
 export interface ElementSizeController {

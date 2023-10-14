@@ -4,3 +4,7 @@ export interface UtilEventEmitter<T extends Record<string, any>> {
   trigger<K extends keyof T>(eventKey: K, e: T[K]): void;
   has<K extends keyof T>(name: K | string): boolean;
 }
+
+export type RecursivePartial<T> = {
+  [P in keyof T]?: RecursivePartial<T[P]>;
+};

@@ -1,5 +1,5 @@
 import { Core, MiddlewareSelector, MiddlewareScroller, MiddlewareScaler } from '@idraw/core';
-import type { PointSize, IDrawOptions, Data, ViewSizeInfo } from '@idraw/types';
+import type { PointSize, IDrawOptions, Data, ViewSizeInfo, IDrawEvent } from '@idraw/types';
 
 export class iDraw {
   private _core: Core;
@@ -82,23 +82,27 @@ export class iDraw {
     this._core.resize(opts);
   }
 
-  on() {
-    // TODO
+  on<T extends keyof IDrawEvent>(name: T, callback: (e: IDrawEvent[T]) => void) {
+    this._core.on(name, callback);
   }
 
-  off() {
-    // TODO
+  off<T extends keyof IDrawEvent>(name: T, callback: (e: IDrawEvent[T]) => void) {
+    this._core.off(name, callback);
   }
 
-  scrollLeft() {
-    // TODO
+  trigger<T extends keyof IDrawEvent>(name: T, e: IDrawEvent[T]) {
+    this._core.trigger(name, e);
   }
 
-  scrollTop() {
-    // TODO
-  }
+  // scrollLeft() {
+  //   // TODO
+  // }
 
-  exportDataURL() {
-    // TODO
-  }
+  // scrollTop() {
+  //   // TODO
+  // }
+
+  // exportDataURL() {
+  //   // TODO
+  // }
 }

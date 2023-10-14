@@ -58,26 +58,32 @@ export class Core {
     this._board.scale(opts);
   }
 
-  // scroll(num: number) {
-  //   this._board.scroll(num);
-  // }
-
   resize(newViewSize: Partial<ViewSizeInfo>) {
     const { _board: board } = this;
     const sharer = board.getSharer();
     const viewSizeInfo = sharer.getActiveViewSizeInfo();
-    // const sharer = this._board.getSharer();
-    // const viewScaleInfo = sharer.getActiveViewScaleInfo();
     board.resize({
       ...viewSizeInfo,
       ...newViewSize
     });
-    // this._board.scale(viewScaleInfo.scale);
-    // this._board.scrollX(viewScaleInfo.offsetLeft);
-    // this._board.scrollY(viewScaleInfo.offsetTop);
   }
 
   clear() {
     this._board.clear();
+  }
+
+  on<T extends keyof CoreEvent>(name: T, callback: (e: CoreEvent[T]) => void) {
+    const eventHub = this._board.getEventHub();
+    eventHub.on(name, callback);
+  }
+
+  off<T extends keyof CoreEvent>(name: T, callback: (e: CoreEvent[T]) => void) {
+    const eventHub = this._board.getEventHub();
+    eventHub.off(name, callback);
+  }
+
+  trigger<T extends keyof CoreEvent>(name: T, e: CoreEvent[T]) {
+    const eventHub = this._board.getEventHub();
+    eventHub.trigger(name, e);
   }
 }

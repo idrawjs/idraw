@@ -3,7 +3,9 @@ import {
   calcElementVertexesInGroup,
   calcElementQueueVertexesQueueInGroup,
   calcElementSizeController,
-  rotatePointInGroup
+  rotatePointInGroup,
+  getGroupQueueFromList,
+  findElementsFromList
 } from '@idraw/util';
 import type { ViewRectVertexes, CoreEvent } from '@idraw/types';
 import type {
@@ -42,6 +44,12 @@ import {
   keySelectedElementList,
   keySelectedElementListVertexes,
   keySelectedElementController
+  // keyDebugElemCenter,
+  // keyDebugEnd0,
+  // keyDebugEndHorizontal,
+  // keyDebugEndVertical,
+  // keyDebugStartHorizontal,
+  // keyDebugStartVertical
 } from './config';
 
 export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, CoreEvent> = (opts) => {
@@ -49,6 +57,28 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
   const { helperContext } = viewContent;
   let prevPoint: Point | null = null;
   let inBusyMode: 'resize' | 'drag' | 'drag-list' | 'area' | null = null;
+
+  eventHub.on('select', ({ uuids }) => {
+    const actionType = sharer.getSharedStorage(keyActionType);
+    const data = sharer.getActiveStorage('data');
+    const elements = findElementsFromList(uuids, data?.elements || []);
+    let needRefresh = false;
+    if (!actionType && elements.length === 1) {
+      // TODO
+      sharer.setSharedStorage(keyActionType, 'select');
+      needRefresh = true;
+    } else if (actionType === 'select' && elements.length === 1) {
+      // TODO
+      needRefresh = true;
+    }
+    if (needRefresh) {
+      const elem = elements[0];
+      const groupQueue = getGroupQueueFromList(elem.uuid, data?.elements || []);
+      sharer.setSharedStorage(keyGroupQueue, groupQueue);
+      updateSelectedElementList(elements);
+      viewer.drawFrame();
+    }
+  });
 
   sharer.setSharedStorage(keyActionType, null);
 
@@ -87,7 +117,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
     sharer.setSharedStorage(keyHoverElementVertexes, vertexes);
   };
 
-  const updateSelectedElementList = (list: Element<ElementType>[]) => {
+  const updateSelectedElementList = (list: Element<ElementType>[], opts?: { triggerEvent?: boolean }) => {
     sharer.setSharedStorage(keySelectedElementList, list);
     if (list.length === 1) {
       const controller = calcElementSizeController(list[0], {
@@ -98,6 +128,10 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
       sharer.setSharedStorage(keySelectedElementController, controller);
     } else {
       sharer.setSharedStorage(keySelectedElementController, null);
+    }
+
+    if (opts?.triggerEvent === true) {
+      eventHub.trigger('select', { uuids: list.map((elem) => elem.uuid) });
     }
   };
 
@@ -236,13 +270,13 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
           const target = getPointTarget(e.point, pointTargetBaseOptions());
           updateHoverElement(null);
           if (target.type === 'over-element' && target?.elements?.length === 1) {
-            updateSelectedElementList([target.elements[0]]);
+            updateSelectedElementList([target.elements[0]], { triggerEvent: true });
             sharer.setSharedStorage(keyActionType, 'drag');
           } else if (target.type?.startsWith('resize-')) {
             sharer.setSharedStorage(keyResizeType, target.type as ResizeType);
             sharer.setSharedStorage(keyActionType, 'resize');
           } else {
-            updateSelectedElementList([]);
+            updateSelectedElementList([], { triggerEvent: true });
           }
         } else {
           // TODO
@@ -267,7 +301,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
       if (target.type === 'list-area') {
         sharer.setSharedStorage(keyActionType, 'drag-list');
       } else if (target.type === 'over-element' && target?.elements?.length === 1) {
-        updateSelectedElementList([target.elements[0]]);
+        updateSelectedElementList([target.elements[0]], { triggerEvent: true });
         sharer.setSharedStorage(keyActionType, 'drag');
       } else if (target.type?.startsWith('resize-')) {
         sharer.setSharedStorage(keyResizeType, target.type as ResizeType);
@@ -276,7 +310,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
         clear();
         sharer.setSharedStorage(keyActionType, 'area');
         sharer.setSharedStorage(keyAreaStart, e.point);
-        updateSelectedElementList([]);
+        updateSelectedElementList([], { triggerEvent: true });
       }
       // if (target.type) {
       //   prevPoint = e.point;
@@ -354,6 +388,10 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
         viewer.drawFrame();
       }
       prevPoint = e.point;
+
+      // if (data && (['drag', 'drag-list', 'drag-list-end', 'resize'] as ActionType[]).includes(actionType)) {
+      //   eventHub.trigger('change', { data });
+      // }
     },
 
     pointEnd(e: PointWatcherEvent) {
@@ -368,6 +406,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
       prevPoint = null;
       if (actionType === 'resize' && resizeType) {
         sharer.setSharedStorage(keyResizeType, null);
+        needDrawFrame = true;
       } else if (actionType === 'area') {
         sharer.setSharedStorage(keyActionType, null);
         if (data) {
@@ -384,7 +423,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
 
             if (elements.length > 0) {
               sharer.setSharedStorage(keyActionType, 'drag-list');
-              updateSelectedElementList(elements);
+              updateSelectedElementList(elements, { triggerEvent: true });
               needDrawFrame = true;
             }
           }
@@ -418,9 +457,10 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
           const viewInfo = calcElementsViewInfo(data.elements, viewSizeInfo, { extend: true });
           sharer.setActiveStorage('contextHeight', viewInfo.contextSize.contextHeight);
           sharer.setActiveStorage('contextWidth', viewInfo.contextSize.contextWidth);
-          // TODO
-          // viewer.scrollX(offsetLeft + viewInfo.changeContextLeft);
-          // viewer.scrollY(offsetTop + viewInfo.changeContextTop);
+        }
+
+        if (data && (['drag', 'drag-list', 'drag-list-end', 'resize'] as ActionType[]).includes(actionType)) {
+          eventHub.trigger('change', { data });
         }
         viewer.drawFrame();
       };
@@ -452,6 +492,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
       const { activeStore, sharedStore } = snapshot;
       const { scale, offsetLeft, offsetTop, offsetRight, offsetBottom, width, height, contextHeight, contextWidth, devicePixelRatio } = activeStore;
 
+      const sharer = opts.sharer;
       const viewScaleInfo = { scale, offsetLeft, offsetTop, offsetRight, offsetBottom };
       const viewSizeInfo = { width, height, contextHeight, contextWidth, devicePixelRatio };
       const selectedElements = sharedStore[keySelectedElementList];
@@ -464,8 +505,15 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
       const groupQueue: Element<'group'>[] = sharedStore[keyGroupQueue];
       const groupQueueVertexesList: ViewRectVertexes[] = sharedStore[keyGroupQueueVertexesList];
       const drawBaseOpts = { calculator, viewScaleInfo, viewSizeInfo };
-      const selectedElementController = sharedStore[keySelectedElementController];
+      // const selectedElementController = sharedStore[keySelectedElementController];
       // const resizeType: ResizeType | null = sharedStore[keyResizeType];
+      const selectedElementController = elem
+        ? calcElementSizeController(elem, {
+            groupQueue,
+            controllerSize: 10,
+            viewScaleInfo
+          })
+        : null;
 
       if (groupQueue?.length > 0) {
         // in group
@@ -498,13 +546,12 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
       }
 
       // // TODO mock data
-      // const sharer = opts.sharer;
-      // const elemCenter: any = sharer.getSharedStorage('TODO_elemCenter');
-      // const startVertical = sharer.getSharedStorage('TODO_startVertical');
-      // const endVertical: any = sharer.getSharedStorage('TODO_endVertical');
-      // const startHorizontal = sharer.getSharedStorage('TODO_startHorizontal');
-      // const endHorizontal: any = sharer.getSharedStorage('TODO_endHorizontal');
-      // const end0: any = sharer.getSharedStorage('TODO_end0');
+      // const elemCenter: any = sharer.getSharedStorage(keyDebugElemCenter);
+      // const startVertical = sharer.getSharedStorage(keyDebugStartVertical);
+      // const endVertical: any = sharer.getSharedStorage(keyDebugEndVertical);
+      // const startHorizontal = sharer.getSharedStorage(keyDebugStartHorizontal);
+      // const endHorizontal: any = sharer.getSharedStorage(keyDebugEndHorizontal);
+      // const end0: any = sharer.getSharedStorage(keyDebugEnd0);
       // if (elemCenter && end0) {
       //   helperContext.beginPath();
       //   helperContext.moveTo(elemCenter.x, elemCenter.y);

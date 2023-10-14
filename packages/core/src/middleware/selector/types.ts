@@ -10,7 +10,13 @@ import {
   keyHoverElementVertexes,
   keySelectedElementList,
   keySelectedElementListVertexes,
-  keySelectedElementController
+  keySelectedElementController,
+  keyDebugElemCenter,
+  keyDebugEnd0,
+  keyDebugEndHorizontal,
+  keyDebugEndVertical,
+  keyDebugStartHorizontal,
+  keyDebugStartVertical
 } from './config';
 
 import {
@@ -47,7 +53,7 @@ export {
 export type ControllerStyle = ElementSize & {
   borderWidth: number;
   borderColor: string;
-  bgColor: string;
+  background: string;
 };
 
 export type SelectedElementSizeController = Record<string, ControllerStyle>;
@@ -88,4 +94,11 @@ export type DeepSelectorSharedStorage = {
   [keySelectedElementList]: Array<Element<ElementType>>;
   [keySelectedElementListVertexes]: ViewRectVertexes | null;
   [keySelectedElementController]: ElementSizeController | null;
+
+  [keyDebugElemCenter]: PointSize | null;
+  [keyDebugEnd0]: PointSize | null;
+  [keyDebugEndHorizontal]: PointSize | null;
+  [keyDebugEndVertical]: PointSize | null;
+  [keyDebugStartHorizontal]: PointSize | null;
+  [keyDebugStartVertical]: PointSize | null;
 };

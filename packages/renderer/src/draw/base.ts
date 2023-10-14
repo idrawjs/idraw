@@ -85,7 +85,7 @@ function drawBoxBackground(
 ): void {
   const { pattern, viewScaleInfo } = opts;
   let transform: TransformAction[] = [];
-  if (viewElem.detail.bgColor || pattern) {
+  if (viewElem.detail.background || pattern) {
     const { x, y, w, h } = viewElem;
     let r: number = (viewElem.detail.borderRadius || 0) * viewScaleInfo.scale;
     r = Math.min(r, w / 2, h / 2);
@@ -103,10 +103,10 @@ function drawBoxBackground(
       ctx.fillStyle = pattern;
     } else if (['CanvasPattern'].includes(istype.type(pattern))) {
       ctx.fillStyle = pattern as CanvasPattern;
-    } else if (typeof viewElem.detail.bgColor === 'string') {
-      ctx.fillStyle = viewElem.detail.bgColor;
-    } else if (viewElem.detail.bgColor?.type === 'linearGradient') {
-      const { start, end, stops } = viewElem.detail.bgColor;
+    } else if (typeof viewElem.detail.background === 'string') {
+      ctx.fillStyle = viewElem.detail.background;
+    } else if (viewElem.detail.background?.type === 'linearGradient') {
+      const { start, end, stops } = viewElem.detail.background;
       const viewStart = {
         x: start.x + x,
         y: start.y + y
@@ -120,9 +120,9 @@ function drawBoxBackground(
         linearGradient.addColorStop(stop.offset, stop.color);
       });
       ctx.fillStyle = linearGradient;
-    } else if (viewElem.detail.bgColor?.type === 'radialGradient') {
-      const { inner, outer, stops } = viewElem.detail.bgColor;
-      transform = viewElem.detail.bgColor.transform || [];
+    } else if (viewElem.detail.background?.type === 'radialGradient') {
+      const { inner, outer, stops } = viewElem.detail.background;
+      transform = viewElem.detail.background.transform || [];
       const viewInner = {
         x: inner.x,
         y: inner.y,
@@ -180,12 +180,26 @@ function drawBoxBorder(ctx: ViewContext2D, viewElem: Element<ElementType>, opts:
   if (isColorStr(viewElem.detail.borderColor) === true) {
     borderColor = viewElem.detail.borderColor as string;
   }
-  const bw = (viewElem.detail.borderWidth || 1) * viewScaleInfo.scale;
-  let r: number = viewElem.detail.borderRadius || 0;
+  const { borderWidth, borderRadius, borderDash } = viewElem.detail;
+  let bw: number = 0;
+  if (typeof borderWidth === 'number') {
+    bw = borderWidth || 1;
+  }
+  bw = bw * viewScaleInfo.scale;
+  let r: number = borderRadius || 0;
   ctx.strokeStyle = borderColor;
-  ctx.setLineDash(viewElem.detail.borderDash || []);
+  ctx.setLineDash(borderDash || []);
 
-  const { borderLeft, borderRight, borderTop, borderBottom } = viewElem.detail;
+  let borderTop = 0;
+  let borderRight = 0;
+  let borderBottom = 0;
+  let borderLeft = 0;
+  if (Array.isArray(borderWidth)) {
+    borderTop = borderWidth[0] || 0;
+    borderRight = borderWidth[1] || 0;
+    borderBottom = borderWidth[2] || 0;
+    borderLeft = borderWidth[3] || 0;
+  }
   if (borderLeft || borderRight || borderTop || borderBottom) {
     const { x, y, w, h } = viewElem;
     if (borderLeft) {

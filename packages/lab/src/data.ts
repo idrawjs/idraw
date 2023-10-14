@@ -23,7 +23,7 @@ const data: Data = {
       h: 100,
       type: 'circle',
       detail: {
-        bgColor: '#f44336'
+        background: '#f44336'
       }
     },
     {
@@ -34,7 +34,7 @@ const data: Data = {
       w: 100,
       h: 100,
       detail: {
-        bgColor: '#2196f3'
+        background: '#2196f3'
       }
     },
     {
@@ -56,7 +56,7 @@ const data: Data = {
       h: 100,
       type: 'circle',
       detail: {
-        bgColor: '#009688'
+        background: '#009688'
       }
     },
     {
@@ -67,7 +67,7 @@ const data: Data = {
       h: 100,
       type: 'circle',
       detail: {
-        bgColor: '#673ab7'
+        background: '#673ab7'
       }
     },
     {
@@ -78,7 +78,7 @@ const data: Data = {
       h: 100,
       type: 'circle',
       detail: {
-        bgColor: '#ffc107'
+        background: '#ffc107'
       }
     },
     {
@@ -89,7 +89,7 @@ const data: Data = {
       h: 100,
       type: 'circle',
       detail: {
-        bgColor: '#4caf50'
+        background: '#4caf50'
       }
     },
     {
@@ -100,7 +100,7 @@ const data: Data = {
       h: 100,
       type: 'circle',
       detail: {
-        bgColor: '#ff9800'
+        background: '#ff9800'
       }
     },
     {
@@ -111,7 +111,7 @@ const data: Data = {
       h: 100,
       type: 'circle',
       detail: {
-        bgColor: '#cddc39'
+        background: '#cddc39'
       }
     },
     {
@@ -209,7 +209,7 @@ const data: Data = {
       h: 100,
       type: 'group',
       detail: {
-        bgColor: '#1f1f1f',
+        background: '#1f1f1f',
         children: [
           {
             uuid: 'group-001-0014',
@@ -219,7 +219,7 @@ const data: Data = {
             w: 100,
             h: 100,
             detail: {
-              bgColor: '#f44336'
+              background: '#f44336'
             }
           },
           {
@@ -230,7 +230,7 @@ const data: Data = {
             w: 100,
             h: 100,
             detail: {
-              bgColor: '#ff9800'
+              background: '#ff9800'
             }
           },
           {
@@ -241,7 +241,7 @@ const data: Data = {
             w: 100,
             h: 100,
             detail: {
-              bgColor: '#ffc106'
+              background: '#ffc106'
             }
           },
           {
@@ -252,7 +252,7 @@ const data: Data = {
             w: 100,
             h: 100,
             detail: {
-              bgColor: '#cddc39'
+              background: '#cddc39'
             }
           },
           {
@@ -263,7 +263,7 @@ const data: Data = {
             w: 100,
             h: 100,
             detail: {
-              bgColor: '#4caf50'
+              background: '#4caf50'
             }
           }
         ]
@@ -288,7 +288,7 @@ const data: Data = {
             w: 100,
             h: 100,
             detail: {
-              bgColor: '#f44336'
+              background: '#f44336'
             }
           },
           {
@@ -299,7 +299,7 @@ const data: Data = {
             w: 100,
             h: 100,
             detail: {
-              bgColor: '#ff9800'
+              background: '#ff9800'
             }
           },
           {
@@ -310,7 +310,7 @@ const data: Data = {
             w: 100,
             h: 100,
             detail: {
-              bgColor: '#ffc106'
+              background: '#ffc106'
             }
           },
           {
@@ -321,7 +321,7 @@ const data: Data = {
             w: 100,
             h: 100,
             detail: {
-              bgColor: '#cddc39'
+              background: '#cddc39'
             }
           },
           {
@@ -332,7 +332,7 @@ const data: Data = {
             w: 100,
             h: 100,
             detail: {
-              bgColor: '#4caf50'
+              background: '#4caf50'
             }
           }
         ]
@@ -358,7 +358,7 @@ const data: Data = {
       h: 400,
       type: 'group',
       detail: {
-        bgColor: '#FFFFFF',
+        background: '#FFFFFF',
         children: [
           {
             uuid: 'groud-004-001',
@@ -381,7 +381,7 @@ const data: Data = {
             h: 200,
             angle: 30,
             detail: {
-              bgColor: '#f0f0f0',
+              background: '#f0f0f0',
               children: [
                 {
                   uuid: 'group-004-002-014',
@@ -391,7 +391,7 @@ const data: Data = {
                   w: 100,
                   h: 100,
                   detail: {
-                    bgColor: '#f44336'
+                    background: '#f44336'
                   }
                 },
                 {
@@ -402,7 +402,7 @@ const data: Data = {
                   w: 100,
                   h: 100,
                   detail: {
-                    bgColor: '#ff9800'
+                    background: '#ff9800'
                   }
                 },
                 {
@@ -413,7 +413,7 @@ const data: Data = {
                   w: 100,
                   h: 100,
                   detail: {
-                    bgColor: '#ffc106'
+                    background: '#ffc106'
                   }
                 },
                 {
@@ -424,7 +424,7 @@ const data: Data = {
                   w: 100,
                   h: 100,
                   detail: {
-                    bgColor: '#cddc39'
+                    background: '#cddc39'
                   }
                 },
                 {
@@ -435,7 +435,7 @@ const data: Data = {
                   w: 100,
                   h: 100,
                   detail: {
-                    bgColor: '#4caf50'
+                    background: '#4caf50'
                   }
                 },
                 {
@@ -447,7 +447,7 @@ const data: Data = {
                   h: 100,
                   angle: 30,
                   detail: {
-                    bgColor: '#666666',
+                    background: '#666666',
                     children: [
                       {
                         uuid: 'group-004-002-xxx-014',
@@ -457,7 +457,7 @@ const data: Data = {
                         w: 100,
                         h: 100,
                         detail: {
-                          bgColor: '#f44336'
+                          background: '#f44336'
                         }
                       },
                       {
@@ -468,7 +468,7 @@ const data: Data = {
                         w: 100,
                         h: 100,
                         detail: {
-                          bgColor: '#ff9800'
+                          background: '#ff9800'
                         }
                       },
                       {
@@ -479,7 +479,7 @@ const data: Data = {
                         w: 100,
                         h: 100,
                         detail: {
-                          bgColor: '#ffc106'
+                          background: '#ffc106'
                         }
                       },
                       {
@@ -490,7 +490,7 @@ const data: Data = {
                         w: 100,
                         h: 100,
                         detail: {
-                          bgColor: '#cddc39'
+                          background: '#cddc39'
                         }
                       },
                       {
@@ -501,7 +501,7 @@ const data: Data = {
                         w: 100,
                         h: 100,
                         detail: {
-                          bgColor: '#4caf50'
+                          background: '#4caf50'
                         }
                       }
                     ]

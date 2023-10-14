@@ -69,28 +69,24 @@ export interface RadialGradientColor {
 }
 
 export interface ElementBaseDetail {
-  boxSizing?: 'content-box' | 'border-box'; // default content-box
-  borderWidth?: number;
+  // boxSizing?: 'content-box' | 'border-box'; // default content-box
+  borderWidth?: number | [number, number, number, number]; // [top, right, bottom, left]
   borderColor?: string;
-  borderRadius?: number;
-  borderTop?: number;
-  borderBottom?: number;
-  borderLeft?: number;
-  borderRight?: number;
+  borderRadius?: number | [number, number, number, number]; // [top-left, top-right, bottom-left, bottom-right]
   borderDash?: number[];
   shadowColor?: string;
   shadowOffsetX?: number;
   shadowOffsetY?: number;
   shadowBlur?: number;
   color?: string;
-  bgColor?: string | LinearGradientColor | RadialGradientColor;
+  background?: string | LinearGradientColor | RadialGradientColor;
   opacity?: number;
   clipPath?: ElementClipPath;
 }
 
 // interface ElementRectDetail extends ElementBaseDetail {
 //   // color?: string;
-//   // bgColor?: string;
+//   // background?: string;
 // }
 
 interface ElementRectDetail extends ElementBaseDetail {}
@@ -104,8 +100,6 @@ interface ElemenTextDetail extends ElementBaseDetail {
   fontFamily?: string;
   textAlign?: 'center' | 'left' | 'right';
   verticalAlign?: 'middle' | 'top' | 'bottom';
-  // strokeColor?: string;
-  // strokeWidth?: number;
   textShadowColor?: string;
   textShadowOffsetX?: number;
   textShadowOffsetY?: number;
@@ -114,7 +108,7 @@ interface ElemenTextDetail extends ElementBaseDetail {
 
 interface ElementCircleDetail extends ElementBaseDetail {
   radius: number;
-  bgColor?: string;
+  background?: string;
 }
 
 interface ElementHTMLDetail extends ElementBaseDetail {
@@ -173,7 +167,7 @@ export interface ElementOperations {
   lastModified?: number;
 }
 
-export interface Element<T extends ElementType, E extends Record<string, any> = Record<string, any>> extends ElementSize {
+export interface Element<T extends ElementType = ElementType, E extends Record<string, any> = Record<string, any>> extends ElementSize {
   uuid: string;
   name?: string;
   type: T;

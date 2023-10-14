@@ -27,8 +27,8 @@ function box(detail: any = {}): boolean {
 }
 
 function rectDesc(detail: any): boolean {
-  const { bgColor } = detail;
-  if (detail.hasOwnProperty('bgColor') && !is.color(bgColor)) {
+  const { background } = detail;
+  if (detail.hasOwnProperty('background') && !is.color(background)) {
     return false;
   }
   if (!box(detail)) {
@@ -38,8 +38,8 @@ function rectDesc(detail: any): boolean {
 }
 
 function circleDesc(detail: any): boolean {
-  const { bgColor, borderColor, borderWidth } = detail;
-  if (detail.hasOwnProperty('bgColor') && !is.color(bgColor)) {
+  const { background, borderColor, borderWidth } = detail;
+  if (detail.hasOwnProperty('background') && !is.color(background)) {
     return false;
   }
   if (detail.hasOwnProperty('borderColor') && !is.color(borderColor)) {
@@ -76,7 +76,7 @@ function htmlDesc(detail: any): boolean {
 }
 
 function textDesc(detail: any): boolean {
-  const { text, color, fontSize, lineHeight, fontFamily, textAlign, fontWeight, bgColor, strokeWidth, strokeColor } = detail;
+  const { text, color, fontSize, lineHeight, fontFamily, textAlign, fontWeight, background, strokeWidth, strokeColor } = detail;
   if (!is.text(text)) {
     return false;
   }
@@ -86,7 +86,7 @@ function textDesc(detail: any): boolean {
   if (!is.fontSize(fontSize)) {
     return false;
   }
-  if (detail.hasOwnProperty('bgColor') && !is.color(bgColor)) {
+  if (detail.hasOwnProperty('background') && !is.color(background)) {
     return false;
   }
   if (detail.hasOwnProperty('fontWeight') && !is.fontWeight(fontWeight)) {
