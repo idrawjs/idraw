@@ -14,12 +14,16 @@ import type { AreaSize } from './types';
 
 import { resizeControllerBorderWidth, wrapperColor } from './config';
 
-function drawVertexes(ctx: ViewContext2D, vertexes: ViewRectVertexes, opts: { borderColor: string; borderWidth: number; bgColor: string; lineDash: number[] }) {
-  const { borderColor, borderWidth, bgColor, lineDash } = opts;
+function drawVertexes(
+  ctx: ViewContext2D,
+  vertexes: ViewRectVertexes,
+  opts: { borderColor: string; borderWidth: number; background: string; lineDash: number[] }
+) {
+  const { borderColor, borderWidth, background, lineDash } = opts;
   ctx.setLineDash([]);
   ctx.lineWidth = borderWidth;
   ctx.strokeStyle = borderColor;
-  ctx.fillStyle = bgColor;
+  ctx.fillStyle = background;
   ctx.setLineDash(lineDash);
   ctx.beginPath();
   ctx.moveTo(vertexes[0].x, vertexes[0].y);
@@ -43,7 +47,7 @@ export function drawHoverVertexesWrapper(
   if (!vertexes) {
     return;
   }
-  const wrapperOpts = { borderColor: wrapperColor, borderWidth: 1, bgColor: 'transparent', lineDash: [] };
+  const wrapperOpts = { borderColor: wrapperColor, borderWidth: 1, background: 'transparent', lineDash: [] };
   drawVertexes(ctx, calcViewVertexes(vertexes, opts), wrapperOpts);
 }
 
@@ -57,8 +61,8 @@ export function drawSelectedElementControllersVertexes(
   }
   const { elementWrapper, left, right, top, bottom, topLeft, topRight, bottomLeft, bottomRight } = controller;
   // const wrapperColor = 'red'; // TODO
-  const wrapperOpts = { borderColor: wrapperColor, borderWidth: 1, bgColor: 'transparent', lineDash: [] };
-  const ctrlOpts = { ...wrapperOpts, borderWidth: resizeControllerBorderWidth, bgColor: '#FFFFFF' };
+  const wrapperOpts = { borderColor: wrapperColor, borderWidth: 1, background: 'transparent', lineDash: [] };
+  const ctrlOpts = { ...wrapperOpts, borderWidth: resizeControllerBorderWidth, background: '#FFFFFF' };
 
   drawVertexes(ctx, calcViewVertexes(elementWrapper, opts), wrapperOpts);
   drawVertexes(ctx, calcViewVertexes(left.vertexes, opts), ctrlOpts);
@@ -145,7 +149,7 @@ export function drawGroupQueueVertexesWrappers(
 ) {
   for (let i = 0; i < vertexesList.length; i++) {
     const vertexes = vertexesList[i];
-    const wrapperOpts = { borderColor: wrapperColor, borderWidth: 2, bgColor: 'transparent', lineDash: [4, 4] };
+    const wrapperOpts = { borderColor: wrapperColor, borderWidth: 2, background: 'transparent', lineDash: [4, 4] };
     drawVertexes(ctx, calcViewVertexes(vertexes, opts), wrapperOpts);
   }
 }

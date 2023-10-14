@@ -13,5 +13,12 @@ export const keySelectedElementController = Symbol(`${key}_selectedElementContro
 export const keyGroupQueue = Symbol(`${key}_groupQueue`); // Array<Element<'group'>> | []
 export const keyGroupQueueVertexesList = Symbol(`${key}_groupQueueVertexesList`); // Array<ViewRectVertexes> | []
 
+export const keyDebugElemCenter = Symbol(`${key}_debug_elemCenter`);
+export const keyDebugStartVertical = Symbol(`${key}_debug_startVertical`);
+export const keyDebugEndVertical = Symbol(`${key}_debug_endVertical`);
+export const keyDebugStartHorizontal = Symbol(`${key}_debug_startHorizontal`);
+export const keyDebugEndHorizontal = Symbol(`${key}_debug_endHorizontal`);
+export const keyDebugEnd0 = Symbol(`${key}_debug_end0`);
+
 export const resizeControllerBorderWidth = 2;
 export const wrapperColor = '#1973ba';
