@@ -1,6 +1,6 @@
 {
-  "name": "root",
   "private": false,
+  "version": "0.4.0-alpha.1",
   "scripts": {
     "postinstall": "npm run build",
     "dev": "vite-node ./scripts/dev.ts",
@@ -23,7 +23,8 @@
     "prepush": "npm run lint",
     "clear:jest": "rm -rf ./packages/*/__tests__/__snapshots__",
     "pu": "pnpm i && npm run build && lerna publish --force-publish",
-    "pu2": "lerna version && npm run build && lerna publish from-git --force-publish"
+    "pu2": "lerna version && npm run build && lerna publish from-git --force-publish",
+    "upgrade:version": "vite-node ./scripts/upgrade-version.ts && pnpm i"
   },
   "devDependencies": {
     "@babel/core": "^7.22.19",

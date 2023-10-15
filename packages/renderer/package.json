@@ -1,6 +1,6 @@
 {
   "name": "@idraw/renderer",
-  "version": "0.4.0-alpha.0",
+  "version": "0.4.0-alpha.1",
   "description": "",
   "main": "dist/esm/index.js",
   "module": "dist/esm/index.js",
@@ -24,7 +24,7 @@
     "@idraw/types": "^0.4.0-alpha.0"
   },
   "dependencies": {
-    "@idraw/util": "^0.4.0-alpha.0"
+    "@idraw/util": "^0.4.0-alpha.1"
   },
   "publishConfig": {
     "access": "public"
