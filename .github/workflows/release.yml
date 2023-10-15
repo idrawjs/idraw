@@ -1,4 +1,4 @@
-name: Publish Package to npmjs
+name: Release
 on:
   release:
     types: [published]
@@ -12,6 +12,8 @@ jobs:
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
+      - run: npm install --global pnpm
+      - run: pnpm i
       - run: npm run test
       - run: npm run build
       - run: cd packages/types/
