@@ -29,7 +29,7 @@
     "@idraw/util": "^0.4.0-alpha.3"
   },
   "publishConfig": {
-    "access": "public"
-  },
-  "gitHead": "5cc462b9206ea0e4e70b5183771dfbf694402483"
+    "access": "public",
+    "provenance": true
+  }
 }
