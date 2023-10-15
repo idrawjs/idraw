@@ -15,8 +15,8 @@ jobs:
       - run: npm run test
       - run: npm run build
       - run: cd packages/types/
-      - run: npm publish
+      - run: npm publish --tag next
       - run: cd ../util/
-      - run: npm publish
+      - run: npm publish --tag next
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
