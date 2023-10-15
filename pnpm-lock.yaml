@@ -147,10 +147,10 @@ importers:
   packages/board:
     dependencies:
       '@idraw/renderer':
-        specifier: ^0.4.0-alpha.0
+        specifier: ^0.4.0-alpha.1
         version: link:../renderer
       '@idraw/util':
-        specifier: ^0.4.0-alpha.0
+        specifier: ^0.4.0-alpha.1
         version: link:../util
     devDependencies:
       '@idraw/types':
@@ -160,13 +160,13 @@ importers:
   packages/core:
     dependencies:
       '@idraw/board':
-        specifier: ^0.4.0-alpha.0
+        specifier: ^0.4.0-alpha.1
         version: link:../board
       '@idraw/renderer':
-        specifier: ^0.4.0-alpha.0
+        specifier: ^0.4.0-alpha.1
         version: link:../renderer
       '@idraw/util':
-        specifier: ^0.4.0-alpha.0
+        specifier: ^0.4.0-alpha.1
         version: link:../util
     devDependencies:
       '@idraw/types':
@@ -176,10 +176,10 @@ importers:
   packages/idraw:
     dependencies:
       '@idraw/core':
-        specifier: ^0.4.0-alpha.0
+        specifier: ^0.4.0-alpha.1
         version: link:../core
       '@idraw/util':
-        specifier: ^0.4.0-alpha.0
+        specifier: ^0.4.0-alpha.1
         version: link:../util
     devDependencies:
       '@idraw/types':
@@ -192,10 +192,10 @@ importers:
         specifier: ^5.1.3
         version: 5.1.3(react-dom@18.2.0)(react@18.2.0)
       '@idraw/core':
-        specifier: ^0.4.0-alpha.0
+        specifier: ^0.4.0-alpha.1
         version: link:../core
       '@idraw/util':
-        specifier: ^0.4.0-alpha.0
+        specifier: ^0.4.0-alpha.1
         version: link:../util
       antd:
         specifier: ^5.5.0
@@ -223,7 +223,7 @@ importers:
   packages/renderer:
     dependencies:
       '@idraw/util':
-        specifier: ^0.4.0-alpha.0
+        specifier: ^0.4.0-alpha.1
         version: link:../util
     devDependencies:
       '@idraw/types':

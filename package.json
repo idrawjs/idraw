@@ -24,7 +24,7 @@
     "clear:jest": "rm -rf ./packages/*/__tests__/__snapshots__",
     "pu": "pnpm i && npm run build && lerna publish --force-publish",
     "pu2": "lerna version && npm run build && lerna publish from-git --force-publish",
-    "upgrade:version": "vite-node ./scripts/upgrade-version.ts"
+    "upgrade:version": "vite-node ./scripts/upgrade-version.ts && pnpm i"
   },
   "devDependencies": {
     "@babel/core": "^7.22.19",

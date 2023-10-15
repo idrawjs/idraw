@@ -4,8 +4,6 @@ const pkg = getRootPackageJSON();
 const version = pkg.version;
 async function run() {
   const pkgDirs = getAllSubPackageDirs();
-  console.log('version ===== ', version);
-  console.log('pkgDirs ===== ', pkgDirs);
   const allPkgMap: Record<string, { file: string; json: any }> = {};
   pkgDirs.forEach((dir) => {
     const file = ['packages', dir, 'package.json'].join('/');
