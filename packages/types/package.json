@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/idrawjs/idraw#readme",
   "publishConfig": {
-    "access": "public"
-  },
-  "gitHead": "5cc462b9206ea0e4e70b5183771dfbf694402483"
+    "access": "public",
+    "provenance": true
+  }
 }
