@@ -16,11 +16,9 @@ jobs:
       - run: pnpm i
       - run: npm run test
       - run: npm run build
-      - run: cd packages/types/
-      - run: npm publish --tag next
+      - run: npm publish -w ./packages/types --tag next
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - run: cd ../util/
-      - run: npm publish --tag next
+      - run: npm publish -w ./packages/util --tag next
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
