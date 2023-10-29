@@ -1,3 +1,6 @@
+import type { LinearGradientColor, RadialGradientColor } from '@idraw/types';
+import { matrixToRadian } from '@idraw/util';
+
 export function toColorHexNum(color: string): number {
   return parseInt(color.replace(/^\#/, '0x'));
 }
@@ -162,4 +165,52 @@ export function colorNameToHex(name: string): string | null {
     return hex;
   }
   return null;
+}
+
+export function colorToCSS(color?: string | LinearGradientColor | RadialGradientColor): string {
+  let css = 'transparent';
+  if (typeof color === 'string') {
+    css = color;
+  } else if (color?.type === 'linearGradient') {
+    const items: string[] = [];
+    if (typeof color.angle === 'number') {
+      items.push(`${color.angle}deg`);
+    } else {
+      items.push(`0deg`);
+    }
+    if (Array.isArray(color.stops)) {
+      color.stops.forEach((stop) => {
+        items.push(`${stop.color} ${stop.offset * 100}%`);
+      });
+    }
+    css = `linear-gradient(${items.join(', ')})`;
+  } else if (color?.type === 'radialGradient') {
+    const items: string[] = [];
+    if (Array.isArray(color.stops)) {
+      color.stops.forEach((stop) => {
+        items.push(`${stop.color} ${stop.offset * 100}%`);
+      });
+    }
+    css = `radial-gradient(circle, ${items.join(', ')})`;
+  }
+  return css;
+}
+
+export function colorToLinearGradientCSS(color?: string | LinearGradientColor | RadialGradientColor): string {
+  let css = 'transparent';
+  if (typeof color === 'string') {
+    css = color;
+  } else if (color?.type === 'radialGradient' || color?.type === 'linearGradient') {
+    const items: string[] = [];
+    if (Array.isArray(color.stops) && color.stops.length > 0) {
+      color.stops.forEach((stop, i) => {
+        items.push(`${stop.color} ${stop.offset * 100}%`);
+        if (i === color.stops.length - 1 && stop.offset < 1) {
+          items.push(`${stop.color} ${stop.offset * 100}%`);
+        }
+      });
+      css = `linear-gradient(90deg, ${items.join(', ')})`;
+    }
+  }
+  return css;
 }

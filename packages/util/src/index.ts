@@ -1,6 +1,6 @@
 export { delay, compose, throttle } from './lib/time';
 export { downloadImageFromCanvas } from './lib/file';
-export { toColorHexStr, toColorHexNum, isColorStr, colorNameToHex } from './lib/color';
+export { toColorHexStr, toColorHexNum, isColorStr, colorNameToHex, colorToCSS, colorToLinearGradientCSS } from './lib/color';
 export { createUUID, isAssetId, createAssetId } from './lib/uuid';
 export { deepClone, sortDataAsserts } from './lib/data';
 export { istype } from './lib/istype';
@@ -53,3 +53,4 @@ export { generateSVGPath, parseSVGPath } from './lib/svg-path';
 export { generateHTML, parseHTML } from './lib/html';
 export { compressImage } from './lib/image';
 export { formatNumber } from './lib/number';
+export { matrixToAngle, matrixToRadian } from './lib/matrix';
