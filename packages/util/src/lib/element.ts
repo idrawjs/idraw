@@ -1,6 +1,7 @@
 import type { Data, Element, Elements, ElementType, ElementSize, ViewContextSize, ViewSizeInfo, RecursivePartial } from '@idraw/types';
 import { rotateElementVertexes } from './rotate';
 import { isAssetId } from './uuid';
+import { istype } from './istype';
 
 // // TODO need to be deprecated
 // function getGroupIndexes(elem: Element<'group'>, uuids: string[], parentIndex: string): string[] {
@@ -296,13 +297,31 @@ function mergeElement<T extends Element<ElementType> = Element<ElementType>>(ori
       originElem[commonKey] = updateContent[commonKey];
     } else if (['detail', 'operations'].includes(commonKey)) {
       // @ts-ignore
-      if (istype.json(updateContent[commonKey] as any) && istype.json(originElem[commonKey])) {
+      if (istype.json(updateContent[commonKey] as any)) {
+        if (!(originElem as Object)?.hasOwnProperty(commonKey)) {
+          // @ts-ignore
+          originElem[commonKey] = {};
+        }
         // @ts-ignore
-        originElem[commonKey] = { ...originElem[commonKey], ...updateContent[commonKey] };
+        if (istype.json(originElem[commonKey])) {
+          // @ts-ignore
+          originElem[commonKey] = { ...originElem[commonKey], ...updateContent[commonKey] };
+        }
         // @ts-ignore
-      } else if (istype.array(updateContent[commonKey] as any) && istype.array(originElem[commonKey])) {
+      } else if (istype.array(updateContent[commonKey] as any)) {
+        if (!(originElem as Object)?.hasOwnProperty(commonKey)) {
+          // @ts-ignore
+          originElem[commonKey] = [];
+        }
         // @ts-ignore
-        originElem[commonKey] = { ...originElem[commonKey], ...updateContent[commonKey] };
+        if (istype.array(originElem[commonKey])) {
+          ((updateContent as any)?.[commonKey] as Array<any>)?.forEach((item, i) => {
+            // @ts-ignore
+            originElem[commonKey][i] = item;
+          });
+          // @ts-ignore
+          originElem[commonKey] = [...originElem[commonKey], ...updateContent[commonKey]];
+        }
       }
     }
   }

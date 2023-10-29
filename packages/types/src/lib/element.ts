@@ -42,14 +42,17 @@ export interface TransformScale {
 
 export type TransformAction = TransformMatrix | TransformTranslate | TransformRotate | TransformScale;
 
+export interface GradientStop {
+  offset: number;
+  color: string;
+}
+
 export interface LinearGradientColor {
   type: 'linearGradient';
   start: PointSize;
   end: PointSize;
-  stops: Array<{
-    offset: number;
-    color: string;
-  }>;
+  stops: Array<GradientStop>;
+  angle?: number;
   transform?: TransformAction[];
 }
 
@@ -61,15 +64,13 @@ export interface RadialGradientColor {
   type: 'radialGradient';
   inner: GadialCircle;
   outer: GadialCircle;
-  stops: Array<{
-    offset: number;
-    color: string;
-  }>;
+  stops: Array<GradientStop>;
+  angle?: number;
   transform?: TransformAction[];
 }
 
 export interface ElementBaseDetail {
-  // boxSizing?: 'content-box' | 'border-box'; // default content-box
+  boxSizing?: 'content-box' | 'border-box' | 'center-line'; // default center-line
   borderWidth?: number | [number, number, number, number]; // [top, right, bottom, left]
   borderColor?: string;
   borderRadius?: number | [number, number, number, number]; // [top-left, top-right, bottom-left, bottom-right]

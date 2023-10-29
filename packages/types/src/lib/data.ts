@@ -5,7 +5,7 @@ export interface Data<E extends Record<string, any> = Record<string, any>> {
   assets?: ElementAssets;
 }
 
-export type ColorMatrix = [
+export type Matrix = [
   number,
   number,
   number,
@@ -27,3 +27,5 @@ export type ColorMatrix = [
   number,
   number
 ];
+
+export type ColorMatrix = Matrix;

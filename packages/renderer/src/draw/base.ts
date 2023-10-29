@@ -1,5 +1,6 @@
 import { ViewContext2D, Element, ElementType, ElementSize, ViewScaleInfo, ViewSizeInfo, TransformAction } from '@idraw/types';
 import { istype, isColorStr, generateSVGPath, rotateElement, is } from '@idraw/util';
+import { createColorStyle } from './color';
 
 export function drawBox(
   ctx: ViewContext2D,
@@ -26,9 +27,11 @@ export function drawBox(
     viewScaleInfo,
     viewSizeInfo,
     renderContent: () => {
-      drawBoxBorder(ctx, viewElem, { viewScaleInfo, viewSizeInfo });
       drawBoxBackground(ctx, viewElem, { pattern, viewScaleInfo, viewSizeInfo });
       renderContent?.();
+      drawBoxBorder(ctx, viewElem, { viewScaleInfo, viewSizeInfo });
+      // TODO
+      // drawBoxBackground(ctx, viewElem, { pattern, viewScaleInfo, viewSizeInfo });
     }
   });
   ctx.globalAlpha = 1;
@@ -84,20 +87,53 @@ function drawBoxBackground(
   opts: { pattern?: string | CanvasPattern | null; viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }
 ): void {
   const { pattern, viewScaleInfo } = opts;
+  const { scale } = viewScaleInfo;
   let transform: TransformAction[] = [];
+  let { borderRadius, boxSizing, borderWidth } = viewElem.detail;
+  if (typeof borderWidth !== 'number') {
+    // TODO: If borderWidth is an array, borderRadius will not take effect and will become 0.
+    borderRadius = 0;
+  }
   if (viewElem.detail.background || pattern) {
-    const { x, y, w, h } = viewElem;
-    let r: number = (viewElem.detail.borderRadius || 0) * viewScaleInfo.scale;
-    r = Math.min(r, w / 2, h / 2);
-    if (w < r * 2 || h < r * 2) {
-      r = 0;
+    let { x, y, w, h } = viewElem;
+    let radiusList: [number, number, number, number] = [0, 0, 0, 0];
+    if (typeof borderRadius === 'number') {
+      const br = borderRadius * scale;
+      radiusList = [br, br, br, br];
+    } else if (Array.isArray(borderRadius) && borderRadius?.length === 4) {
+      radiusList = [borderRadius[0] * scale, borderRadius[1] * scale, borderRadius[2] * scale, borderRadius[3] * scale];
     }
+    let bw: number = 0;
+    if (typeof borderWidth === 'number') {
+      bw = (borderWidth || 1) * scale;
+    }
+    if (boxSizing === 'border-box') {
+      x = viewElem.x + bw / 2;
+      y = viewElem.y + bw / 2;
+      w = viewElem.w - bw;
+      h = viewElem.h - bw;
+    } else if (boxSizing === 'content-box') {
+      x = viewElem.x - bw / 2;
+      y = viewElem.y - bw / 2;
+      w = viewElem.w + bw;
+      h = viewElem.h + bw;
+    } else {
+      x = viewElem.x;
+      y = viewElem.y;
+      w = viewElem.w;
+      h = viewElem.h;
+    }
+
+    // r = Math.min(r, w / 2, h / 2);
+    // if (w < r * 2 || h < r * 2) {
+    //   r = 0;
+    // }
     ctx.beginPath();
-    ctx.moveTo(x + r, y);
-    ctx.arcTo(x + w, y, x + w, y + h, r);
-    ctx.arcTo(x + w, y + h, x, y + h, r);
-    ctx.arcTo(x, y + h, x, y, r);
-    ctx.arcTo(x, y, x + w, y, r);
+    ctx.moveTo(x + radiusList[0], y);
+    ctx.arcTo(x + w, y, x + w, y + h, radiusList[1]);
+    ctx.arcTo(x + w, y + h, x, y + h, radiusList[2]);
+    ctx.arcTo(x, y + h, x, y, radiusList[3]);
+    ctx.arcTo(x, y, x + w, y, radiusList[0]);
     ctx.closePath();
     if (typeof pattern === 'string') {
       ctx.fillStyle = pattern;
@@ -106,38 +142,17 @@ function drawBoxBackground(
     } else if (typeof viewElem.detail.background === 'string') {
       ctx.fillStyle = viewElem.detail.background;
     } else if (viewElem.detail.background?.type === 'linearGradient') {
-      const { start, end, stops } = viewElem.detail.background;
-      const viewStart = {
-        x: start.x + x,
-        y: start.y + y
-      };
-      const viewEnd = {
-        x: end.x + x,
-        y: end.y + y
-      };
-      const linearGradient = ctx.createLinearGradient(viewStart.x, viewStart.y, viewEnd.x, viewEnd.y);
-      stops.forEach((stop) => {
-        linearGradient.addColorStop(stop.offset, stop.color);
+      const colorStyle = createColorStyle(ctx, viewElem.detail.background, {
+        viewElementSize: { x, y, w, h },
+        viewScaleInfo
       });
-      ctx.fillStyle = linearGradient;
+      ctx.fillStyle = colorStyle;
     } else if (viewElem.detail.background?.type === 'radialGradient') {
-      const { inner, outer, stops } = viewElem.detail.background;
-      transform = viewElem.detail.background.transform || [];
-      const viewInner = {
-        x: inner.x,
-        y: inner.y,
-        radius: inner.radius * viewScaleInfo.scale
-      };
-      const viewOuter = {
-        x: outer.x,
-        y: outer.y,
-        radius: outer.radius * viewScaleInfo.scale
-      };
-      const radialGradient = ctx.createRadialGradient(viewInner.x, viewInner.y, viewInner.radius, viewOuter.x, viewOuter.y, viewOuter.radius);
-      stops.forEach((stop) => {
-        radialGradient.addColorStop(stop.offset, stop.color);
+      const colorStyle = createColorStyle(ctx, viewElem.detail.background, {
+        viewElementSize: { x, y, w, h },
+        viewScaleInfo
       });
-      ctx.fillStyle = radialGradient;
+      ctx.fillStyle = colorStyle;
       if (transform && transform.length > 0) {
         for (let i = 0; i < transform?.length; i++) {
           const action = transform[i];
@@ -176,17 +191,24 @@ function drawBoxBorder(ctx: ViewContext2D, viewElem: Element<ElementType>, opts:
     return;
   }
   const { viewScaleInfo } = opts;
+  const { scale } = viewScaleInfo;
   let borderColor = '#000000';
   if (isColorStr(viewElem.detail.borderColor) === true) {
     borderColor = viewElem.detail.borderColor as string;
   }
-  const { borderWidth, borderRadius, borderDash } = viewElem.detail;
+  const { borderWidth, borderRadius, borderDash, boxSizing } = viewElem.detail;
   let bw: number = 0;
   if (typeof borderWidth === 'number') {
     bw = borderWidth || 1;
   }
-  bw = bw * viewScaleInfo.scale;
-  let r: number = borderRadius || 0;
+  bw = bw * scale;
+  let radiusList: [number, number, number, number] = [0, 0, 0, 0];
+  if (typeof borderRadius === 'number') {
+    const br = borderRadius * scale;
+    radiusList = [br, br, br, br];
+  } else if (Array.isArray(borderRadius) && borderRadius?.length === 4) {
+    radiusList = [borderRadius[0] * scale, borderRadius[1] * scale, borderRadius[2] * scale, borderRadius[3] * scale];
+  }
   ctx.strokeStyle = borderColor;
   ctx.setLineDash(borderDash || []);
 
@@ -195,72 +217,96 @@ function drawBoxBorder(ctx: ViewContext2D, viewElem: Element<ElementType>, opts:
   let borderBottom = 0;
   let borderLeft = 0;
   if (Array.isArray(borderWidth)) {
-    borderTop = borderWidth[0] || 0;
-    borderRight = borderWidth[1] || 0;
-    borderBottom = borderWidth[2] || 0;
-    borderLeft = borderWidth[3] || 0;
+    borderTop = (borderWidth[0] || 0) * scale;
+    borderRight = (borderWidth[1] || 0) * scale;
+    borderBottom = (borderWidth[2] || 0) * scale;
+    borderLeft = (borderWidth[3] || 0) * scale;
   }
   if (borderLeft || borderRight || borderTop || borderBottom) {
-    const { x, y, w, h } = viewElem;
-    if (borderLeft) {
+    let { x, y, w, h } = viewElem;
+    if (boxSizing === 'border-box') {
+      x = x + borderLeft / 2;
+      y = y + borderTop / 2;
+      w = w - borderLeft / 2 - borderRight / 2;
+      h = h - borderTop / 2 - borderBottom / 2;
+    } else if (boxSizing === 'content-box') {
+      x = x - borderLeft / 2;
+      y = y - borderTop / 2;
+      w = w + borderLeft / 2 + borderRight / 2;
+      h = h + borderTop / 2 + borderBottom / 2;
+    } else {
+      // center-line
+      x = viewElem.x;
+      y = viewElem.y;
+      w = viewElem.w;
+      h = viewElem.h;
+    }
+
+    if (borderTop) {
       ctx.beginPath();
-      ctx.lineWidth = borderLeft * viewScaleInfo.scale;
-      ctx.moveTo(x, y);
-      ctx.lineTo(x, y + h);
+      ctx.lineWidth = borderTop;
+      ctx.moveTo(x - borderLeft / 2, y);
+      ctx.lineTo(x + w + borderRight / 2, y);
       ctx.closePath();
       ctx.stroke();
     }
     if (borderRight) {
       ctx.beginPath();
-      ctx.lineWidth = borderRight * viewScaleInfo.scale;
-      ctx.moveTo(x + w, y);
-      ctx.lineTo(x + w, y + h);
-      ctx.closePath();
-      ctx.stroke();
-    }
-    if (borderTop) {
-      ctx.beginPath();
-      ctx.lineWidth = borderTop * viewScaleInfo.scale;
-      ctx.moveTo(x, y);
-      ctx.lineTo(x + w, y);
+      ctx.lineWidth = borderRight;
+      ctx.moveTo(x + w, y - borderTop / 2);
+      ctx.lineTo(x + w, y + h + borderBottom / 2);
       ctx.closePath();
       ctx.stroke();
     }
     if (borderBottom) {
       ctx.beginPath();
-      ctx.lineWidth = borderBottom * viewScaleInfo.scale;
-      ctx.moveTo(x, y + h);
-      ctx.lineTo(x + w, y + h);
+      ctx.lineWidth = borderBottom;
+      ctx.moveTo(x - borderLeft / 2, y + h);
+      ctx.lineTo(x + w + borderRight / 2, y + h);
+      ctx.closePath();
+      ctx.stroke();
+    }
+    if (borderLeft) {
+      ctx.beginPath();
+      ctx.lineWidth = borderLeft;
+      ctx.moveTo(x, y - borderTop / 2);
+      ctx.lineTo(x, y + h + borderBottom / 2);
       ctx.closePath();
       ctx.stroke();
     }
   } else {
     let { x, y, w, h } = viewElem;
-    const { boxSizing } = viewElem.detail;
 
     if (boxSizing === 'border-box') {
+      x = viewElem.x + bw / 2;
+      y = viewElem.y + bw / 2;
+      w = viewElem.w - bw;
+      h = viewElem.h - bw;
+    } else if (boxSizing === 'content-box') {
+      x = viewElem.x - bw / 2;
+      y = viewElem.y - bw / 2;
+      w = viewElem.w + bw;
+      h = viewElem.h + bw;
+    } else {
+      // center-line
       x = viewElem.x;
       y = viewElem.y;
       w = viewElem.w;
       h = viewElem.h;
-    } else {
-      x = viewElem.x - bw;
-      y = viewElem.y - bw;
-      w = viewElem.w + bw * 2;
-      h = viewElem.h + bw * 2;
     }
 
-    r = Math.min(r, w / 2, h / 2);
-    if (r < w / 2 && r < h / 2) {
-      r = r + bw / 2;
-    }
+    // r = Math.min(r, w / 2, h / 2);
+    // if (r < w / 2 && r < h / 2) {
+    //   r = r + bw / 2;
+    // }
     ctx.beginPath();
+    ctx.lineCap = 'square';
     ctx.lineWidth = bw;
-    ctx.moveTo(x + r, y);
-    ctx.arcTo(x + w, y, x + w, y + h, r);
-    ctx.arcTo(x + w, y + h, x, y + h, r);
-    ctx.arcTo(x, y + h, x, y, r);
-    ctx.arcTo(x, y, x + w, y, r);
+    ctx.moveTo(x + radiusList[0], y);
+    ctx.arcTo(x + w, y, x + w, y + h, radiusList[1]);
+    ctx.arcTo(x + w, y + h, x, y + h, radiusList[2]);
+    ctx.arcTo(x, y + h, x, y, radiusList[3]);
+    ctx.arcTo(x, y, x + w, y, radiusList[0]);
     ctx.closePath();
     ctx.stroke();
   }
