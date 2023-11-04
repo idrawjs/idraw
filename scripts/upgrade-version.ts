@@ -20,6 +20,16 @@ async function run() {
             allPkgMap[key].json.dependencies[depName] = `^${version}`;
           }
         }
+        for (const depName in allPkgMap[key].json.devDependencies) {
+          if (allPkgMap.hasOwnProperty(depName)) {
+            allPkgMap[key].json.devDependencies[depName] = `^${version}`;
+          }
+        }
+        for (const depName in allPkgMap[key].json.peerDependencies) {
+          if (allPkgMap.hasOwnProperty(depName)) {
+            allPkgMap[key].json.peerDependencies[depName] = `^${version}`;
+          }
+        }
       }
     }
     writeJSONFile(allPkgMap[key].file, allPkgMap[key].json);
