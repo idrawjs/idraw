@@ -172,9 +172,15 @@ importers:
 
   packages/idraw:
     dependencies:
+      '@idraw/board':
+        specifier: ^0.4.0-alpha.3
+        version: link:../board
       '@idraw/core':
         specifier: ^0.4.0-alpha.3
         version: link:../core
+      '@idraw/renderer':
+        specifier: ^0.4.0-alpha.3
+        version: link:../renderer
       '@idraw/util':
         specifier: ^0.4.0-alpha.3
         version: link:../util
