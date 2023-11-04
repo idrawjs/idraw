@@ -23,7 +23,8 @@
   "devDependencies": {
     "@idraw/types": "^0.4.0-alpha.0"
   },
-  "dependencies": {
+  "dependencies": {},
+  "peerDependencies": {
     "@idraw/board": "^0.4.0-alpha.3",
     "@idraw/renderer": "^0.4.0-alpha.3",
     "@idraw/util": "^0.4.0-alpha.3"

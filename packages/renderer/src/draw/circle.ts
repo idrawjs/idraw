@@ -14,6 +14,12 @@ export function drawCircle(ctx: ViewContext2D, elem: Element<'circle'>, opts: Re
     const centerX = x + a;
     const centerY = y + b;
 
+    if (elem?.detail?.opacity !== undefined && elem?.detail?.opacity >= 0) {
+      ctx.globalAlpha = elem.detail.opacity;
+    } else {
+      ctx.globalAlpha = 1;
+    }
+
     // draw border
     if (typeof borderWidth === 'number' && borderWidth > 0) {
       const ba = borderWidth / 2 + a;
@@ -30,11 +36,13 @@ export function drawCircle(ctx: ViewContext2D, elem: Element<'circle'>, opts: Re
     ctx.beginPath();
     const fillStyle = createColorStyle(ctx, background, {
       viewElementSize: { x, y, w, h },
-      viewScaleInfo
+      viewScaleInfo,
+      opacity: ctx.globalAlpha
     });
     ctx.fillStyle = fillStyle;
     ctx.circle(centerX, centerY, a, b, 0, 0, 2 * Math.PI);
     ctx.closePath();
     ctx.fill();
+    ctx.globalAlpha = 1;
   });
 }
