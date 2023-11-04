@@ -48,7 +48,7 @@ export interface GradientStop {
 }
 
 export interface LinearGradientColor {
-  type: 'linearGradient';
+  type: 'linear-gradient';
   start: PointSize;
   end: PointSize;
   stops: Array<GradientStop>;
@@ -61,7 +61,7 @@ type GadialCircle = PointSize & {
 };
 
 export interface RadialGradientColor {
-  type: 'radialGradient';
+  type: 'radial-gradient';
   inner: GadialCircle;
   outer: GadialCircle;
   stops: Array<GradientStop>;
@@ -79,7 +79,7 @@ export interface ElementBaseDetail {
   shadowOffsetX?: number;
   shadowOffsetY?: number;
   shadowBlur?: number;
-  color?: string;
+  // color?: string;
   background?: string | LinearGradientColor | RadialGradientColor;
   opacity?: number;
   clipPath?: ElementClipPath;

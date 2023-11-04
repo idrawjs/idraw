@@ -14,11 +14,6 @@ export function drawBox(
     viewSizeInfo: ViewSizeInfo;
   }
 ): void {
-  if (viewElem?.detail?.opacity !== undefined && viewElem?.detail?.opacity > 0) {
-    ctx.globalAlpha = viewElem.detail.opacity;
-  } else {
-    ctx.globalAlpha = 1;
-  }
   const { pattern, renderContent, originElem, calcElemSize, viewScaleInfo, viewSizeInfo } = opts || {};
 
   drawClipPath(ctx, viewElem, {
@@ -27,14 +22,19 @@ export function drawBox(
     viewScaleInfo,
     viewSizeInfo,
     renderContent: () => {
+      if (viewElem?.detail?.opacity !== undefined && viewElem?.detail?.opacity >= 0) {
+        ctx.globalAlpha = viewElem.detail.opacity;
+      } else {
+        ctx.globalAlpha = 1;
+      }
       drawBoxBackground(ctx, viewElem, { pattern, viewScaleInfo, viewSizeInfo });
       renderContent?.();
       drawBoxBorder(ctx, viewElem, { viewScaleInfo, viewSizeInfo });
       // TODO
       // drawBoxBackground(ctx, viewElem, { pattern, viewScaleInfo, viewSizeInfo });
+      ctx.globalAlpha = 1;
     }
   });
-  ctx.globalAlpha = 1;
 }
 
 function drawClipPath(
@@ -141,16 +141,18 @@ function drawBoxBackground(
       ctx.fillStyle = pattern as CanvasPattern;
     } else if (typeof viewElem.detail.background === 'string') {
       ctx.fillStyle = viewElem.detail.background;
-    } else if (viewElem.detail.background?.type === 'linearGradient') {
+    } else if (viewElem.detail.background?.type === 'linear-gradient') {
       const colorStyle = createColorStyle(ctx, viewElem.detail.background, {
         viewElementSize: { x, y, w, h },
-        viewScaleInfo
+        viewScaleInfo,
+        opacity: ctx.globalAlpha
       });
       ctx.fillStyle = colorStyle;
-    } else if (viewElem.detail.background?.type === 'radialGradient') {
+    } else if (viewElem.detail.background?.type === 'radial-gradient') {
       const colorStyle = createColorStyle(ctx, viewElem.detail.background, {
         viewElementSize: { x, y, w, h },
-        viewScaleInfo
+        viewScaleInfo,
+        opacity: ctx.globalAlpha
       });
       ctx.fillStyle = colorStyle;
       if (transform && transform.length > 0) {
@@ -189,6 +191,11 @@ function drawBoxBackground(
 function drawBoxBorder(ctx: ViewContext2D, viewElem: Element<ElementType>, opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }): void {
   if (!isColorStr(viewElem.detail.borderColor)) {
     return;
+  }
+  if (viewElem?.detail?.opacity !== undefined && viewElem?.detail?.opacity >= 0) {
+    ctx.globalAlpha = viewElem.detail.opacity;
+  } else {
+    ctx.globalAlpha = 1;
   }
   const { viewScaleInfo } = opts;
   const { scale } = viewScaleInfo;
@@ -309,6 +316,7 @@ function drawBoxBorder(ctx: ViewContext2D, viewElem: Element<ElementType>, opts:
     ctx.arcTo(x, y, x + w, y, radiusList[0]);
     ctx.closePath();
     ctx.stroke();
+    ctx.globalAlpha = 1;
   }
 }
 

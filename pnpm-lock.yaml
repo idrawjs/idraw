@@ -151,7 +151,7 @@ importers:
         version: link:../util
     devDependencies:
       '@idraw/types':
-        specifier: ^0.4.0-alpha.0
+        specifier: ^0.4.0-alpha.3
         version: link:../types
 
   packages/core:
@@ -167,20 +167,26 @@ importers:
         version: link:../util
     devDependencies:
       '@idraw/types':
-        specifier: ^0.4.0-alpha.0
+        specifier: ^0.4.0-alpha.3
         version: link:../types
 
   packages/idraw:
     dependencies:
+      '@idraw/board':
+        specifier: ^0.4.0-alpha.3
+        version: link:../board
       '@idraw/core':
         specifier: ^0.4.0-alpha.3
         version: link:../core
+      '@idraw/renderer':
+        specifier: ^0.4.0-alpha.3
+        version: link:../renderer
       '@idraw/util':
         specifier: ^0.4.0-alpha.3
         version: link:../util
     devDependencies:
       '@idraw/types':
-        specifier: ^0.4.0-alpha.0
+        specifier: ^0.4.0-alpha.3
         version: link:../types
 
   packages/lab:
@@ -208,7 +214,7 @@ importers:
         version: 18.2.0(react@18.2.0)
     devDependencies:
       '@idraw/types':
-        specifier: ^0.4.0-alpha.0
+        specifier: ^0.4.0-alpha.3
         version: link:../types
       '@types/react':
         specifier: ^18.2.0
@@ -224,7 +230,7 @@ importers:
         version: link:../util
     devDependencies:
       '@idraw/types':
-        specifier: ^0.4.0-alpha.0
+        specifier: ^0.4.0-alpha.3
         version: link:../types
 
   packages/types: {}

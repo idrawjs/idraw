@@ -1,5 +1,4 @@
 import type { LinearGradientColor, RadialGradientColor } from '@idraw/types';
-import { matrixToRadian } from '@idraw/util';
 
 export function toColorHexNum(color: string): number {
   return parseInt(color.replace(/^\#/, '0x'));
@@ -171,12 +170,12 @@ export function colorToCSS(color?: string | LinearGradientColor | RadialGradient
   let css = 'transparent';
   if (typeof color === 'string') {
     css = color;
-  } else if (color?.type === 'linearGradient') {
+  } else if (color?.type === 'linear-gradient') {
     const items: string[] = [];
     if (typeof color.angle === 'number') {
       items.push(`${color.angle}deg`);
     } else {
-      items.push(`0deg`);
+      items.push(`180deg`);
     }
     if (Array.isArray(color.stops)) {
       color.stops.forEach((stop) => {
@@ -184,7 +183,7 @@ export function colorToCSS(color?: string | LinearGradientColor | RadialGradient
       });
     }
     css = `linear-gradient(${items.join(', ')})`;
-  } else if (color?.type === 'radialGradient') {
+  } else if (color?.type === 'radial-gradient') {
     const items: string[] = [];
     if (Array.isArray(color.stops)) {
       color.stops.forEach((stop) => {
@@ -200,7 +199,7 @@ export function colorToLinearGradientCSS(color?: string | LinearGradientColor | 
   let css = 'transparent';
   if (typeof color === 'string') {
     css = color;
-  } else if (color?.type === 'radialGradient' || color?.type === 'linearGradient') {
+  } else if (color?.type === 'radial-gradient' || color?.type === 'linear-gradient') {
     const items: string[] = [];
     if (Array.isArray(color.stops) && color.stops.length > 0) {
       color.stops.forEach((stop, i) => {
@@ -213,4 +212,27 @@ export function colorToLinearGradientCSS(color?: string | LinearGradientColor | 
     }
   }
   return css;
+}
+
+// alpha [0, 1]
+export function mergeHexColorAlpha(hex: string, alpha: number): string {
+  if (alpha === 1) {
+    return hex;
+  }
+  let hexAlpha = 1;
+  const regHex1 = /^\#[0-9a-f]{6,6}$/i;
+  const regHex2 = /^\#[0-9a-f]{8,8}$/i;
+  let result = hex;
+  if (regHex1.test(hex)) {
+    hexAlpha = parseInt(hex.substring(5, 7).replace(/^\#/, '0x'));
+  } else if (regHex2.test(hex)) {
+    hexAlpha = parseInt(hex.substring(7, 9).replace(/^\#/, '0x'));
+    result = hex.substring(0, 7);
+  }
+  hexAlpha = hexAlpha * alpha;
+  if (regHex1.test(result) && hexAlpha > 0 && hexAlpha < 1) {
+    const aHexNum = Math.max(0, Math.min(255, Math.ceil(hexAlpha * 256)));
+    result = `${result.toUpperCase()}${aHexNum.toString(16).toUpperCase()}`;
+  }
+  return result;
 }

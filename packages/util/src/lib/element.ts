@@ -344,3 +344,9 @@ export function updateElementInList(
   }
   return elements;
 }
+
+export function getElementSize(elem: Element): ElementSize {
+  const { x, y, w, h, angle } = elem;
+  const size: ElementSize = { x, y, w, h, angle };
+  return size;
+}

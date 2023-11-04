@@ -21,9 +21,10 @@
   "author": "chenshenhai",
   "license": "MIT",
   "devDependencies": {
-    "@idraw/types": "^0.4.0-alpha.0"
+    "@idraw/types": "^0.4.0-alpha.3"
   },
-  "dependencies": {
+  "dependencies": {},
+  "peerDependencies": {
     "@idraw/util": "^0.4.0-alpha.3"
   },
   "publishConfig": {
