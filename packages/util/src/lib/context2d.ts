@@ -181,7 +181,8 @@ export class Context2D implements ViewContext2D {
   }
 
   setLineDash(nums: number[]) {
-    return this._ctx.setLineDash(nums.map((n) => this.$doPixelRatio(n)));
+    const dash = nums.map((n) => this.$doPixelRatio(n));
+    return this._ctx.setLineDash(dash);
   }
 
   stroke(path?: Path2D) {

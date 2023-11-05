@@ -1,6 +1,8 @@
 import { ViewContext2D, Element, ElementType, ElementSize, ViewScaleInfo, ViewSizeInfo, TransformAction } from '@idraw/types';
-import { istype, isColorStr, generateSVGPath, rotateElement, is } from '@idraw/util';
+import { istype, isColorStr, generateSVGPath, rotateElement, is, getDefaultElementDetailConfig } from '@idraw/util';
 import { createColorStyle } from './color';
+
+const defaultElemConfig = getDefaultElementDetailConfig();
 
 export function drawBox(
   ctx: ViewContext2D,
@@ -66,7 +68,6 @@ function drawClipPath(
     ctx.scale(totalScale * scaleW, totalScale * scaleH);
     const pathStr = generateSVGPath(clipPath.commands || []);
     const path2d = new Path2D(pathStr);
-    // ctx.fillStyle = clipPath.fill || '#FFFFFF';
     ctx.clip(path2d);
     ctx.translate(0 - (internalX as number), 0 - (internalY as number));
     ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -89,7 +90,7 @@ function drawBoxBackground(
   const { pattern, viewScaleInfo } = opts;
   const { scale } = viewScaleInfo;
   let transform: TransformAction[] = [];
-  let { borderRadius, boxSizing, borderWidth } = viewElem.detail;
+  let { borderRadius, boxSizing = defaultElemConfig.boxSizing, borderWidth } = viewElem.detail;
   if (typeof borderWidth !== 'number') {
     // TODO: If borderWidth is an array, borderRadius will not take effect and will become 0.
     borderRadius = 0;
@@ -189,6 +190,9 @@ function drawBoxBackground(
 }
 
 function drawBoxBorder(ctx: ViewContext2D, viewElem: Element<ElementType>, opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }): void {
+  if (viewElem.detail.borderWidth === 0) {
+    return;
+  }
   if (!isColorStr(viewElem.detail.borderColor)) {
     return;
   }
@@ -199,11 +203,11 @@ function drawBoxBorder(ctx: ViewContext2D, viewElem: Element<ElementType>, opts:
   }
   const { viewScaleInfo } = opts;
   const { scale } = viewScaleInfo;
-  let borderColor = '#000000';
+  let borderColor = defaultElemConfig.borderColor;
   if (isColorStr(viewElem.detail.borderColor) === true) {
     borderColor = viewElem.detail.borderColor as string;
   }
-  const { borderWidth, borderRadius, borderDash, boxSizing } = viewElem.detail;
+  const { borderWidth, borderRadius, borderDash, boxSizing = defaultElemConfig.boxSizing } = viewElem.detail;
   let bw: number = 0;
   if (typeof borderWidth === 'number') {
     bw = borderWidth || 1;
@@ -217,7 +221,10 @@ function drawBoxBorder(ctx: ViewContext2D, viewElem: Element<ElementType>, opts:
     radiusList = [borderRadius[0] * scale, borderRadius[1] * scale, borderRadius[2] * scale, borderRadius[3] * scale];
   }
   ctx.strokeStyle = borderColor;
-  ctx.setLineDash(borderDash || []);
+  let viewBorderDash: number[] = [];
+  if (Array.isArray(borderDash) && borderDash.length > 0) {
+    viewBorderDash = borderDash.map((num) => Math.ceil(num * scale));
+  }
 
   let borderTop = 0;
   let borderRight = 0;
@@ -229,7 +236,9 @@ function drawBoxBorder(ctx: ViewContext2D, viewElem: Element<ElementType>, opts:
     borderBottom = (borderWidth[2] || 0) * scale;
     borderLeft = (borderWidth[3] || 0) * scale;
   }
+
   if (borderLeft || borderRight || borderTop || borderBottom) {
+    ctx.lineCap = 'butt';
     let { x, y, w, h } = viewElem;
     if (boxSizing === 'border-box') {
       x = x + borderLeft / 2;
@@ -306,9 +315,14 @@ function drawBoxBorder(ctx: ViewContext2D, viewElem: Element<ElementType>, opts:
     // if (r < w / 2 && r < h / 2) {
     //   r = r + bw / 2;
     // }
-    ctx.beginPath();
-    ctx.lineCap = 'square';
+    if (viewBorderDash.length > 0) {
+      ctx.lineCap = 'butt';
+    } else {
+      ctx.lineCap = 'square';
+    }
+    ctx.setLineDash(viewBorderDash);
     ctx.lineWidth = bw;
+    ctx.beginPath();
     ctx.moveTo(x + radiusList[0], y);
     ctx.arcTo(x + w, y, x + w, y + h, radiusList[1]);
     ctx.arcTo(x + w, y + h, x, y + h, radiusList[2]);
@@ -318,6 +332,7 @@ function drawBoxBorder(ctx: ViewContext2D, viewElem: Element<ElementType>, opts:
     ctx.stroke();
     ctx.globalAlpha = 1;
   }
+  ctx.setLineDash([]);
 }
 
 export function drawBoxShadow(
@@ -330,7 +345,7 @@ export function drawBoxShadow(
   const { shadowColor, shadowOffsetX, shadowOffsetY, shadowBlur } = detail;
   if (is.number(shadowBlur)) {
     ctx.save();
-    ctx.shadowColor = shadowColor || '#000000';
+    ctx.shadowColor = shadowColor || defaultElemConfig.shadowColor;
     ctx.shadowOffsetX = (shadowOffsetX || 0) * viewScaleInfo.scale;
     ctx.shadowOffsetY = (shadowOffsetY || 0) * viewScaleInfo.scale;
     ctx.shadowBlur = (shadowBlur || 0) * viewScaleInfo.scale;

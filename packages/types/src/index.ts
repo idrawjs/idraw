@@ -15,3 +15,4 @@ export * from './lib/context2d';
 export * from './lib/controller';
 export * from './lib/html';
 export * from './lib/svg-path';
+export * from './lib/config';
