@@ -17,7 +17,7 @@ export interface TransformMatrix {
 }
 
 export interface ElementAssetsItem {
-  type: 'svg' | 'image';
+  type: 'svg' | 'image' | 'html';
   value: string;
 }
 
@@ -79,7 +79,6 @@ export interface ElementBaseDetail {
   shadowOffsetX?: number;
   shadowOffsetY?: number;
   shadowBlur?: number;
-  // color?: string;
   background?: string | LinearGradientColor | RadialGradientColor;
   opacity?: number;
   clipPath?: ElementClipPath;
@@ -90,12 +89,12 @@ export interface ElementBaseDetail {
 //   // background?: string;
 // }
 
-interface ElementRectDetail extends ElementBaseDetail {}
+export interface ElementRectDetail extends ElementBaseDetail {}
 
-interface ElemenTextDetail extends ElementBaseDetail {
+export interface ElementTextDetail extends ElementBaseDetail {
   text: string;
-  color: string;
-  fontSize: number;
+  color?: string;
+  fontSize?: number;
   lineHeight?: number;
   fontWeight?: 'bold' | string | number;
   fontFamily?: string;
@@ -107,32 +106,32 @@ interface ElemenTextDetail extends ElementBaseDetail {
   textShadowBlur?: number;
 }
 
-interface ElementCircleDetail extends ElementBaseDetail {
+export interface ElementCircleDetail extends ElementBaseDetail {
   radius: number;
   background?: string;
 }
 
-interface ElementHTMLDetail extends ElementBaseDetail {
+export interface ElementHTMLDetail extends ElementBaseDetail {
   html: string;
   width?: number;
   height?: number;
 }
 
-interface ElementImageDetail extends ElementBaseDetail {
+export interface ElementImageDetail extends ElementBaseDetail {
   src: string;
 }
 
-interface ElementSVGDetail extends ElementBaseDetail {
+export interface ElementSVGDetail extends ElementBaseDetail {
   svg: string;
 }
 
-interface ElementGroupDetail extends ElementBaseDetail {
+export interface ElementGroupDetail extends ElementBaseDetail {
   children: Element<ElementType>[];
   overflow?: 'hidden';
   assets?: ElementAssets;
 }
 
-interface ElementPathDetail extends ElementBaseDetail {
+export interface ElementPathDetail extends ElementBaseDetail {
   // path: string;
   commands: SVGPathCommand[];
   originX: number;
@@ -145,10 +144,10 @@ interface ElementPathDetail extends ElementBaseDetail {
   strokeLineCap?: 'butt' | 'round' | 'square';
 }
 
-interface ElementDetailMap {
+export interface ElementDetailMap {
   rect: ElementRectDetail;
   circle: ElementCircleDetail;
-  text: ElemenTextDetail;
+  text: ElementTextDetail;
   image: ElementImageDetail;
   html: ElementHTMLDetail;
   svg: ElementSVGDetail;
