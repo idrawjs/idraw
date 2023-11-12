@@ -1,5 +1,3 @@
-import { createOffscreenContext2D } from './canvas';
-
 export function compressImage(src: string, opts?: { radio?: number; type?: 'image/jpeg' | 'image/png' }): Promise<string> {
   let radio = 0.5;
   const type = opts?.type || 'image/png';

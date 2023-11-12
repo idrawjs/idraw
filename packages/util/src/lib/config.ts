@@ -11,7 +11,14 @@ export function getDefaultElementDetailConfig(): DefaultElementDetailConfig {
     shadowOffsetX: 0,
     shadowOffsetY: 0,
     shadowBlur: 0,
-    opacity: 1
+    opacity: 1,
+    color: '#000000',
+    textAlign: 'left',
+    verticalAlign: 'top',
+    fontSize: 16,
+    lineHeight: 20,
+    fontFamily: 'sans-serif',
+    fontWeight: 400
   };
   return config;
 }

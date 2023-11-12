@@ -1,7 +1,9 @@
 import type { Element, RendererDrawElementOptions, ViewContext2D } from '@idraw/types';
 import { rotateElement } from '@idraw/util';
-import { is, isColorStr } from '@idraw/util';
+import { is, isColorStr, getDefaultElementDetailConfig } from '@idraw/util';
 import { drawBox } from './base';
+
+const detailConfig = getDefaultElementDetailConfig();
 
 export function drawText(ctx: ViewContext2D, elem: Element<'text'>, opts: RendererDrawElementOptions) {
   const { calculator, viewScaleInfo, viewSizeInfo } = opts;
@@ -15,17 +17,13 @@ export function drawText(ctx: ViewContext2D, elem: Element<'text'>, opts: Render
       viewSizeInfo,
       renderContent: () => {
         const detail: Element<'text'>['detail'] = {
-          ...{
-            fontSize: 12,
-            fontFamily: 'sans-serif',
-            textAlign: 'center'
-          },
+          ...detailConfig,
           ...elem.detail
         };
-        const fontSize = detail.fontSize * viewScaleInfo.scale;
+        const fontSize = (detail.fontSize || detailConfig.fontSize) * viewScaleInfo.scale;
         const lineHeight = detail.lineHeight ? detail.lineHeight * viewScaleInfo.scale : fontSize;
 
-        ctx.fillStyle = elem.detail.color;
+        ctx.fillStyle = elem.detail.color || detailConfig.color;
         ctx.textBaseline = 'top';
         ctx.$setFont({
           fontWeight: detail.fontWeight,

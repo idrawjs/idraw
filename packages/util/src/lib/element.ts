@@ -1,6 +1,18 @@
-import type { Data, Element, Elements, ElementType, ElementSize, ViewContextSize, ViewSizeInfo, RecursivePartial } from '@idraw/types';
+import type {
+  Data,
+  Element,
+  Elements,
+  ElementType,
+  ElementSize,
+  ViewContextSize,
+  ViewSizeInfo,
+  RecursivePartial,
+  ElementAssets,
+  ElementAssetsItem,
+  LoadElementType
+} from '@idraw/types';
 import { rotateElementVertexes } from './rotate';
-import { isAssetId } from './uuid';
+import { isAssetId, createAssetId } from './uuid';
 import { istype } from './istype';
 
 // // TODO need to be deprecated
@@ -328,25 +340,97 @@ function mergeElement<T extends Element<ElementType> = Element<ElementType>>(ori
   return originElem;
 }
 
-export function updateElementInList(
-  uuid: string,
-  updateContent: RecursivePartial<Element<ElementType>>,
-  elements: Element<ElementType>[]
-): Element<ElementType>[] {
+export function updateElementInList(uuid: string, updateContent: RecursivePartial<Element<ElementType>>, elements: Element[]): Element | null {
+  let targetElement: Element | null = null;
   for (let i = 0; i < elements.length; i++) {
     const elem = elements[i];
     if (elem.uuid === uuid) {
       mergeElement(elem, updateContent);
+      targetElement = elem;
       break;
     } else if (elem.type === 'group') {
-      updateElementInList(uuid, updateContent, (elem as Element<'group'>)?.detail?.children || []);
+      targetElement = updateElementInList(uuid, updateContent, (elem as Element<'group'>)?.detail?.children || []);
     }
   }
-  return elements;
+  return targetElement;
 }
 
 export function getElementSize(elem: Element): ElementSize {
   const { x, y, w, h, angle } = elem;
   const size: ElementSize = { x, y, w, h, angle };
   return size;
+}
+
+export function mergeElementAsset<T extends Element<LoadElementType>>(element: T, assets: ElementAssets): T {
+  // const elem: T = { ...element, ...{ detail: { ...element.detail } } };
+  const elem = element;
+  let assetId: string | null = null;
+  let assetItem: ElementAssetsItem | null = null;
+  if (elem.type === 'image') {
+    assetId = (elem as Element<'image'>).detail.src;
+  } else if (elem.type === 'svg') {
+    assetId = (elem as Element<'svg'>).detail.svg;
+  } else if (elem.type === 'html') {
+    assetId = (elem as Element<'html'>).detail.html;
+  }
+
+  if (assetId && assetId?.startsWith('@assets/')) {
+    assetItem = assets[assetId];
+  }
+
+  if (assetItem?.type === elem.type && typeof assetItem?.value === 'string' && assetItem?.value) {
+    if (elem.type === 'image') {
+      (elem as Element<'image'>).detail.src = assetItem.value;
+    } else if (elem.type === 'svg') {
+      (elem as Element<'svg'>).detail.svg = assetItem.value;
+    } else if (elem.type === 'html') {
+      (elem as Element<'html'>).detail.html = assetItem.value;
+    }
+  }
+  return elem;
+}
+
+export function filterElementAsset<T extends Element<LoadElementType>>(
+  element: T
+): {
+  element: T;
+  assetId: string | null;
+  assetItem: ElementAssetsItem | null;
+} {
+  let assetId: string | null = null;
+  let assetItem: ElementAssetsItem | null = null;
+  let resource: string | null = null;
+
+  if (element.type === 'image') {
+    resource = (element as Element<'image'>).detail.src;
+  } else if (element.type === 'svg') {
+    resource = (element as Element<'svg'>).detail.svg;
+  } else if (element.type === 'html') {
+    resource = (element as Element<'html'>).detail.html;
+  }
+
+  if (typeof resource === 'string' && !isAssetId(resource)) {
+    assetId = createAssetId(resource);
+    assetItem = {
+      type: element.type as LoadElementType,
+      value: resource
+    };
+    if (element.type === 'image') {
+      (element as Element<'image'>).detail.src = assetId;
+    } else if (element.type === 'svg') {
+      (element as Element<'svg'>).detail.svg = assetId;
+    } else if (element.type === 'html') {
+      (element as Element<'html'>).detail.html = assetId;
+    }
+  }
+
+  return {
+    element,
+    assetId,
+    assetItem
+  };
+}
+
+export function isResourceElement(elem: Element): boolean {
+  return ['image', 'svg', 'html'].includes(elem?.type);
 }

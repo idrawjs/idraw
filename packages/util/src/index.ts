@@ -1,5 +1,5 @@
 export { delay, compose, throttle } from './lib/time';
-export { downloadImageFromCanvas } from './lib/file';
+export { downloadImageFromCanvas, parseFileToBase64, pickFile } from './lib/file';
 export { toColorHexStr, toColorHexNum, isColorStr, colorNameToHex, colorToCSS, colorToLinearGradientCSS, mergeHexColorAlpha } from './lib/color';
 export { createUUID, isAssetId, createAssetId } from './lib/uuid';
 export { deepClone, sortDataAsserts } from './lib/data';
@@ -34,7 +34,10 @@ export {
   findElementsFromList,
   updateElementInList,
   getGroupQueueFromList,
-  getElementSize
+  getElementSize,
+  mergeElementAsset,
+  filterElementAsset,
+  isResourceElement
 } from './lib/element';
 export { checkRectIntersect } from './lib/rect';
 export {
