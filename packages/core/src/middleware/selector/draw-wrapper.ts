@@ -65,10 +65,10 @@ export function drawSelectedElementControllersVertexes(
   const ctrlOpts = { ...wrapperOpts, borderWidth: resizeControllerBorderWidth, background: '#FFFFFF' };
 
   drawVertexes(ctx, calcViewVertexes(elementWrapper, opts), wrapperOpts);
-  drawVertexes(ctx, calcViewVertexes(left.vertexes, opts), ctrlOpts);
-  drawVertexes(ctx, calcViewVertexes(right.vertexes, opts), ctrlOpts);
-  drawVertexes(ctx, calcViewVertexes(top.vertexes, opts), ctrlOpts);
-  drawVertexes(ctx, calcViewVertexes(bottom.vertexes, opts), ctrlOpts);
+  // drawVertexes(ctx, calcViewVertexes(left.vertexes, opts), ctrlOpts);
+  // drawVertexes(ctx, calcViewVertexes(right.vertexes, opts), ctrlOpts);
+  // drawVertexes(ctx, calcViewVertexes(top.vertexes, opts), ctrlOpts);
+  // drawVertexes(ctx, calcViewVertexes(bottom.vertexes, opts), ctrlOpts);
   drawVertexes(ctx, calcViewVertexes(topLeft.vertexes, opts), ctrlOpts);
   drawVertexes(ctx, calcViewVertexes(topRight.vertexes, opts), ctrlOpts);
   drawVertexes(ctx, calcViewVertexes(bottomLeft.vertexes, opts), ctrlOpts);

@@ -1,7 +1,7 @@
 import type { Element, RendererDrawElementOptions, ViewContext2D } from '@idraw/types';
 import { rotateElement } from '@idraw/util';
 import { is, isColorStr, getDefaultElementDetailConfig } from '@idraw/util';
-import { drawBox } from './base';
+import { drawBox } from './box';
 
 const detailConfig = getDefaultElementDetailConfig();
 

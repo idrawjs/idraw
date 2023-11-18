@@ -56,6 +56,8 @@ export class Core {
 
   scale(opts: { scale: number; point: PointSize }) {
     this._board.scale(opts);
+    const viewer = this._board.getViewer();
+    viewer.drawFrame();
   }
 
   resize(newViewSize: Partial<ViewSizeInfo>) {

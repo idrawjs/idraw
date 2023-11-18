@@ -29,9 +29,13 @@ export interface CoreEventSelect {
 export interface CoreEventChange {
   data: Data;
 }
+export interface CoreEventScale {
+  scale: number;
+}
 
 export type CoreEvent = {
   cursor: CoreEventCursor;
   select: CoreEventSelect;
   change: CoreEventChange;
+  scale: CoreEventScale;
 };

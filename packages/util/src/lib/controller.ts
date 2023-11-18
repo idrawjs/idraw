@@ -58,55 +58,70 @@ export function calcElementSizeController(
   const bottomRightCenter = vertexes[2];
   const bottomLeftCenter = vertexes[3];
 
-  const topSize = createControllerElementSizeFromCenter(topCenter, { size: ctrlSize, angle: totalAngle });
-  const rightSize = createControllerElementSizeFromCenter(rightCenter, { size: ctrlSize, angle: totalAngle });
-  const bottomSize = createControllerElementSizeFromCenter(bottomCenter, { size: ctrlSize, angle: totalAngle });
-  const leftSize = createControllerElementSizeFromCenter(leftCenter, { size: ctrlSize, angle: totalAngle });
+  // const topSize = createControllerElementSizeFromCenter(topCenter, { size: ctrlSize, angle: totalAngle });
+  // const rightSize = createControllerElementSizeFromCenter(rightCenter, { size: ctrlSize, angle: totalAngle });
+  // const bottomSize = createControllerElementSizeFromCenter(bottomCenter, { size: ctrlSize, angle: totalAngle });
+  // const leftSize = createControllerElementSizeFromCenter(leftCenter, { size: ctrlSize, angle: totalAngle });
+
   const topLeftSize = createControllerElementSizeFromCenter(topLeftCenter, { size: ctrlSize, angle: totalAngle });
   const topRightSize = createControllerElementSizeFromCenter(topRightCenter, { size: ctrlSize, angle: totalAngle });
   const bottomLeftSize = createControllerElementSizeFromCenter(bottomLeftCenter, { size: ctrlSize, angle: totalAngle });
   const bottomRightSize = createControllerElementSizeFromCenter(bottomRightCenter, { size: ctrlSize, angle: totalAngle });
 
+  const topLeftVertexes = calcElementVertexes(topLeftSize);
+  const topRightVertexes = calcElementVertexes(topRightSize);
+  const bottomLeftVertexes = calcElementVertexes(bottomLeftSize);
+  const bottomRightVertexes = calcElementVertexes(bottomRightSize);
+
+  const topVertexes: ViewRectVertexes = [topLeftVertexes[1], topRightVertexes[0], topRightVertexes[3], topLeftVertexes[2]];
+  const rightVertexes: ViewRectVertexes = [topRightVertexes[3], topRightVertexes[2], bottomRightVertexes[1], bottomRightVertexes[0]];
+  const bottomVertexes: ViewRectVertexes = [bottomLeftVertexes[1], bottomRightVertexes[0], bottomRightVertexes[3], bottomLeftVertexes[2]];
+  const leftVertexes: ViewRectVertexes = [topLeftVertexes[3], topLeftVertexes[2], bottomLeftVertexes[1], bottomLeftVertexes[0]];
+  // const topVertexes = calcElementVertexes(topSize);
+  // const rightVertexes = calcElementVertexes(rightSize);
+  // const bottomVertexes = calcElementVertexes(bottomSize);
+  // const leftVertexes = calcElementVertexes(leftSize);
+
   const sizeController: ElementSizeController = {
     elementWrapper: vertexes,
     left: {
       type: 'left',
-      vertexes: calcElementVertexes(leftSize),
+      vertexes: leftVertexes,
       center: leftCenter
     },
     right: {
       type: 'right',
-      vertexes: calcElementVertexes(rightSize),
+      vertexes: rightVertexes,
       center: rightCenter
     },
     top: {
       type: 'top',
-      vertexes: calcElementVertexes(topSize),
+      vertexes: topVertexes,
       center: topCenter
     },
     bottom: {
       type: 'bottom',
-      vertexes: calcElementVertexes(bottomSize),
+      vertexes: bottomVertexes,
       center: bottomCenter
     },
     topLeft: {
       type: 'top-left',
-      vertexes: calcElementVertexes(topLeftSize),
+      vertexes: topLeftVertexes,
       center: topLeftCenter
     },
     topRight: {
       type: 'top-right',
-      vertexes: calcElementVertexes(topRightSize),
+      vertexes: topRightVertexes,
       center: topRightCenter
     },
     bottomLeft: {
       type: 'bottom-left',
-      vertexes: calcElementVertexes(bottomLeftSize),
+      vertexes: bottomLeftVertexes,
       center: bottomLeftCenter
     },
     bottomRight: {
       type: 'bottom-right',
-      vertexes: calcElementVertexes(bottomRightSize),
+      vertexes: bottomRightVertexes,
       center: bottomRightCenter
     }
   };

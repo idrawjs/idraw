@@ -1,7 +1,7 @@
 import type { Element, RendererDrawElementOptions, ViewContext2D } from '@idraw/types';
 import { rotateElement } from '@idraw/util';
 import { createColorStyle } from './color';
-import { drawBoxShadow } from './base';
+import { drawBoxShadow } from './box';
 
 export function drawCircle(ctx: ViewContext2D, elem: Element<'circle'>, opts: RendererDrawElementOptions) {
   const { detail, angle } = elem;

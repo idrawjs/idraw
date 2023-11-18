@@ -1,6 +1,6 @@
 import type { Element, RendererDrawElementOptions, ViewContext2D } from '@idraw/types';
 import { rotateElement, generateSVGPath } from '@idraw/util';
-import { drawBox, drawBoxShadow } from './base';
+import { drawBox, drawBoxShadow } from './box';
 
 export function drawPath(ctx: ViewContext2D, elem: Element<'path'>, opts: RendererDrawElementOptions) {
   const { detail } = elem;

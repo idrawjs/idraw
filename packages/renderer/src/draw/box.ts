@@ -1,5 +1,5 @@
 import { ViewContext2D, Element, ElementType, ElementSize, ViewScaleInfo, ViewSizeInfo, TransformAction } from '@idraw/types';
-import { istype, isColorStr, generateSVGPath, rotateElement, is, getDefaultElementDetailConfig } from '@idraw/util';
+import { istype, isColorStr, generateSVGPath, rotateElement, is, getDefaultElementDetailConfig, calcViewBoxSize } from '@idraw/util';
 import { createColorStyle } from './color';
 
 const defaultElemConfig = getDefaultElementDetailConfig();
@@ -87,43 +87,18 @@ function drawBoxBackground(
   viewElem: Element<ElementType>,
   opts: { pattern?: string | CanvasPattern | null; viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }
 ): void {
-  const { pattern, viewScaleInfo } = opts;
-  const { scale } = viewScaleInfo;
+  const { pattern, viewScaleInfo, viewSizeInfo } = opts;
   let transform: TransformAction[] = [];
-  let { borderRadius, boxSizing = defaultElemConfig.boxSizing, borderWidth } = viewElem.detail;
+  let { borderRadius, borderWidth } = viewElem.detail;
   if (typeof borderWidth !== 'number') {
     // TODO: If borderWidth is an array, borderRadius will not take effect and will become 0.
     borderRadius = 0;
   }
   if (viewElem.detail.background || pattern) {
-    let { x, y, w, h } = viewElem;
-    let radiusList: [number, number, number, number] = [0, 0, 0, 0];
-    if (typeof borderRadius === 'number') {
-      const br = borderRadius * scale;
-      radiusList = [br, br, br, br];
-    } else if (Array.isArray(borderRadius) && borderRadius?.length === 4) {
-      radiusList = [borderRadius[0] * scale, borderRadius[1] * scale, borderRadius[2] * scale, borderRadius[3] * scale];
-    }
-    let bw: number = 0;
-    if (typeof borderWidth === 'number') {
-      bw = (borderWidth || 1) * scale;
-    }
-    if (boxSizing === 'border-box') {
-      x = viewElem.x + bw / 2;
-      y = viewElem.y + bw / 2;
-      w = viewElem.w - bw;
-      h = viewElem.h - bw;
-    } else if (boxSizing === 'content-box') {
-      x = viewElem.x - bw / 2;
-      y = viewElem.y - bw / 2;
-      w = viewElem.w + bw;
-      h = viewElem.h + bw;
-    } else {
-      x = viewElem.x;
-      y = viewElem.y;
-      w = viewElem.w;
-      h = viewElem.h;
-    }
+    const { x, y, w, h, radiusList } = calcViewBoxSize(viewElem, {
+      viewScaleInfo,
+      viewSizeInfo
+    });
 
     // r = Math.min(r, w / 2, h / 2);
     // if (w < r * 2 || h < r * 2) {

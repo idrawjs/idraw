@@ -278,6 +278,10 @@ export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
     return this._sharer;
   }
 
+  getViewer() {
+    return this._viewer;
+  }
+
   setData(data: Data): { viewSizeInfo: ViewSizeInfo } {
     const sharer = this._sharer;
     this._sharer.setActiveStorage('data', data);
