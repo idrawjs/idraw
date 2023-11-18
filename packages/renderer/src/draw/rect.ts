@@ -1,6 +1,6 @@
 import type { Element, RendererDrawElementOptions, ViewContext2D } from '@idraw/types';
 import { rotateElement } from '@idraw/util';
-import { drawBox, drawBoxShadow } from './base';
+import { drawBox, drawBoxShadow } from './box';
 
 export function drawRect(ctx: ViewContext2D, elem: Element<'rect'>, opts: RendererDrawElementOptions) {
   const { calculator, viewScaleInfo, viewSizeInfo } = opts;

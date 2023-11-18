@@ -43,3 +43,11 @@ export interface ViewCalculator {
 }
 
 export type ViewRectVertexes = [PointSize, PointSize, PointSize, PointSize];
+
+export interface ViewBoxSize {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  radiusList: [number, number, number, number];
+}

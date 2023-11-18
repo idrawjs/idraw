@@ -1,8 +1,10 @@
-import type { PointSize, BoardMiddleware, ViewScaleInfo, ViewSizeInfo } from '@idraw/types';
+import type { BoardMiddleware, CoreEvent } from '@idraw/types';
+import { formatNumber } from '@idraw/util';
 
-export const MiddlewareScaler: BoardMiddleware = (opts) => {
+export const MiddlewareScaler: BoardMiddleware<Record<string, any>, CoreEvent> = (opts) => {
   const key = 'SCALE';
-  const { viewer, sharer } = opts;
+  const { viewer, sharer, eventHub } = opts;
+
   return {
     mode: key,
     isDefault: true,
@@ -18,6 +20,8 @@ export const MiddlewareScaler: BoardMiddleware = (opts) => {
       const { moveX, moveY } = viewer.scale({ scale: newScaleNum, point });
       viewer.scroll({ moveX, moveY });
       viewer.drawFrame();
+      const scaleNum = formatNumber(scale);
+      eventHub.trigger('scale', { scale: scaleNum });
     }
   };
 };

@@ -6,7 +6,7 @@ import { drawImage } from './image';
 import { drawText } from './text';
 import { drawSVG } from './svg';
 import { drawHTML } from './html';
-import { drawBox } from './base';
+import { drawBox } from './box';
 import { drawPath } from './path';
 
 export function drawElement(ctx: ViewContext2D, elem: Element<ElementType>, opts: RendererDrawElementOptions) {
