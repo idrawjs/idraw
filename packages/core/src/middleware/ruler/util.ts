@@ -24,13 +24,13 @@ interface RulerScale {
   isSubKeyNum: boolean;
 }
 
-function calcRulerScaleList(opts: { scale: number; viewLength: number; viewOffset: number }): RulerScale[] {
+function calcRulerScaleList(opts: { axis: 'X' | 'Y'; scale: number; viewLength: number; viewOffset: number }): RulerScale[] {
   const { scale, viewLength, viewOffset } = opts;
   const list: RulerScale[] = [];
   let rulerUnit = 10;
 
   rulerUnit = formatNumber(rulerUnit / scale, { decimalPlaces: 0 });
-  rulerUnit = Math.max(10, Math.min(rulerUnit, 1000));
+  rulerUnit = Math.max(1, Math.min(rulerUnit, 1000));
 
   const rulerKeyUnit = rulerUnit * 10;
   const rulerSubKeyUnit = rulerUnit * 5;
@@ -43,18 +43,15 @@ function calcRulerScaleList(opts: { scale: number; viewLength: number; viewOffse
   const firstNum = (startNum - remainderNum + viewUnit) / scale;
   const firstPosition = startPosition + (viewUnit - remainderNum);
   while (firstPosition + index * viewUnit < viewLength) {
-    const num = firstNum + index * rulerUnit;
-    const position = firstPosition + index * viewUnit;
+    const num = formatNumber(firstNum + index * rulerUnit, { decimalPlaces: 0 });
+    const position = formatNumber(firstPosition + index * viewUnit, { decimalPlaces: 0 });
     const rulerScale = {
-      num: formatNumber(num, { decimalPlaces: 0 }),
+      num,
       position,
       showNum: num % rulerKeyUnit === 0,
       isKeyNum: num % rulerKeyUnit === 0,
       isSubKeyNum: num % rulerSubKeyUnit === 0
     };
-    // if (viewUnit >= rulerSubKeyUnit) {
-    //   rulerScale.isKeyNum = true;
-    // }
     list.push(rulerScale);
     index++;
   }
@@ -67,6 +64,7 @@ export function calcXRulerScaleList(opts: { viewScaleInfo: ViewScaleInfo; viewSi
   const { scale, offsetLeft } = viewScaleInfo;
   const { width } = viewSizeInfo;
   return calcRulerScaleList({
+    axis: 'X',
     scale,
     viewLength: width,
     viewOffset: offsetLeft
@@ -78,6 +76,7 @@ export function calcYRulerScaleList(opts: { viewScaleInfo: ViewScaleInfo; viewSi
   const { scale, offsetTop } = viewScaleInfo;
   const { height } = viewSizeInfo;
   return calcRulerScaleList({
+    axis: 'Y',
     scale,
     viewLength: height,
     viewOffset: offsetTop
