@@ -35,7 +35,6 @@ export interface CoreEventScale {
 
 export type CoreEvent = {
   cursor: CoreEventCursor;
-  select: CoreEventSelect;
   change: CoreEventChange;
-  scale: CoreEventScale;
+  [key: string]: any;
 };

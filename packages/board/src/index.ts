@@ -102,7 +102,6 @@ export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
         this._handleWheelScale(e);
       }, frameTime)
     );
-    // this._watcher.on('scale', this._handleScale.bind(this));
     this._watcher.on('scrollX', this._handleScrollX.bind(this));
     this._watcher.on('scrollY', this._handleScrollY.bind(this));
     this._watcher.on('resize', this._handleResize.bind(this));

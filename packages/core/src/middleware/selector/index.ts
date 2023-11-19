@@ -52,13 +52,15 @@ import {
   // keyDebugStartVertical
 } from './config';
 
+export const middlewareEventSelect: string = '@middleware/select';
+
 export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, CoreEvent> = (opts) => {
   const { viewer, sharer, viewContent, calculator, eventHub } = opts;
   const { helperContext } = viewContent;
   let prevPoint: Point | null = null;
   let inBusyMode: 'resize' | 'drag' | 'drag-list' | 'area' | null = null;
 
-  eventHub.on('select', ({ uuids }) => {
+  eventHub.on(middlewareEventSelect, ({ uuids }) => {
     const actionType = sharer.getSharedStorage(keyActionType);
     const data = sharer.getActiveStorage('data');
     const elements = findElementsFromList(uuids, data?.elements || []);
@@ -131,7 +133,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
     }
 
     if (opts?.triggerEvent === true) {
-      eventHub.trigger('select', { uuids: list.map((elem) => elem.uuid) });
+      eventHub.trigger(middlewareEventSelect, { uuids: list.map((elem) => elem.uuid) });
     }
   };
 

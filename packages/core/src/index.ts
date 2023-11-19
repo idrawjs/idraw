@@ -4,10 +4,10 @@ import { createBoardContexts, validateElements } from '@idraw/util';
 import { Cursor } from './lib/cursor';
 
 // export { MiddlewareSelector } from './middleware/selector';
-export { MiddlewareSelector } from './middleware/selector';
+export { MiddlewareSelector, middlewareEventSelect } from './middleware/selector';
 export { MiddlewareScroller } from './middleware/scroller';
-export { MiddlewareScaler } from './middleware/scaler';
-export { MiddlewareRuler } from './middleware/ruler';
+export { MiddlewareScaler, middlewareEventScale } from './middleware/scaler';
+export { MiddlewareRuler, middlewareEventRuler } from './middleware/ruler';
 
 export class Core {
   private _board: Board<CoreEvent>;
