@@ -1,108 +1,94 @@
-import { Core, MiddlewareSelector, MiddlewareScroller, MiddlewareScaler } from '@idraw/core';
-import type { PointSize, IDrawOptions, Data, ViewSizeInfo, IDrawEvent } from '@idraw/types';
-
-export class iDraw {
-  private _core: Core;
-  private _opts: IDrawOptions;
-
-  constructor(mount: HTMLDivElement, opts: IDrawOptions) {
-    const core = new Core(mount, opts);
-    this._core = core;
-    this._opts = opts;
-    core.use(MiddlewareScroller);
-    core.use(MiddlewareSelector);
-    core.use(MiddlewareScaler);
-  }
-
-  setData(data: Data) {
-    this._core.setData(data);
-  }
-
-  getData(): Data | null {
-    return this._core.getData();
-  }
-
-  selectElement() {
-    // TODO
-  }
-
-  selectElementByIndex() {
-    // TODO
-  }
-
-  cancelElement() {
-    // TODO
-  }
-
-  cancelElementByIndex() {
-    // TODO
-  }
-
-  updateElement() {
-    // TODO
-  }
-
-  addElement() {
-    // TODO
-  }
-
-  deleteElement() {
-    // TODO
-  }
-
-  moveUpElement() {
-    // TODO
-  }
-
-  moveDownElement() {
-    // TODO
-  }
-
-  insertElementBefore() {
-    // TODO
-  }
-
-  insertElementBeforeIndex() {
-    // TODO
-  }
-
-  insertElementAfter() {
-    // TODO
-  }
-
-  insertElementAfterIndex() {
-    // TODO
-  }
-
-  scale(opts: { scale: number; point: PointSize }) {
-    this._core.scale(opts);
-  }
-
-  resize(opts: Partial<ViewSizeInfo>) {
-    this._core.resize(opts);
-  }
-
-  on<T extends keyof IDrawEvent>(name: T, callback: (e: IDrawEvent[T]) => void) {
-    this._core.on(name, callback);
-  }
-
-  off<T extends keyof IDrawEvent>(name: T, callback: (e: IDrawEvent[T]) => void) {
-    this._core.off(name, callback);
-  }
-
-  trigger<T extends keyof IDrawEvent>(name: T, e: IDrawEvent[T]) {
-    this._core.trigger(name, e);
-  }
-
-  // scrollLeft() {
-  //   // TODO
-  // }
-
-  // scrollTop() {
-  //   // TODO
-  // }
-
-  // exportDataURL() {
-  //   // TODO
-  // }
-}
+export { iDraw } from './idraw';
+export type * from '@idraw/types';
+export { Core, MiddlewareSelector, MiddlewareScroller, MiddlewareScaler } from '@idraw/core';
+export { Renderer } from '@idraw/renderer';
+export {
+  delay,
+  compose,
+  throttle,
+  downloadImageFromCanvas,
+  parseFileToBase64,
+  pickFile,
+  parseFileToText,
+  toColorHexStr,
+  toColorHexNum,
+  isColorStr,
+  colorNameToHex,
+  colorToCSS,
+  colorToLinearGradientCSS,
+  mergeHexColorAlpha,
+  createUUID,
+  isAssetId,
+  createAssetId,
+  deepClone,
+  sortDataAsserts,
+  istype,
+  loadImage,
+  loadSVG,
+  loadHTML,
+  is,
+  check,
+  createBoardContexts,
+  createContext2D,
+  createOffscreenContext2D,
+  EventEmitter,
+  calcDistance,
+  calcSpeed,
+  equalPoint,
+  equalTouchPoint,
+  vaildPoint,
+  vaildTouchPoint,
+  getCenterFromTwoPoints,
+  Store,
+  getViewScaleInfoFromSnapshot,
+  getViewSizeInfoFromSnapshot,
+  Context2D,
+  rotateElement,
+  parseRadianToAngle,
+  parseAngleToRadian,
+  rotateElementVertexes,
+  getElementRotateVertexes,
+  calcElementCenter,
+  calcElementCenterFromVertexes,
+  rotatePointInGroup,
+  limitAngle,
+  getSelectedElementUUIDs,
+  validateElements,
+  calcElementsContextSize,
+  calcElementsViewInfo,
+  getElemenetsAssetIds,
+  findElementFromList,
+  findElementsFromList,
+  updateElementInList,
+  getGroupQueueFromList,
+  getElementSize,
+  mergeElementAsset,
+  filterElementAsset,
+  isResourceElement,
+  checkRectIntersect,
+  viewScale,
+  viewScroll,
+  calcViewElementSize,
+  calcViewPointSize,
+  calcViewVertexes,
+  isViewPointInElement,
+  getViewPointAtElement,
+  isElementInView,
+  rotatePoint,
+  rotateVertexes,
+  getElementVertexes,
+  calcElementVertexesInGroup,
+  calcElementVertexesQueueInGroup,
+  calcElementQueueVertexesQueueInGroup,
+  calcElementSizeController,
+  generateSVGPath,
+  parseSVGPath,
+  generateHTML,
+  parseHTML,
+  compressImage,
+  formatNumber,
+  matrixToAngle,
+  matrixToRadian,
+  getDefaultElementDetailConfig,
+  calcViewBoxSize
+} from '@idraw/util';

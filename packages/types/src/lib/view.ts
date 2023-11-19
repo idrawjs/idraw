@@ -23,9 +23,10 @@ export interface ViewSizeInfo extends ViewContextSize {
 }
 
 export interface ViewContent {
+  boardContext: ViewContext2D;
   viewContext: ViewContext2D;
   helperContext: ViewContext2D;
-  boardContext: ViewContext2D;
+  underContext: ViewContext2D;
 }
 
 export interface ViewCalculatorOptions {

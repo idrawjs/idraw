@@ -7,6 +7,7 @@ import { Cursor } from './lib/cursor';
 export { MiddlewareSelector } from './middleware/selector';
 export { MiddlewareScroller } from './middleware/scroller';
 export { MiddlewareScaler } from './middleware/scaler';
+export { MiddlewareRuler } from './middleware/ruler';
 
 export class Core {
   private _board: Board<CoreEvent>;

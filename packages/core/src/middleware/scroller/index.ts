@@ -1,4 +1,3 @@
-import type { ElementSize } from '@idraw/types';
 import type { Point, BoardMiddleware, PointWatcherEvent, BoardWatherWheelXEvent, BoardWatherWheelYEvent } from '@idraw/types';
 import { drawScroller, isPointInScrollThumb } from './util';
 // import type { ScrollbarThumbType } from './util';

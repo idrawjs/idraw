@@ -32,8 +32,10 @@ export function createBoardContexts(ctx: CanvasRenderingContext2D, opts?: { devi
   };
   const viewContext = createContext2D(ctxOpts);
   const helperContext = createContext2D(ctxOpts);
+  const underContext = createContext2D(ctxOpts);
   const boardContext = createContext2D({ ctx, ...ctxOpts });
   const content: ViewContent = {
+    underContext,
     viewContext,
     helperContext,
     boardContext
