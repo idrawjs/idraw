@@ -50,7 +50,7 @@ export {
   getViewPointAtElement,
   isElementInView
 } from './lib/view-calc';
-export { rotatePoint, rotateVertexes } from './lib/rotate';
+export { rotatePoint, rotateVertexes, rotateByCenter } from './lib/rotate';
 export { getElementVertexes, calcElementVertexesInGroup, calcElementVertexesQueueInGroup, calcElementQueueVertexesQueueInGroup } from './lib/vertex';
 export { calcElementSizeController } from './lib/controller';
 export { generateSVGPath, parseSVGPath } from './lib/svg-path';

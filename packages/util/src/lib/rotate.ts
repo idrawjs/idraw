@@ -1,4 +1,4 @@
-import type { ViewContext2D, PointSize, ElementSize, ViewRectVertexes, Element, ElementType } from '@idraw/types';
+import type { ViewContext2D, PointSize, ElementSize, ViewRectVertexes, Element } from '@idraw/types';
 import { calcDistance } from './point';
 // import { calcElementVertexes } from './vertex';
 
@@ -18,26 +18,35 @@ export function parseAngleToRadian(angle: number): number {
 //   return p;
 // }
 
+export function rotateByCenter(
+  ctx: ViewContext2D | CanvasRenderingContext2D | ViewContext2D,
+  angle: number,
+  center: PointSize,
+  callback: (ctx: ViewContext2D | CanvasRenderingContext2D) => void
+): void {
+  const radian = parseAngleToRadian(angle || 0);
+  if (center && (radian > 0 || radian < 0)) {
+    ctx.translate(center.x, center.y);
+    ctx.rotate(radian);
+    ctx.translate(-center.x, -center.y);
+  }
+  callback(ctx);
+  if (center && (radian > 0 || radian < 0)) {
+    ctx.translate(center.x, center.y);
+    ctx.rotate(-radian);
+    ctx.translate(-center.x, -center.y);
+  }
+}
+
 export function rotateElement(
   ctx: ViewContext2D | CanvasRenderingContext2D | ViewContext2D,
   elemSize: ElementSize,
   callback: (ctx: ViewContext2D | CanvasRenderingContext2D) => void
 ): void {
   const center = calcElementCenter(elemSize);
-  const radian = parseAngleToRadian(elemSize.angle || 0);
-  if (center && (radian > 0 || radian < 0)) {
-    ctx.translate(center.x, center.y);
-    ctx.rotate(radian);
-    ctx.translate(-center.x, -center.y);
-  }
-
-  callback(ctx);
-
-  if (center && (radian > 0 || radian < 0)) {
-    ctx.translate(center.x, center.y);
-    ctx.rotate(-radian);
-    ctx.translate(-center.x, -center.y);
-  }
+  rotateByCenter(ctx, elemSize.angle || 0, center, () => {
+    callback(ctx);
+  });
 }
 
 export function calcElementCenter(elem: ElementSize): PointSize {

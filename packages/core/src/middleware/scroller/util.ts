@@ -1,18 +1,18 @@
-import type { Point, PointSize, BoardViewerFrameSnapshot, ViewScaleInfo, ViewSizeInfo, ViewContext2D, ElementSize } from '@idraw/types';
+import type { Point, BoardViewerFrameSnapshot, ViewScaleInfo, ViewSizeInfo, ViewContext2D, ElementSize } from '@idraw/types';
 import { getViewScaleInfoFromSnapshot, getViewSizeInfoFromSnapshot } from '@idraw/util';
 import { keyActivePoint, keyActiveThumbType, keyPrevPoint, keyXThumbRect, keyYThumbRect } from './config';
 
 const minScrollerWidth = 12;
 const scrollerLineWidth = 16;
-const scrollerAlpha = 0.12;
 const scrollerThumbAlpha = 0.36;
 
 export type ScrollbarThumbType = 'X' | 'Y';
 
 const scrollConfig = {
   width: minScrollerWidth,
-  color: '#000000',
-  showBackground: true
+  thumbColor: '#000000AA',
+  scrollBarColor: '#FFFFFF60',
+  showScrollBar: false
 };
 
 function isPointAtRect(helperContext: ViewContext2D, p: Point, rect: ElementSize): boolean {
@@ -81,7 +81,8 @@ function calcScrollerInfo(viewScaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeIn
     ySize = height;
   }
 
-  const xStart = lineSize / 2;
+  // const xStart = lineSize / 2;
+  const xStart = lineSize;
   const xEnd = width - xSize - lineSize;
   let translateX = xStart;
 
@@ -90,11 +91,12 @@ function calcScrollerInfo(viewScaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeIn
   } else if (offsetRight > 0) {
     translateX = xEnd;
   } else if (offsetLeft <= 0 && xSize > 0 && !(offsetLeft === 0 && offsetRight === 0)) {
-    translateX = xSize / 2 + ((width - xSize) * Math.abs(offsetLeft)) / (Math.abs(offsetLeft) + Math.abs(offsetRight));
-    translateX = Math.min(Math.max(0, translateX - xSize / 2), width - xSize);
+    translateX = xStart + ((width - xSize) * Math.abs(offsetLeft)) / (Math.abs(offsetLeft) + Math.abs(offsetRight));
+    translateX = Math.min(Math.max(0, translateX - xStart), width - xSize);
   }
 
-  const yStart = lineSize / 2;
+  // const yStart = lineSize / 2;
+  const yStart = lineSize;
   const yEnd = height - ySize - lineSize;
   let translateY = yStart;
   if (offsetTop > 0) {
@@ -102,8 +104,8 @@ function calcScrollerInfo(viewScaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeIn
   } else if (offsetBottom > 0) {
     translateY = yEnd;
   } else if (offsetTop <= 0 && ySize > 0 && !(offsetTop === 0 && offsetBottom === 0)) {
-    translateY = ySize / 2 + ((height - ySize) * Math.abs(offsetTop)) / (Math.abs(offsetTop) + Math.abs(offsetBottom));
-    translateY = Math.min(Math.max(0, translateY - ySize / 2), height - ySize);
+    translateY = yStart + ((height - ySize) * Math.abs(offsetTop)) / (Math.abs(offsetTop) + Math.abs(offsetBottom));
+    translateY = Math.min(Math.max(0, translateY - yStart), height - ySize);
   }
   const xThumbRect: ElementSize = {
     x: translateX,
@@ -123,7 +125,8 @@ function calcScrollerInfo(viewScaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeIn
     ySize,
     translateY,
     translateX,
-    color: '#0000007A',
+    thumbColor: scrollConfig.thumbColor,
+    scrollBarColor: scrollConfig.scrollBarColor,
     xThumbRect,
     yThumbRect
   };
@@ -143,43 +146,52 @@ function drawScrollerThumb(
   }
 ): void {
   let { x, y, h, w } = opts;
-  const { color, axis } = opts;
-  if (axis === 'X') {
-    y = y + h / 4 + 0;
-    h = h / 2;
-  } else if (axis === 'Y') {
-    x = x + w / 4 + 0;
-    w = w / 2;
-  }
 
-  let r = opts.r;
-  r = Math.min(r, w / 2, h / 2);
-  if (w < r * 2 || h < r * 2) {
-    r = 0;
-  }
-  ctx.globalAlpha = scrollerThumbAlpha;
-  ctx.beginPath();
-  ctx.moveTo(x + r, y);
-  ctx.arcTo(x + w, y, x + w, y + h, r);
-  ctx.arcTo(x + w, y + h, x, y + h, r);
-  ctx.arcTo(x, y + h, x, y, r);
-  ctx.arcTo(x, y, x + w, y, r);
-  ctx.closePath();
-  ctx.fillStyle = color;
-  ctx.fill();
+  ctx.save();
+  ctx.shadowColor = '#FFFFFF';
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 0;
+  ctx.shadowBlur = 1;
+  {
+    const { color, axis } = opts;
+    if (axis === 'X') {
+      y = y + h / 4 + 0;
+      h = h / 2;
+    } else if (axis === 'Y') {
+      x = x + w / 4 + 0;
+      w = w / 2;
+    }
 
-  ctx.globalAlpha = 1;
-  ctx.beginPath();
-  ctx.lineWidth = 1;
-  ctx.strokeStyle = color;
-  ctx.setLineDash([]);
-  ctx.moveTo(x + r, y);
-  ctx.arcTo(x + w, y, x + w, y + h, r);
-  ctx.arcTo(x + w, y + h, x, y + h, r);
-  ctx.arcTo(x, y + h, x, y, r);
-  ctx.arcTo(x, y, x + w, y, r);
-  ctx.closePath();
-  ctx.stroke();
+    let r = opts.r;
+    r = Math.min(r, w / 2, h / 2);
+    if (w < r * 2 || h < r * 2) {
+      r = 0;
+    }
+    ctx.globalAlpha = scrollerThumbAlpha;
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+    ctx.fillStyle = color;
+    ctx.fill();
+
+    ctx.globalAlpha = 1;
+    ctx.beginPath();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = color;
+    ctx.setLineDash([]);
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+    ctx.stroke();
+  }
+  ctx.restore();
 }
 
 function drawScrollerInfo(helperContext: ViewContext2D, opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo; scrollInfo: ScrollInfo }) {
@@ -202,9 +214,8 @@ function drawScrollerInfo(helperContext: ViewContext2D, opts: { viewScaleInfo: V
   }
 
   // x-bar
-  if (scrollConfig.showBackground === true) {
-    ctx.globalAlpha = scrollerAlpha;
-    ctx.fillStyle = wrapper.color;
+  if (scrollConfig.showScrollBar === true) {
+    ctx.fillStyle = wrapper.scrollBarColor;
     // x-line
     ctx.fillRect(0, height - wrapper.lineSize, width, wrapper.lineSize);
   }
@@ -215,13 +226,12 @@ function drawScrollerInfo(helperContext: ViewContext2D, opts: { viewScaleInfo: V
     axis: 'X',
     ...xThumbRect,
     r: wrapper.lineSize / 2,
-    color: wrapper.color
+    color: wrapper.thumbColor
   });
 
   // y-bar
-  if (scrollConfig.showBackground === true) {
-    ctx.globalAlpha = scrollerAlpha;
-    ctx.fillStyle = wrapper.color;
+  if (scrollConfig.showScrollBar === true) {
+    ctx.fillStyle = wrapper.scrollBarColor;
     // y-line
     ctx.fillRect(width - wrapper.lineSize, 0, wrapper.lineSize, height);
   }
@@ -232,7 +242,7 @@ function drawScrollerInfo(helperContext: ViewContext2D, opts: { viewScaleInfo: V
     axis: 'Y',
     ...yThumbRect,
     r: wrapper.lineSize / 2,
-    color: wrapper.color
+    color: wrapper.thumbColor
   });
 
   ctx.globalAlpha = 1;

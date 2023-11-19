@@ -342,7 +342,8 @@ export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
 
   clear() {
     const { viewContent } = this._opts;
-    const { helperContext, viewContext, boardContext } = viewContent;
+    const { underContext, helperContext, viewContext, boardContext } = viewContent;
+    underContext.clearRect(0, 0, underContext.canvas.width, underContext.canvas.height);
     helperContext.clearRect(0, 0, helperContext.canvas.width, helperContext.canvas.height);
     viewContext.clearRect(0, 0, viewContext.canvas.width, viewContext.canvas.height);
     boardContext.clearRect(0, 0, boardContext.canvas.width, boardContext.canvas.height);
