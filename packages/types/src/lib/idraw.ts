@@ -1,5 +1,3 @@
-import type { CoreOptions, CoreEvent } from './core';
+import type { CoreOptions } from './core';
 
 export type IDrawOptions = CoreOptions;
-
-export type IDrawEvent = CoreEvent;

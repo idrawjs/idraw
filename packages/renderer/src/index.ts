@@ -78,20 +78,4 @@ export class Renderer extends EventEmitter<RendererEventMap> implements BoardRen
       });
     }
   }
-
-  // scroll(opts: { offsetTop?: number; offsetLeft?: number }) {
-  //   const { sharer } = this._opts;
-  //   const { data, scale, offsetTop, offsetBottom, offsetLeft, offsetRight } = sharer.getActiveStoreSnapshot();
-  //   // TODO calc offset data
-  //   if (data) {
-  //     this.drawData(data, {
-  //       scale,
-  //       offsetTop,
-  //       offsetBottom,
-  //       offsetLeft,
-  //       offsetRight
-  //     });
-  //   }
-  //   // sharer.setActiveStorage('scale', num);
-  // }
 }
