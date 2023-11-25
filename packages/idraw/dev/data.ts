@@ -203,6 +203,28 @@ const data: Data = {
       detail: {
         background: '#cddc39'
       }
+    },
+    {
+      uuid: 'text-002',
+      name: 'text-002',
+      x: 50,
+      y: 200,
+      w: 100,
+      h: 50,
+      // angle: 30,
+      type: 'text',
+      detail: {
+        fontSize: 16,
+        // text: 'Hello Text Hello Text Hello Text Hello Text Hello Text Hello Text',
+        text: 'Hello Text',
+        fontWeight: 'bold',
+        color: '#000000',
+        borderRadius: 30,
+        borderWidth: 2,
+        borderColor: '#ff5722',
+        textAlign: 'center',
+        verticalAlign: 'middle'
+      }
     }
   ]
 };

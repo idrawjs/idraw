@@ -307,9 +307,9 @@ export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
   }
 
   use(middleware: BoardMiddleware<any, any>) {
-    const { viewContent } = this._opts;
+    const { viewContent, container } = this._opts;
     const { _sharer: sharer, _viewer: viewer, _calculator: calculator, _eventHub: eventHub } = this;
-    const obj = middleware({ viewContent, sharer, viewer, calculator, eventHub: eventHub as UtilEventEmitter<any> });
+    const obj = middleware({ viewContent, sharer, viewer, calculator, eventHub: eventHub as UtilEventEmitter<any>, container });
     this._middlewares.push(middleware);
     this._activeMiddlewareObjs.push(obj);
   }

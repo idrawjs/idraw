@@ -1,43 +1,45 @@
-import { Core, MiddlewareSelector, MiddlewareScroller, MiddlewareScaler, MiddlewareRuler } from '@idraw/core';
-import type { PointSize, IDrawOptions, Data, ViewSizeInfo, IDrawEvent } from '@idraw/types';
+import { Core, MiddlewareSelector, MiddlewareScroller, MiddlewareScaler, MiddlewareRuler, MiddlewareTextEditor, middlewareEventSelect } from '@idraw/core';
+import type { PointSize, IDrawOptions, Data, ViewSizeInfo } from '@idraw/types';
+import type { IDrawEvent } from './event';
 
 export class iDraw {
-  private _core: Core;
-  private _opts: IDrawOptions;
+  #core: Core;
+  // private #opts: IDrawOptions;
 
   constructor(mount: HTMLDivElement, opts: IDrawOptions) {
     const core = new Core(mount, opts);
-    this._core = core;
-    this._opts = opts;
+    this.#core = core;
+    // this.#opts = opts;
     core.use(MiddlewareScroller);
     core.use(MiddlewareSelector);
     core.use(MiddlewareScaler);
     core.use(MiddlewareRuler);
+    core.use(MiddlewareTextEditor);
   }
 
   setData(data: Data) {
-    this._core.setData(data);
+    this.#core.setData(data);
   }
 
   getData(): Data | null {
-    return this._core.getData();
+    return this.#core.getData();
   }
 
-  selectElement() {
-    // TODO
+  selectElements(uuids: string[]) {
+    this.trigger(middlewareEventSelect, { uuids });
   }
 
-  selectElementByIndex() {
-    // TODO
-  }
+  // selectElementByIndex() {
+  //   // TODO
+  // }
 
   cancelElement() {
     // TODO
   }
 
-  cancelElementByIndex() {
-    // TODO
-  }
+  // cancelElementByIndex() {
+  //   // TODO
+  // }
 
   updateElement() {
     // TODO
@@ -76,23 +78,23 @@ export class iDraw {
   }
 
   scale(opts: { scale: number; point: PointSize }) {
-    this._core.scale(opts);
+    this.#core.scale(opts);
   }
 
   resize(opts: Partial<ViewSizeInfo>) {
-    this._core.resize(opts);
+    this.#core.resize(opts);
   }
 
   on<T extends keyof IDrawEvent>(name: T, callback: (e: IDrawEvent[T]) => void) {
-    this._core.on(name, callback);
+    this.#core.on(name, callback);
   }
 
   off<T extends keyof IDrawEvent>(name: T, callback: (e: IDrawEvent[T]) => void) {
-    this._core.off(name, callback);
+    this.#core.off(name, callback);
   }
 
   trigger<T extends keyof IDrawEvent>(name: T, e: IDrawEvent[T]) {
-    this._core.trigger(name, e);
+    this.#core.trigger(name, e);
   }
 
   // scrollLeft() {

@@ -85,6 +85,8 @@ export interface BoardMiddlewareOptions<S extends Record<any | symbol, any> = Re
   viewer: BoardViewer;
   calculator: ViewCalculator;
   eventHub: UtilEventEmitter<E>;
+  container?: HTMLDivElement;
+  canvas?: HTMLCanvasElement;
 }
 
 export type BoardMiddleware<S extends Record<any | symbol, any> = any, E extends BoardExtendEvent = Record<string, any>> = (
@@ -93,6 +95,7 @@ export type BoardMiddleware<S extends Record<any | symbol, any> = any, E extends
 
 export interface BoardOptions {
   viewContent: ViewContent;
+  container?: HTMLDivElement;
 }
 
 export interface BoardViewerFrameSnapshot<S extends Record<any | symbol, any> = any> {

@@ -1,6 +1,17 @@
 export { iDraw } from './idraw';
+export type { IDrawEvent, IDrawEventKeys } from './event';
 export type * from '@idraw/types';
-export { Core, MiddlewareSelector, MiddlewareScroller, MiddlewareScaler } from '@idraw/core';
+export {
+  Core,
+  MiddlewareSelector,
+  middlewareEventSelect,
+  MiddlewareScroller,
+  MiddlewareScaler,
+  middlewareEventScale,
+  MiddlewareRuler,
+  middlewareEventRuler,
+  MiddlewareTextEditor
+} from '@idraw/core';
 export { Renderer } from '@idraw/renderer';
 export {
   delay,

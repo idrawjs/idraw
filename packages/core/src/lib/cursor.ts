@@ -27,7 +27,6 @@ export class Cursor {
     const { _eventHub: eventHub } = this;
     this._resetCursor('auto');
     eventHub.on('cursor', (e) => {
-      // console.log('e ======= ', e);
       if (e.type === 'over-element' || !e.type) {
         this._resetCursor('auto');
       } else if (typeof e.type === 'string' && e.type?.startsWith('resize-')) {

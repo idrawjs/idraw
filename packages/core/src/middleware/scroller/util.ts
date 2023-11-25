@@ -72,11 +72,11 @@ function calcScrollerInfo(viewScaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeIn
 
   let xSize = 0;
   let ySize = 0;
-  xSize = Math.max(sliderMinSize, width - (Math.abs(offsetLeft) + Math.abs(offsetRight)));
+  xSize = Math.max(sliderMinSize, width - lineSize * 2 - (Math.abs(offsetLeft) + Math.abs(offsetRight)));
   if (xSize >= width) {
     xSize = width;
   }
-  ySize = Math.max(sliderMinSize, height - (Math.abs(offsetTop) + Math.abs(offsetBottom)));
+  ySize = Math.max(sliderMinSize, height - lineSize * 2 - (Math.abs(offsetTop) + Math.abs(offsetBottom)));
   if (ySize >= height) {
     ySize = height;
   }
@@ -246,6 +246,7 @@ function drawScrollerInfo(helperContext: ViewContext2D, opts: { viewScaleInfo: V
   });
 
   ctx.globalAlpha = 1;
+
   return {
     xThumbRect,
     yThumbRect

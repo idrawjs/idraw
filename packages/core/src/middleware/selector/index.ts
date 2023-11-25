@@ -51,6 +51,7 @@ import {
   // keyDebugStartHorizontal,
   // keyDebugStartVertical
 } from './config';
+import { middlewareEventTextEdit } from '../text-editor';
 
 export const middlewareEventSelect: string = '@middleware/select';
 
@@ -486,6 +487,12 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
           viewer.drawFrame();
           return;
         }
+      } else if (target.elements.length === 1 && target.elements[0]?.type === 'text') {
+        eventHub.trigger(middlewareEventTextEdit, {
+          element: target.elements[0],
+          groupQueue: sharer.getSharedStorage(keyGroupQueue) || [],
+          viewScaleInfo: sharer.getActiveViewScaleInfo()
+        });
       }
       sharer.setSharedStorage(keyActionType, null);
     },
