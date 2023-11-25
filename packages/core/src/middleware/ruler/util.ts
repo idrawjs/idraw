@@ -1,5 +1,5 @@
 import type { ViewScaleInfo, ViewSizeInfo, ViewContext2D } from '@idraw/types';
-import { Context2D, formatNumber, rotateByCenter } from '@idraw/util';
+import { formatNumber, rotateByCenter } from '@idraw/util';
 
 const rulerSize = 16;
 const background = '#FFFFFFA8';
@@ -11,6 +11,7 @@ const fontSize = 10;
 const fontWeight = 100;
 const gridColor = '#AAAAAA30';
 const gridKeyColor = '#AAAAAA70';
+const lineSize = 1;
 
 // const rulerUnit = 10;
 // const rulerKeyUnit = 100;
@@ -30,7 +31,7 @@ function calcRulerScaleList(opts: { axis: 'X' | 'Y'; scale: number; viewLength: 
   let rulerUnit = 10;
 
   rulerUnit = formatNumber(rulerUnit / scale, { decimalPlaces: 0 });
-  rulerUnit = Math.max(1, Math.min(rulerUnit, 1000));
+  rulerUnit = Math.max(10, Math.min(rulerUnit, 1000));
 
   const rulerKeyUnit = rulerUnit * 10;
   const rulerSubKeyUnit = rulerUnit * 5;
@@ -104,6 +105,8 @@ export function drawXRuler(
     ctx.moveTo(item.position, scaleDrawStart);
     ctx.lineTo(item.position, item.isKeyNum ? keyScaleDrawEnd : item.isSubKeyNum ? subKeyScaleDrawEnd : scaleDrawEnd);
     ctx.closePath();
+    ctx.lineWidth = lineSize;
+    ctx.setLineDash([]);
     ctx.fillStyle = scaleColor;
     ctx.stroke();
     if (item.isKeyNum) {
@@ -141,6 +144,8 @@ export function drawYRuler(
     ctx.lineTo(item.isKeyNum ? keyScaleDrawEnd : item.isSubKeyNum ? subKeyScaleDrawEnd : scaleDrawEnd, item.position);
     ctx.closePath();
     ctx.fillStyle = scaleColor;
+    ctx.lineWidth = lineSize;
+    ctx.setLineDash([]);
     ctx.stroke();
     if (item.showNum === true) {
       const textX = fontStart;
@@ -181,6 +186,8 @@ export function drawRulerBackground(
   ctx.closePath();
   ctx.fillStyle = background;
   ctx.fill();
+  ctx.lineWidth = lineSize;
+  ctx.setLineDash([]);
   ctx.strokeStyle = borderColor;
   ctx.stroke();
 }
@@ -206,9 +213,9 @@ export function drawUnderGrid(
     } else {
       ctx.strokeStyle = gridColor;
     }
-
-    ctx.lineWidth = 1;
     ctx.closePath();
+    ctx.lineWidth = lineSize;
+    ctx.setLineDash([]);
     ctx.stroke();
   }
 

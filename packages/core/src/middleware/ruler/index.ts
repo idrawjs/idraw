@@ -8,11 +8,18 @@ export const MiddlewareRuler: BoardMiddleware<Record<string, any>, CoreEvent> = 
   const key = 'RULE';
   const { viewContent, viewer, eventHub } = opts;
   const { helperContext, underContext } = viewContent;
-  let showRuler: boolean = true;
+  let show: boolean = true;
+  let showGrid: boolean = true;
 
-  eventHub.on(middlewareEventRuler, (e: { show: boolean }) => {
+  eventHub.on(middlewareEventRuler, (e: { show: boolean; showGrid: boolean }) => {
     if (typeof e?.show === 'boolean') {
-      showRuler = e.show;
+      show = e.show;
+    }
+    if (typeof e?.showGrid === 'boolean') {
+      showGrid = e.showGrid;
+    }
+
+    if (typeof e?.show === 'boolean' || typeof e?.showGrid === 'boolean') {
       viewer.drawFrame();
     }
   });
@@ -20,7 +27,7 @@ export const MiddlewareRuler: BoardMiddleware<Record<string, any>, CoreEvent> = 
     mode: key,
     isDefault: true,
     beforeDrawFrame: ({ snapshot }) => {
-      if (showRuler === true) {
+      if (show === true) {
         const viewScaleInfo = getViewScaleInfoFromSnapshot(snapshot);
         const viewSizeInfo = getViewSizeInfoFromSnapshot(snapshot);
         drawRulerBackground(helperContext, { viewScaleInfo, viewSizeInfo });
@@ -31,12 +38,14 @@ export const MiddlewareRuler: BoardMiddleware<Record<string, any>, CoreEvent> = 
         const yList = calcYRulerScaleList({ viewScaleInfo, viewSizeInfo });
         drawYRuler(helperContext, { scaleList: yList });
 
-        drawUnderGrid(underContext, {
-          xList,
-          yList,
-          viewScaleInfo,
-          viewSizeInfo
-        });
+        if (showGrid === true) {
+          drawUnderGrid(underContext, {
+            xList,
+            yList,
+            viewScaleInfo,
+            viewSizeInfo
+          });
+        }
       }
     }
   };
