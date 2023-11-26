@@ -1,6 +1,7 @@
 import { Core, MiddlewareSelector, MiddlewareScroller, MiddlewareScaler, MiddlewareRuler, MiddlewareTextEditor, middlewareEventSelect } from '@idraw/core';
-import type { PointSize, IDrawOptions, Data, ViewSizeInfo } from '@idraw/types';
+import type { PointSize, IDrawOptions, Data, ViewSizeInfo, ElementType, Element, RecursivePartial } from '@idraw/types';
 import type { IDrawEvent } from './event';
+import { createElement } from '@idraw/util';
 
 export class iDraw {
   #core: Core;
@@ -25,58 +26,6 @@ export class iDraw {
     return this.#core.getData();
   }
 
-  selectElements(uuids: string[]) {
-    this.trigger(middlewareEventSelect, { uuids });
-  }
-
-  // selectElementByIndex() {
-  //   // TODO
-  // }
-
-  cancelElement() {
-    // TODO
-  }
-
-  // cancelElementByIndex() {
-  //   // TODO
-  // }
-
-  updateElement() {
-    // TODO
-  }
-
-  addElement() {
-    // TODO
-  }
-
-  deleteElement() {
-    // TODO
-  }
-
-  moveUpElement() {
-    // TODO
-  }
-
-  moveDownElement() {
-    // TODO
-  }
-
-  insertElementBefore() {
-    // TODO
-  }
-
-  insertElementBeforeIndex() {
-    // TODO
-  }
-
-  insertElementAfter() {
-    // TODO
-  }
-
-  insertElementAfterIndex() {
-    // TODO
-  }
-
   scale(opts: { scale: number; point: PointSize }) {
     this.#core.scale(opts);
   }
@@ -95,6 +44,68 @@ export class iDraw {
 
   trigger<T extends keyof IDrawEvent>(name: T, e: IDrawEvent[T]) {
     this.#core.trigger(name, e);
+  }
+
+  selectElements(uuids: string[]) {
+    this.trigger(middlewareEventSelect, { uuids });
+  }
+
+  cancelElements() {
+    this.trigger(middlewareEventSelect, { uuids: [] });
+  }
+
+  createElement<T extends ElementType>(
+    type: T,
+    opts?: {
+      element?: RecursivePartial<Element<T>>;
+      viewCenter?: boolean;
+    }
+  ): Element<T> {
+    const { viewScaleInfo, viewSizeInfo } = this.#core.getViewInfo();
+    return createElement<T>(
+      type,
+      opts?.element || {},
+      opts?.viewCenter === true
+        ? {
+            viewScaleInfo,
+            viewSizeInfo
+          }
+        : undefined
+    );
+  }
+
+  updateElement() {
+    // TODO
+  }
+
+  addElement(
+    element: Element,
+    opts?: {
+      uuid: string;
+      referenceType: 'group' | 'front' | 'back';
+    }
+  ) {
+    const core = this.#core;
+    const data: Data = core.getData() || { elements: [] };
+    if (!opts) {
+      data.elements.push(element);
+    } else {
+      // TODO
+    }
+    core.setData({ ...data });
+    core.refresh();
+  }
+
+  deleteElement(uuid: string) {
+    // TODO
+  }
+
+  moveElementToFront(uuid: string, referenceUUID?: string) {
+    // TODO
+  }
+
+  moveElementToBack(uuid: string, referenceUUID?: string) {
+    // TODO
   }
 
   // scrollLeft() {

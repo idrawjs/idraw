@@ -101,5 +101,6 @@ export {
   matrixToAngle,
   matrixToRadian,
   getDefaultElementDetailConfig,
-  calcViewBoxSize
+  calcViewBoxSize,
+  createElement
 } from '@idraw/util';

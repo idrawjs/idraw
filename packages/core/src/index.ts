@@ -1,4 +1,4 @@
-import type { Data, PointSize, CoreOptions, BoardMiddleware, ViewSizeInfo, CoreEvent } from '@idraw/types';
+import type { Data, PointSize, CoreOptions, BoardMiddleware, ViewSizeInfo, CoreEvent, ViewScaleInfo } from '@idraw/types';
 import { Board } from '@idraw/board';
 import { createBoardContexts, validateElements } from '@idraw/util';
 import { Cursor } from './lib/cursor';
@@ -95,5 +95,20 @@ export class Core {
   trigger<T extends keyof CoreEvent>(name: T, e: CoreEvent[T]) {
     const eventHub = this.#board.getEventHub();
     eventHub.trigger(name, e);
+  }
+
+  getViewInfo(): { viewSizeInfo: ViewSizeInfo; viewScaleInfo: ViewScaleInfo } {
+    const board = this.#board;
+    const sharer = board.getSharer();
+    const viewSizeInfo = sharer.getActiveViewSizeInfo();
+    const viewScaleInfo = sharer.getActiveViewScaleInfo();
+    return {
+      viewSizeInfo,
+      viewScaleInfo
+    };
+  }
+
+  refresh() {
+    this.#board.getViewer().drawFrame();
   }
 }

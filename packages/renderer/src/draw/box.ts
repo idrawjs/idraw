@@ -295,6 +295,14 @@ function drawBoxBorder(ctx: ViewContext2D, viewElem: Element<ElementType>, opts:
     } else {
       ctx.lineCap = 'square';
     }
+
+    // TODO
+    w = Math.max(w, 1);
+    h = Math.max(h, 1);
+    radiusList = radiusList.map((r) => {
+      return Math.min(r, w / 2, h / 2);
+    }) as [number, number, number, number];
+
     ctx.setLineDash(viewBorderDash);
     ctx.lineWidth = bw;
     ctx.beginPath();

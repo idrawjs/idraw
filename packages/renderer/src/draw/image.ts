@@ -31,7 +31,7 @@ export function drawImage(ctx: ViewContext2D, elem: Element<'image'>, opts: Rend
               });
 
               ctx.save();
-
+              ctx.fillStyle = 'transparent';
               ctx.beginPath();
               ctx.moveTo(x + radiusList[0], y);
               ctx.arcTo(x + w, y, x + w, y + h, radiusList[1]);
@@ -43,7 +43,6 @@ export function drawImage(ctx: ViewContext2D, elem: Element<'image'>, opts: Rend
               ctx.clip();
               ctx.drawImage(content, x, y, w, h);
               ctx.globalAlpha = 1;
-
               ctx.restore();
             }
           }

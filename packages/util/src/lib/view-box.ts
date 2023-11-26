@@ -20,7 +20,7 @@ export function calcViewBoxSize(viewElem: Element, opts: { viewScaleInfo: ViewSc
   }
   let bw: number = 0;
   if (typeof borderWidth === 'number') {
-    bw = (borderWidth || 1) * scale;
+    bw = (borderWidth || 0) * scale;
   }
   if (boxSizing === 'border-box') {
     x = viewElem.x + bw / 2;
@@ -39,18 +39,12 @@ export function calcViewBoxSize(viewElem: Element, opts: { viewScaleInfo: ViewSc
     h = viewElem.h;
   }
 
-  // r = Math.min(r, w / 2, h / 2);
-  // if (w < r * 2 || h < r * 2) {
-  //   r = 0;
-  // }
-
-  // ctx.beginPath();
-  // ctx.moveTo(x + radiusList[0], y);
-  // ctx.arcTo(x + w, y, x + w, y + h, radiusList[1]);
-  // ctx.arcTo(x + w, y + h, x, y + h, radiusList[2]);
-  // ctx.arcTo(x, y + h, x, y, radiusList[3]);
-  // ctx.arcTo(x, y, x + w, y, radiusList[0]);
-  // ctx.closePath();
+  // TODO
+  w = Math.max(w, 1);
+  h = Math.max(h, 1);
+  radiusList = radiusList.map((r) => {
+    return Math.min(r, w / 2, h / 2);
+  }) as [number, number, number, number];
 
   return {
     x,
