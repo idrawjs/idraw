@@ -9,43 +9,12 @@ import type {
   RecursivePartial,
   ElementAssets,
   ElementAssetsItem,
-  LoadElementType
+  LoadElementType,
+  ElementPosition
 } from '@idraw/types';
 import { rotateElementVertexes } from './rotate';
 import { isAssetId, createAssetId } from './uuid';
 import { istype } from './istype';
-
-// // TODO need to be deprecated
-// function getGroupIndexes(elem: Element<'group'>, uuids: string[], parentIndex: string): string[] {
-//   let indexes: string[] = [];
-//   if (elem?.type === 'group' && elem?.detail?.children?.length > 0) {
-//     for (let i = 0; i < elem.detail.children.length; i++) {
-//       const child = elem.detail.children[i];
-//       if (uuids.includes(child.uuid)) {
-//         indexes.push([parentIndex, i].join('.'));
-//       } else if (elem.type === 'group') {
-//         indexes = indexes.concat(getGroupIndexes(child as Element<'group'>, uuids, [parentIndex, i].join('.')));
-//       }
-//     }
-//   }
-//   return indexes;
-// }
-
-// // TODO need to be deprecated
-// export function getSelectedElementIndexes(data: Data, uuids: string[]): Array<string | number> {
-//   let indexes: Array<string | number> = [];
-//   if (Array.isArray(data?.elements) && data?.elements?.length > 0 && Array.isArray(uuids) && uuids.length > 0) {
-//     for (let i = 0; i < data.elements.length; i++) {
-//       const elem = data.elements[i];
-//       if (uuids.includes(elem.uuid)) {
-//         indexes.push(i);
-//       } else if (elem.type === 'group') {
-//         indexes = indexes.concat(getGroupIndexes(elem as Element<'group'>, uuids, `${i}`));
-//       }
-//     }
-//   }
-//   return indexes;
-// }
 
 function getGroupUUIDs(elements: Array<Element<ElementType>>, index: string): string[] {
   const uuids: string[] = [];
@@ -83,38 +52,6 @@ export function getSelectedElementUUIDs(data: Data, indexes: Array<number | stri
   }
   return uuids;
 }
-
-// // TODO need to be deprecated
-// function getElementInGroup(elem: Element<'group'>, uuids: string[]): Array<Element<ElementType>> {
-//   let elements: Array<Element<ElementType>> = [];
-//   if (elem?.type === 'group' && elem?.detail?.children?.length > 0) {
-//     for (let i = 0; i < elem.detail.children.length; i++) {
-//       const child = elem.detail.children[i];
-//       if (uuids.includes(child.uuid)) {
-//         elements.push(child);
-//       } else if (elem.type === 'group' && elem.detail?.children?.length > 0) {
-//         elements = elements.concat(getElementInGroup(child as Element<'group'>, uuids));
-//       }
-//     }
-//   }
-//   return elements;
-// }
-
-// // TODO need to be deprecated
-// export function getSelectedElements(data: Data | null | undefined, uuids: string[], groupQueue?: Element<'group'>[]): Array<Element<ElementType>> {
-//   let elements: Array<Element<ElementType>> = [];
-//   if (Array.isArray(groupQueue) && groupQueue.length > 0) {
-//     elements = getElementInGroup(groupQueue[groupQueue.length - 1], uuids);
-//   } else if (data && Array.isArray(data?.elements) && data?.elements?.length > 0 && Array.isArray(uuids) && uuids.length > 0) {
-//     for (let i = 0; i < data.elements.length; i++) {
-//       const elem = data.elements[i];
-//       if (uuids.includes(elem.uuid)) {
-//         elements.push(elem);
-//       }
-//     }
-//   }
-//   return elements;
-// }
 
 export function validateElements(elements: Array<Element<ElementType>>): boolean {
   let isValid = true;
@@ -433,4 +370,82 @@ export function filterElementAsset<T extends Element<LoadElementType>>(
 
 export function isResourceElement(elem: Element): boolean {
   return ['image', 'svg', 'html'].includes(elem?.type);
+}
+
+export function findElementsFromListByPositions(positions: ElementPosition[], list: Element[]): Element[] {
+  const elements: Element[] = [];
+  positions.forEach((pos: ElementPosition) => {
+    const elem = findElementFromListByPosition(pos, list);
+    if (elem) {
+      elements.push(elem);
+    }
+  });
+  return elements;
+}
+
+export function findElementFromListByPosition(position: ElementPosition, list: Element[]): Element | null {
+  let result: Element | null = null;
+  let tempList: Element[] = list;
+  for (let i = 0; i < position.length; i++) {
+    const pos = position[i];
+    const item = tempList[pos];
+    if (i < position.length - 1 && item.type === 'group') {
+      tempList = (item as Element<'group'>).detail.children;
+    } else if (i === position.length - 1) {
+      result = item;
+    } else {
+      break;
+    }
+  }
+  return result;
+}
+
+export function insertElementToListByPosition(element: Element, position: ElementPosition, list: Element[]): boolean {
+  let result = false;
+  if (position.length === 1) {
+    const pos = position[0];
+    list.splice(pos, 0, element);
+    result = true;
+  } else if (position.length > 1) {
+    let tempList: Element[] = list;
+    for (let i = 0; i < position.length; i++) {
+      const pos = position[i];
+      const item = tempList[pos];
+      if (i === position.length - 1) {
+        const pos = position[i];
+        tempList.splice(pos, 0, element);
+        result = true;
+      } else if (i < position.length - 1 && item.type === 'group') {
+        tempList = (item as Element<'group'>).detail.children;
+      } else {
+        break;
+      }
+    }
+  }
+  return result;
+}
+
+export function deleteElementInListByPosition(position: ElementPosition, list: Element[]): boolean {
+  let result = false;
+  if (position.length === 1) {
+    const pos = position[0];
+    list.splice(pos, 1);
+    result = true;
+  } else if (position.length > 1) {
+    let tempList: Element[] = list;
+    for (let i = 0; i < position.length; i++) {
+      const pos = position[i];
+      const item = tempList[pos];
+      if (i === position.length - 1) {
+        const pos = position[i];
+        tempList.splice(pos, 1);
+        result = true;
+      } else if (i < position.length - 1 && item.type === 'group') {
+        tempList = (item as Element<'group'>).detail.children;
+      } else {
+        break;
+      }
+    }
+  }
+  return result;
 }

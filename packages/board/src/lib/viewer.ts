@@ -1,4 +1,4 @@
-import { EventEmitter, viewScale, viewScroll } from '@idraw/util';
+import { EventEmitter, viewScale, viewScroll, calcViewScaleInfo } from '@idraw/util';
 import type {
   PointSize,
   BoardViewer,
@@ -122,6 +122,16 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
       viewScaleInfo: prevViewScaleInfo,
       viewSizeInfo
     });
+    sharer.setActiveViewScaleInfo(viewScaleInfo);
+    return viewScaleInfo;
+  }
+
+  updateViewScaleInfo(opts: { scale: number; offsetX: number; offsetY: number }): ViewScaleInfo {
+    const { sharer } = this._opts;
+    const viewScaleInfo = calcViewScaleInfo(opts, {
+      viewSizeInfo: sharer.getActiveViewSizeInfo()
+    });
+
     sharer.setActiveViewScaleInfo(viewScaleInfo);
     return viewScaleInfo;
   }

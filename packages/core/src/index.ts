@@ -111,4 +111,8 @@ export class Core {
   refresh() {
     this.#board.getViewer().drawFrame();
   }
+
+  updateViewScale(opts: { scale: number; offsetX: number; offsetY: number }) {
+    this.#board.updateViewScaleInfo(opts);
+  }
 }

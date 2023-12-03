@@ -124,6 +124,7 @@ export interface BoardViewer extends UtilEventEmitter<BoardViewerEventMap> {
   // scrollX(num: number): ViewScaleInfo;
   // scrollY(num: number): ViewScaleInfo;
   resize(viewSize: Partial<ViewSizeInfo>): ViewSizeInfo;
+  updateViewScaleInfo(opts: { scale: number; offsetX: number; offsetY: number }): ViewScaleInfo;
 }
 
 export interface BoardRenderer extends UtilEventEmitter<RendererEventMap> {

@@ -5,7 +5,8 @@ import type {
   ElementCircleDetail,
   ElementTextDetail,
   ElementSVGDetail,
-  ElementImageDetail
+  ElementImageDetail,
+  ElementGroupDetail
 } from '@idraw/types';
 
 export function getDefaultElementDetailConfig(): DefaultElementDetailConfig {
@@ -26,7 +27,8 @@ export function getDefaultElementDetailConfig(): DefaultElementDetailConfig {
     fontSize: 16,
     lineHeight: 20,
     fontFamily: 'sans-serif',
-    fontWeight: 400
+    fontWeight: 400,
+    overflow: 'hidden'
   };
   return config;
 }
@@ -72,6 +74,15 @@ export function getDefaultElementSVGDetail(): ElementSVGDetail {
 export function getDefaultElementImageDetail(): ElementImageDetail {
   const detail: ElementImageDetail = {
     src: 'data:image/svg+xml;base64,PHN2ZyAgIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiAgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiPjxwYXRoIGQ9Ik05MjggMTYwSDk2Yy0xNy43IDAtMzIgMTQuMy0zMiAzMnY2NDBjMCAxNy43IDE0LjMgMzIgMzIgMzJoODMyYzE3LjcgMCAzMi0xNC4zIDMyLTMyVjE5MmMwLTE3LjctMTQuMy0zMi0zMi0zMnogbS00MCA2MzJIMTM2di0zOS45bDEzOC41LTE2NC4zIDE1MC4xIDE3OEw2NTguMSA0ODkgODg4IDc2MS42Vjc5MnogbTAtMTI5LjhMNjY0LjIgMzk2LjhjLTMuMi0zLjgtOS0zLjgtMTIuMiAwTDQyNC42IDY2Ni40bC0xNDQtMTcwLjdjLTMuMi0zLjgtOS0zLjgtMTIuMiAwTDEzNiA2NTIuN1YyMzJoNzUydjQzMC4yeiIgIGZpbGw9IiM1MTUxNTEiPjwvcGF0aD48cGF0aCBkPSJNMzA0IDQ1NmM0OC42IDAgODgtMzkuNCA4OC04OHMtMzkuNC04OC04OC04OC04OCAzOS40LTg4IDg4IDM5LjQgODggODggODh6IG0wLTExNmMxNS41IDAgMjggMTIuNSAyOCAyOHMtMTIuNSAyOC0yOCAyOC0yOC0xMi41LTI4LTI4IDEyLjUtMjggMjgtMjh6IiAgZmlsbD0iIzUxNTE1MSI+PC9wYXRoPjwvc3ZnPg=='
+  };
+  return detail;
+}
+
+export function getDefaultElementGroupDetail(opts?: { viewScaleInfo: ViewScaleInfo }): ElementGroupDetail {
+  const detail: ElementGroupDetail = {
+    children: [],
+    background: '#D9D9D9',
+    overflow: 'hidden'
   };
   return detail;
 }

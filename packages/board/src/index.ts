@@ -17,7 +17,7 @@ import { BoardWatcher } from './lib/watcher';
 import { Sharer } from './lib/sharer';
 import { Viewer } from './lib/viewer';
 
-const frameTime = 16; // ms
+const throttleTime = 10; // ms
 
 const LOCK_MODES: BoardMode[] = ['RULER'];
 
@@ -28,7 +28,7 @@ export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
   private _activeMiddlewareObjs: BoardMiddlewareObject[] = [];
   private _watcher: BoardWatcher;
   private _sharer: Sharer;
-  private _renderer: Renderer;
+  // private _renderer: Renderer;
   private _viewer: Viewer;
   private _calculator: Calculator;
   private _eventHub: EventEmitter<T> = new EventEmitter<T>();
@@ -49,7 +49,7 @@ export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
 
     this._opts = opts;
     this._sharer = sharer;
-    this._renderer = renderer;
+    // this._renderer = renderer;
     this._watcher = watcher;
     this._calculator = calculator;
     this._viewer = new Viewer({
@@ -75,32 +75,32 @@ export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
       'pointMove',
       throttle((e) => {
         this._handlePointMove(e);
-      }, frameTime)
+      }, throttleTime)
     );
     this._watcher.on(
       'hover',
       throttle((e) => {
         this._handleHover(e);
-      }, frameTime)
+      }, throttleTime)
     );
 
     this._watcher.on(
       'wheelX',
       throttle((e) => {
         this._handleWheelX(e);
-      }, frameTime)
+      }, throttleTime)
     );
     this._watcher.on(
       'wheelY',
       throttle((e) => {
         this._handleWheelY(e);
-      }, frameTime)
+      }, throttleTime)
     );
     this._watcher.on(
       'wheelScale',
       throttle((e) => {
         this._handleWheelScale(e);
-      }, frameTime)
+      }, throttleTime)
     );
     this._watcher.on('scrollX', this._handleScrollX.bind(this));
     this._watcher.on('scrollY', this._handleScrollY.bind(this));
@@ -322,6 +322,10 @@ export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
 
   scroll(opts: { moveX: number; moveY: number }) {
     return this._viewer.scroll(opts);
+  }
+
+  updateViewScaleInfo(opts: { scale: number; offsetX: number; offsetY: number }) {
+    return this._viewer.updateViewScaleInfo(opts);
   }
 
   resize(newViewSize: ViewSizeInfo) {
