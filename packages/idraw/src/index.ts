@@ -70,6 +70,8 @@ export {
   getElemenetsAssetIds,
   findElementFromList,
   findElementsFromList,
+  findElementFromListByPosition,
+  findElementsFromListByPositions,
   updateElementInList,
   getGroupQueueFromList,
   getElementSize,
@@ -102,5 +104,6 @@ export {
   matrixToRadian,
   getDefaultElementDetailConfig,
   calcViewBoxSize,
-  createElement
+  createElement,
+  moveElementPosition
 } from '@idraw/util';

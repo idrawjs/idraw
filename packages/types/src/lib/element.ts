@@ -127,7 +127,7 @@ export interface ElementSVGDetail extends ElementBaseDetail {
 
 export interface ElementGroupDetail extends ElementBaseDetail {
   children: Element<ElementType>[];
-  overflow?: 'hidden';
+  overflow?: 'hidden' | 'visible';
   assets?: ElementAssets;
 }
 
@@ -177,3 +177,5 @@ export interface Element<T extends ElementType = ElementType, E extends Record<s
 }
 
 export type Elements = Element<ElementType>[];
+
+export type ElementPosition = number[];

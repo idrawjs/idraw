@@ -1,5 +1,5 @@
 import { Core, MiddlewareSelector, MiddlewareScroller, MiddlewareScaler, MiddlewareRuler, MiddlewareTextEditor, middlewareEventSelect } from '@idraw/core';
-import type { PointSize, IDrawOptions, Data, ViewSizeInfo, ElementType, Element, RecursivePartial } from '@idraw/types';
+import type { PointSize, IDrawOptions, Data, ViewSizeInfo, ElementType, Element, RecursivePartial, ElementPosition } from '@idraw/types';
 import type { IDrawEvent } from './event';
 import { createElement } from '@idraw/util';
 
@@ -30,6 +30,12 @@ export class iDraw {
     this.#core.scale(opts);
   }
 
+  updateViewScale(opts: { scale: number; offsetX: number; offsetY: number }) {
+    const core = this.#core;
+    core.updateViewScale(opts);
+    core.refresh();
+  }
+
   resize(opts: Partial<ViewSizeInfo>) {
     this.#core.resize(opts);
   }
@@ -48,6 +54,10 @@ export class iDraw {
 
   selectElements(uuids: string[]) {
     this.trigger(middlewareEventSelect, { uuids });
+  }
+
+  selectElementsByPositions(positions: ElementPosition[]) {
+    this.trigger(middlewareEventSelect, { positions });
   }
 
   cancelElements() {
@@ -84,7 +94,7 @@ export class iDraw {
       uuid: string;
       referenceType: 'group' | 'front' | 'back';
     }
-  ) {
+  ): Data {
     const core = this.#core;
     const data: Data = core.getData() || { elements: [] };
     if (!opts) {
@@ -92,8 +102,9 @@ export class iDraw {
     } else {
       // TODO
     }
-    core.setData({ ...data });
+    core.setData(data);
     core.refresh();
+    return data;
   }
 
   deleteElement(uuid: string) {

@@ -5,7 +5,8 @@ import {
   calcElementSizeController,
   rotatePointInGroup,
   getGroupQueueFromList,
-  findElementsFromList
+  findElementsFromList,
+  findElementsFromListByPositions
 } from '@idraw/util';
 import type { ViewRectVertexes, CoreEvent } from '@idraw/types';
 import type {
@@ -61,10 +62,17 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
   let prevPoint: Point | null = null;
   let inBusyMode: 'resize' | 'drag' | 'drag-list' | 'area' | null = null;
 
-  eventHub.on(middlewareEventSelect, ({ uuids }) => {
+  eventHub.on(middlewareEventSelect, ({ uuids, positions }) => {
+    let elements: Element[] = [];
+
     const actionType = sharer.getSharedStorage(keyActionType);
     const data = sharer.getActiveStorage('data');
-    const elements = findElementsFromList(uuids, data?.elements || []);
+    if (positions && Array.isArray(positions)) {
+      elements = findElementsFromListByPositions(positions, data?.elements || []);
+    } else {
+      elements = findElementsFromList(uuids, data?.elements || []);
+    }
+
     let needRefresh = false;
     if (!actionType && elements.length === 1) {
       // TODO

@@ -32,6 +32,8 @@ export {
   getElemenetsAssetIds,
   findElementFromList,
   findElementsFromList,
+  findElementFromListByPosition,
+  findElementsFromListByPositions,
   updateElementInList,
   getGroupQueueFromList,
   getElementSize,
@@ -48,7 +50,8 @@ export {
   calcViewVertexes,
   isViewPointInElement,
   getViewPointAtElement,
-  isElementInView
+  isElementInView,
+  calcViewScaleInfo
 } from './lib/view-calc';
 export { rotatePoint, rotateVertexes, rotateByCenter } from './lib/rotate';
 export { getElementVertexes, calcElementVertexesInGroup, calcElementVertexesQueueInGroup, calcElementQueueVertexesQueueInGroup } from './lib/vertex';
@@ -60,4 +63,4 @@ export { formatNumber } from './lib/number';
 export { matrixToAngle, matrixToRadian } from './lib/matrix';
 export { getDefaultElementDetailConfig, getDefaultElementRectDetail } from './lib/config';
 export { calcViewBoxSize } from './lib/view-box';
-export { createElement } from './lib/handle-element';
+export { createElement, moveElementPosition } from './lib/handle-element';

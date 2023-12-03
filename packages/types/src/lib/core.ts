@@ -25,6 +25,7 @@ export interface CoreEventCursor {
 
 export interface CoreEventSelect {
   uuids: string[];
+  positions?: Array<Array<number>>;
 }
 export interface CoreEventChange {
   data: Data;

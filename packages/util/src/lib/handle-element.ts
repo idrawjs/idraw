@@ -1,4 +1,4 @@
-import type { Data, RecursivePartial, Element, ElementSize, ElementType, ViewScaleInfo, ViewSizeInfo } from '@idraw/types';
+import type { RecursivePartial, Element, Elements, ElementPosition, ElementSize, ElementType, ViewScaleInfo, ViewSizeInfo } from '@idraw/types';
 import { createUUID } from './uuid';
 import {
   getDefaultElementDetailConfig,
@@ -6,8 +6,10 @@ import {
   getDefaultElementCircleDetail,
   getDefaultElementTextDetail,
   getDefaultElementSVGDetail,
-  getDefaultElementImageDetail
+  getDefaultElementImageDetail,
+  getDefaultElementGroupDetail
 } from './config';
+import { findElementFromListByPosition, insertElementToListByPosition, deleteElementInListByPosition } from './element';
 
 const defaultViewWidth = 200;
 const defaultViewHeight = 200;
@@ -83,6 +85,8 @@ export function createElement<T extends ElementType>(
     detail = getDefaultElementSVGDetail();
   } else if (type === 'image') {
     detail = getDefaultElementImageDetail();
+  } else if (type === 'group') {
+    detail = getDefaultElementGroupDetail();
   }
   const elem: Element<T> = {
     ...elemSize,
@@ -97,6 +101,61 @@ export function createElement<T extends ElementType>(
   return elem;
 }
 
-export function addElement(data: Data) {
-  // TODO
+export function moveElementPosition(
+  elements: Elements,
+  opts: {
+    from: ElementPosition;
+    to: ElementPosition;
+  }
+): Elements {
+  const { from, to } = opts;
+
+  // [] -> [1,2,3] or [1, 2 ,3] -> []
+  if (from.length === 0 || to.length === 0) {
+    return elements;
+  }
+
+  // [1] -> [1, 2, 3]
+  if (from.length <= to.length) {
+    for (let i = 0; i < from.length; i++) {
+      if (to[i] === from[i]) {
+        if (i === from.length - 1) {
+          return elements;
+        }
+        continue;
+      }
+    }
+  }
+
+  const target = findElementFromListByPosition(from, elements);
+  if (target) {
+    const insterResult = insertElementToListByPosition(target, to, elements);
+    if (!insterResult) {
+      return elements;
+    }
+
+    let trimDeletePosIndex = -1;
+    const trimDeletePosAction = 'down'; // +1
+
+    for (let i = 0; i < from.length; i++) {
+      if (!(to[i] >= 0)) {
+        break;
+      }
+      if (to[i] === from[i]) {
+        continue;
+      }
+      if (to[i] < from[i] && i == to.length - 1) {
+        trimDeletePosIndex = i;
+      }
+    }
+
+    if (trimDeletePosIndex >= 0) {
+      if (trimDeletePosAction === 'down') {
+        from[trimDeletePosIndex] = from[trimDeletePosIndex] + 1;
+      }
+    }
+
+    deleteElementInListByPosition(from, elements);
+  }
+  return elements;
 }

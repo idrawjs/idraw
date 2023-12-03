@@ -9,8 +9,8 @@ const textColor = '#00000080';
 const fontFamily = 'monospace';
 const fontSize = 10;
 const fontWeight = 100;
-const gridColor = '#AAAAAA30';
-const gridKeyColor = '#AAAAAA70';
+const gridColor = '#AAAAAA20';
+const gridKeyColor = '#AAAAAA40';
 const lineSize = 1;
 
 // const rulerUnit = 10;

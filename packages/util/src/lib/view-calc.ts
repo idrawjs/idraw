@@ -2,6 +2,27 @@ import { Point, PointSize, Data, ViewScaleInfo, ViewSizeInfo, Element, ElementTy
 import { rotateElementVertexes } from './rotate';
 import { checkRectIntersect } from './rect';
 
+export function calcViewScaleInfo(info: { scale: number; offsetX: number; offsetY: number }, opts: { viewSizeInfo: ViewSizeInfo }): ViewScaleInfo {
+  const { scale, offsetX, offsetY } = info;
+  const { viewSizeInfo } = opts;
+  const { width, height, contextWidth, contextHeight } = viewSizeInfo;
+
+  const w = contextWidth * scale;
+  const h = contextHeight * scale;
+  const offsetLeft = 0 - offsetX * scale;
+  const offsetTop = 0 - offsetY * scale;
+  const offsetRight = width - (w + offsetLeft / scale);
+  const offsetBottom = height - (h + offsetTop / scale);
+  const newScaleInfo: ViewScaleInfo = {
+    scale,
+    offsetLeft,
+    offsetTop,
+    offsetRight,
+    offsetBottom
+  };
+  return newScaleInfo;
+}
+
 export function viewScale(opts: { scale: number; point: PointSize; viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }): {
   moveX: number;
   moveY: number;
