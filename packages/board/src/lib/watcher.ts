@@ -97,10 +97,8 @@ export class BoardWatcher extends EventEmitter<BoardWatcherEventMap> {
 
         if (e.ctrlKey === true && this.has('wheelScale')) {
           this.trigger('wheelScale', { deltaX, deltaY, point });
-        } else if (this.has('wheelX') && deltaX !== 0) {
-          this.trigger('wheelX', { deltaX, point });
-        } else if (this.has('wheelY') && deltaY !== 0) {
-          this.trigger('wheelY', { deltaY, point });
+        } else if (this.has('wheel')) {
+          this.trigger('wheel', { deltaX, deltaY, point });
         }
       },
       { passive: false }

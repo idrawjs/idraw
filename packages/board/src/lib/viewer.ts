@@ -44,7 +44,6 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
 
     if (snapshot) {
       const { scale, offsetTop, offsetBottom, offsetLeft, offsetRight, width, height, contextHeight, contextWidth, devicePixelRatio } = snapshot.activeStore;
-      const { underContext, viewContext, helperContext, boardContext } = viewContent;
 
       if (snapshot?.activeStore.data) {
         renderer.drawData(snapshot.activeStore.data, {
@@ -65,13 +64,9 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
         });
       }
       beforeDrawFrame({ snapshot });
-      boardContext.clearRect(0, 0, width, height);
-      boardContext.drawImage(underContext.canvas, 0, 0, width, height);
-      boardContext.drawImage(viewContext.canvas, 0, 0, width, height);
-      boardContext.drawImage(helperContext.canvas, 0, 0, width, height);
-      underContext.clearRect(0, 0, width, height);
-      viewContext.clearRect(0, 0, width, height);
-      helperContext.clearRect(0, 0, width, height);
+
+      viewContent.drawView();
+
       afterDrawFrame({ snapshot });
     }
 

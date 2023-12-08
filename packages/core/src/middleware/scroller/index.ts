@@ -1,4 +1,4 @@
-import type { Point, BoardMiddleware, PointWatcherEvent, BoardWatherWheelXEvent, BoardWatherWheelYEvent } from '@idraw/types';
+import type { Point, BoardMiddleware, PointWatcherEvent, BoardWatherWheelEvent } from '@idraw/types';
 import { drawScroller, isPointInScrollThumb } from './util';
 // import type { ScrollbarThumbType } from './util';
 import { key, keyXThumbRect, keyYThumbRect, keyPrevPoint, keyActivePoint, keyActiveThumbType } from './config';
@@ -55,25 +55,15 @@ export const MiddlewareScroller: BoardMiddleware = (opts) => {
 
   return {
     mode: key,
-    // hover: (e: PointWatcherEvent) => {
-    //   const { point } = e;
-    //   const thumbType = getThumbType(point);
-    //   if (thumbType === 'X' || thumbType === 'Y') {
-    //     return false;
-    //   }
-    // },
-    wheelX: (e: BoardWatherWheelXEvent) => {
-      if (e.deltaX >= 0 || e.deltaX < 0) {
-        viewer.scroll({ moveX: 0 - e.deltaX });
-        viewer.drawFrame();
-      }
+
+    wheel: (e: BoardWatherWheelEvent) => {
+      viewer.scroll({
+        moveX: 0 - e.deltaX,
+        moveY: 0 - e.deltaY
+      });
+      viewer.drawFrame();
     },
-    wheelY: (e: BoardWatherWheelYEvent) => {
-      if (e.deltaY >= 0 || e.deltaY < 0) {
-        viewer.scroll({ moveY: 0 - e.deltaY });
-        viewer.drawFrame();
-      }
-    },
+
     pointStart: (e: PointWatcherEvent) => {
       const { point } = e;
       const thumbType = getThumbType(point);

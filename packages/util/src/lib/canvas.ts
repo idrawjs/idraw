@@ -14,31 +14,82 @@ export function createContext2D(opts: { ctx?: CanvasRenderingContext2D; width: n
   return context2d;
 }
 
-export function createOffscreenContext2D(opts: { width: number; height: number }) {
-  const { width, height } = opts;
-  const offCanvas = new OffscreenCanvas(width, height);
+export function createOffscreenContext2D(opts: { width: number; height: number; devicePixelRatio: number }): Context2D {
+  const { width, height, devicePixelRatio } = opts;
+  const offCanvas = new OffscreenCanvas(width * devicePixelRatio, height * devicePixelRatio);
   const offRenderCtx = offCanvas.getContext('2d') as OffscreenRenderingContext;
   const offCtx: CanvasRenderingContext2D | OffscreenRenderingContext = offRenderCtx.canvas.getContext('2d') as
     | CanvasRenderingContext2D
     | OffscreenRenderingContext;
-  return offCtx;
+  const context2d = new Context2D(offCtx, {
+    devicePixelRatio,
+    offscreenCanvas: offCanvas
+  });
+  return context2d;
 }
 
-export function createBoardContexts(ctx: CanvasRenderingContext2D, opts?: { devicePixelRatio: number }): ViewContent {
+export function createViewContent(
+  canvas: HTMLCanvasElement,
+  opts: { width: number; height: number; devicePixelRatio: number; offscreen?: boolean }
+): ViewContent {
+  const { width, height, devicePixelRatio, offscreen } = opts;
   const ctxOpts = {
-    width: ctx.canvas.width,
-    height: ctx.canvas.height,
-    devicePixelRatio: opts?.devicePixelRatio || 1
+    width,
+    height,
+    devicePixelRatio
   };
-  const viewContext = createContext2D(ctxOpts);
-  const helperContext = createContext2D(ctxOpts);
-  const underContext = createContext2D(ctxOpts);
-  const boardContext = createContext2D({ ctx, ...ctxOpts });
-  const content: ViewContent = {
-    underContext,
-    viewContext,
-    helperContext,
-    boardContext
-  };
-  return content;
+
+  if (offscreen === true) {
+    const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+    const viewContext = createOffscreenContext2D(ctxOpts);
+    const helperContext = createOffscreenContext2D(ctxOpts);
+    const underContext = createOffscreenContext2D(ctxOpts);
+    const boardContext = createContext2D({ ctx, ...ctxOpts });
+
+    const drawView = () => {
+      const { width: w, height: h } = viewContext.$getSize();
+
+      boardContext.clearRect(0, 0, w, h);
+      boardContext.drawImage(underContext.canvas, 0, 0, w, h);
+      boardContext.drawImage(viewContext.canvas, 0, 0, w, h);
+      boardContext.drawImage(helperContext.canvas, 0, 0, w, h);
+      underContext.clearRect(0, 0, w, h);
+      viewContext.clearRect(0, 0, w, h);
+      helperContext.clearRect(0, 0, w, h);
+    };
+
+    const content: ViewContent = {
+      underContext,
+      viewContext,
+      helperContext,
+      boardContext,
+      drawView
+    };
+    return content;
+  } else {
+    const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+    const viewContext = createContext2D(ctxOpts);
+    const helperContext = createContext2D(ctxOpts);
+    const underContext = createContext2D(ctxOpts);
+    const boardContext = createContext2D({ ctx, ...ctxOpts });
+
+    const drawView = () => {
+      boardContext.clearRect(0, 0, width, height);
+      boardContext.drawImage(underContext.canvas, 0, 0, width, height);
+      boardContext.drawImage(viewContext.canvas, 0, 0, width, height);
+      boardContext.drawImage(helperContext.canvas, 0, 0, width, height);
+      underContext.clearRect(0, 0, width, height);
+      viewContext.clearRect(0, 0, width, height);
+      helperContext.clearRect(0, 0, width, height);
+    };
+
+    const content: ViewContent = {
+      underContext,
+      viewContext,
+      helperContext,
+      boardContext,
+      drawView
+    };
+    return content;
+  }
 }

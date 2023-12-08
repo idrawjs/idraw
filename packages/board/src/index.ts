@@ -85,15 +85,9 @@ export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
     );
 
     this._watcher.on(
-      'wheelX',
+      'wheel',
       throttle((e) => {
-        this._handleWheelX(e);
-      }, throttleTime)
-    );
-    this._watcher.on(
-      'wheelY',
-      throttle((e) => {
-        this._handleWheelY(e);
+        this._handleWheel(e);
       }, throttleTime)
     );
     this._watcher.on(
@@ -158,20 +152,10 @@ export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
     }
   }
 
-  private _handleWheelX(e: BoardWatcherEventMap['wheelX']) {
+  private _handleWheel(e: BoardWatcherEventMap['wheel']) {
     for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
       const obj = this._activeMiddlewareObjs[i];
-      const result = obj?.wheelX?.(e);
-      if (result === false) {
-        return;
-      }
-    }
-  }
-
-  private _handleWheelY(e: BoardWatcherEventMap['wheelY']) {
-    for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
-      const obj = this._activeMiddlewareObjs[i];
-      const result = obj?.wheelY?.(e);
+      const result = obj?.wheel?.(e);
       if (result === false) {
         return;
       }
@@ -333,9 +317,6 @@ export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
     const { width, height, devicePixelRatio } = newViewSize;
     const { viewContent } = this._opts;
     viewContent.viewContext.$resize({ width, height, devicePixelRatio });
-    const canvas = viewContent.viewContext.canvas;
-    canvas.style.width = `${width}px`;
-    canvas.style.height = `${height}px`;
     viewContent.helperContext.$resize({ width, height, devicePixelRatio });
     viewContent.boardContext.$resize({ width, height, devicePixelRatio });
     this._viewer.drawFrame();

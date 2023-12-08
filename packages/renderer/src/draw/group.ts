@@ -44,7 +44,14 @@ export function drawElement(ctx: ViewContext2D, elem: Element<ElementType>, opts
         break;
       }
       case 'group': {
-        drawGroup(ctx, elem as Element<'group'>, opts);
+        const assets = {
+          ...(opts.elementAssets || {}),
+          ...((elem as Element<'group'>).detail.assets || {})
+        };
+        drawGroup(ctx, elem as Element<'group'>, {
+          ...opts,
+          elementAssets: assets
+        });
         break;
       }
       default: {

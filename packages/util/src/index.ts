@@ -7,7 +7,7 @@ export { istype } from './lib/istype';
 export { loadImage, loadSVG, loadHTML } from './lib/load';
 export { is } from './lib/is';
 export { check } from './lib/check';
-export { createBoardContexts, createContext2D, createOffscreenContext2D } from './lib/canvas';
+export { createViewContent, createContext2D, createOffscreenContext2D } from './lib/canvas';
 export { EventEmitter } from './lib/event';
 export { calcDistance, calcSpeed, equalPoint, equalTouchPoint, vaildPoint, vaildTouchPoint, getCenterFromTwoPoints } from './lib/point';
 export { Store } from './lib/store';

@@ -1,29 +1,28 @@
 import type { ViewContext2D, ViewContext2DOptions } from '@idraw/types';
 
 export class Context2D implements ViewContext2D {
-  private _ctx: CanvasRenderingContext2D;
+  #ctx: CanvasRenderingContext2D;
+  #opts: Required<ViewContext2DOptions>;
 
-  private _devicePixelRatio = 1;
   // private _width: number = 0;
   // private _height: number = 0;
 
-  constructor(ctx: CanvasRenderingContext2D, opts: ViewContext2DOptions) {
-    const { devicePixelRatio = 1 } = opts;
-    this._ctx = ctx;
-    this._devicePixelRatio = devicePixelRatio;
+  constructor(ctx: CanvasRenderingContext2D | OffscreenRenderingContext, opts: ViewContext2DOptions) {
+    this.#ctx = ctx as CanvasRenderingContext2D;
+    this.#opts = { ...{ devicePixelRatio: 1, offscreenCanvas: null }, ...opts };
     // this._width = ctx.canvas.width / devicePixelRatio;
     // this._height = ctx.canvas.height / devicePixelRatio;
   }
 
   $undoPixelRatio(num: number) {
-    return num / this._devicePixelRatio;
+    return num / this.#opts.devicePixelRatio;
   }
   $doPixelRatio(num: number) {
-    return this._devicePixelRatio * num;
+    return this.#opts.devicePixelRatio * num;
   }
 
   $getContext(): CanvasRenderingContext2D {
-    return this._ctx;
+    return this.#ctx;
   }
 
   $setFont(opts: { fontSize: number; fontFamily?: string; fontWeight?: 'bold' | number | string }): void {
@@ -33,168 +32,187 @@ export class Context2D implements ViewContext2D {
     }
     strList.push(`${this.$doPixelRatio(opts.fontSize || 12)}px`);
     strList.push(`${opts.fontFamily || 'sans-serif'}`);
-    this._ctx.font = `${strList.join(' ')}`;
+    this.#ctx.font = `${strList.join(' ')}`;
   }
 
-  $resize(opts: { width: number; height: number; devicePixelRatio: number }) {
-    const { width, height, devicePixelRatio } = opts;
-    const { canvas } = this._ctx;
+  $getOffscreenCanvas(): OffscreenCanvas | null {
+    return this.#opts.offscreenCanvas;
+  }
+
+  $resize(opts: { width: number; height: number; devicePixelRatio: number; resetStyle?: boolean }) {
+    const { width, height, devicePixelRatio, resetStyle } = opts;
+    const { canvas } = this.#ctx;
     canvas.width = width * devicePixelRatio;
     canvas.height = height * devicePixelRatio;
-    // canvas.style.width = `${width}px`;
-    // canvas.style.height = `${height}px`;
-    // this._width = width;
-    // this._height = height;
-    this._devicePixelRatio = devicePixelRatio;
+    this.#opts = {
+      ...this.#opts,
+      ...{
+        devicePixelRatio
+      }
+    };
+    if (resetStyle === true) {
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+    }
+  }
+
+  $getSize(): { width: number; height: number; devicePixelRatio: number } {
+    const { devicePixelRatio } = this.#opts;
+    const { width, height } = this.#ctx.canvas;
+    return {
+      width: width / devicePixelRatio,
+      height: height / devicePixelRatio,
+      devicePixelRatio
+    };
   }
 
   get canvas() {
-    return this._ctx.canvas;
+    return this.#ctx.canvas;
   }
 
   get fillStyle() {
-    return this._ctx.fillStyle;
+    return this.#ctx.fillStyle;
   }
   set fillStyle(value: string | CanvasGradient | CanvasPattern) {
-    this._ctx.fillStyle = value;
+    this.#ctx.fillStyle = value;
   }
 
   get strokeStyle() {
-    return this._ctx.strokeStyle;
+    return this.#ctx.strokeStyle;
   }
   set strokeStyle(color: string | CanvasGradient | CanvasPattern) {
-    this._ctx.strokeStyle = color;
+    this.#ctx.strokeStyle = color;
   }
 
   get lineWidth() {
-    return this.$undoPixelRatio(this._ctx.lineWidth);
+    return this.$undoPixelRatio(this.#ctx.lineWidth);
   }
   set lineWidth(w: number) {
-    this._ctx.lineWidth = this.$doPixelRatio(w);
+    this.#ctx.lineWidth = this.$doPixelRatio(w);
   }
 
   get textAlign(): CanvasTextAlign {
-    return this._ctx.textAlign;
+    return this.#ctx.textAlign;
   }
   set textAlign(align: CanvasTextAlign) {
-    this._ctx.textAlign = align;
+    this.#ctx.textAlign = align;
   }
 
   get textBaseline() {
-    return this._ctx.textBaseline;
+    return this.#ctx.textBaseline;
   }
   set textBaseline(baseline: CanvasTextBaseline) {
-    this._ctx.textBaseline = baseline;
+    this.#ctx.textBaseline = baseline;
   }
 
   get globalAlpha() {
-    return this._ctx.globalAlpha;
+    return this.#ctx.globalAlpha;
   }
   set globalAlpha(alpha: number) {
-    this._ctx.globalAlpha = alpha;
+    this.#ctx.globalAlpha = alpha;
   }
   get shadowColor(): string {
-    return this._ctx.shadowColor;
+    return this.#ctx.shadowColor;
   }
   set shadowColor(color: string) {
-    this._ctx.shadowColor = color;
+    this.#ctx.shadowColor = color;
   }
 
   get shadowOffsetX() {
-    return this.$undoPixelRatio(this._ctx.shadowOffsetX);
+    return this.$undoPixelRatio(this.#ctx.shadowOffsetX);
   }
   set shadowOffsetX(offsetX: number) {
-    this._ctx.shadowOffsetX = this.$doPixelRatio(offsetX);
+    this.#ctx.shadowOffsetX = this.$doPixelRatio(offsetX);
   }
 
   get shadowOffsetY(): number {
-    return this.$undoPixelRatio(this._ctx.shadowOffsetY);
+    return this.$undoPixelRatio(this.#ctx.shadowOffsetY);
   }
   set shadowOffsetY(offsetY: number) {
-    this._ctx.shadowOffsetY = this.$doPixelRatio(offsetY);
+    this.#ctx.shadowOffsetY = this.$doPixelRatio(offsetY);
   }
 
   get shadowBlur(): number {
-    return this.$undoPixelRatio(this._ctx.shadowBlur);
+    return this.$undoPixelRatio(this.#ctx.shadowBlur);
   }
   set shadowBlur(blur: number) {
-    this._ctx.shadowBlur = this.$doPixelRatio(blur);
+    this.#ctx.shadowBlur = this.$doPixelRatio(blur);
   }
 
   get lineCap() {
-    return this._ctx.lineCap;
+    return this.#ctx.lineCap;
   }
   set lineCap(lineCap: CanvasLineCap) {
-    this._ctx.lineCap = lineCap;
+    this.#ctx.lineCap = lineCap;
   }
 
   get globalCompositeOperation(): GlobalCompositeOperation {
-    return this._ctx.globalCompositeOperation;
+    return this.#ctx.globalCompositeOperation;
   }
 
   set globalCompositeOperation(operations: GlobalCompositeOperation) {
-    this._ctx.globalCompositeOperation = operations;
+    this.#ctx.globalCompositeOperation = operations;
   }
 
   fill(...args: [fillRule?: CanvasFillRule | undefined] | [path: Path2D, fillRule?: CanvasFillRule | undefined]): void {
-    return this._ctx.fill(...(args as [path: Path2D, fillRule?: CanvasFillRule | undefined]));
+    return this.#ctx.fill(...(args as [path: Path2D, fillRule?: CanvasFillRule | undefined]));
   }
 
   arc(x: number, y: number, radius: number, startAngle: number, endAngle: number, anticlockwise?: boolean | undefined): void {
-    return this._ctx.arc(this.$doPixelRatio(x), this.$doPixelRatio(y), this.$doPixelRatio(radius), startAngle, endAngle, anticlockwise);
+    return this.#ctx.arc(this.$doPixelRatio(x), this.$doPixelRatio(y), this.$doPixelRatio(radius), startAngle, endAngle, anticlockwise);
   }
 
   rect(x: number, y: number, w: number, h: number) {
-    return this._ctx.rect(this.$doPixelRatio(x), this.$doPixelRatio(y), this.$doPixelRatio(w), this.$doPixelRatio(h));
+    return this.#ctx.rect(this.$doPixelRatio(x), this.$doPixelRatio(y), this.$doPixelRatio(w), this.$doPixelRatio(h));
   }
 
   fillRect(x: number, y: number, w: number, h: number) {
-    return this._ctx.fillRect(this.$doPixelRatio(x), this.$doPixelRatio(y), this.$doPixelRatio(w), this.$doPixelRatio(h));
+    return this.#ctx.fillRect(this.$doPixelRatio(x), this.$doPixelRatio(y), this.$doPixelRatio(w), this.$doPixelRatio(h));
   }
 
   clearRect(x: number, y: number, w: number, h: number) {
-    return this._ctx.clearRect(this.$doPixelRatio(x), this.$doPixelRatio(y), this.$doPixelRatio(w), this.$doPixelRatio(h));
+    return this.#ctx.clearRect(this.$doPixelRatio(x), this.$doPixelRatio(y), this.$doPixelRatio(w), this.$doPixelRatio(h));
   }
 
   beginPath() {
-    return this._ctx.beginPath();
+    return this.#ctx.beginPath();
   }
 
   closePath() {
-    return this._ctx.closePath();
+    return this.#ctx.closePath();
   }
 
   lineTo(x: number, y: number) {
-    return this._ctx.lineTo(this.$doPixelRatio(x), this.$doPixelRatio(y));
+    return this.#ctx.lineTo(this.$doPixelRatio(x), this.$doPixelRatio(y));
   }
 
   moveTo(x: number, y: number) {
-    return this._ctx.moveTo(this.$doPixelRatio(x), this.$doPixelRatio(y));
+    return this.#ctx.moveTo(this.$doPixelRatio(x), this.$doPixelRatio(y));
   }
 
   arcTo(x1: number, y1: number, x2: number, y2: number, radius: number): void {
-    return this._ctx.arcTo(this.$doPixelRatio(x1), this.$doPixelRatio(y1), this.$doPixelRatio(x2), this.$doPixelRatio(y2), this.$doPixelRatio(radius));
+    return this.#ctx.arcTo(this.$doPixelRatio(x1), this.$doPixelRatio(y1), this.$doPixelRatio(x2), this.$doPixelRatio(y2), this.$doPixelRatio(radius));
   }
 
   getLineDash() {
-    return this._ctx.getLineDash();
+    return this.#ctx.getLineDash();
   }
 
   setLineDash(nums: number[]) {
     const dash = nums.map((n) => this.$doPixelRatio(n));
-    return this._ctx.setLineDash(dash);
+    return this.#ctx.setLineDash(dash);
   }
 
   stroke(path?: Path2D) {
-    return path ? this._ctx.stroke(path) : this._ctx.stroke();
+    return path ? this.#ctx.stroke(path) : this.#ctx.stroke();
   }
 
   translate(x: number, y: number) {
-    return this._ctx.translate(this.$doPixelRatio(x), this.$doPixelRatio(y));
+    return this.#ctx.translate(this.$doPixelRatio(x), this.$doPixelRatio(y));
   }
 
   rotate(angle: number) {
-    return this._ctx.rotate(angle);
+    return this.#ctx.rotate(angle);
   }
 
   drawImage(...args: any[]) {
@@ -210,7 +228,7 @@ export class Context2D implements ViewContext2D {
     const dh: number = args[args.length - 1];
 
     if (args.length === 9) {
-      return this._ctx.drawImage(
+      return this.#ctx.drawImage(
         image,
         this.$doPixelRatio(sx),
         this.$doPixelRatio(sy),
@@ -222,45 +240,45 @@ export class Context2D implements ViewContext2D {
         this.$doPixelRatio(dh)
       );
     } else {
-      return this._ctx.drawImage(image, this.$doPixelRatio(dx), this.$doPixelRatio(dy), this.$doPixelRatio(dw), this.$doPixelRatio(dh));
+      return this.#ctx.drawImage(image, this.$doPixelRatio(dx), this.$doPixelRatio(dy), this.$doPixelRatio(dw), this.$doPixelRatio(dh));
     }
   }
 
   createPattern(image: CanvasImageSource, repetition: string | null): CanvasPattern | null {
-    return this._ctx.createPattern(image, repetition);
+    return this.#ctx.createPattern(image, repetition);
   }
 
   measureText(text: string): TextMetrics {
-    const textMetrics = this._ctx.measureText(text);
+    const textMetrics = this.#ctx.measureText(text);
     return textMetrics;
   }
 
   fillText(text: string, x: number, y: number, maxWidth?: number | undefined): void {
     if (maxWidth !== undefined) {
-      return this._ctx.fillText(text, this.$doPixelRatio(x), this.$doPixelRatio(y), this.$doPixelRatio(maxWidth));
+      return this.#ctx.fillText(text, this.$doPixelRatio(x), this.$doPixelRatio(y), this.$doPixelRatio(maxWidth));
     } else {
-      return this._ctx.fillText(text, this.$doPixelRatio(x), this.$doPixelRatio(y));
+      return this.#ctx.fillText(text, this.$doPixelRatio(x), this.$doPixelRatio(y));
     }
   }
 
   strokeText(text: string, x: number, y: number, maxWidth?: number | undefined): void {
     if (maxWidth !== undefined) {
-      return this._ctx.strokeText(text, this.$doPixelRatio(x), this.$doPixelRatio(y), this.$doPixelRatio(maxWidth));
+      return this.#ctx.strokeText(text, this.$doPixelRatio(x), this.$doPixelRatio(y), this.$doPixelRatio(maxWidth));
     } else {
-      return this._ctx.strokeText(text, this.$doPixelRatio(x), this.$doPixelRatio(y));
+      return this.#ctx.strokeText(text, this.$doPixelRatio(x), this.$doPixelRatio(y));
     }
   }
 
   save() {
-    this._ctx.save();
+    this.#ctx.save();
   }
 
   restore() {
-    this._ctx.restore();
+    this.#ctx.restore();
   }
 
   scale(ratioX: number, ratioY: number) {
-    this._ctx.scale(ratioX, ratioY);
+    this.#ctx.scale(ratioX, ratioY);
   }
 
   circle(
@@ -273,7 +291,7 @@ export class Context2D implements ViewContext2D {
     endAngle: number,
     counterclockwise?: boolean | undefined
   ) {
-    this._ctx.ellipse(
+    this.#ctx.ellipse(
       this.$doPixelRatio(x),
       this.$doPixelRatio(y),
       this.$doPixelRatio(radiusX),
@@ -286,27 +304,27 @@ export class Context2D implements ViewContext2D {
   }
 
   isPointInPath(x: number, y: number) {
-    return this._ctx.isPointInPath(this.$doPixelRatio(x), this.$doPixelRatio(y));
+    return this.#ctx.isPointInPath(this.$doPixelRatio(x), this.$doPixelRatio(y));
   }
 
   // clip(fillRule?: CanvasFillRule): void;
   // clip(path: Path2D, fillRule?: CanvasFillRule): void;
   clip(...args: [fillRule?: CanvasFillRule | undefined] | [path: Path2D, fillRule?: CanvasFillRule | undefined]) {
-    return this._ctx.clip(...(args as any[]));
+    return this.#ctx.clip(...(args as any[]));
   }
 
   setTransform(a: number, b: number, c: number, d: number, e: number, f: number) {
-    return this._ctx.setTransform(a, b, c, d, e, f);
+    return this.#ctx.setTransform(a, b, c, d, e, f);
   }
   getTransform(): DOMMatrix2DInit {
-    return this._ctx.getTransform();
+    return this.#ctx.getTransform();
   }
 
   createLinearGradient(x0: number, y0: number, x1: number, y1: number): CanvasGradient {
-    return this._ctx.createLinearGradient(this.$doPixelRatio(x0), this.$doPixelRatio(y0), this.$doPixelRatio(x1), this.$doPixelRatio(y1));
+    return this.#ctx.createLinearGradient(this.$doPixelRatio(x0), this.$doPixelRatio(y0), this.$doPixelRatio(x1), this.$doPixelRatio(y1));
   }
   createRadialGradient(x0: number, y0: number, r0: number, x1: number, y1: number, r1: number): CanvasGradient {
-    return this._ctx.createRadialGradient(
+    return this.#ctx.createRadialGradient(
       this.$doPixelRatio(x0),
       this.$doPixelRatio(y0),
       this.$doPixelRatio(r0),
@@ -316,6 +334,6 @@ export class Context2D implements ViewContext2D {
     );
   }
   createConicGradient(startAngle: number, x: number, y: number): CanvasGradient {
-    return this._ctx.createConicGradient(startAngle, this.$doPixelRatio(x), this.$doPixelRatio(y));
+    return this.#ctx.createConicGradient(startAngle, this.$doPixelRatio(x), this.$doPixelRatio(y));
   }
 }

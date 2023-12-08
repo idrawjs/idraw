@@ -39,7 +39,7 @@ export {
   loadHTML,
   is,
   check,
-  createBoardContexts,
+  createViewContent,
   createContext2D,
   createOffscreenContext2D,
   EventEmitter,
