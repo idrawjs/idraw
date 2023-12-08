@@ -27,6 +27,7 @@ export interface ViewContent {
   viewContext: ViewContext2D;
   helperContext: ViewContext2D;
   underContext: ViewContext2D;
+  drawView: () => void;
 }
 
 export interface ViewCalculatorOptions {

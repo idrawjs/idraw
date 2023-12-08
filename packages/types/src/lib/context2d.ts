@@ -1,5 +1,6 @@
 export interface ViewContext2DOptions {
   devicePixelRatio?: number;
+  offscreenCanvas?: OffscreenCanvas | null;
 }
 
 export interface ViewContext2D {
@@ -9,7 +10,8 @@ export interface ViewContext2D {
   $getContext(): CanvasRenderingContext2D;
   $setFont(opts: { fontSize: number; fontFamily?: string; fontWeight?: string | number }): void;
   $resize(opts: { width: number; height: number; devicePixelRatio: number }): void;
-
+  $getSize(): { width: number; height: number; devicePixelRatio: number };
+  $getOffscreenCanvas(): OffscreenCanvas | null;
   $undoPixelRatio(num: number): number;
   $doPixelRatio(num: number): number;
 

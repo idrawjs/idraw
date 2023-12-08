@@ -17,6 +17,11 @@ export interface BoardWatherWheelYEvent {
   deltaY: number;
   point: Point;
 }
+export interface BoardWatherWheelEvent {
+  deltaX: number;
+  deltaY: number;
+  point: Point;
+}
 export type BoardWatherWheelScaleEvent = BoardWatherWheelXEvent & BoardWatherWheelYEvent;
 
 export interface BoardWatherDrawFrameEvent<S extends Record<any | symbol, any>> {
@@ -38,10 +43,8 @@ export interface BoardWatcherEventMap<S extends Record<any | symbol, any> = any>
   pointEnd: BoardWatcherPointEvent;
   pointLeave: BoardWatcherPointEvent;
   doubleClick: BoardWatcherPointEvent;
-  wheelX: BoardWatherWheelXEvent;
-  wheelY: BoardWatherWheelYEvent;
+  wheel: BoardWatherWheelEvent;
   wheelScale: BoardWatherWheelScaleEvent;
-  // scale: BoardWatherScaleEvent;
   scrollX: BoardWatherScrollXEvent;
   scrollY: BoardWatherScrollYEvent;
   resize: BoardWatherResizeEvent;
@@ -63,8 +66,9 @@ export interface BoardMiddlewareObject<S extends Record<any | symbol, any> = any
   pointEnd?: (e: BoardWatcherEventMap<S>['pointEnd']) => void | boolean;
   pointLeave?: (e: BoardWatcherEventMap<S>['pointLeave']) => void | boolean;
   doubleClick?: (e: BoardWatcherEventMap<S>['doubleClick']) => void | boolean;
-  wheelX?: (e: BoardWatcherEventMap<S>['wheelX']) => void | boolean;
-  wheelY?: (e: BoardWatcherEventMap<S>['wheelY']) => void | boolean;
+  // wheelX?: (e: BoardWatcherEventMap<S>['wheelX']) => void | boolean;
+  // wheelY?: (e: BoardWatcherEventMap<S>['wheelY']) => void | boolean;
+  wheel?: (e: BoardWatcherEventMap<S>['wheel']) => void | boolean;
   wheelScale?: (e: BoardWatcherEventMap<S>['wheelScale']) => void | boolean;
 
   // scale?: (e: BoardWatcherEventMap<S>['scale']) => void | boolean;

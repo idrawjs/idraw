@@ -1,6 +1,6 @@
 import type { Data, PointSize, CoreOptions, BoardMiddleware, ViewSizeInfo, CoreEvent, ViewScaleInfo } from '@idraw/types';
 import { Board } from '@idraw/board';
-import { createBoardContexts, validateElements } from '@idraw/util';
+import { createViewContent, validateElements } from '@idraw/util';
 import { Cursor } from './lib/cursor';
 
 // export { MiddlewareSelector } from './middleware/selector';
@@ -25,8 +25,7 @@ export class Core {
     this.#initContainer();
     container.appendChild(canvas);
 
-    const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
-    const viewContent = createBoardContexts(ctx, { devicePixelRatio });
+    const viewContent = createViewContent(canvas, { width, height, devicePixelRatio, offscreen: true });
     const board = new Board<CoreEvent>({ viewContent, container });
     const sharer = board.getSharer();
     sharer.setActiveViewSizeInfo({
