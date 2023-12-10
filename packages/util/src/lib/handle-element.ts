@@ -9,7 +9,8 @@ import {
   getDefaultElementImageDetail,
   getDefaultElementGroupDetail
 } from './config';
-import { findElementFromListByPosition, insertElementToListByPosition, deleteElementInListByPosition } from './element';
+import { istype } from './istype';
+import { findElementFromListByPosition, getElementPositionFromList } from './element';
 
 const defaultViewWidth = 200;
 const defaultViewHeight = 200;
@@ -101,6 +102,61 @@ export function createElement<T extends ElementType>(
   return elem;
 }
 
+export function insertElementToListByPosition(element: Element, position: ElementPosition, list: Element[]): boolean {
+  let result = false;
+  if (position.length === 1) {
+    const pos = position[0];
+    list.splice(pos, 0, element);
+    result = true;
+  } else if (position.length > 1) {
+    let tempList: Element[] = list;
+    for (let i = 0; i < position.length; i++) {
+      const pos = position[i];
+      const item = tempList[pos];
+      if (i === position.length - 1) {
+        const pos = position[i];
+        tempList.splice(pos, 0, element);
+        result = true;
+      } else if (i < position.length - 1 && item.type === 'group') {
+        tempList = (item as Element<'group'>).detail.children;
+      } else {
+        break;
+      }
+    }
+  }
+  return result;
+}
+
+export function deleteElementInListByPosition(position: ElementPosition, list: Element[]): boolean {
+  let result = false;
+  if (position.length === 1) {
+    const pos = position[0];
+    list.splice(pos, 1);
+    result = true;
+  } else if (position.length > 1) {
+    let tempList: Element[] = list;
+    for (let i = 0; i < position.length; i++) {
+      const pos = position[i];
+      const item = tempList[pos];
+      if (i === position.length - 1) {
+        const pos = position[i];
+        tempList.splice(pos, 1);
+        result = true;
+      } else if (i < position.length - 1 && item.type === 'group') {
+        tempList = (item as Element<'group'>).detail.children;
+      } else {
+        break;
+      }
+    }
+  }
+  return result;
+}
+
+export function deleteElementInList(uuid: string, list: Element[]): boolean {
+  const position = getElementPositionFromList(uuid, list);
+  return deleteElementInListByPosition(position, list);
+}
+
 export function moveElementPosition(
   elements: Elements,
   opts: {
@@ -158,4 +214,59 @@ export function moveElementPosition(
     deleteElementInListByPosition(from, elements);
   }
   return elements;
+}
+
+function mergeElement<T extends Element<ElementType> = Element<ElementType>>(originElem: T, updateContent: RecursivePartial<T>): T {
+  const commonKeys = Object.keys(updateContent);
+  for (let i = 0; i < commonKeys.length; i++) {
+    const commonKey = commonKeys[i];
+    if (['x', 'y', 'w', 'h', 'angle', 'name'].includes(commonKey)) {
+      // @ts-ignore
+      originElem[commonKey] = updateContent[commonKey];
+    } else if (['detail', 'operations'].includes(commonKey)) {
+      // @ts-ignore
+      if (istype.json(updateContent[commonKey] as any)) {
+        if (!(originElem as Object)?.hasOwnProperty(commonKey)) {
+          // @ts-ignore
+          originElem[commonKey] = {};
+        }
+        // @ts-ignore
+        if (istype.json(originElem[commonKey])) {
+          // @ts-ignore
+          originElem[commonKey] = { ...originElem[commonKey], ...updateContent[commonKey] };
+        }
+        // @ts-ignore
+      } else if (istype.array(updateContent[commonKey] as any)) {
+        if (!(originElem as Object)?.hasOwnProperty(commonKey)) {
+          // @ts-ignore
+          originElem[commonKey] = [];
+        }
+        // @ts-ignore
+        if (istype.array(originElem[commonKey])) {
+          ((updateContent as any)?.[commonKey] as Array<any>)?.forEach((item, i) => {
+            // @ts-ignore
+            originElem[commonKey][i] = item;
+          });
+          // @ts-ignore
+          originElem[commonKey] = [...originElem[commonKey], ...updateContent[commonKey]];
+        }
+      }
+    }
+  }
+  return originElem;
+}
+
+export function updateElementInList(uuid: string, updateContent: RecursivePartial<Element<ElementType>>, elements: Element[]): Element | null {
+  let targetElement: Element | null = null;
+  for (let i = 0; i < elements.length; i++) {
+    const elem = elements[i];
+    if (elem.uuid === uuid) {
+      mergeElement(elem, updateContent);
+      targetElement = elem;
+      break;
+    } else if (elem.type === 'group') {
+      targetElement = updateElementInList(uuid, updateContent, (elem as Element<'group'>)?.detail?.children || []);
+    }
+  }
+  return targetElement;
 }

@@ -1,14 +1,21 @@
 import { Core, MiddlewareSelector, MiddlewareScroller, MiddlewareScaler, MiddlewareRuler, MiddlewareTextEditor, middlewareEventSelect } from '@idraw/core';
 import type { PointSize, IDrawOptions, Data, ViewSizeInfo, ElementType, Element, RecursivePartial, ElementPosition } from '@idraw/types';
 import type { IDrawEvent } from './event';
-import { createElement } from '@idraw/util';
+import {
+  createElement,
+  insertElementToListByPosition,
+  updateElementInList,
+  deleteElementInList,
+  moveElementPosition,
+  getElementPositionFromList
+} from '@idraw/util';
 
 export class iDraw {
-  #core: Core;
+  #core: Core<IDrawEvent>;
   // private #opts: IDrawOptions;
 
   constructor(mount: HTMLDivElement, opts: IDrawOptions) {
-    const core = new Core(mount, opts);
+    const core = new Core<IDrawEvent>(mount, opts);
     this.#core = core;
     // this.#opts = opts;
     core.use(MiddlewareScroller);
@@ -19,7 +26,9 @@ export class iDraw {
   }
 
   setData(data: Data) {
-    this.#core.setData(data);
+    const core = this.#core;
+    core.setData(data);
+    core.trigger('change', { data, type: 'set-data' });
   }
 
   getData(): Data | null {
@@ -30,9 +39,9 @@ export class iDraw {
     this.#core.scale(opts);
   }
 
-  updateViewScale(opts: { scale: number; offsetX: number; offsetY: number }) {
+  setViewScale(opts: { scale: number; offsetX: number; offsetY: number }) {
     const core = this.#core;
-    core.updateViewScale(opts);
+    core.setViewScale(opts);
     core.refresh();
   }
 
@@ -52,8 +61,16 @@ export class iDraw {
     this.#core.trigger(name, e);
   }
 
+  selectElement(uuid: string) {
+    this.selectElements([uuid]);
+  }
+
   selectElements(uuids: string[]) {
     this.trigger(middlewareEventSelect, { uuids });
+  }
+
+  selectElementByPosition(position: ElementPosition) {
+    this.selectElementsByPositions([position]);
   }
 
   selectElementsByPositions(positions: ElementPosition[]) {
@@ -84,50 +101,51 @@ export class iDraw {
     );
   }
 
-  updateElement() {
-    // TODO
+  updateElement(element: Element) {
+    const core = this.#core;
+    const data: Data = core.getData() || { elements: [] };
+    updateElementInList(element.uuid, element, data.elements);
+    core.setData(data);
+    core.refresh();
+    core.trigger('change', { data, type: 'update-element' });
   }
 
   addElement(
     element: Element,
     opts?: {
-      uuid: string;
-      referenceType: 'group' | 'front' | 'back';
+      position: ElementPosition;
     }
   ): Data {
     const core = this.#core;
     const data: Data = core.getData() || { elements: [] };
     if (!opts) {
       data.elements.push(element);
-    } else {
-      // TODO
+    } else if (opts?.position) {
+      insertElementToListByPosition(element, opts?.position, data.elements);
     }
     core.setData(data);
     core.refresh();
+    core.trigger('change', { data, type: 'add-element' });
     return data;
   }
 
   deleteElement(uuid: string) {
-    // TODO
+    const core = this.#core;
+    const data: Data = core.getData() || { elements: [] };
+    deleteElementInList(uuid, data.elements);
+    core.setData(data);
+    core.refresh();
+    core.trigger('change', { data, type: 'delete-element' });
   }
 
-  moveElementToFront(uuid: string, referenceUUID?: string) {
-    // TODO
+  moveElement(uuid: string, to: ElementPosition) {
+    const core = this.#core;
+    const data: Data = core.getData() || { elements: [] };
+    const from = getElementPositionFromList(uuid, data.elements);
+    const list = moveElementPosition(data.elements, { from, to });
+    data.elements = list;
+    core.setData(data);
+    core.refresh();
+    core.trigger('change', { data, type: 'move-element' });
   }
-
-  moveElementToBack(uuid: string, referenceUUID?: string) {
-    // TODO
-  }
-
-  // scrollLeft() {
-  //   // TODO
-  // }
-
-  // scrollTop() {
-  //   // TODO
-  // }
-
-  // exportDataURL() {
-  //   // TODO
-  // }
 }

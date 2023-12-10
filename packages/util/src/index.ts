@@ -34,12 +34,12 @@ export {
   findElementsFromList,
   findElementFromListByPosition,
   findElementsFromListByPositions,
-  updateElementInList,
   getGroupQueueFromList,
   getElementSize,
   mergeElementAsset,
   filterElementAsset,
-  isResourceElement
+  isResourceElement,
+  getElementPositionFromList
 } from './lib/element';
 export { checkRectIntersect } from './lib/rect';
 export {
@@ -63,4 +63,11 @@ export { formatNumber } from './lib/number';
 export { matrixToAngle, matrixToRadian } from './lib/matrix';
 export { getDefaultElementDetailConfig, getDefaultElementRectDetail } from './lib/config';
 export { calcViewBoxSize } from './lib/view-box';
-export { createElement, moveElementPosition } from './lib/handle-element';
+export {
+  createElement,
+  insertElementToListByPosition,
+  deleteElementInListByPosition,
+  deleteElementInList,
+  moveElementPosition,
+  updateElementInList
+} from './lib/handle-element';

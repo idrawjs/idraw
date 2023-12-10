@@ -10,8 +10,8 @@ export { MiddlewareScaler, middlewareEventScale } from './middleware/scaler';
 export { MiddlewareRuler, middlewareEventRuler } from './middleware/ruler';
 export { MiddlewareTextEditor, middlewareEventTextEdit } from './middleware/text-editor';
 
-export class Core {
-  #board: Board<CoreEvent>;
+export class Core<E extends CoreEvent = CoreEvent> {
+  #board: Board<E>;
   // #opts: CoreOptions;
   // #canvas: HTMLCanvasElement;
   #container: HTMLDivElement;
@@ -26,7 +26,7 @@ export class Core {
     container.appendChild(canvas);
 
     const viewContent = createViewContent(canvas, { width, height, devicePixelRatio, offscreen: true });
-    const board = new Board<CoreEvent>({ viewContent, container });
+    const board = new Board<E>({ viewContent, container });
     const sharer = board.getSharer();
     sharer.setActiveViewSizeInfo({
       width,
@@ -81,17 +81,17 @@ export class Core {
     this.#board.clear();
   }
 
-  on<T extends keyof CoreEvent>(name: T, callback: (e: CoreEvent[T]) => void) {
+  on<T extends keyof E>(name: T, callback: (e: E[T]) => void) {
     const eventHub = this.#board.getEventHub();
     eventHub.on(name, callback);
   }
 
-  off<T extends keyof CoreEvent>(name: T, callback: (e: CoreEvent[T]) => void) {
+  off<T extends keyof E>(name: T, callback: (e: E[T]) => void) {
     const eventHub = this.#board.getEventHub();
     eventHub.off(name, callback);
   }
 
-  trigger<T extends keyof CoreEvent>(name: T, e: CoreEvent[T]) {
+  trigger<T extends keyof E>(name: T, e: E[T]) {
     const eventHub = this.#board.getEventHub();
     eventHub.trigger(name, e);
   }
@@ -111,7 +111,7 @@ export class Core {
     this.#board.getViewer().drawFrame();
   }
 
-  updateViewScale(opts: { scale: number; offsetX: number; offsetY: number }) {
+  setViewScale(opts: { scale: number; offsetX: number; offsetY: number }) {
     this.#board.updateViewScaleInfo(opts);
   }
 }
