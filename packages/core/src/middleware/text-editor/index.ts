@@ -99,13 +99,27 @@ export const MiddlewareTextEditor: BoardMiddleware<Record<string, any>, CoreEven
       ...element.detail
     };
 
+    let elemX = element.x * scale + offsetLeft;
+    let elemY = element.y * scale + offsetTop;
+    let elemW = element.w * scale;
+    let elemH = element.h * scale;
+
+    if (groupQueue.length > 0) {
+      elemX = element.x * scale;
+      elemY = element.y * scale;
+      elemW = element.w * scale;
+      elemH = element.h * scale;
+    }
+
     textarea.style.position = 'absolute';
-    textarea.style.left = `${element.x * scale}px`;
-    textarea.style.top = `${element.y * scale}px`;
-    textarea.style.width = `${element.w * scale}px`;
-    textarea.style.height = `${element.h * scale}px`;
+    textarea.style.left = `${elemX}px`;
+    textarea.style.top = `${elemY}px`;
+    textarea.style.width = `${elemW}px`;
+    textarea.style.height = `${elemH}px`;
     textarea.style.transform = `rotate(${limitAngle(element.angle || 0)}deg)`;
-    textarea.style.border = 'none';
+    // textarea.style.border = 'none';
+    textarea.style.boxSizing = 'border-box';
+    textarea.style.border = '1px solid #1973ba';
     textarea.style.resize = 'none';
     textarea.style.overflow = 'hidden';
     textarea.style.wordBreak = 'break-all';

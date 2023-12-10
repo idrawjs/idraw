@@ -105,5 +105,8 @@ export {
   getDefaultElementDetailConfig,
   calcViewBoxSize,
   createElement,
-  moveElementPosition
+  moveElementPosition,
+  insertElementToListByPosition,
+  deleteElementInListByPosition,
+  deleteElementInList
 } from '@idraw/util';

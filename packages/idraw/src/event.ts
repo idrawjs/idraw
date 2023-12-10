@@ -1,5 +1,5 @@
 import { middlewareEventScale, middlewareEventSelect } from '@idraw/core';
-import type { CoreEvent } from '@idraw/types';
+import type { CoreEvent, Data } from '@idraw/types';
 
 export interface IDrawEventKeys {
   select: typeof middlewareEventSelect;
@@ -8,7 +8,10 @@ export interface IDrawEventKeys {
 }
 
 export type IDrawEvent = CoreEvent & {
-  [key: string]: any;
+  change: {
+    data: Data;
+    type: 'update-element' | 'delete-element' | 'move-element' | 'add-element' | 'set-data' | 'other';
+  };
 };
 
 // TODO
