@@ -20,5 +20,7 @@ export const keyDebugStartHorizontal = Symbol(`${key}_debug_startHorizontal`);
 export const keyDebugEndHorizontal = Symbol(`${key}_debug_endHorizontal`);
 export const keyDebugEnd0 = Symbol(`${key}_debug_end0`);
 
-export const resizeControllerBorderWidth = 2;
+export const selectWrapperBorderWidth = 2;
+export const resizeControllerBorderWidth = 4;
+export const areaBorderWidth = 1;
 export const wrapperColor = '#1973ba';

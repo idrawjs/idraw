@@ -12,17 +12,24 @@ import {
 
 export class iDraw {
   #core: Core<IDrawEvent>;
-  // private #opts: IDrawOptions;
+  #opts: IDrawOptions;
 
   constructor(mount: HTMLDivElement, opts: IDrawOptions) {
-    const core = new Core<IDrawEvent>(mount, opts);
+    const { width, height, devicePixelRatio } = opts;
+    const core = new Core<IDrawEvent>(mount, { width, height, devicePixelRatio });
     this.#core = core;
-    // this.#opts = opts;
-    core.use(MiddlewareScroller);
-    core.use(MiddlewareSelector);
-    core.use(MiddlewareScaler);
-    core.use(MiddlewareRuler);
-    core.use(MiddlewareTextEditor);
+    this.#opts = opts;
+    this.#init();
+  }
+
+  #init() {
+    const { disableRuler, disableScale, disableScroll, disableSelect, disableTextEdit } = this.#opts;
+    const core = this.#core;
+    disableScroll !== true && core.use(MiddlewareScroller);
+    disableSelect !== true && core.use(MiddlewareSelector);
+    disableScale !== true && core.use(MiddlewareScaler);
+    disableRuler !== true && core.use(MiddlewareRuler);
+    disableTextEdit !== true && core.use(MiddlewareTextEditor);
   }
 
   setData(data: Data) {
