@@ -12,7 +12,7 @@ import type {
 import { rotateElementVertexes, calcViewVertexes } from '@idraw/util';
 import type { AreaSize } from './types';
 
-import { resizeControllerBorderWidth, wrapperColor } from './config';
+import { resizeControllerBorderWidth, areaBorderWidth, wrapperColor, selectWrapperBorderWidth } from './config';
 
 function drawVertexes(
   ctx: ViewContext2D,
@@ -59,9 +59,9 @@ export function drawSelectedElementControllersVertexes(
   if (!controller) {
     return;
   }
-  const { elementWrapper, left, right, top, bottom, topLeft, topRight, bottomLeft, bottomRight } = controller;
+  const { elementWrapper, topLeft, topRight, bottomLeft, bottomRight } = controller;
   // const wrapperColor = 'red'; // TODO
-  const wrapperOpts = { borderColor: wrapperColor, borderWidth: 1, background: 'transparent', lineDash: [] };
+  const wrapperOpts = { borderColor: wrapperColor, borderWidth: selectWrapperBorderWidth, background: 'transparent', lineDash: [] };
   const ctrlOpts = { ...wrapperOpts, borderWidth: resizeControllerBorderWidth, background: '#FFFFFF' };
 
   drawVertexes(ctx, calcViewVertexes(elementWrapper, opts), wrapperOpts);
@@ -109,7 +109,7 @@ export function drawElementListShadows(ctx: ViewContext2D, elements: Element<Ele
 export function drawArea(ctx: ViewContext2D, opts: { start: PointSize; end: PointSize }) {
   const { start, end } = opts;
   ctx.setLineDash([]);
-  ctx.lineWidth = 1;
+  ctx.lineWidth = areaBorderWidth;
   ctx.strokeStyle = wrapperColor;
   ctx.fillStyle = '#1976d24f';
   ctx.beginPath();
@@ -126,7 +126,7 @@ export function drawListArea(ctx: ViewContext2D, opts: { areaSize: AreaSize }) {
   const { areaSize } = opts;
   const { x, y, w, h } = areaSize;
   ctx.setLineDash([]);
-  ctx.lineWidth = 1;
+  ctx.lineWidth = areaBorderWidth;
   ctx.strokeStyle = wrapperColor;
   ctx.fillStyle = '#1976d21c';
   ctx.beginPath();
@@ -149,7 +149,7 @@ export function drawGroupQueueVertexesWrappers(
 ) {
   for (let i = 0; i < vertexesList.length; i++) {
     const vertexes = vertexesList[i];
-    const wrapperOpts = { borderColor: wrapperColor, borderWidth: 2, background: 'transparent', lineDash: [4, 4] };
+    const wrapperOpts = { borderColor: wrapperColor, borderWidth: selectWrapperBorderWidth, background: 'transparent', lineDash: [4, 4] };
     drawVertexes(ctx, calcViewVertexes(vertexes, opts), wrapperOpts);
   }
 }
