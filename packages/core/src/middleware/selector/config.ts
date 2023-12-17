@@ -24,3 +24,4 @@ export const selectWrapperBorderWidth = 2;
 export const resizeControllerBorderWidth = 4;
 export const areaBorderWidth = 1;
 export const wrapperColor = '#1973ba';
+// export const wrapperColor = '#1890ff';
