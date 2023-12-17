@@ -19,21 +19,22 @@ jobs:
       - run: pnpm i
       - run: npm run test
       - run: npm run build
-      - run: npm publish --provenance --access public -w ./packages/types --tag next
+      # - run: npm publish --provenance --access public -w ./packages/types --tag next
+      - run: npm publish --provenance --access public -w ./packages/types
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - run: npm publish --provenance --access public -w ./packages/util --tag next
+      - run: npm publish --provenance --access public -w ./packages/util
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - run: npm publish --provenance --access public -w ./packages/renderer --tag next
+      - run: npm publish --provenance --access public -w ./packages/renderer
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - run: npm publish --provenance --access public -w ./packages/board --tag next
+      - run: npm publish --provenance --access public -w ./packages/board
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - run: npm publish --provenance --access public -w ./packages/core --tag next
+      - run: npm publish --provenance --access public -w ./packages/core
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - run: npm publish --provenance --access public -w ./packages/idraw --tag next
+      - run: npm publish --provenance --access public -w ./packages/idraw
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

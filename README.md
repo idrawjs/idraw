@@ -14,9 +14,9 @@
     <img src="https://github.com/idrawjs/idraw/actions/workflows/node.js.yml/badge.svg?branch=main" alt="CI">
   <a>
 
-  <a href="https://codecov.io/gh/idrawjs/idraw">
+  <!-- <a href="https://codecov.io/gh/idrawjs/idraw">
     <img src="https://codecov.io/gh/idrawjs/idraw/branch/main/graph/badge.svg?token=MICIC9SCKY"/>
-  </a>
+  </a> -->
     
   <a href="https://www.npmjs.com/package/idraw">
     <img src="https://img.shields.io/npm/v/idraw.svg?sanitize=idraw" alt="Version">
@@ -54,7 +54,11 @@
 The preview of `@idraw/studo`. Click [here](https://github.com/idrawjs/studio) to get it.
 
 <div style="text-align: center">
-  <img src="./assets/preview/idraw-studio-preview.png" width="700" />
+  <img src="./assets/preview/idraw-studio-dark.png" width="700" />
+</div>
+
+<div style="text-align: center">
+  <img src="./assets/preview/idraw-studio-light.png" width="700" />
 </div>
 
 ## Install
@@ -75,8 +79,6 @@ const idraw = new iDraw(
   {
     width: 600,
     height: 400,
-    contextWidth: 600,
-    contextHeight: 400,
     devicePixelRatio: 1,
   }
 );
@@ -87,8 +89,8 @@ idraw.addElement({
   w: 200,
   h: 100,
   type: "rect",
-  desc: {
-    bgColor: "#f7d3c1",
+  detail: {
+    background: "#f7d3c1",
     borderRadius: 20,
     borderWidth: 4,
     borderColor: "#ff6032",
@@ -107,9 +109,7 @@ function Demo() {
   useEffect(() => {
     const idraw = new iDraw(ref.current, {
       width: 600,
-      height: 400,
-      contextWidth: 600,
-      contextHeight: 400,
+      height: 400, 
       devicePixelRatio: 1,
     });
     idraw.addElement({
@@ -119,8 +119,8 @@ function Demo() {
       w: 200,
       h: 100,
       type: "rect",
-      desc: {
-        bgColor: "#f7d3c1",
+      detail: {
+        background: "#f7d3c1",
         borderRadius: 20,
         borderWidth: 4,
         borderColor: "#ff6032",
@@ -149,9 +149,7 @@ const mount = ref();
 onMounted(() => {
   const idraw = new iDraw(mount.value, {
     width: 600,
-    height: 400,
-    contextWidth: 600,
-    contextHeight: 400,
+    height: 400, 
     devicePixelRatio: 1,
   });
   idraw.addElement({
@@ -161,8 +159,8 @@ onMounted(() => {
     w: 200,
     h: 100,
     type: "rect",
-    desc: {
-      bgColor: "#f7d3c1",
+    detail: {
+      background: "#f7d3c1",
       borderRadius: 20,
       borderWidth: 4,
       borderColor: "#ff6032",
@@ -183,8 +181,8 @@ To contribute, please follow the steps:
 
 - `git clone git@github.com:idrawjs/idraw.git`
 - `cd idraw`
-- `npm i`
-- `npm run init`
+- `pnpm i`
+- `npm run dev`
 
 ### Step 2: Development
 
