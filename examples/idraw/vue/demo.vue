@@ -3,7 +3,7 @@
 </template>
 
 <script setup >
-import iDraw from 'idraw';
+import { iDraw } from 'idraw';
 import { ref, onMounted } from 'vue'
 const mount = ref();
 

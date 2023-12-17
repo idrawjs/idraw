@@ -72,7 +72,7 @@ npm i idraw
 ### Common
 
 ```js
-import iDraw from 'idraw';
+import { iDraw } from 'idraw';
 
 const idraw = new iDraw(
   document.querySelector('#app'),
@@ -101,7 +101,7 @@ idraw.addElement({
 ### React
 
 ```jsx
-import iDraw from 'idraw';
+import { iDraw } from 'idraw';
 import { useEffect, useRef } from 'react';
 
 function Demo() {
@@ -142,7 +142,7 @@ function Demo() {
 </template>
 
 <script setup >
-import iDraw from 'idraw';
+import { iDraw } from 'idraw';
 import { ref, onMounted } from 'vue'
 const mount = ref();
 

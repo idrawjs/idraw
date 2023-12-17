@@ -1,4 +1,4 @@
-import iDraw from 'idraw';
+import { iDraw } from 'idraw';
 import { useEffect, useRef } from 'react';
 
 function Demo() {
