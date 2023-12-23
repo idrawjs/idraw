@@ -136,11 +136,11 @@ export class BoardWatcher extends EventEmitter<BoardWatcherEventMap> {
   }
 
   private _isInTarget(e: MouseEvent | WheelEvent) {
-    return e.target === this._opts.viewContent.boardContext.canvas;
+    return e.target === this._opts.boardContent.boardContext.canvas;
   }
 
   private _getPoint(e: MouseEvent): Point {
-    const boardCanvas = this._opts.viewContent.boardContext.canvas;
+    const boardCanvas = this._opts.boardContent.boardContext.canvas;
     const rect = boardCanvas.getBoundingClientRect();
     const p: Point = {
       x: e.clientX - rect.left,

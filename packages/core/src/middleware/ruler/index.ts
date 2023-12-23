@@ -5,13 +5,12 @@ import { drawRulerBackground, drawXRuler, drawYRuler, calcXRulerScaleList, calcY
 export const middlewareEventRuler = '@middleware/show-ruler';
 
 export const MiddlewareRuler: BoardMiddleware<Record<string, any>, CoreEvent> = (opts) => {
-  const key = 'RULE';
-  const { viewContent, viewer, eventHub } = opts;
-  const { helperContext, underContext } = viewContent;
+  const { boardContent, viewer, eventHub } = opts;
+  const { helperContext, underContext } = boardContent;
   let show: boolean = true;
   let showGrid: boolean = true;
 
-  eventHub.on(middlewareEventRuler, (e: { show: boolean; showGrid: boolean }) => {
+  const rulerCallback = (e: { show: boolean; showGrid: boolean }) => {
     if (typeof e?.show === 'boolean') {
       show = e.show;
     }
@@ -22,10 +21,15 @@ export const MiddlewareRuler: BoardMiddleware<Record<string, any>, CoreEvent> = 
     if (typeof e?.show === 'boolean' || typeof e?.showGrid === 'boolean') {
       viewer.drawFrame();
     }
-  });
+  };
+
   return {
-    mode: key,
-    isDefault: true,
+    use() {
+      eventHub.on(middlewareEventRuler, rulerCallback);
+    },
+    disuse() {
+      eventHub.off(middlewareEventRuler, rulerCallback);
+    },
     beforeDrawFrame: ({ snapshot }) => {
       if (show === true) {
         const viewScaleInfo = getViewScaleInfoFromSnapshot(snapshot);

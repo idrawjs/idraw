@@ -1,5 +1,5 @@
 import type { Point, PointSize } from './point';
-import type { ViewContent, ViewCalculator, ViewScaleInfo, ViewSizeInfo } from './view';
+import type { BoardContent, ViewCalculator, ViewScaleInfo, ViewSizeInfo } from './view';
 import type { UtilEventEmitter } from './util';
 import type { ActiveStore, StoreSharer } from './store';
 import type { RendererEventMap, RendererOptions, RendererDrawOptions } from './renderer';
@@ -53,12 +53,9 @@ export interface BoardWatcherEventMap<S extends Record<any | symbol, any> = any>
   clear: void;
 }
 
-export type BoardMode = 'SELECT' | 'SCROLL' | 'RULE' | 'CONNECT' | 'PENCIL' | 'PEN' | string;
-
 export interface BoardMiddlewareObject<S extends Record<any | symbol, any> = any> {
-  mode: BoardMode;
-  isDefault?: boolean;
-  created?: () => void;
+  use?: () => void;
+  disuse?: () => void;
   // action
   hover?: (e: BoardWatcherEventMap<S>['hover']) => void | boolean;
   pointStart?: (e: BoardWatcherEventMap<S>['pointStart']) => void | boolean;
@@ -84,7 +81,7 @@ export interface BoardMiddlewareObject<S extends Record<any | symbol, any> = any
 }
 
 export interface BoardMiddlewareOptions<S extends Record<any | symbol, any> = Record<any | symbol, any>, E extends BoardExtendEvent = Record<string, any>> {
-  viewContent: ViewContent;
+  boardContent: BoardContent;
   sharer: StoreSharer<S>;
   viewer: BoardViewer;
   calculator: ViewCalculator;
@@ -98,7 +95,7 @@ export type BoardMiddleware<S extends Record<any | symbol, any> = any, E extends
 ) => BoardMiddlewareObject<S>;
 
 export interface BoardOptions {
-  viewContent: ViewContent;
+  boardContent: BoardContent;
   container?: HTMLDivElement;
 }
 
@@ -116,7 +113,7 @@ export interface BoardViewerOptions {
   sharer: StoreSharer<Record<any | symbol, any>>;
   renderer: BoardRenderer;
   calculator: ViewCalculator;
-  viewContent: ViewContent;
+  boardContent: BoardContent;
   beforeDrawFrame: (e: { snapshot: BoardViewerFrameSnapshot<Record<any | symbol, any>> }) => void;
   afterDrawFrame: (e: { snapshot: BoardViewerFrameSnapshot<Record<any | symbol, any>> }) => void;
 }
@@ -138,7 +135,7 @@ export interface BoardRenderer extends UtilEventEmitter<RendererEventMap> {
 }
 
 export interface BoardWatcherOptions {
-  viewContent: ViewContent;
+  boardContent: BoardContent;
   sharer: StoreSharer<Record<any | symbol, any>>;
 }
 
@@ -147,4 +144,4 @@ export interface BoardWatcherStore {
   prevClickPoint: Point | null;
 }
 
-export type BoardExtendEvent = Record<string, any> & {};
+export type BoardExtendEvent = Record<string, any>;

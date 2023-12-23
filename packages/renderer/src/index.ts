@@ -4,25 +4,25 @@ import { Loader } from './loader';
 import type { Data, BoardRenderer, RendererOptions, RendererEventMap, RendererDrawOptions } from '@idraw/types';
 
 export class Renderer extends EventEmitter<RendererEventMap> implements BoardRenderer {
-  private _opts: RendererOptions;
-  private _loader: Loader = new Loader();
+  #opts: RendererOptions;
+  #loader: Loader = new Loader();
   // private _draftContextTop: CanvasRenderingContext2D;
   // private _draftContextMiddle: CanvasRenderingContext2D;
   // private _draftContextBottom: CanvasRenderingContext2D;
 
   constructor(opts: RendererOptions) {
     super();
-    this._opts = opts;
-    // const { width, height } = this._opts.viewContent.viewContext.canvas;
+    this.#opts = opts;
+    // const { width, height } = this.#opts.boardContent.viewContext.canvas;
     // this._draftContextTop = createOffscreenContext2D({ width, height }) as CanvasRenderingContext2D;
     // this._draftContextMiddle = createOffscreenContext2D({ width, height }) as CanvasRenderingContext2D;
     // this._draftContextBottom = createOffscreenContext2D({ width, height }) as CanvasRenderingContext2D;
 
-    this._init();
+    this.#init();
   }
 
-  private _init() {
-    const { _loader: loader } = this;
+  #init() {
+    const loader = this.#loader;
     loader.on('load', (e) => {
       this.trigger('load', e);
     });
@@ -32,13 +32,13 @@ export class Renderer extends EventEmitter<RendererEventMap> implements BoardRen
   }
 
   updateOptions(opts: RendererOptions) {
-    this._opts = opts;
+    this.#opts = opts;
   }
 
   drawData(data: Data, opts: RendererDrawOptions) {
-    const { _loader: loader } = this;
-    const { calculator } = this._opts;
-    const { viewContext } = this._opts.viewContent;
+    const loader = this.#loader;
+    const { calculator } = this.#opts;
+    const viewContext = this.#opts.viewContext;
     viewContext.clearRect(0, 0, viewContext.canvas.width, viewContext.canvas.height);
     const parentElementSize = {
       x: 0,
@@ -56,7 +56,11 @@ export class Renderer extends EventEmitter<RendererEventMap> implements BoardRen
   }
 
   scale(num: number) {
-    const { sharer } = this._opts;
+    const { sharer } = this.#opts;
+    if (!sharer) {
+      // TODO
+      return;
+    }
     const { data, offsetTop, offsetBottom, offsetLeft, offsetRight, width, height, contextHeight, contextWidth, devicePixelRatio } =
       sharer.getActiveStoreSnapshot();
     if (data) {

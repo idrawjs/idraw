@@ -4,7 +4,7 @@ import { drawBox, drawBoxShadow } from './box';
 
 export function drawRect(ctx: ViewContext2D, elem: Element<'rect'>, opts: RendererDrawElementOptions) {
   const { calculator, viewScaleInfo, viewSizeInfo } = opts;
-  let { x, y, w, h, angle } = calculator.elementSize(elem, viewScaleInfo, viewSizeInfo);
+  const { x, y, w, h, angle } = calculator?.elementSize(elem, viewScaleInfo, viewSizeInfo) || elem;
 
   const viewElem = { ...elem, ...{ x, y, w, h, angle } };
   rotateElement(ctx, { x, y, w, h, angle }, () => {

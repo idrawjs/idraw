@@ -8,7 +8,7 @@ import {
   findElementsFromList,
   findElementsFromListByPositions
 } from '@idraw/util';
-import type { ViewRectVertexes, CoreEvent } from '@idraw/types';
+import type { ViewRectVertexes, CoreEvent, ElementPosition } from '@idraw/types';
 import type {
   Point,
   PointSize,
@@ -33,7 +33,6 @@ import {
   calcMoveInGroup
 } from './util';
 import {
-  key,
   keyActionType,
   keyResizeType,
   keyAreaStart,
@@ -57,39 +56,10 @@ import { middlewareEventTextEdit } from '../text-editor';
 export const middlewareEventSelect: string = '@middleware/select';
 
 export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, CoreEvent> = (opts) => {
-  const { viewer, sharer, viewContent, calculator, eventHub } = opts;
-  const { helperContext } = viewContent;
+  const { viewer, sharer, boardContent, calculator, eventHub } = opts;
+  const { helperContext } = boardContent;
   let prevPoint: Point | null = null;
   let inBusyMode: 'resize' | 'drag' | 'drag-list' | 'area' | null = null;
-
-  eventHub.on(middlewareEventSelect, ({ uuids, positions }) => {
-    let elements: Element[] = [];
-
-    const actionType = sharer.getSharedStorage(keyActionType);
-    const data = sharer.getActiveStorage('data');
-    if (positions && Array.isArray(positions)) {
-      elements = findElementsFromListByPositions(positions, data?.elements || []);
-    } else {
-      elements = findElementsFromList(uuids, data?.elements || []);
-    }
-
-    let needRefresh = false;
-    if (!actionType && elements.length === 1) {
-      // TODO
-      sharer.setSharedStorage(keyActionType, 'select');
-      needRefresh = true;
-    } else if (actionType === 'select' && elements.length === 1) {
-      // TODO
-      needRefresh = true;
-    }
-    if (needRefresh) {
-      const elem = elements[0];
-      const groupQueue = getGroupQueueFromList(elem.uuid, data?.elements || []);
-      sharer.setSharedStorage(keyGroupQueue, groupQueue);
-      updateSelectedElementList(elements);
-      viewer.drawFrame();
-    }
-  });
 
   sharer.setSharedStorage(keyActionType, null);
 
@@ -176,15 +146,50 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
 
   clear();
 
+  const selectCallback = ({ uuids, positions }: { uuids: string[]; positions: ElementPosition[] }) => {
+    let elements: Element[] = [];
+    const actionType = sharer.getSharedStorage(keyActionType);
+    const data = sharer.getActiveStorage('data');
+    if (positions && Array.isArray(positions)) {
+      elements = findElementsFromListByPositions(positions, data?.elements || []);
+    } else {
+      elements = findElementsFromList(uuids, data?.elements || []);
+    }
+
+    let needRefresh = false;
+    if (!actionType && elements.length === 1) {
+      // TODO
+      sharer.setSharedStorage(keyActionType, 'select');
+      needRefresh = true;
+    } else if (actionType === 'select' && elements.length === 1) {
+      // TODO
+      needRefresh = true;
+    }
+    if (needRefresh) {
+      const elem = elements[0];
+      const groupQueue = getGroupQueueFromList(elem.uuid, data?.elements || []);
+      sharer.setSharedStorage(keyGroupQueue, groupQueue);
+      updateSelectedElementList(elements);
+      viewer.drawFrame();
+    }
+  };
+
   return {
-    mode: key,
+    use() {
+      eventHub.on(middlewareEventSelect, selectCallback);
+    },
+
+    disuse() {
+      eventHub.off(middlewareEventSelect, selectCallback);
+    },
+
     hover: (e: PointWatcherEvent) => {
       const resizeType = sharer.getSharedStorage(keyResizeType);
       const actionType = sharer.getSharedStorage(keyActionType);
       const groupQueue = sharer.getSharedStorage(keyGroupQueue);
 
       const triggerCursor = (target: PointTarget) => {
-        let cursor: string | null = target.type;
+        const cursor: string | null = target.type;
         if (inBusyMode === null) {
           eventHub.trigger('cursor', {
             type: cursor,

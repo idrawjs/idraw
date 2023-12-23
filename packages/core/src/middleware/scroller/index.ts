@@ -1,11 +1,11 @@
 import type { Point, BoardMiddleware, PointWatcherEvent, BoardWatherWheelEvent } from '@idraw/types';
 import { drawScroller, isPointInScrollThumb } from './util';
 // import type { ScrollbarThumbType } from './util';
-import { key, keyXThumbRect, keyYThumbRect, keyPrevPoint, keyActivePoint, keyActiveThumbType } from './config';
+import { keyXThumbRect, keyYThumbRect, keyPrevPoint, keyActivePoint, keyActiveThumbType } from './config';
 
 export const MiddlewareScroller: BoardMiddleware = (opts) => {
-  const { viewer, viewContent, sharer } = opts;
-  const { helperContext } = viewContent;
+  const { viewer, boardContent, sharer } = opts;
+  const { helperContext } = boardContent;
   sharer.setSharedStorage(keyXThumbRect, null); // null | ElementSize
   sharer.setSharedStorage(keyYThumbRect, null); // null | ElementSize
 
@@ -54,8 +54,6 @@ export const MiddlewareScroller: BoardMiddleware = (opts) => {
   };
 
   return {
-    mode: key,
-
     wheel: (e: BoardWatherWheelEvent) => {
       viewer.scroll({
         moveX: 0 - e.deltaX,
@@ -87,7 +85,7 @@ export const MiddlewareScroller: BoardMiddleware = (opts) => {
         return false;
       }
     },
-    pointEnd: (e: PointWatcherEvent) => {
+    pointEnd: () => {
       const activeThumbType = sharer.getSharedStorage(keyActiveThumbType);
       clear();
       if (activeThumbType === 'X' || activeThumbType === 'Y') {

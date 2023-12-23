@@ -4,7 +4,7 @@ import { rotateElement } from '@idraw/util';
 export function drawHTML(ctx: ViewContext2D, elem: Element<'html'>, opts: RendererDrawElementOptions) {
   const content = opts.loader.getContent(elem);
   const { calculator, viewScaleInfo, viewSizeInfo } = opts;
-  const { x, y, w, h, angle } = calculator.elementSize(elem, viewScaleInfo, viewSizeInfo);
+  const { x, y, w, h, angle } = calculator?.elementSize(elem, viewScaleInfo, viewSizeInfo) || elem;
   rotateElement(ctx, { x, y, w, h, angle }, () => {
     if (!content) {
       opts.loader.load(elem as Element<'html'>, opts.elementAssets || {});

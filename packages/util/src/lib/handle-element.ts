@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import type { RecursivePartial, Element, Elements, ElementPosition, ElementSize, ElementType, ViewScaleInfo, ViewSizeInfo } from '@idraw/types';
 import { createUUID } from './uuid';
 import {
@@ -226,7 +227,7 @@ function mergeElement<T extends Element<ElementType> = Element<ElementType>>(ori
     } else if (['detail', 'operations'].includes(commonKey)) {
       // @ts-ignore
       if (istype.json(updateContent[commonKey] as any)) {
-        if (!(originElem as Object)?.hasOwnProperty(commonKey)) {
+        if (!(originElem as unknown)?.hasOwnProperty(commonKey)) {
           // @ts-ignore
           originElem[commonKey] = {};
         }
@@ -237,7 +238,7 @@ function mergeElement<T extends Element<ElementType> = Element<ElementType>>(ori
         }
         // @ts-ignore
       } else if (istype.array(updateContent[commonKey] as any)) {
-        if (!(originElem as Object)?.hasOwnProperty(commonKey)) {
+        if (!(originElem as unknown)?.hasOwnProperty(commonKey)) {
           // @ts-ignore
           originElem[commonKey] = [];
         }

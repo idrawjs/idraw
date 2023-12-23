@@ -17,10 +17,12 @@ export function drawElementList(ctx: ViewContext2D, data: Data, opts: RendererDr
         }
       }
     };
-    // TODO
-    if (!opts.calculator.isElementInView(elem, opts.viewScaleInfo, opts.viewSizeInfo)) {
-      continue;
+    if (opts.forceDrawAll !== true) {
+      if (!opts.calculator?.isElementInView(elem, opts.viewScaleInfo, opts.viewSizeInfo)) {
+        continue;
+      }
     }
+
     try {
       drawElement(ctx, elem, opts);
     } catch (err) {

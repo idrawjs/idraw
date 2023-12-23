@@ -17,7 +17,7 @@ export class Calculator implements ViewCalculator {
   }
 
   isPointInElement(p: Point, elem: Element<ElementType>, viewScaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): boolean {
-    const context2d = this._opts.viewContent.boardContext;
+    const context2d = this._opts.viewContext;
     return isViewPointInElement(p, {
       context2d,
       element: elem,
@@ -30,7 +30,7 @@ export class Calculator implements ViewCalculator {
     p: Point,
     opts: { data: Data; viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }
   ): { index: number; element: null | Element<ElementType>; groupQueueIndex: number } {
-    const context2d = this._opts.viewContent.boardContext;
+    const context2d = this._opts.viewContext;
     return getViewPointAtElement(p, { ...opts, ...{ context2d } });
   }
 }

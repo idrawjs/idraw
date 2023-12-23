@@ -1,5 +1,25 @@
-import { Core, MiddlewareSelector, MiddlewareScroller, MiddlewareScaler, MiddlewareRuler, MiddlewareTextEditor, middlewareEventSelect } from '@idraw/core';
-import type { PointSize, IDrawOptions, Data, ViewSizeInfo, ElementType, Element, RecursivePartial, ElementPosition } from '@idraw/types';
+import {
+  Core,
+  MiddlewareSelector,
+  MiddlewareScroller,
+  MiddlewareScaler,
+  MiddlewareRuler,
+  MiddlewareTextEditor,
+  middlewareEventSelect,
+  MiddlewareDragger
+} from '@idraw/core';
+import type {
+  PointSize,
+  IDrawOptions,
+  IDrawSettings,
+  Data,
+  ViewSizeInfo,
+  ViewScaleInfo,
+  ElementType,
+  Element,
+  RecursivePartial,
+  ElementPosition
+} from '@idraw/types';
 import type { IDrawEvent } from './event';
 import {
   createElement,
@@ -9,12 +29,14 @@ import {
   moveElementPosition,
   getElementPositionFromList
 } from '@idraw/util';
+import { defaultSettings } from './config';
 
 export class iDraw {
   #core: Core<IDrawEvent>;
   #opts: IDrawOptions;
 
-  constructor(mount: HTMLDivElement, opts: IDrawOptions) {
+  constructor(mount: HTMLDivElement, options: IDrawOptions) {
+    const opts = { ...defaultSettings, ...options };
     const { width, height, devicePixelRatio } = opts;
     const core = new Core<IDrawEvent>(mount, { width, height, devicePixelRatio });
     this.#core = core;
@@ -23,13 +45,61 @@ export class iDraw {
   }
 
   #init() {
-    const { disableRuler, disableScale, disableScroll, disableSelect, disableTextEdit } = this.#opts;
+    const { enableRuler, enableScale, enableScroll, enableSelect, enableTextEdit, enableDrag } = this.#opts;
     const core = this.#core;
-    disableScroll !== true && core.use(MiddlewareScroller);
-    disableSelect !== true && core.use(MiddlewareSelector);
-    disableScale !== true && core.use(MiddlewareScaler);
-    disableRuler !== true && core.use(MiddlewareRuler);
-    disableTextEdit !== true && core.use(MiddlewareTextEditor);
+    enableScroll === true && core.use(MiddlewareScroller);
+    enableSelect === true && core.use(MiddlewareSelector);
+    enableScale === true && core.use(MiddlewareScaler);
+    enableRuler === true && core.use(MiddlewareRuler);
+    enableTextEdit === true && core.use(MiddlewareTextEditor);
+    enableDrag === true && core.use(MiddlewareTextEditor);
+  }
+
+  reset(opts: IDrawSettings) {
+    const core = this.#core;
+    const { enableRuler, enableScale, enableScroll, enableSelect, enableTextEdit, enableDrag } = opts;
+    if (enableScroll === true) {
+      core.use(MiddlewareScroller);
+    } else if (enableScroll === false) {
+      core.disuse(MiddlewareScroller);
+    }
+
+    if (enableSelect === true) {
+      core.use(MiddlewareSelector);
+    } else if (enableSelect === false) {
+      core.disuse(MiddlewareSelector);
+    }
+
+    if (enableScale === true) {
+      core.use(MiddlewareScaler);
+    } else if (enableScale === false) {
+      core.disuse(MiddlewareScaler);
+    }
+
+    if (enableRuler === true) {
+      core.use(MiddlewareRuler);
+    } else if (enableRuler === false) {
+      core.disuse(MiddlewareRuler);
+    }
+
+    if (enableTextEdit === true) {
+      core.use(MiddlewareTextEditor);
+    } else if (enableTextEdit === false) {
+      core.disuse(MiddlewareTextEditor);
+    }
+
+    if (enableDrag === true) {
+      core.use(MiddlewareDragger);
+    } else if (enableDrag === false) {
+      core.disuse(MiddlewareDragger);
+    }
+
+    core.refresh();
+
+    this.#opts = {
+      ...this.#opts,
+      ...opts
+    };
   }
 
   setData(data: Data) {
@@ -40,6 +110,13 @@ export class iDraw {
 
   getData(): Data | null {
     return this.#core.getData();
+  }
+
+  getViewInfo(): {
+    viewSizeInfo: ViewSizeInfo;
+    viewScaleInfo: ViewScaleInfo;
+  } {
+    return this.#core.getViewInfo();
   }
 
   scale(opts: { scale: number; point: PointSize }) {

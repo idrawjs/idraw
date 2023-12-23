@@ -4,14 +4,11 @@ import { formatNumber } from '@idraw/util';
 export const middlewareEventScale = '@middleware/scale';
 
 export const MiddlewareScaler: BoardMiddleware<Record<string, any>, CoreEvent> = (opts) => {
-  const key = 'SCALE';
   const { viewer, sharer, eventHub } = opts;
   const maxScale = 50;
   const minScale = 0.05;
 
   return {
-    mode: key,
-    isDefault: true,
     wheelScale(e) {
       const { deltaY, point } = e;
       const { scale } = sharer.getActiveViewScaleInfo();
