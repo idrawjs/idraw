@@ -43,13 +43,13 @@
 
 The preview of `@idraw/studo`. Click [here](https://github.com/idrawjs/studio) to get it.
 
-<div style="text-align: center">
-  <img width="1145" alt="image" src="https://github.com/idrawjs/studio/assets/8216630/62b9bc71-5fca-421d-9c6e-b7512edc77f2" width="700">
-</div>
+<p align="center">
+  <img alt="idraw studio dark preview" src="https://github.com/idrawjs/studio/assets/8216630/62b9bc71-5fca-421d-9c6e-b7512edc77f2" width="700">
+</p>
 
-<div style="text-align: center">
-  <img width="1145" alt="image" src="https://github.com/idrawjs/studio/assets/8216630/5b4cc1dc-89e1-4f67-84fa-578667d42bf7" width="700">
-</div>
+<p align="center">
+  <img alt="idraw studio light preview" src="https://github.com/idrawjs/studio/assets/8216630/5b4cc1dc-89e1-4f67-84fa-578667d42bf7" width="700">
+</p>
 
 ## Install
 
