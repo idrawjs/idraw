@@ -34,7 +34,7 @@
 <hr/>
 
 
-- [Documents](https://idraw.js.org/docs/en/) | [中文文档](https://idraw.js.org/docs/zh/) 
+- [Documents](https://idraw.js.org/docs/en-US/) | [中文文档](https://idraw.js.org/docs/zh-CN/) 
 - [Online Playground](https://idraw.js.org/playground/) | [在线API示例](https://idraw.js.org/playground/)
 - [Online Studio](https://idraw.js.org/studio/) | [在线绘图演示](https://idraw.js.org/studio/)
  
