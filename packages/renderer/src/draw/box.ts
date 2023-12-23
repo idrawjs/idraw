@@ -11,7 +11,7 @@ export function drawBox(
     originElem: Element<ElementType>;
     calcElemSize: ElementSize;
     pattern?: string | CanvasPattern | null;
-    renderContent: Function;
+    renderContent: () => void;
     viewScaleInfo: ViewScaleInfo;
     viewSizeInfo: ViewSizeInfo;
   }
@@ -45,7 +45,7 @@ function drawClipPath(
   opts: {
     originElem?: Element<ElementType>;
     calcElemSize?: ElementSize;
-    renderContent: Function;
+    renderContent: () => void;
     viewScaleInfo: ViewScaleInfo;
     viewSizeInfo: ViewSizeInfo;
   }
@@ -60,8 +60,8 @@ function drawClipPath(
     const scaleH = h / originH;
     const viewOriginX = originX * scaleW;
     const viewOriginY = originY * scaleH;
-    let internalX = x - viewOriginX;
-    let internalY = y - viewOriginY;
+    const internalX = x - viewOriginX;
+    const internalY = y - viewOriginY;
 
     ctx.save();
     ctx.translate(internalX as number, internalY as number);
@@ -88,10 +88,12 @@ function drawBoxBackground(
   opts: { pattern?: string | CanvasPattern | null; viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }
 ): void {
   const { pattern, viewScaleInfo, viewSizeInfo } = opts;
-  let transform: TransformAction[] = [];
-  let { borderRadius, borderWidth } = viewElem.detail;
+  const transform: TransformAction[] = [];
+  let { borderRadius } = viewElem.detail;
+  const { borderWidth } = viewElem.detail;
   if (typeof borderWidth !== 'number') {
     // TODO: If borderWidth is an array, borderRadius will not take effect and will become 0.
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     borderRadius = 0;
   }
   if (viewElem.detail.background || pattern) {
@@ -321,7 +323,7 @@ function drawBoxBorder(ctx: ViewContext2D, viewElem: Element<ElementType>, opts:
 export function drawBoxShadow(
   ctx: ViewContext2D,
   viewElem: Element<ElementType>,
-  opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo; renderContent: Function }
+  opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo; renderContent: () => void }
 ): void {
   const { detail } = viewElem;
   const { viewScaleInfo, renderContent } = opts;

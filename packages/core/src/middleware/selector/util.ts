@@ -26,7 +26,7 @@ import type {
   AreaSize,
   ViewSizeInfo
 } from './types';
-import { keyDebugElemCenter, keyDebugEnd0, keyDebugEndHorizontal, keyDebugEndVertical, keyDebugStartHorizontal, keyDebugStartVertical } from './config';
+// import { keyDebugElemCenter, keyDebugEnd0, keyDebugEndHorizontal, keyDebugEndVertical, keyDebugStartHorizontal, keyDebugStartVertical } from './config';
 
 function parseRadian(angle: number) {
   return (angle * Math.PI) / 180;
@@ -229,12 +229,14 @@ export function resizeElement(
     moveHorizontalY = (endHorizontal.y - startHorizontal.y) / scale;
     moveHorizontalDist = calcMoveDist(moveHorizontalX, moveHorizontalY);
     moveHorizontalDist = changeMoveDistDirect(moveHorizontalDist, moveHorizontalY);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     centerMoveHorizontalDist = moveHorizontalDist / 2;
 
     moveVerticalX = (endVertical.x - startVertical.x) / scale;
     moveVerticalY = (endVertical.y - startVertical.y) / scale;
     moveVerticalDist = calcMoveDist(moveVerticalX, moveVerticalY);
     moveVerticalDist = changeMoveDistDirect(moveVerticalDist, moveVerticalY);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     centerMoveVerticalDist = moveVerticalDist / 2;
   }
 

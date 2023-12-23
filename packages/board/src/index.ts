@@ -2,7 +2,6 @@ import { Renderer } from '@idraw/renderer';
 import { throttle, calcElementsContextSize, EventEmitter } from '@idraw/util';
 import type {
   Data,
-  BoardMode,
   BoardOptions,
   BoardMiddleware,
   BoardMiddlewareObject,
@@ -19,92 +18,93 @@ import { Viewer } from './lib/viewer';
 
 const throttleTime = 10; // ms
 
-const LOCK_MODES: BoardMode[] = ['RULER'];
+interface BoardMiddlewareMapItem {
+  status: 'enable' | 'disable';
+  middlewareObject: BoardMiddlewareObject;
+}
 
 export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
-  private _opts: BoardOptions;
-  private _middlewares: BoardMiddleware[] = [];
-  private _middlewareObjs: BoardMiddlewareObject[] = [];
-  private _activeMiddlewareObjs: BoardMiddlewareObject[] = [];
-  private _watcher: BoardWatcher;
-  private _sharer: Sharer;
-  // private _renderer: Renderer;
-  private _viewer: Viewer;
-  private _calculator: Calculator;
-  private _eventHub: EventEmitter<T> = new EventEmitter<T>();
-  private _activeMode: BoardMode = 'SELECT';
+  #opts: BoardOptions;
+  #middlewareMap: WeakMap<BoardMiddleware, BoardMiddlewareMapItem> = new WeakMap();
+  #middlewares: BoardMiddleware[] = [];
+  #activeMiddlewareObjs: BoardMiddlewareObject[] = [];
+  #watcher: BoardWatcher;
+  #sharer: Sharer;
+  #viewer: Viewer;
+  #calculator: Calculator;
+  #eventHub: EventEmitter<T> = new EventEmitter<T>();
+
   constructor(opts: BoardOptions) {
-    const { viewContent } = opts;
+    const { boardContent } = opts;
     const sharer = new Sharer();
-    const calculator = new Calculator({ viewContent });
+    const calculator = new Calculator({ viewContext: boardContent.viewContext });
     const watcher = new BoardWatcher({
-      viewContent,
+      boardContent,
       sharer
     });
     const renderer = new Renderer({
-      viewContent,
+      viewContext: boardContent.viewContext,
       sharer,
       calculator
     });
 
-    this._opts = opts;
-    this._sharer = sharer;
-    // this._renderer = renderer;
-    this._watcher = watcher;
-    this._calculator = calculator;
-    this._viewer = new Viewer({
-      viewContent: opts.viewContent,
+    this.#opts = opts;
+    this.#sharer = sharer;
+    this.#watcher = watcher;
+    this.#calculator = calculator;
+    this.#viewer = new Viewer({
+      boardContent: opts.boardContent,
       sharer,
       renderer,
-      calculator,
+      calculator: this.#calculator,
       beforeDrawFrame: (e) => {
-        this._handleBeforeDrawFrame(e);
+        this.#handleBeforeDrawFrame(e);
       },
       afterDrawFrame: (e) => {
-        this._handleAfterDrawFrame(e);
+        this.#handleAfterDrawFrame(e);
       }
     });
-    this._init();
-    this._resetActiveMiddlewareObjs();
+    this.#init();
+    this.#resetActiveMiddlewareObjs();
   }
 
-  private _init() {
-    this._watcher.on('pointStart', this._handlePointStart.bind(this));
-    this._watcher.on('pointEnd', this._handlePointEnd.bind(this));
-    this._watcher.on(
+  #init() {
+    this.#watcher.on('pointStart', this.#handlePointStart.bind(this));
+    this.#watcher.on('pointEnd', this.#handlePointEnd.bind(this));
+    this.#watcher.on(
       'pointMove',
       throttle((e) => {
-        this._handlePointMove(e);
+        this.#handlePointMove(e);
       }, throttleTime)
     );
-    this._watcher.on(
+    this.#watcher.on(
       'hover',
       throttle((e) => {
-        this._handleHover(e);
+        this.#handleHover(e);
       }, throttleTime)
     );
 
-    this._watcher.on(
+    this.#watcher.on(
       'wheel',
       throttle((e) => {
-        this._handleWheel(e);
+        this.#handleWheel(e);
       }, throttleTime)
     );
-    this._watcher.on(
+    this.#watcher.on(
       'wheelScale',
       throttle((e) => {
-        this._handleWheelScale(e);
+        this.#handleWheelScale(e);
       }, throttleTime)
     );
-    this._watcher.on('scrollX', this._handleScrollX.bind(this));
-    this._watcher.on('scrollY', this._handleScrollY.bind(this));
-    this._watcher.on('resize', this._handleResize.bind(this));
-    this._watcher.on('doubleClick', this._handleDoubleClick.bind(this));
+    this.#watcher.on('scrollX', this.#handleScrollX.bind(this));
+    this.#watcher.on('scrollY', this.#handleScrollY.bind(this));
+    this.#watcher.on('resize', this.#handleResize.bind(this));
+    this.#watcher.on('doubleClick', this.#handleDoubleClick.bind(this));
   }
 
-  private _handlePointStart(e: BoardWatcherEventMap['pointStart']) {
-    for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
-      const obj = this._activeMiddlewareObjs[i];
+  #handlePointStart(e: BoardWatcherEventMap['pointStart']) {
+    for (let i = 0; i < this.#activeMiddlewareObjs.length; i++) {
+      const obj = this.#activeMiddlewareObjs[i];
       const result = obj?.pointStart?.(e);
       if (result === false) {
         return;
@@ -112,9 +112,9 @@ export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
     }
   }
 
-  private _handlePointEnd(e: BoardWatcherEventMap['pointEnd']) {
-    for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
-      const obj = this._activeMiddlewareObjs[i];
+  #handlePointEnd(e: BoardWatcherEventMap['pointEnd']) {
+    for (let i = 0; i < this.#activeMiddlewareObjs.length; i++) {
+      const obj = this.#activeMiddlewareObjs[i];
       const result = obj?.pointEnd?.(e);
       if (result === false) {
         return;
@@ -122,9 +122,9 @@ export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
     }
   }
 
-  private _handlePointMove(e: BoardWatcherEventMap['pointMove']) {
-    for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
-      const obj = this._activeMiddlewareObjs[i];
+  #handlePointMove(e: BoardWatcherEventMap['pointMove']) {
+    for (let i = 0; i < this.#activeMiddlewareObjs.length; i++) {
+      const obj = this.#activeMiddlewareObjs[i];
       const result = obj?.pointMove?.(e);
       if (result === false) {
         return;
@@ -132,9 +132,9 @@ export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
     }
   }
 
-  private _handleHover(e: BoardWatcherEventMap['hover']) {
-    for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
-      const obj = this._activeMiddlewareObjs[i];
+  #handleHover(e: BoardWatcherEventMap['hover']) {
+    for (let i = 0; i < this.#activeMiddlewareObjs.length; i++) {
+      const obj = this.#activeMiddlewareObjs[i];
       const result = obj?.hover?.(e);
       if (result === false) {
         return;
@@ -142,9 +142,9 @@ export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
     }
   }
 
-  private _handleDoubleClick(e: BoardWatcherEventMap['doubleClick']) {
-    for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
-      const obj = this._activeMiddlewareObjs[i];
+  #handleDoubleClick(e: BoardWatcherEventMap['doubleClick']) {
+    for (let i = 0; i < this.#activeMiddlewareObjs.length; i++) {
+      const obj = this.#activeMiddlewareObjs[i];
       const result = obj?.doubleClick?.(e);
       if (result === false) {
         return;
@@ -152,9 +152,9 @@ export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
     }
   }
 
-  private _handleWheel(e: BoardWatcherEventMap['wheel']) {
-    for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
-      const obj = this._activeMiddlewareObjs[i];
+  #handleWheel(e: BoardWatcherEventMap['wheel']) {
+    for (let i = 0; i < this.#activeMiddlewareObjs.length; i++) {
+      const obj = this.#activeMiddlewareObjs[i];
       const result = obj?.wheel?.(e);
       if (result === false) {
         return;
@@ -162,9 +162,9 @@ export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
     }
   }
 
-  private _handleWheelScale(e: BoardWatcherEventMap['wheelScale']) {
-    for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
-      const obj = this._activeMiddlewareObjs[i];
+  #handleWheelScale(e: BoardWatcherEventMap['wheelScale']) {
+    for (let i = 0; i < this.#activeMiddlewareObjs.length; i++) {
+      const obj = this.#activeMiddlewareObjs[i];
       const result = obj?.wheelScale?.(e);
       if (result === false) {
         return;
@@ -172,19 +172,9 @@ export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
     }
   }
 
-  // private _handleScale(e: BoardWatcherEventMap['scale']) {
-  //   for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
-  //     const obj = this._activeMiddlewareObjs[i];
-  //     const result = obj?.scale?.(e);
-  //     if (result === false) {
-  //       return;
-  //     }
-  //   }
-  // }
-
-  private _handleScrollX(e: BoardWatcherEventMap['scrollX']) {
-    for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
-      const obj = this._activeMiddlewareObjs[i];
+  #handleScrollX(e: BoardWatcherEventMap['scrollX']) {
+    for (let i = 0; i < this.#activeMiddlewareObjs.length; i++) {
+      const obj = this.#activeMiddlewareObjs[i];
       const result = obj?.scrollX?.(e);
       if (result === false) {
         return;
@@ -192,9 +182,9 @@ export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
     }
   }
 
-  private _handleScrollY(e: BoardWatcherEventMap['scrollY']) {
-    for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
-      const obj = this._activeMiddlewareObjs[i];
+  #handleScrollY(e: BoardWatcherEventMap['scrollY']) {
+    for (let i = 0; i < this.#activeMiddlewareObjs.length; i++) {
+      const obj = this.#activeMiddlewareObjs[i];
       const result = obj?.scrollY?.(e);
       if (result === false) {
         return;
@@ -202,9 +192,9 @@ export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
     }
   }
 
-  private _handleResize(e: BoardWatcherEventMap['resize']) {
-    for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
-      const obj = this._activeMiddlewareObjs[i];
+  #handleResize(e: BoardWatcherEventMap['resize']) {
+    for (let i = 0; i < this.#activeMiddlewareObjs.length; i++) {
+      const obj = this.#activeMiddlewareObjs[i];
       const result = obj?.resize?.(e);
       if (result === false) {
         return;
@@ -212,9 +202,9 @@ export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
     }
   }
 
-  private _handleClear(e: BoardWatcherEventMap['clear']) {
-    for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
-      const obj = this._activeMiddlewareObjs[i];
+  #handleClear(e: BoardWatcherEventMap['clear']) {
+    for (let i = 0; i < this.#activeMiddlewareObjs.length; i++) {
+      const obj = this.#activeMiddlewareObjs[i];
       const result = obj?.clear?.(e);
       if (result === false) {
         return;
@@ -223,9 +213,9 @@ export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
   }
 
   // draw event
-  private _handleBeforeDrawFrame(e: BoardWatcherEventMap['beforeDrawFrame']) {
-    for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
-      const obj = this._activeMiddlewareObjs[i];
+  #handleBeforeDrawFrame(e: BoardWatcherEventMap['beforeDrawFrame']) {
+    for (let i = 0; i < this.#activeMiddlewareObjs.length; i++) {
+      const obj = this.#activeMiddlewareObjs[i];
       const result = obj?.beforeDrawFrame?.(e);
       if (result === false) {
         return;
@@ -233,9 +223,9 @@ export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
     }
   }
 
-  private _handleAfterDrawFrame(e: BoardWatcherEventMap['afterDrawFrame']) {
-    for (let i = 0; i < this._activeMiddlewareObjs.length; i++) {
-      const obj = this._activeMiddlewareObjs[i];
+  #handleAfterDrawFrame(e: BoardWatcherEventMap['afterDrawFrame']) {
+    for (let i = 0; i < this.#activeMiddlewareObjs.length; i++) {
+      const obj = this.#activeMiddlewareObjs[i];
       const result = obj?.afterDrawFrame?.(e);
       if (result === false) {
         return;
@@ -243,31 +233,29 @@ export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
     }
   }
 
-  private _resetActiveMiddlewareObjs() {
-    const { _activeMode: activeMode } = this;
-    const modes: BoardMode[] = [...LOCK_MODES, activeMode];
+  #resetActiveMiddlewareObjs() {
     const activeMiddlewareObjs: BoardMiddlewareObject[] = [];
-    this._middlewareObjs.forEach((m) => {
-      if (m.isDefault === true) {
-        activeMiddlewareObjs.push(m);
-      } else if (modes.includes(m.mode)) {
-        activeMiddlewareObjs.push(m);
+    const middlewareMap = this.#middlewareMap;
+    this.#middlewares.forEach((middleware: BoardMiddleware) => {
+      const item = middlewareMap.get(middleware);
+      if (item?.status === 'enable' && item?.middlewareObject) {
+        activeMiddlewareObjs.push(item.middlewareObject);
       }
     });
-    this._activeMiddlewareObjs = activeMiddlewareObjs;
+    this.#activeMiddlewareObjs = activeMiddlewareObjs;
   }
 
   getSharer() {
-    return this._sharer;
+    return this.#sharer;
   }
 
   getViewer() {
-    return this._viewer;
+    return this.#viewer;
   }
 
   setData(data: Data): { viewSizeInfo: ViewSizeInfo } {
-    const sharer = this._sharer;
-    this._sharer.setActiveStorage('data', data);
+    const sharer = this.#sharer;
+    this.#sharer.setActiveStorage('data', data);
     const viewSizeInfo = sharer.getActiveViewSizeInfo();
     // const currentScaleInfo = sharer.getActiveViewScaleInfo();
     const newViewContextSize = calcElementsContextSize(data.elements, {
@@ -275,66 +263,99 @@ export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
       viewHeight: viewSizeInfo.height,
       extend: true
     });
-    this._viewer.drawFrame();
+    this.#viewer.drawFrame();
     const newViewSizeInfo = {
       ...viewSizeInfo,
       ...newViewContextSize
     };
 
-    this._sharer.setActiveViewSizeInfo(newViewSizeInfo);
+    this.#sharer.setActiveViewSizeInfo(newViewSizeInfo);
     return { viewSizeInfo: newViewSizeInfo };
   }
 
   getData(): Data | null {
-    const { data } = this._sharer.getActiveStoreSnapshot();
+    const { data } = this.#sharer.getActiveStoreSnapshot();
     return data;
   }
 
   use(middleware: BoardMiddleware<any, any>) {
-    const { viewContent, container } = this._opts;
-    const { _sharer: sharer, _viewer: viewer, _calculator: calculator, _eventHub: eventHub } = this;
-    const obj = middleware({ viewContent, sharer, viewer, calculator, eventHub: eventHub as UtilEventEmitter<any>, container });
-    this._middlewares.push(middleware);
-    this._activeMiddlewareObjs.push(obj);
+    if (this.#middlewareMap.has(middleware)) {
+      const item = this.#middlewareMap.get(middleware);
+      if (item) {
+        item.middlewareObject.use?.();
+        item.status = 'enable';
+        this.#middlewareMap.set(middleware, item);
+        this.#resetActiveMiddlewareObjs();
+        return;
+      }
+    }
+    const { boardContent, container } = this.#opts;
+    const sharer = this.#sharer;
+    const viewer = this.#viewer;
+    const calculator = this.#calculator;
+    const eventHub = this.#eventHub;
+
+    const obj = middleware({ boardContent, sharer, viewer, calculator, eventHub: eventHub as UtilEventEmitter<any>, container });
+    obj.use?.();
+    this.#middlewares.push(middleware);
+    this.#activeMiddlewareObjs.push(obj);
+
+    this.#middlewareMap.set(middleware, {
+      status: 'enable',
+      middlewareObject: obj
+    });
+    this.#resetActiveMiddlewareObjs();
+  }
+
+  disuse(middleware: BoardMiddleware<any, any>) {
+    const item = this.#middlewareMap.get(middleware);
+    if (item) {
+      item.middlewareObject.disuse?.();
+      item.status = 'disable';
+      this.#middlewareMap.set(middleware, item);
+      this.#resetActiveMiddlewareObjs();
+    }
   }
 
   scale(opts: { scale: number; point: PointSize }) {
-    const { _viewer: viewer } = this;
+    const viewer = this.#viewer;
     const { moveX, moveY } = viewer.scale(opts);
     viewer.scroll({ moveX, moveY });
   }
 
   scroll(opts: { moveX: number; moveY: number }) {
-    return this._viewer.scroll(opts);
+    return this.#viewer.scroll(opts);
   }
 
   updateViewScaleInfo(opts: { scale: number; offsetX: number; offsetY: number }) {
-    return this._viewer.updateViewScaleInfo(opts);
+    return this.#viewer.updateViewScaleInfo(opts);
   }
 
   resize(newViewSize: ViewSizeInfo) {
-    const viewSize = this._viewer.resize(newViewSize);
+    const viewSize = this.#viewer.resize(newViewSize);
     const { width, height, devicePixelRatio } = newViewSize;
-    const { viewContent } = this._opts;
-    viewContent.viewContext.$resize({ width, height, devicePixelRatio });
-    viewContent.helperContext.$resize({ width, height, devicePixelRatio });
-    viewContent.boardContext.$resize({ width, height, devicePixelRatio });
-    this._viewer.drawFrame();
-    this._watcher.trigger('resize', viewSize);
-    this._sharer.setActiveViewSizeInfo(newViewSize);
+    const { boardContent } = this.#opts;
+    boardContent.viewContext.$resize({ width, height, devicePixelRatio });
+    boardContent.helperContext.$resize({ width, height, devicePixelRatio });
+    boardContent.boardContext.$resize({ width, height, devicePixelRatio });
+    this.#viewer.drawFrame();
+    this.#watcher.trigger('resize', viewSize);
+    this.#sharer.setActiveViewSizeInfo(newViewSize);
   }
 
   clear() {
-    const { viewContent } = this._opts;
-    const { underContext, helperContext, viewContext, boardContext } = viewContent;
+    const { boardContent } = this.#opts;
+    const { underContext, helperContext, viewContext, boardContext } = boardContent;
     underContext.clearRect(0, 0, underContext.canvas.width, underContext.canvas.height);
     helperContext.clearRect(0, 0, helperContext.canvas.width, helperContext.canvas.height);
     viewContext.clearRect(0, 0, viewContext.canvas.width, viewContext.canvas.height);
     boardContext.clearRect(0, 0, boardContext.canvas.width, boardContext.canvas.height);
-    this._handleClear();
+    this.#handleClear();
   }
 
   getEventHub(): EventEmitter<T> {
-    return this._eventHub;
+    return this.#eventHub;
   }
 }
+
+export { Sharer, Calculator };

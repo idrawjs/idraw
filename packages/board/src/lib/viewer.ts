@@ -40,7 +40,7 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
     }
     const snapshot = this._drawFrameSnapshotQueue.shift();
 
-    const { renderer, viewContent, beforeDrawFrame, afterDrawFrame } = this._opts;
+    const { renderer, boardContent, beforeDrawFrame, afterDrawFrame } = this._opts;
 
     if (snapshot) {
       const { scale, offsetTop, offsetBottom, offsetLeft, offsetRight, width, height, contextHeight, contextWidth, devicePixelRatio } = snapshot.activeStore;
@@ -65,7 +65,7 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
       }
       beforeDrawFrame({ snapshot });
 
-      viewContent.drawView();
+      boardContent.drawView();
 
       afterDrawFrame({ snapshot });
     }
@@ -161,7 +161,7 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
     const newViewSize = { ...originViewSize, ...viewSize };
 
     const { width, height, devicePixelRatio } = newViewSize;
-    const { underContext, boardContext, helperContext, viewContext } = this._opts.viewContent;
+    const { underContext, boardContext, helperContext, viewContext } = this._opts.boardContent;
     boardContext.canvas.width = width * devicePixelRatio;
     boardContext.canvas.height = height * devicePixelRatio;
     boardContext.canvas.style.width = `${width}px`;

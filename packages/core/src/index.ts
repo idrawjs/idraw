@@ -1,6 +1,6 @@
 import type { Data, PointSize, CoreOptions, BoardMiddleware, ViewSizeInfo, CoreEvent, ViewScaleInfo } from '@idraw/types';
 import { Board } from '@idraw/board';
-import { createViewContent, validateElements } from '@idraw/util';
+import { createBoardContent, validateElements } from '@idraw/util';
 import { Cursor } from './lib/cursor';
 
 // export { MiddlewareSelector } from './middleware/selector';
@@ -9,6 +9,7 @@ export { MiddlewareScroller } from './middleware/scroller';
 export { MiddlewareScaler, middlewareEventScale } from './middleware/scaler';
 export { MiddlewareRuler, middlewareEventRuler } from './middleware/ruler';
 export { MiddlewareTextEditor, middlewareEventTextEdit } from './middleware/text-editor';
+export { MiddlewareDragger } from './middleware/dragger';
 
 export class Core<E extends CoreEvent = CoreEvent> {
   #board: Board<E>;
@@ -25,8 +26,8 @@ export class Core<E extends CoreEvent = CoreEvent> {
     this.#initContainer();
     container.appendChild(canvas);
 
-    const viewContent = createViewContent(canvas, { width, height, devicePixelRatio, offscreen: true });
-    const board = new Board<E>({ viewContent, container });
+    const boardContent = createBoardContent(canvas, { width, height, devicePixelRatio, offscreen: true });
+    const board = new Board<E>({ boardContent, container });
     const sharer = board.getSharer();
     sharer.setActiveViewSizeInfo({
       width,
@@ -50,6 +51,10 @@ export class Core<E extends CoreEvent = CoreEvent> {
 
   use(middleware: BoardMiddleware<any, any>) {
     this.#board.use(middleware);
+  }
+
+  disuse(middleware: BoardMiddleware<any, any>) {
+    this.#board.disuse(middleware);
   }
 
   setData(data: Data) {

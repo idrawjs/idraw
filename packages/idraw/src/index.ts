@@ -12,6 +12,7 @@ export {
   middlewareEventRuler,
   MiddlewareTextEditor
 } from '@idraw/core';
+export { Sharer, Calculator } from '@idraw/board';
 export { Renderer } from '@idraw/renderer';
 export {
   delay,
@@ -39,7 +40,7 @@ export {
   loadHTML,
   is,
   check,
-  createViewContent,
+  createBoardContent,
   createContext2D,
   createOffscreenContext2D,
   EventEmitter,
@@ -67,11 +68,14 @@ export {
   validateElements,
   calcElementsContextSize,
   calcElementsViewInfo,
+  calcElementListSize,
   getElemenetsAssetIds,
   findElementFromList,
   findElementsFromList,
   findElementFromListByPosition,
   findElementsFromListByPositions,
+  findElementQueueFromListByPosition,
+  getElementPositionFromList,
   updateElementInList,
   getGroupQueueFromList,
   getElementSize,

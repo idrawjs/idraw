@@ -1,9 +1,12 @@
 import type { CoreOptions } from './core';
 
-export type IDrawOptions = CoreOptions & {
-  disableScroll?: boolean;
-  disableSelect?: boolean;
-  disableScale?: boolean;
-  disableRuler?: boolean;
-  disableTextEdit?: boolean;
-};
+export interface IDrawSettings {
+  enableScroll?: boolean;
+  enableSelect?: boolean;
+  enableScale?: boolean;
+  enableRuler?: boolean;
+  enableTextEdit?: boolean;
+  enableDrag?: boolean;
+}
+
+export type IDrawOptions = CoreOptions & IDrawSettings;

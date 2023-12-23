@@ -7,7 +7,7 @@ export { istype } from './lib/istype';
 export { loadImage, loadSVG, loadHTML } from './lib/load';
 export { is } from './lib/is';
 export { check } from './lib/check';
-export { createViewContent, createContext2D, createOffscreenContext2D } from './lib/canvas';
+export { createBoardContent, createContext2D, createOffscreenContext2D } from './lib/canvas';
 export { EventEmitter } from './lib/event';
 export { calcDistance, calcSpeed, equalPoint, equalTouchPoint, vaildPoint, vaildTouchPoint, getCenterFromTwoPoints } from './lib/point';
 export { Store } from './lib/store';
@@ -33,13 +33,15 @@ export {
   findElementFromList,
   findElementsFromList,
   findElementFromListByPosition,
+  findElementQueueFromListByPosition,
   findElementsFromListByPositions,
   getGroupQueueFromList,
   getElementSize,
   mergeElementAsset,
   filterElementAsset,
   isResourceElement,
-  getElementPositionFromList
+  getElementPositionFromList,
+  calcElementListSize
 } from './lib/element';
 export { checkRectIntersect } from './lib/rect';
 export {

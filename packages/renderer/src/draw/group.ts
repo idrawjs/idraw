@@ -65,7 +65,7 @@ export function drawElement(ctx: ViewContext2D, elem: Element<ElementType>, opts
 
 export function drawGroup(ctx: ViewContext2D, elem: Element<'group'>, opts: RendererDrawElementOptions) {
   const { calculator, viewScaleInfo, viewSizeInfo } = opts;
-  const { x, y, w, h, angle } = calculator.elementSize({ x: elem.x, y: elem.y, w: elem.w, h: elem.h, angle: elem.angle }, viewScaleInfo, viewSizeInfo);
+  const { x, y, w, h, angle } = calculator?.elementSize({ x: elem.x, y: elem.y, w: elem.w, h: elem.h, angle: elem.angle }, viewScaleInfo, viewSizeInfo) || elem;
   const viewElem = { ...elem, ...{ x, y, w, h, angle } };
   rotateElement(ctx, { x, y, w, h, angle }, () => {
     drawBoxShadow(ctx, viewElem, {
@@ -116,9 +116,12 @@ export function drawGroup(ctx: ViewContext2D, elem: Element<'group'>, opts: Rend
                     y: newParentSize.y + child.y
                   }
                 };
-                if (!calculator.isElementInView(child, opts.viewScaleInfo, opts.viewSizeInfo)) {
-                  continue;
+                if (opts.forceDrawAll !== true) {
+                  if (!calculator?.isElementInView(child, opts.viewScaleInfo, opts.viewSizeInfo)) {
+                    continue;
+                  }
                 }
+
                 try {
                   drawElement(ctx, child, { ...opts });
                 } catch (err) {

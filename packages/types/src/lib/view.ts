@@ -22,7 +22,7 @@ export interface ViewSizeInfo extends ViewContextSize {
   devicePixelRatio: number;
 }
 
-export interface ViewContent {
+export interface BoardContent {
   boardContext: ViewContext2D;
   viewContext: ViewContext2D;
   helperContext: ViewContext2D;
@@ -31,7 +31,8 @@ export interface ViewContent {
 }
 
 export interface ViewCalculatorOptions {
-  viewContent: ViewContent;
+  // boardContent?: BoardContent;
+  viewContext: ViewContext2D;
 }
 
 export interface ViewCalculator {

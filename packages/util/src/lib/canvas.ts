@@ -1,4 +1,4 @@
-import type { ViewContent } from '@idraw/types';
+import type { BoardContent } from '@idraw/types';
 import { Context2D } from './context2d';
 
 export function createContext2D(opts: { ctx?: CanvasRenderingContext2D; width: number; height: number; devicePixelRatio: number }): Context2D {
@@ -28,10 +28,10 @@ export function createOffscreenContext2D(opts: { width: number; height: number; 
   return context2d;
 }
 
-export function createViewContent(
+export function createBoardContent(
   canvas: HTMLCanvasElement,
   opts: { width: number; height: number; devicePixelRatio: number; offscreen?: boolean }
-): ViewContent {
+): BoardContent {
   const { width, height, devicePixelRatio, offscreen } = opts;
   const ctxOpts = {
     width,
@@ -58,7 +58,7 @@ export function createViewContent(
       helperContext.clearRect(0, 0, w, h);
     };
 
-    const content: ViewContent = {
+    const content: BoardContent = {
       underContext,
       viewContext,
       helperContext,
@@ -83,7 +83,7 @@ export function createViewContent(
       helperContext.clearRect(0, 0, width, height);
     };
 
-    const content: ViewContent = {
+    const content: BoardContent = {
       underContext,
       viewContext,
       helperContext,

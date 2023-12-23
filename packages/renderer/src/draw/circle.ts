@@ -8,7 +8,7 @@ export function drawCircle(ctx: ViewContext2D, elem: Element<'circle'>, opts: Re
   const { background = '#000000', borderColor = '#000000', borderWidth = 0 } = detail;
   const { calculator, viewScaleInfo, viewSizeInfo } = opts;
   // const { scale, offsetTop, offsetBottom, offsetLeft, offsetRight } = viewScaleInfo;
-  const { x, y, w, h } = calculator.elementSize({ x: elem.x, y: elem.y, w: elem.w, h: elem.h }, viewScaleInfo, viewSizeInfo);
+  const { x, y, w, h } = calculator?.elementSize({ x: elem.x, y: elem.y, w: elem.w, h: elem.h }, viewScaleInfo, viewSizeInfo) || elem;
   const viewElem = { ...elem, ...{ x, y, w, h, angle } };
 
   rotateElement(ctx, { x, y, w, h, angle }, () => {

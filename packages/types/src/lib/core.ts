@@ -15,12 +15,14 @@ export type CursorType =
   | 'resize-top-left'
   | 'resize-top-right'
   | 'resize-bottom-left'
-  | 'resize-bottom-right';
+  | 'resize-bottom-right'
+  | 'drag-default'
+  | 'drag-active';
 
 export interface CoreEventCursor {
   type: CursorType | string | null;
-  groupQueue: Element<'group'>[];
-  element: Element<ElementType>;
+  groupQueue?: Element<'group'>[];
+  element?: Element<ElementType>;
 }
 
 export interface CoreEventSelect {

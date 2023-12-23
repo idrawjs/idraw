@@ -11,10 +11,8 @@ type TextEditEvent = {
 const defaultElementDetail = getDefaultElementDetailConfig();
 
 export const MiddlewareTextEditor: BoardMiddleware<Record<string, any>, CoreEvent> = (opts) => {
-  const key = 'SELECT';
-
-  const { eventHub, viewContent, viewer } = opts;
-  const canvas = viewContent.boardContext.canvas;
+  const { eventHub, boardContent, viewer } = opts;
+  const canvas = boardContent.boardContext.canvas;
   const textarea = document.createElement('textarea');
   const canvasWrapper = document.createElement('div');
   const container = opts.container || document.body;
@@ -160,15 +158,19 @@ export const MiddlewareTextEditor: BoardMiddleware<Record<string, any>, CoreEven
     hideTextArea();
   });
 
-  eventHub.on(middlewareEventTextEdit, (e: TextEditEvent) => {
+  const textEditCallback = (e: TextEditEvent) => {
     if (e?.element && e?.element?.type === 'text') {
       activeElem = e.element;
     }
     showTextArea(e);
-  });
+  };
 
   return {
-    mode: key,
-    isDefault: true
+    use() {
+      eventHub.on(middlewareEventTextEdit, textEditCallback);
+    },
+    disuse() {
+      eventHub.off(middlewareEventTextEdit, textEditCallback);
+    }
   };
 };
