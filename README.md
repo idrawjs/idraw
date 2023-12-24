@@ -8,6 +8,7 @@
 <p align="center"><a href="https://idraw.js.org">idraw.js.org</a></p>
 
 
+
 <p align="center">
 
   <a title="CI" href="https://github.com/idrawjs/idraw/actions/workflows/node.js.yml">
@@ -27,6 +28,9 @@
 </p>
 
 
+<p align="center">
+  <img width="200" src="https://github.com/idrawjs/idraw/assets/8216630/bcf8fbc6-6374-4cb9-a67f-1687d029a863" />
+</p>
 
 
 <!-- [![Node.js CI](https://github.com/idrawjs/idraw/actions/workflows/node.js.yml/badge.svg?branch=main)](https://github.com/idrawjs/idraw/actions/workflows/node.js.yml) -->
