@@ -1,14 +1,13 @@
 type ImageType = 'image/jpeg' | 'image/png';
 
-export function downloadImageFromCanvas(canvas: HTMLCanvasElement, opts: { filename: string; type: ImageType }): void {
-  const { filename, type = 'image/jpeg' } = opts;
+export function downloadImageFromCanvas(canvas: HTMLCanvasElement, opts: { fileName: string; type: ImageType }): void {
+  const { fileName, type = 'image/jpeg' } = opts;
   const stream = canvas.toDataURL(type);
-  const downloadLink = document.createElement('a');
+  let downloadLink: HTMLAnchorElement | null = document.createElement('a');
   downloadLink.href = stream;
-  downloadLink.download = filename;
-  const downloadClickEvent = document.createEvent('MouseEvents');
-  downloadClickEvent.initEvent('click', true, false);
-  downloadLink.dispatchEvent(downloadClickEvent);
+  downloadLink.download = fileName;
+  downloadLink.click();
+  downloadLink = null;
 }
 
 export function pickFile(opts: { success: (data: { file: File }) => void; error?: (err: ErrorEvent) => void }) {
@@ -69,4 +68,23 @@ export function parseFileToText(file: File): Promise<string | ArrayBuffer> {
     });
     reader.readAsText(file);
   });
+}
+
+export function parseTextToBlobURL(text: string) {
+  const bytes = new TextEncoder().encode(text);
+  const blob = new Blob([bytes], {
+    type: 'text/plain;charset=utf-8'
+  });
+  const blobURL = window.URL.createObjectURL(blob);
+  return blobURL;
+}
+
+export function downloadFileFromText(text: string, opts: { fileName: string }): void {
+  const { fileName } = opts;
+  const blobURL = parseTextToBlobURL(text);
+  let downloadLink: HTMLAnchorElement | null = document.createElement('a');
+  downloadLink.href = blobURL;
+  downloadLink.download = fileName;
+  downloadLink.click();
+  downloadLink = null;
 }

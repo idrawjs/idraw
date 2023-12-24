@@ -1,4 +1,5 @@
 import { EventEmitter } from '@idraw/util';
+import type { LoadItemMap } from '@idraw/types';
 import { drawElementList } from './draw/index';
 import { Loader } from './loader';
 import type { Data, BoardRenderer, RendererOptions, RendererEventMap, RendererDrawOptions } from '@idraw/types';
@@ -81,5 +82,13 @@ export class Renderer extends EventEmitter<RendererEventMap> implements BoardRen
         }
       });
     }
+  }
+
+  setLoadItemMap(itemMap: LoadItemMap) {
+    this.#loader.setLoadItemMap(itemMap);
+  }
+
+  getLoadItemMap(): LoadItemMap {
+    return this.#loader.getLoadItemMap();
   }
 }

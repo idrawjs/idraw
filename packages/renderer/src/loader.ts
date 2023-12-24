@@ -1,9 +1,5 @@
-import type { RendererLoader, LoaderEventMap, LoadFunc, LoadContent, LoadItem, LoadElementType, Element, ElementAssets } from '@idraw/types';
+import type { RendererLoader, LoaderEventMap, LoadFunc, LoadContent, LoadItem, LoadItemMap, LoadElementType, Element, ElementAssets } from '@idraw/types';
 import { loadImage, loadHTML, loadSVG, EventEmitter, createAssetId, isAssetId, createUUID } from '@idraw/util';
-
-interface LoadItemMap {
-  [assetId: string]: LoadItem;
-}
 
 const supportElementTypes: LoadElementType[] = ['image', 'svg', 'html'];
 
@@ -26,13 +22,13 @@ const getAssetIdFromElement = (element: Element<'image' | 'svg' | 'html'>) => {
 };
 
 export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoader {
-  private _loadFuncMap: Record<LoadElementType | string, LoadFunc<LoadElementType, LoadContent>> = {};
-  private _currentLoadItemMap: LoadItemMap = {};
-  private _storageLoadItemMap: LoadItemMap = {};
+  #loadFuncMap: Record<LoadElementType | string, LoadFunc<LoadElementType, LoadContent>> = {};
+  #currentLoadItemMap: LoadItemMap = {};
+  #storageLoadItemMap: LoadItemMap = {};
 
   constructor() {
     super();
-    this._registerLoadFunc<'image'>('image', async (elem: Element<'image'>, assets: ElementAssets) => {
+    this.#registerLoadFunc<'image'>('image', async (elem: Element<'image'>, assets: ElementAssets) => {
       const src = assets[elem.detail.src]?.value || elem.detail.src;
       const content = await loadImage(src);
       return {
@@ -41,7 +37,7 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
         content
       };
     });
-    this._registerLoadFunc<'html'>('html', async (elem: Element<'html'>, assets: ElementAssets) => {
+    this.#registerLoadFunc<'html'>('html', async (elem: Element<'html'>, assets: ElementAssets) => {
       const html = assets[elem.detail.html]?.value || elem.detail.html;
       const content = await loadHTML(html, {
         width: elem.detail.width || elem.w,
@@ -53,7 +49,7 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
         content
       };
     });
-    this._registerLoadFunc<'svg'>('svg', async (elem: Element<'svg'>, assets: ElementAssets) => {
+    this.#registerLoadFunc<'svg'>('svg', async (elem: Element<'svg'>, assets: ElementAssets) => {
       const svg = assets[elem.detail.svg]?.value || elem.detail.svg;
       const content = await loadSVG(svg);
       return {
@@ -63,13 +59,13 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
       };
     });
   }
-  private _registerLoadFunc<T extends LoadElementType>(type: T, func: LoadFunc<T, LoadContent>) {
+  #registerLoadFunc<T extends LoadElementType>(type: T, func: LoadFunc<T, LoadContent>) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    this._loadFuncMap[type] = func;
+    this.#loadFuncMap[type] = func;
   }
 
-  private _getLoadElementSource(element: Element<LoadElementType>): null | string {
+  #getLoadElementSource(element: Element<LoadElementType>): null | string {
     let source: string | null = null;
     if (element.type === 'image') {
       source = (element as Element<'image'>)?.detail?.src || null;
@@ -81,7 +77,7 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
     return source;
   }
 
-  private _createLoadItem(element: Element<LoadElementType>): LoadItem {
+  #createLoadItem(element: Element<LoadElementType>): LoadItem {
     return {
       element,
       status: 'null',
@@ -89,44 +85,44 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
       error: null,
       startTime: -1,
       endTime: -1,
-      source: this._getLoadElementSource(element)
+      source: this.#getLoadElementSource(element)
     };
   }
 
-  private _emitLoad(item: LoadItem) {
+  #emitLoad(item: LoadItem) {
     const assetId = getAssetIdFromElement(item.element);
-    const storageItem = this._storageLoadItemMap[assetId];
+    const storageItem = this.#storageLoadItemMap[assetId];
     if (storageItem) {
       if (storageItem.startTime < item.startTime) {
-        this._storageLoadItemMap[assetId] = item;
+        this.#storageLoadItemMap[assetId] = item;
         this.trigger('load', { ...item, countTime: item.endTime - item.startTime });
       }
     } else {
-      this._storageLoadItemMap[assetId] = item;
+      this.#storageLoadItemMap[assetId] = item;
       this.trigger('load', { ...item, countTime: item.endTime - item.startTime });
     }
   }
 
-  private _emitError(item: LoadItem) {
+  #emitError(item: LoadItem) {
     const assetId = getAssetIdFromElement(item.element);
-    const storageItem = this._storageLoadItemMap[assetId];
+    const storageItem = this.#storageLoadItemMap[assetId];
     if (storageItem) {
       if (storageItem.startTime < item.startTime) {
-        this._storageLoadItemMap[assetId] = item;
+        this.#storageLoadItemMap[assetId] = item;
         this.trigger('error', { ...item, countTime: item.endTime - item.startTime });
       }
     } else {
-      this._storageLoadItemMap[assetId] = item;
+      this.#storageLoadItemMap[assetId] = item;
       this.trigger('error', { ...item, countTime: item.endTime - item.startTime });
     }
   }
 
-  private _loadResource(element: Element<LoadElementType>, assets: ElementAssets) {
-    const item = this._createLoadItem(element);
+  #loadResource(element: Element<LoadElementType>, assets: ElementAssets) {
+    const item = this.#createLoadItem(element);
     const assetId = getAssetIdFromElement(element);
 
-    this._currentLoadItemMap[assetId] = item;
-    const loadFunc = this._loadFuncMap[element.type];
+    this.#currentLoadItemMap[assetId] = item;
+    const loadFunc = this.#loadFuncMap[element.type];
     if (typeof loadFunc === 'function') {
       item.startTime = Date.now();
       loadFunc(element, assets)
@@ -134,39 +130,47 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
           item.content = result.content;
           item.endTime = Date.now();
           item.status = 'load';
-          this._emitLoad(item);
+          this.#emitLoad(item);
         })
         .catch((err: Error) => {
           console.warn(`Load element source "${item.source}" fail`, err, element);
           item.endTime = Date.now();
           item.status = 'error';
           item.error = err;
-          this._emitError(item);
+          this.#emitError(item);
         });
     }
   }
 
-  private _isExistingErrorStorage(element: Element<LoadElementType>) {
+  #isExistingErrorStorage(element: Element<LoadElementType>) {
     const assetId = getAssetIdFromElement(element);
-    const existItem = this._currentLoadItemMap?.[assetId];
-    if (existItem && existItem.status === 'error' && existItem.source && existItem.source === this._getLoadElementSource(element)) {
+    const existItem = this.#currentLoadItemMap?.[assetId];
+    if (existItem && existItem.status === 'error' && existItem.source && existItem.source === this.#getLoadElementSource(element)) {
       return true;
     }
     return false;
   }
 
   load(element: Element<LoadElementType>, assets: ElementAssets) {
-    if (this._isExistingErrorStorage(element)) {
+    if (this.#isExistingErrorStorage(element)) {
       return;
     }
     if (supportElementTypes.includes(element.type)) {
       // const elem = deepClone(element);
-      this._loadResource(element, assets);
+      this.#loadResource(element, assets);
     }
   }
 
   getContent(element: Element<LoadElementType>): LoadContent | null {
     const assetId = getAssetIdFromElement(element);
-    return this._storageLoadItemMap?.[assetId]?.content || null;
+    return this.#storageLoadItemMap?.[assetId]?.content || null;
+  }
+
+  getLoadItemMap(): LoadItemMap {
+    return this.#storageLoadItemMap;
+  }
+
+  setLoadItemMap(itemMap: LoadItemMap) {
+    this.#storageLoadItemMap = itemMap;
   }
 }

@@ -1,5 +1,3 @@
-export { iDraw } from './idraw';
-export type { IDrawEvent, IDrawEventKeys } from './event';
 export type * from '@idraw/types';
 export {
   Core,
@@ -22,6 +20,7 @@ export {
   parseFileToBase64,
   pickFile,
   parseFileToText,
+  downloadFileFromText,
   toColorHexStr,
   toColorHexNum,
   isColorStr,
@@ -114,3 +113,6 @@ export {
   deleteElementInListByPosition,
   deleteElementInList
 } from '@idraw/util';
+export { iDraw } from './idraw';
+export type { IDrawEvent, IDrawEventKeys } from './event';
+export type { ExportImageFileResult, ExportImageFileBaseOptions } from './file';

@@ -12,6 +12,10 @@ export interface LoadItem {
   source: string | null;
 }
 
+export interface LoadItemMap {
+  [assetId: string]: LoadItem;
+}
+
 export interface LoaderEvent extends LoadItem {
   countTime: number;
 }

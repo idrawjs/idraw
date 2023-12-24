@@ -27,9 +27,12 @@ import {
   updateElementInList,
   deleteElementInList,
   moveElementPosition,
-  getElementPositionFromList
+  getElementPositionFromList,
+  calcElementListSize
 } from '@idraw/util';
 import { defaultSettings } from './config';
+import { exportImageFileBlobURL } from './file';
+import type { ExportImageFileBaseOptions, ExportImageFileResult } from './file';
 
 export class iDraw {
   #core: Core<IDrawEvent>;
@@ -231,5 +234,22 @@ export class iDraw {
     core.setData(data);
     core.refresh();
     core.trigger('change', { data, type: 'move-element' });
+  }
+
+  async getImageBlobURL(opts: ExportImageFileBaseOptions): Promise<ExportImageFileResult> {
+    const data = this.getData() || { elements: [] };
+    const { devicePixelRatio } = opts;
+
+    const outputSize = calcElementListSize(data.elements);
+    const { viewSizeInfo } = this.getViewInfo();
+    return await exportImageFileBlobURL({
+      width: outputSize.w,
+      height: outputSize.h,
+      devicePixelRatio,
+      data,
+      viewScaleInfo: { scale: 1, offsetLeft: -outputSize.x, offsetTop: -outputSize.y, offsetBottom: 0, offsetRight: 0 },
+      viewSizeInfo,
+      loadItemMap: this.#core.getLoadItemMap()
+    });
   }
 }
