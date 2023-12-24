@@ -1,4 +1,4 @@
-import type { Data, PointSize, CoreOptions, BoardMiddleware, ViewSizeInfo, CoreEvent, ViewScaleInfo } from '@idraw/types';
+import type { Data, PointSize, CoreOptions, BoardMiddleware, ViewSizeInfo, CoreEvent, ViewScaleInfo, LoadItemMap } from '@idraw/types';
 import { Board } from '@idraw/board';
 import { createBoardContent, validateElements } from '@idraw/util';
 import { Cursor } from './lib/cursor';
@@ -118,5 +118,9 @@ export class Core<E extends CoreEvent = CoreEvent> {
 
   setViewScale(opts: { scale: number; offsetX: number; offsetY: number }) {
     this.#board.updateViewScaleInfo(opts);
+  }
+
+  getLoadItemMap(): LoadItemMap {
+    return this.#board.getRenderer().getLoadItemMap();
   }
 }

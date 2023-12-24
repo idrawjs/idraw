@@ -29,6 +29,7 @@ export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
   #middlewares: BoardMiddleware[] = [];
   #activeMiddlewareObjs: BoardMiddlewareObject[] = [];
   #watcher: BoardWatcher;
+  #renderer: Renderer;
   #sharer: Sharer;
   #viewer: Viewer;
   #calculator: Calculator;
@@ -51,6 +52,7 @@ export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
     this.#opts = opts;
     this.#sharer = sharer;
     this.#watcher = watcher;
+    this.#renderer = renderer;
     this.#calculator = calculator;
     this.#viewer = new Viewer({
       boardContent: opts.boardContent,
@@ -253,6 +255,10 @@ export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
     return this.#viewer;
   }
 
+  getRenderer() {
+    return this.#renderer;
+  }
+
   setData(data: Data): { viewSizeInfo: ViewSizeInfo } {
     const sharer = this.#sharer;
     this.#sharer.setActiveStorage('data', data);
@@ -338,6 +344,7 @@ export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
     boardContent.viewContext.$resize({ width, height, devicePixelRatio });
     boardContent.helperContext.$resize({ width, height, devicePixelRatio });
     boardContent.boardContext.$resize({ width, height, devicePixelRatio });
+    boardContent.underContext.$resize({ width, height, devicePixelRatio });
     this.#viewer.drawFrame();
     this.#watcher.trigger('resize', viewSize);
     this.#sharer.setActiveViewSizeInfo(newViewSize);

@@ -1,5 +1,5 @@
 export { delay, compose, throttle } from './lib/time';
-export { downloadImageFromCanvas, parseFileToBase64, pickFile, parseFileToText } from './lib/file';
+export { downloadImageFromCanvas, parseFileToBase64, pickFile, parseFileToText, downloadFileFromText } from './lib/file';
 export { toColorHexStr, toColorHexNum, isColorStr, colorNameToHex, colorToCSS, colorToLinearGradientCSS, mergeHexColorAlpha } from './lib/color';
 export { createUUID, isAssetId, createAssetId } from './lib/uuid';
 export { deepClone, sortDataAsserts } from './lib/data';
