@@ -6,7 +6,7 @@ import { drawBox } from './box';
 const detailConfig = getDefaultElementDetailConfig();
 
 export function drawText(ctx: ViewContext2D, elem: Element<'text'>, opts: RendererDrawElementOptions) {
-  const { calculator, viewScaleInfo, viewSizeInfo } = opts;
+  const { calculator, viewScaleInfo, viewSizeInfo, parentOpacity } = opts;
   const { x, y, w, h, angle } = calculator?.elementSize(elem, viewScaleInfo, viewSizeInfo) || elem;
   const viewElem = { ...elem, ...{ x, y, w, h, angle } };
   rotateElement(ctx, { x, y, w, h, angle }, () => {
@@ -15,6 +15,7 @@ export function drawText(ctx: ViewContext2D, elem: Element<'text'>, opts: Render
       calcElemSize: { x, y, w, h, angle },
       viewScaleInfo,
       viewSizeInfo,
+      parentOpacity,
       renderContent: () => {
         const detail: Element<'text'>['detail'] = {
           ...detailConfig,

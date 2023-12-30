@@ -5,7 +5,7 @@ import { drawBox, drawBoxShadow } from './box';
 export function drawPath(ctx: ViewContext2D, elem: Element<'path'>, opts: RendererDrawElementOptions) {
   const { detail } = elem;
   const { originX, originY, originW, originH } = detail;
-  const { calculator, viewScaleInfo, viewSizeInfo } = opts;
+  const { calculator, viewScaleInfo, viewSizeInfo, parentOpacity } = opts;
   const { x, y, w, h, angle } = calculator?.elementSize(elem, viewScaleInfo, viewSizeInfo) || elem;
   const scaleW = w / originW;
   const scaleH = h / originH;
@@ -23,6 +23,7 @@ export function drawPath(ctx: ViewContext2D, elem: Element<'path'>, opts: Render
       calcElemSize: { x, y, w, h, angle },
       viewScaleInfo,
       viewSizeInfo,
+      parentOpacity,
       renderContent: () => {
         drawBoxShadow(ctx, viewElem, {
           viewScaleInfo,

@@ -6,7 +6,8 @@ import {
   rotatePointInGroup,
   getGroupQueueFromList,
   findElementsFromList,
-  findElementsFromListByPositions
+  findElementsFromListByPositions,
+  deepResizeGroupElement
 } from '@idraw/util';
 import type { ViewRectVertexes, CoreEvent, ElementPosition } from '@idraw/types';
 import type {
@@ -393,8 +394,19 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
           const resizedElemSize = resizeElement(elems[0], { scale, start: resizeStart, end: resizeEnd, resizeType, sharer });
           elems[0].x = resizedElemSize.x;
           elems[0].y = resizedElemSize.y;
-          elems[0].w = resizedElemSize.w;
-          elems[0].h = resizedElemSize.h;
+          if (elems[0].type === 'group' && elems[0].operations?.deepResize === true) {
+            // TODO
+            // elems[0].w = resizedElemSize.w;
+            // elems[0].h = resizedElemSize.h;
+            deepResizeGroupElement(elems[0] as Element<'group'>, {
+              w: resizedElemSize.w,
+              h: resizedElemSize.h
+            });
+          } else {
+            elems[0].w = resizedElemSize.w;
+            elems[0].h = resizedElemSize.h;
+          }
+
           updateSelectedElementList([elems[0]]);
           viewer.drawFrame();
         }
@@ -476,7 +488,11 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
         }
 
         if (data && (['drag', 'drag-list', 'drag-list-end', 'resize'] as ActionType[]).includes(actionType)) {
-          eventHub.trigger('change', { data });
+          let type = 'drag-element';
+          if (type === 'resize') {
+            type = 'resize-element';
+          }
+          eventHub.trigger('change', { data, type });
         }
         viewer.drawFrame();
       };

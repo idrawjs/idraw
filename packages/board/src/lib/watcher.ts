@@ -92,6 +92,7 @@ export class BoardWatcher extends EventEmitter<BoardWatcherEventMap> {
           return;
         }
         e.preventDefault();
+        e.stopPropagation();
         const deltaX = e.deltaX > 0 || e.deltaX < 0 ? e.deltaX : 0;
         const deltaY = e.deltaY > 0 || e.deltaY < 0 ? e.deltaY : 0;
 

@@ -248,7 +248,10 @@ export class iDraw {
       devicePixelRatio,
       data,
       viewScaleInfo: { scale: 1, offsetLeft: -outputSize.x, offsetTop: -outputSize.y, offsetBottom: 0, offsetRight: 0 },
-      viewSizeInfo,
+      viewSizeInfo: {
+        ...viewSizeInfo,
+        ...{ devicePixelRatio }
+      },
       loadItemMap: this.#core.getLoadItemMap()
     });
   }

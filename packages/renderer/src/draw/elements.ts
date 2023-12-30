@@ -6,6 +6,7 @@ const defaultDetail = getDefaultElementDetailConfig();
 
 export function drawElementList(ctx: ViewContext2D, data: Data, opts: RendererDrawElementOptions) {
   const { elements = [] } = data;
+  const { parentOpacity } = opts;
   for (let i = 0; i < elements.length; i++) {
     const element = elements[i];
     const elem = {
@@ -24,7 +25,12 @@ export function drawElementList(ctx: ViewContext2D, data: Data, opts: RendererDr
     }
 
     try {
-      drawElement(ctx, elem, opts);
+      drawElement(ctx, elem, {
+        ...opts,
+        ...{
+          parentOpacity
+        }
+      });
     } catch (err) {
       console.error(err);
     }

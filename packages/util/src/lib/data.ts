@@ -1,7 +1,7 @@
 import type { Data, ElementAssets, Elements, ElementType, Element } from '@idraw/types';
-import { createAssetId } from './uuid';
+import { createAssetId, createUUID } from './uuid';
 
-export function deepClone<T extends any = any>(target: T): T {
+export function deepClone<T = any>(target: T): T {
   function _clone(t: T) {
     const type = is(t);
     if (['Null', 'Number', 'String', 'Boolean', 'Undefined'].indexOf(type) >= 0) {
@@ -26,6 +26,20 @@ export function deepClone<T extends any = any>(target: T): T {
     }
   }
   return _clone(target) as T;
+}
+
+export function deepCloneElement<T extends Element = Element>(element: T): T {
+  const elem = deepClone(element);
+  const _resetUUID = (e: Element) => {
+    e.uuid = createUUID();
+    if (e.type === 'group' && (e as Element<'group'>).detail.children) {
+      (e as Element<'group'>).detail.children.forEach((child) => {
+        _resetUUID(child);
+      });
+    }
+  };
+  _resetUUID(elem);
+  return elem;
 }
 
 function is(target: any): string {

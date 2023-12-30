@@ -40,8 +40,8 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
     this.#registerLoadFunc<'html'>('html', async (elem: Element<'html'>, assets: ElementAssets) => {
       const html = assets[elem.detail.html]?.value || elem.detail.html;
       const content = await loadHTML(html, {
-        width: elem.detail.width || elem.w,
-        height: elem.detail.height || elem.h
+        width: elem.detail.originW || elem.w,
+        height: elem.detail.originH || elem.h
       });
       return {
         uuid: elem.uuid,
