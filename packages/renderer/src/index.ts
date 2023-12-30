@@ -52,6 +52,7 @@ export class Renderer extends EventEmitter<RendererEventMap> implements BoardRen
       calculator,
       parentElementSize,
       elementAssets: data.assets,
+      parentOpacity: 1,
       ...opts
     });
   }

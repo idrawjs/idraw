@@ -1,10 +1,10 @@
 import type { Element, RendererDrawElementOptions, ViewContext2D } from '@idraw/types';
 import { rotateElement, calcViewBoxSize } from '@idraw/util';
-import { drawBox, drawBoxShadow } from './box';
+import { drawBox, drawBoxShadow, getOpacity } from './box';
 
 export function drawImage(ctx: ViewContext2D, elem: Element<'image'>, opts: RendererDrawElementOptions) {
   const content = opts.loader.getContent(elem);
-  const { calculator, viewScaleInfo, viewSizeInfo } = opts;
+  const { calculator, viewScaleInfo, viewSizeInfo, parentOpacity } = opts;
   const { x, y, w, h, angle } = calculator?.elementSize(elem, viewScaleInfo, viewSizeInfo) || elem;
 
   const viewElem = { ...elem, ...{ x, y, w, h, angle } };
@@ -18,13 +18,13 @@ export function drawImage(ctx: ViewContext2D, elem: Element<'image'>, opts: Rend
           calcElemSize: { x, y, w, h, angle },
           viewScaleInfo,
           viewSizeInfo,
+          parentOpacity,
           renderContent: () => {
             if (!content) {
               opts.loader.load(elem as Element<'image'>, opts.elementAssets || {});
             }
             if (elem.type === 'image' && content) {
-              const { opacity } = elem.detail;
-              ctx.globalAlpha = opacity ? opacity : 1;
+              ctx.globalAlpha = getOpacity(elem) * parentOpacity;
               const { x, y, w, h, radiusList } = calcViewBoxSize(viewElem, {
                 viewScaleInfo,
                 viewSizeInfo
@@ -42,7 +42,7 @@ export function drawImage(ctx: ViewContext2D, elem: Element<'image'>, opts: Rend
               ctx.fill();
               ctx.clip();
               ctx.drawImage(content, x, y, w, h);
-              ctx.globalAlpha = 1;
+              ctx.globalAlpha = parentOpacity;
               ctx.restore();
             }
           }

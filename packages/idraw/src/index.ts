@@ -111,7 +111,9 @@ export {
   moveElementPosition,
   insertElementToListByPosition,
   deleteElementInListByPosition,
-  deleteElementInList
+  deleteElementInList,
+  deepResizeGroupElement,
+  deepCloneElement
 } from '@idraw/util';
 export { iDraw } from './idraw';
 export type { IDrawEvent, IDrawEventKeys } from './event';

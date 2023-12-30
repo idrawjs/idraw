@@ -2,7 +2,7 @@
 import type { RecursivePartial, Element, Elements, ElementPosition, ElementSize, ElementType, ViewScaleInfo, ViewSizeInfo } from '@idraw/types';
 import { createUUID } from './uuid';
 import {
-  getDefaultElementDetailConfig,
+  defaultText,
   getDefaultElementRectDetail,
   getDefaultElementCircleDetail,
   getDefaultElementTextDetail,
@@ -12,10 +12,11 @@ import {
 } from './config';
 import { istype } from './istype';
 import { findElementFromListByPosition, getElementPositionFromList } from './element';
+import { deepResizeGroupElement } from './resize-element';
 
 const defaultViewWidth = 200;
 const defaultViewHeight = 200;
-const defaultDetail = getDefaultElementDetailConfig();
+// const defaultDetail = getDefaultElementDetailConfig();
 
 function createElementSize(type: ElementType, opts?: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }): ElementSize {
   let x = 0;
@@ -27,27 +28,24 @@ function createElementSize(type: ElementType, opts?: { viewScaleInfo: ViewScaleI
     const { viewScaleInfo, viewSizeInfo } = opts;
     const { scale, offsetLeft, offsetTop } = viewScaleInfo;
     const { width, height } = viewSizeInfo;
-    if (type === 'text') {
-      const textDetail = getDefaultElementTextDetail();
-      w = defaultDetail.fontSize * scale * textDetail.text.length;
-      h = defaultDetail.fontSize * scale * 2;
+    const limitViewWidth = width / 4;
+    const limitViewHeight = height / 4;
+    if (defaultViewWidth >= limitViewWidth) {
+      w = limitViewWidth / scale;
     } else {
-      const limitViewWidth = width / 4;
-      const limitViewHeight = height / 4;
-      if (defaultViewWidth >= limitViewWidth) {
-        w = limitViewWidth / scale;
-      } else {
-        w = defaultViewWidth / scale;
-      }
+      w = defaultViewWidth / scale;
+    }
 
-      if (defaultViewHeight >= limitViewHeight) {
-        h = limitViewHeight / scale;
-      } else {
-        h = defaultViewHeight / scale;
-      }
-      if (['circle', 'svg', 'image'].includes(type)) {
-        w = h = Math.max(w, h);
-      }
+    if (defaultViewHeight >= limitViewHeight) {
+      h = limitViewHeight / scale;
+    } else {
+      h = defaultViewHeight / scale;
+    }
+    if (['circle', 'svg', 'image'].includes(type)) {
+      w = h = Math.max(w, h);
+    } else if (type === 'text') {
+      const fontSize = w / defaultText.length;
+      h = fontSize * 2;
     }
 
     x = (0 - offsetLeft + width / 2 - (w * scale) / 2) / scale;
@@ -73,16 +71,14 @@ export function createElement<T extends ElementType>(
     limitRatio?: boolean;
   }
 ): Element<T> {
-  const elemSize = createElementSize(type, opts);
+  const elementSize = createElementSize(type, opts);
   let detail = {};
   if (type === 'rect') {
     detail = getDefaultElementRectDetail();
   } else if (type === 'circle') {
-    detail = getDefaultElementCircleDetail({
-      radius: elemSize.w
-    });
+    detail = getDefaultElementCircleDetail();
   } else if (type === 'text') {
-    detail = getDefaultElementTextDetail(opts);
+    detail = getDefaultElementTextDetail(elementSize);
   } else if (type === 'svg') {
     detail = getDefaultElementSVGDetail();
   } else if (type === 'image') {
@@ -91,7 +87,7 @@ export function createElement<T extends ElementType>(
     detail = getDefaultElementGroupDetail();
   }
   const elem: Element<T> = {
-    ...elemSize,
+    ...elementSize,
     ...baseElem,
     uuid: createUUID(),
     type,
@@ -262,6 +258,15 @@ export function updateElementInList(uuid: string, updateContent: RecursivePartia
   for (let i = 0; i < elements.length; i++) {
     const elem = elements[i];
     if (elem.uuid === uuid) {
+      if (elem.type === 'group' && elem.operations?.deepResize === true) {
+        if ((updateContent.w && updateContent.w > 0) || (updateContent.h && updateContent.h > 0)) {
+          deepResizeGroupElement(elem as Element<'group'>, {
+            w: updateContent.w,
+            h: updateContent.h
+          });
+        }
+      }
+
       mergeElement(elem, updateContent);
       targetElement = elem;
       break;

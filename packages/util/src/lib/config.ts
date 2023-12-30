@@ -1,6 +1,7 @@
 import type {
-  ViewScaleInfo,
+  // ViewScaleInfo,
   DefaultElementDetailConfig,
+  ElementSize,
   ElementRectDetail,
   ElementCircleDetail,
   ElementTextDetail,
@@ -8,6 +9,8 @@ import type {
   ElementImageDetail,
   ElementGroupDetail
 } from '@idraw/types';
+
+export const defaultText = 'Text Element';
 
 export function getDefaultElementDetailConfig(): DefaultElementDetailConfig {
   const config: DefaultElementDetailConfig = {
@@ -40,7 +43,7 @@ export function getDefaultElementRectDetail(): ElementRectDetail {
   return detail;
 }
 
-export function getDefaultElementCircleDetail(opts: { radius: number }): ElementCircleDetail {
+export function getDefaultElementCircleDetail(): ElementCircleDetail {
   const detail: ElementCircleDetail = {
     background: '#D9D9D9',
     radius: 0
@@ -48,16 +51,16 @@ export function getDefaultElementCircleDetail(opts: { radius: number }): Element
   return detail;
 }
 
-export function getDefaultElementTextDetail(opts?: { viewScaleInfo: ViewScaleInfo }): ElementTextDetail {
+export function getDefaultElementTextDetail(elementSize: ElementSize): ElementTextDetail {
   const detailConfig = getDefaultElementDetailConfig();
-  const scale = opts?.viewScaleInfo?.scale || 1;
+  // const scale = opts?.viewScaleInfo?.scale || 1;
   const detail: ElementTextDetail = {
-    text: 'Text Element',
+    text: defaultText,
     color: detailConfig.color,
     fontFamily: detailConfig.fontFamily,
     fontWeight: detailConfig.fontWeight,
-    lineHeight: detailConfig.fontSize * scale,
-    fontSize: detailConfig.fontSize * scale,
+    lineHeight: elementSize.w / defaultText.length,
+    fontSize: elementSize.w / defaultText.length,
     textAlign: 'center',
     verticalAlign: 'middle'
   };
@@ -78,7 +81,7 @@ export function getDefaultElementImageDetail(): ElementImageDetail {
   return detail;
 }
 
-export function getDefaultElementGroupDetail(opts?: { viewScaleInfo: ViewScaleInfo }): ElementGroupDetail {
+export function getDefaultElementGroupDetail(): ElementGroupDetail {
   const detail: ElementGroupDetail = {
     children: [],
     background: '#D9D9D9',

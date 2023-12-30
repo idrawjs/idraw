@@ -40,4 +40,5 @@ export interface RendererDrawElementOptions extends RendererDrawOptions {
   viewSizeInfo: ViewSizeInfo;
   parentElementSize: ElementSize;
   elementAssets?: ElementAssets;
+  parentOpacity: number;
 }

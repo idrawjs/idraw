@@ -10,7 +10,7 @@ export interface IDrawEventKeys {
 export type IDrawEvent = CoreEvent & {
   change: {
     data: Data;
-    type: 'update-element' | 'delete-element' | 'move-element' | 'add-element' | 'set-data' | 'other';
+    type: 'update-element' | 'delete-element' | 'move-element' | 'add-element' | 'drag-element' | 'resize-element' | 'set-data' | 'other';
   };
 };
 

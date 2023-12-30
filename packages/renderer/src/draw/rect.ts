@@ -3,7 +3,7 @@ import { rotateElement } from '@idraw/util';
 import { drawBox, drawBoxShadow } from './box';
 
 export function drawRect(ctx: ViewContext2D, elem: Element<'rect'>, opts: RendererDrawElementOptions) {
-  const { calculator, viewScaleInfo, viewSizeInfo } = opts;
+  const { calculator, viewScaleInfo, viewSizeInfo, parentOpacity } = opts;
   const { x, y, w, h, angle } = calculator?.elementSize(elem, viewScaleInfo, viewSizeInfo) || elem;
 
   const viewElem = { ...elem, ...{ x, y, w, h, angle } };
@@ -17,6 +17,7 @@ export function drawRect(ctx: ViewContext2D, elem: Element<'rect'>, opts: Render
           calcElemSize: { x, y, w, h, angle },
           viewScaleInfo,
           viewSizeInfo,
+          parentOpacity,
           renderContent: () => {
             // empty
           }

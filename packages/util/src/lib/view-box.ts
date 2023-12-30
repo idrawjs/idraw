@@ -8,7 +8,7 @@ export function calcViewBoxSize(viewElem: Element, opts: { viewScaleInfo: ViewSc
   let { borderRadius } = viewElem.detail;
   const { boxSizing = defaultElemConfig.boxSizing, borderWidth } = viewElem.detail;
 
-  if (typeof borderWidth !== 'number') {
+  if (Array.isArray(borderWidth)) {
     // TODO: If borderWidth is an array, borderRadius will not take effect and will become 0.
     borderRadius = 0;
   }

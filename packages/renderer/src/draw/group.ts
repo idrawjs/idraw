@@ -6,7 +6,7 @@ import { drawImage } from './image';
 import { drawText } from './text';
 import { drawSVG } from './svg';
 import { drawHTML } from './html';
-import { drawBox, drawBoxShadow } from './box';
+import { drawBox, drawBoxShadow, getOpacity } from './box';
 import { drawPath } from './path';
 
 export function drawElement(ctx: ViewContext2D, elem: Element<ElementType>, opts: RendererDrawElementOptions) {
@@ -64,10 +64,11 @@ export function drawElement(ctx: ViewContext2D, elem: Element<ElementType>, opts
 }
 
 export function drawGroup(ctx: ViewContext2D, elem: Element<'group'>, opts: RendererDrawElementOptions) {
-  const { calculator, viewScaleInfo, viewSizeInfo } = opts;
+  const { calculator, viewScaleInfo, viewSizeInfo, parentOpacity } = opts;
   const { x, y, w, h, angle } = calculator?.elementSize({ x: elem.x, y: elem.y, w: elem.w, h: elem.h, angle: elem.angle }, viewScaleInfo, viewSizeInfo) || elem;
   const viewElem = { ...elem, ...{ x, y, w, h, angle } };
   rotateElement(ctx, { x, y, w, h, angle }, () => {
+    ctx.globalAlpha = getOpacity(elem) * parentOpacity;
     drawBoxShadow(ctx, viewElem, {
       viewScaleInfo,
       viewSizeInfo,
@@ -77,6 +78,7 @@ export function drawGroup(ctx: ViewContext2D, elem: Element<'group'>, opts: Rend
           calcElemSize: { x, y, w, h, angle },
           viewScaleInfo,
           viewSizeInfo,
+          parentOpacity,
           renderContent: () => {
             const { x, y, w, h, radiusList } = calcViewBoxSize(viewElem, {
               viewScaleInfo,
@@ -84,6 +86,7 @@ export function drawGroup(ctx: ViewContext2D, elem: Element<'group'>, opts: Rend
             });
             if (elem.detail.overflow === 'hidden') {
               ctx.save();
+
               ctx.fillStyle = 'transparent';
               ctx.beginPath();
               ctx.moveTo(x + radiusList[0], y);
@@ -123,7 +126,7 @@ export function drawGroup(ctx: ViewContext2D, elem: Element<'group'>, opts: Rend
                 }
 
                 try {
-                  drawElement(ctx, child, { ...opts });
+                  drawElement(ctx, child, { ...opts, ...{ parentOpacity: parentOpacity * getOpacity(elem) } });
                 } catch (err) {
                   console.error(err);
                 }
@@ -131,12 +134,12 @@ export function drawGroup(ctx: ViewContext2D, elem: Element<'group'>, opts: Rend
             }
 
             if (elem.detail.overflow === 'hidden') {
-              ctx.globalAlpha = 1;
               ctx.restore();
             }
           }
         });
       }
     });
+    ctx.globalAlpha = parentOpacity;
   });
 }

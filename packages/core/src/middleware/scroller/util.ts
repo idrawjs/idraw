@@ -220,7 +220,6 @@ function drawScrollerInfo(helperContext: ViewContext2D, opts: { viewScaleInfo: V
     ctx.fillRect(0, height - wrapper.lineSize, width, wrapper.lineSize);
   }
 
-  // ctx.globalAlpha = 1;
   // x-thumb
   drawScrollerThumb(ctx, {
     axis: 'X',
@@ -236,7 +235,6 @@ function drawScrollerInfo(helperContext: ViewContext2D, opts: { viewScaleInfo: V
     ctx.fillRect(width - wrapper.lineSize, 0, wrapper.lineSize, height);
   }
 
-  // ctx.globalAlpha = 1;
   // y-thumb
   drawScrollerThumb(ctx, {
     axis: 'Y',

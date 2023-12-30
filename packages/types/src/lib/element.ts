@@ -113,8 +113,8 @@ export interface ElementCircleDetail extends ElementBaseDetail {
 
 export interface ElementHTMLDetail extends ElementBaseDetail {
   html: string;
-  width?: number;
-  height?: number;
+  originW?: number;
+  originH?: number;
 }
 
 export interface ElementImageDetail extends ElementBaseDetail {
@@ -165,6 +165,7 @@ export interface ElementOperations {
   disableRotate?: boolean;
   limitRatio?: boolean;
   lastModified?: number;
+  deepResize?: boolean;
 }
 
 export interface Element<T extends ElementType = ElementType, E extends Record<string, any> = Record<string, any>> extends ElementSize {
