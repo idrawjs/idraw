@@ -3,6 +3,7 @@ export {
   Core,
   MiddlewareSelector,
   middlewareEventSelect,
+  middlewareEventSelectClear,
   MiddlewareScroller,
   MiddlewareScaler,
   middlewareEventScale,

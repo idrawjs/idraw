@@ -10,10 +10,13 @@ export function downloadImageFromCanvas(canvas: HTMLCanvasElement, opts: { fileN
   downloadLink = null;
 }
 
-export function pickFile(opts: { success: (data: { file: File }) => void; error?: (err: ErrorEvent) => void }) {
-  const { success, error } = opts;
+export function pickFile(opts: { accept?: string; success: (data: { file: File }) => void; error?: (err: Error | any) => void }) {
+  const { accept, success, error } = opts;
   let input: HTMLInputElement | null = document.createElement('input') as HTMLInputElement;
   input.type = 'file';
+  if (accept) {
+    input.accept = accept;
+  }
   input.addEventListener('change', function () {
     const file: File = (input as HTMLInputElement).files?.[0] as File;
     success({

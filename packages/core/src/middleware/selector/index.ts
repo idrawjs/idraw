@@ -56,6 +56,8 @@ import { middlewareEventTextEdit } from '../text-editor';
 
 export const middlewareEventSelect: string = '@middleware/select';
 
+export const middlewareEventSelectClear: string = '@middleware/select-clear';
+
 export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, CoreEvent> = (opts) => {
   const { viewer, sharer, boardContent, calculator, eventHub } = opts;
   const { helperContext } = boardContent;
@@ -175,13 +177,20 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
     }
   };
 
+  const selectClearCallback = () => {
+    clear();
+    viewer.drawFrame();
+  };
+
   return {
     use() {
       eventHub.on(middlewareEventSelect, selectCallback);
+      eventHub.on(middlewareEventSelectClear, selectClearCallback);
     },
 
     disuse() {
       eventHub.off(middlewareEventSelect, selectCallback);
+      eventHub.off(middlewareEventSelectClear, selectClearCallback);
     },
 
     hover: (e: PointWatcherEvent) => {
