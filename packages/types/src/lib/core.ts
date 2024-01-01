@@ -30,6 +30,7 @@ export interface CoreEventSelect {
   positions?: Array<Array<number>>;
 }
 export interface CoreEventChange {
+  type: string;
   data: Data;
 }
 export interface CoreEventScale {

@@ -28,7 +28,8 @@ import {
   deleteElementInList,
   moveElementPosition,
   getElementPositionFromList,
-  calcElementListSize
+  calcElementListSize,
+  filterCompactData
 } from '@idraw/util';
 import { defaultSettings } from './config';
 import { exportImageFileBlobURL } from './file';
@@ -111,8 +112,14 @@ export class iDraw {
     core.trigger('change', { data, type: 'set-data' });
   }
 
-  getData(): Data | null {
-    return this.#core.getData();
+  getData(opts?: { compact?: boolean }): Data | null {
+    const data = this.#core.getData();
+    if (data && opts?.compact === true) {
+      return filterCompactData(data, {
+        loadItemMap: this.#core.getLoadItemMap()
+      });
+    }
+    return data;
   }
 
   getViewInfo(): {
