@@ -2,10 +2,14 @@ import type { Point, Data, Element, ElementType, ViewCalculator, ViewCalculatorO
 import { calcViewElementSize, isViewPointInElement, getViewPointAtElement, isElementInView } from '@idraw/util';
 
 export class Calculator implements ViewCalculator {
-  private _opts: ViewCalculatorOptions;
+  #opts: ViewCalculatorOptions;
 
   constructor(opts: ViewCalculatorOptions) {
-    this._opts = opts;
+    this.#opts = opts;
+  }
+
+  destroy() {
+    this.#opts = null as any;
   }
 
   elementSize(size: ElementSize, viewScaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): ElementSize {
@@ -17,7 +21,7 @@ export class Calculator implements ViewCalculator {
   }
 
   isPointInElement(p: Point, elem: Element<ElementType>, viewScaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): boolean {
-    const context2d = this._opts.viewContext;
+    const context2d = this.#opts.viewContext;
     return isViewPointInElement(p, {
       context2d,
       element: elem,
@@ -30,7 +34,7 @@ export class Calculator implements ViewCalculator {
     p: Point,
     opts: { data: Data; viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }
   ): { index: number; element: null | Element<ElementType>; groupQueueIndex: number } {
-    const context2d = this._opts.viewContext;
+    const context2d = this.#opts.viewContext;
     return getViewPointAtElement(p, { ...opts, ...{ context2d } });
   }
 }

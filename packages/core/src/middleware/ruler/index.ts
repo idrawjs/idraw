@@ -24,6 +24,7 @@ export const MiddlewareRuler: BoardMiddleware<Record<string, any>, CoreEvent> = 
   };
 
   return {
+    name: '@middleware/ruler',
     use() {
       eventHub.on(middlewareEventRuler, rulerCallback);
     },

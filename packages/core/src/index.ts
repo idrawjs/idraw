@@ -44,6 +44,10 @@ export class Core<E extends CoreEvent = CoreEvent> {
     });
   }
 
+  destroy() {
+    this.#board.destroy();
+  }
+
   #initContainer() {
     const container = this.#container;
     container.style.position = 'relative';

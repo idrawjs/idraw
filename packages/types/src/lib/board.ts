@@ -54,6 +54,7 @@ export interface BoardWatcherEventMap<S extends Record<any | symbol, any> = any>
 }
 
 export interface BoardMiddlewareObject<S extends Record<any | symbol, any> = any> {
+  name?: string;
   use?: () => void;
   disuse?: () => void;
   // action
@@ -132,6 +133,7 @@ export interface BoardRenderer extends UtilEventEmitter<RendererEventMap> {
   updateOptions(opts: RendererOptions): void;
   drawData(data: Data, opts: RendererDrawOptions): void;
   scale(num: number): void;
+  destroy(): void;
 }
 
 export interface BoardWatcherOptions {

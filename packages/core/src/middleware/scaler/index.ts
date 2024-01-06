@@ -9,6 +9,7 @@ export const MiddlewareScaler: BoardMiddleware<Record<string, any>, CoreEvent> =
   const minScale = 0.05;
 
   return {
+    name: '@middleware/scaler',
     wheelScale(e) {
       const { deltaY, point } = e;
       const { scale } = sharer.getActiveViewScaleInfo();

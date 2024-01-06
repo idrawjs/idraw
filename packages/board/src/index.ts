@@ -70,6 +70,19 @@ export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
     this.#resetActiveMiddlewareObjs();
   }
 
+  destroy() {
+    // #opts
+    // #middlewareMap
+    // #middlewares
+    // #activeMiddlewareObjs
+    this.#watcher.destroy();
+    this.#renderer.destroy();
+    // this.#sharer.destroy();
+    // #viewer: Viewer;
+    this.#calculator.destroy();
+    this.#eventHub.destroy();
+  }
+
   #init() {
     this.#watcher.on('pointStart', this.#handlePointStart.bind(this));
     this.#watcher.on('pointEnd', this.#handlePointEnd.bind(this));

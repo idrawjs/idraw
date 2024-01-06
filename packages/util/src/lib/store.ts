@@ -1,31 +1,35 @@
 import { deepClone } from './data';
 
-export class Store<T extends Record<string | symbol, any>> {
-  private _temp: T;
-  private _backUpDefaultStorage: T;
+export class Store<T extends Record<string | symbol, any> = Record<string | symbol, any>> {
+  #temp: T;
+  #backUpDefaultStorage: T;
 
   constructor(opts: { defaultStorage: T }) {
-    this._backUpDefaultStorage = deepClone(opts.defaultStorage);
-    this._temp = this._createTempStorage();
+    this.#backUpDefaultStorage = deepClone(opts.defaultStorage);
+    this.#temp = this.#createTempStorage();
   }
 
   set<K extends keyof T>(name: K, value: T[K]) {
-    this._temp[name] = value;
+    this.#temp[name] = value;
   }
 
   get<K extends keyof T>(name: K): T[K] {
-    return this._temp[name];
+    return this.#temp[name];
   }
 
   getSnapshot(): T {
-    return deepClone(this._temp);
+    return deepClone(this.#temp);
   }
 
   clear() {
-    this._temp = this._createTempStorage();
+    this.#temp = this.#createTempStorage();
   }
 
-  private _createTempStorage() {
-    return deepClone(this._backUpDefaultStorage);
+  destroy() {
+    this.#temp = null as any;
+  }
+
+  #createTempStorage() {
+    return deepClone(this.#backUpDefaultStorage);
   }
 }
