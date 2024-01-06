@@ -16,8 +16,8 @@ const defaultActiveStorage: ActiveStore = {
 };
 
 export class Sharer implements StoreSharer<Record<string | number | symbol, any>> {
-  private _activeStore: Store<ActiveStore>;
-  private _sharedStore: Store<{
+  #activeStore: Store<ActiveStore>;
+  #sharedStore: Store<{
     [string: string | number | symbol]: any;
   }>;
 
@@ -28,71 +28,71 @@ export class Sharer implements StoreSharer<Record<string | number | symbol, any>
     const sharedStore = new Store({
       defaultStorage: {}
     });
-    this._activeStore = activeStore;
-    this._sharedStore = sharedStore;
+    this.#activeStore = activeStore;
+    this.#sharedStore = sharedStore;
   }
 
   getActiveStorage<T extends keyof ActiveStore>(key: T): ActiveStore[T] {
-    return this._activeStore.get(key);
+    return this.#activeStore.get(key);
   }
 
   setActiveStorage<T extends keyof ActiveStore>(key: T, storage: ActiveStore[T]) {
-    return this._activeStore.set(key, storage);
+    return this.#activeStore.set(key, storage);
   }
 
   getActiveStoreSnapshot(): ActiveStore {
-    return this._activeStore.getSnapshot();
+    return this.#activeStore.getSnapshot();
   }
 
   getSharedStorage(key: string | number | symbol): any {
-    return this._sharedStore.get(key);
+    return this.#sharedStore.get(key);
   }
 
   setSharedStorage(key: string | number | symbol, storage: any) {
-    return this._sharedStore.set(key, storage);
+    return this.#sharedStore.set(key, storage);
   }
 
   getSharedStoreSnapshot(): Record<string, any> {
-    return this._sharedStore.getSnapshot();
+    return this.#sharedStore.getSnapshot();
   }
 
   // get/set active info
 
   getActiveViewScaleInfo(): ViewScaleInfo {
     const viewScaleInfo: ViewScaleInfo = {
-      scale: this._activeStore.get('scale'),
-      offsetTop: this._activeStore.get('offsetTop'),
-      offsetBottom: this._activeStore.get('offsetBottom'),
-      offsetLeft: this._activeStore.get('offsetLeft'),
-      offsetRight: this._activeStore.get('offsetRight')
+      scale: this.#activeStore.get('scale'),
+      offsetTop: this.#activeStore.get('offsetTop'),
+      offsetBottom: this.#activeStore.get('offsetBottom'),
+      offsetLeft: this.#activeStore.get('offsetLeft'),
+      offsetRight: this.#activeStore.get('offsetRight')
     };
     return viewScaleInfo;
   }
 
   setActiveViewScaleInfo(viewScaleInfo: ViewScaleInfo) {
     const { scale, offsetTop, offsetBottom, offsetLeft, offsetRight } = viewScaleInfo;
-    this._activeStore.set('scale', scale);
-    this._activeStore.set('offsetTop', offsetTop);
-    this._activeStore.set('offsetBottom', offsetBottom);
-    this._activeStore.set('offsetLeft', offsetLeft);
-    this._activeStore.set('offsetRight', offsetRight);
+    this.#activeStore.set('scale', scale);
+    this.#activeStore.set('offsetTop', offsetTop);
+    this.#activeStore.set('offsetBottom', offsetBottom);
+    this.#activeStore.set('offsetLeft', offsetLeft);
+    this.#activeStore.set('offsetRight', offsetRight);
   }
 
   setActiveViewSizeInfo(size: ViewSizeInfo) {
-    this._activeStore.set('width', size.width);
-    this._activeStore.set('height', size.height);
-    this._activeStore.set('devicePixelRatio', size.devicePixelRatio);
-    this._activeStore.set('contextWidth', size.contextWidth);
-    this._activeStore.set('contextHeight', size.contextHeight);
+    this.#activeStore.set('width', size.width);
+    this.#activeStore.set('height', size.height);
+    this.#activeStore.set('devicePixelRatio', size.devicePixelRatio);
+    this.#activeStore.set('contextWidth', size.contextWidth);
+    this.#activeStore.set('contextHeight', size.contextHeight);
   }
 
   getActiveViewSizeInfo(): ViewSizeInfo {
     const sizeInfo: ViewSizeInfo = {
-      width: this._activeStore.get('width'),
-      height: this._activeStore.get('height'),
-      devicePixelRatio: this._activeStore.get('devicePixelRatio'),
-      contextWidth: this._activeStore.get('contextWidth'),
-      contextHeight: this._activeStore.get('contextHeight')
+      width: this.#activeStore.get('width'),
+      height: this.#activeStore.get('height'),
+      devicePixelRatio: this.#activeStore.get('devicePixelRatio'),
+      contextWidth: this.#activeStore.get('contextWidth'),
+      contextHeight: this.#activeStore.get('contextHeight')
     };
     return sizeInfo;
   }

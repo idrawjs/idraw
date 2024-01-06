@@ -12,6 +12,7 @@ export const MiddlewareDragger: BoardMiddleware<DraggerSharedStorage, CoreEvent>
   let isDragging = false;
 
   return {
+    name: '@middleware/dragger',
     hover() {
       if (isDragging === true) {
         return;

@@ -25,6 +25,7 @@ export interface RendererLoader extends UtilEventEmitter<LoaderEventMap> {
   getContent(element: Element<LoadElementType>): LoadContent | null;
   getLoadItemMap(): LoadItemMap;
   setLoadItemMap(itemMap: LoadItemMap): void;
+  destroy(): void;
 }
 
 export interface RendererDrawOptions {

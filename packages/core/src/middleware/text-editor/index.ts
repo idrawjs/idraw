@@ -166,6 +166,7 @@ export const MiddlewareTextEditor: BoardMiddleware<Record<string, any>, CoreEven
   };
 
   return {
+    name: '@middleware/text-editor',
     use() {
       eventHub.on(middlewareEventTextEdit, textEditCallback);
     },

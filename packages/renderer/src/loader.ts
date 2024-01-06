@@ -59,6 +59,13 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
       };
     });
   }
+
+  destroy() {
+    this.#loadFuncMap = null as any;
+    this.#currentLoadItemMap = null as any;
+    this.#storageLoadItemMap = null as any;
+  }
+
   #registerLoadFunc<T extends LoadElementType>(type: T, func: LoadFunc<T, LoadContent>) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore

@@ -22,6 +22,12 @@ export class Renderer extends EventEmitter<RendererEventMap> implements BoardRen
     this.#init();
   }
 
+  destroy() {
+    this.#opts = null as any;
+    this.#loader.destroy();
+    this.#loader = null as any;
+  }
+
   #init() {
     const loader = this.#loader;
     loader.on('load', (e) => {

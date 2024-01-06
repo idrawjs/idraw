@@ -183,6 +183,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
   };
 
   return {
+    name: '@middleware/selector',
     use() {
       eventHub.on(middlewareEventSelect, selectCallback);
       eventHub.on(middlewareEventSelectClear, selectClearCallback);

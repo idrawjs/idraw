@@ -54,6 +54,7 @@ export const MiddlewareScroller: BoardMiddleware = (opts) => {
   };
 
   return {
+    name: '@middleware/scroller',
     wheel: (e: BoardWatherWheelEvent) => {
       viewer.scroll({
         moveX: 0 - e.deltaX,
