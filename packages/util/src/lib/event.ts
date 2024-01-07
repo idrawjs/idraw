@@ -32,7 +32,7 @@ export class EventEmitter<T extends Record<string, any>> implements UtilEventEmi
     }
   }
 
-  trigger<K extends keyof T>(eventKey: K, e: T[K]) {
+  trigger<K extends keyof T>(eventKey: K, e?: T[K]) {
     const callbacks = this.#listeners.get(eventKey);
     if (Array.isArray(callbacks)) {
       callbacks.forEach((cb) => {

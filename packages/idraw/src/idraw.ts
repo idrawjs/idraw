@@ -151,7 +151,7 @@ export class iDraw {
     this.#core.off(name, callback);
   }
 
-  trigger<T extends keyof IDrawEvent>(name: T, e: IDrawEvent[T]) {
+  trigger<T extends keyof IDrawEvent>(name: T, e?: IDrawEvent[T]) {
     this.#core.trigger(name, e);
   }
 
@@ -212,10 +212,11 @@ export class iDraw {
   ): Data {
     const core = this.#core;
     const data: Data = core.getData() || { elements: [] };
-    if (!opts) {
+    if (!opts || !opts?.position?.length) {
       data.elements.push(element);
     } else if (opts?.position) {
-      insertElementToListByPosition(element, opts?.position, data.elements);
+      const position = [...opts?.position];
+      insertElementToListByPosition(element, position, data.elements);
     }
     core.setData(data);
     core.refresh();
