@@ -15,54 +15,57 @@ const { requestAnimationFrame } = window;
 type ViewerDrawFrameStatus = 'DRAWING' | 'FREE' | 'COMPLETE';
 
 export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardViewer {
-  private _opts: BoardViewerOptions;
-  private _drawFrameSnapshotQueue: BoardViewerFrameSnapshot[] = [];
-  private _drawFrameStatus: ViewerDrawFrameStatus = 'FREE';
+  #opts: BoardViewerOptions;
+  #drawFrameSnapshotQueue: BoardViewerFrameSnapshot[] = [];
+  #drawFrameStatus: ViewerDrawFrameStatus = 'FREE';
 
   constructor(opts: BoardViewerOptions) {
     super();
-    this._opts = opts;
-    this._init();
+    this.#opts = opts;
+    this.#init();
   }
 
-  private _init() {
-    const { renderer } = this._opts;
+  #init() {
+    const { renderer } = this.#opts;
     renderer.on('load', () => {
       this.drawFrame();
     });
   }
 
-  private _drawAnimationFrame() {
-    if (this._drawFrameStatus === 'DRAWING' || this._drawFrameSnapshotQueue.length === 0) {
+  #drawAnimationFrame() {
+    if (this.#drawFrameStatus === 'DRAWING' || this.#drawFrameSnapshotQueue.length === 0) {
       return;
     } else {
-      this._drawFrameStatus = 'DRAWING';
+      this.#drawFrameStatus = 'DRAWING';
     }
-    const snapshot = this._drawFrameSnapshotQueue.shift();
+    const snapshot = this.#drawFrameSnapshotQueue.shift();
 
-    const { renderer, boardContent, beforeDrawFrame, afterDrawFrame } = this._opts;
+    const { renderer, boardContent, beforeDrawFrame, afterDrawFrame } = this.#opts;
 
     if (snapshot) {
       const { scale, offsetTop, offsetBottom, offsetLeft, offsetRight, width, height, contextHeight, contextWidth, devicePixelRatio } = snapshot.activeStore;
 
+      const viewScaleInfo: ViewScaleInfo = {
+        scale,
+        offsetTop,
+        offsetBottom,
+        offsetLeft,
+        offsetRight
+      };
+      const viewSizeInfo: ViewSizeInfo = {
+        width,
+        height,
+        contextHeight,
+        contextWidth,
+        devicePixelRatio
+      };
       if (snapshot?.activeStore.data) {
         renderer.drawData(snapshot.activeStore.data, {
-          viewScaleInfo: {
-            scale,
-            offsetTop,
-            offsetBottom,
-            offsetLeft,
-            offsetRight
-          },
-          viewSizeInfo: {
-            width,
-            height,
-            contextHeight,
-            contextWidth,
-            devicePixelRatio
-          }
+          viewScaleInfo,
+          viewSizeInfo
         });
       }
+
       beforeDrawFrame({ snapshot });
 
       boardContent.drawView();
@@ -70,31 +73,31 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
       afterDrawFrame({ snapshot });
     }
 
-    if (this._drawFrameSnapshotQueue.length === 0) {
-      this._drawFrameStatus = 'COMPLETE';
+    if (this.#drawFrameSnapshotQueue.length === 0) {
+      this.#drawFrameStatus = 'COMPLETE';
       return;
     }
-    if ((this._drawFrameStatus = 'DRAWING')) {
+    if ((this.#drawFrameStatus = 'DRAWING')) {
       requestAnimationFrame(() => {
-        this._drawAnimationFrame();
+        this.#drawAnimationFrame();
       });
     }
   }
 
   drawFrame(): void {
-    const { sharer } = this._opts;
+    const { sharer } = this.#opts;
     const activeStore: ActiveStore = sharer.getActiveStoreSnapshot();
     const sharedStore: Record<string, any> = sharer.getSharedStoreSnapshot();
-    this._drawFrameSnapshotQueue.push({
+    this.#drawFrameSnapshotQueue.push({
       activeStore,
       sharedStore
     });
-    this._drawAnimationFrame();
+    this.#drawAnimationFrame();
   }
 
   scale(opts: { scale: number; point: PointSize }): { moveX: number; moveY: number } {
     const { scale, point } = opts;
-    const { sharer } = this._opts;
+    const { sharer } = this.#opts;
     const { moveX, moveY } = viewScale({
       scale,
       point,
@@ -102,12 +105,11 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
       viewSizeInfo: sharer.getActiveViewSizeInfo()
     });
     sharer.setActiveStorage('scale', scale);
-    // renderer.scale(scale);
     return { moveX, moveY };
   }
 
   scroll(opts: { moveX: number; moveY: number }): ViewScaleInfo {
-    const { sharer } = this._opts;
+    const { sharer } = this.#opts;
     const prevViewScaleInfo: ViewScaleInfo = sharer.getActiveViewScaleInfo();
     const { moveX, moveY } = opts;
     const viewSizeInfo: ViewSizeInfo = sharer.getActiveViewSizeInfo();
@@ -122,7 +124,7 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
   }
 
   updateViewScaleInfo(opts: { scale: number; offsetX: number; offsetY: number }): ViewScaleInfo {
-    const { sharer } = this._opts;
+    const { sharer } = this.#opts;
     const viewScaleInfo = calcViewScaleInfo(opts, {
       viewSizeInfo: sharer.getActiveViewSizeInfo()
     });
@@ -131,37 +133,13 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
     return viewScaleInfo;
   }
 
-  // scrollX(num: number): ViewScaleInfo {
-  //   // TODO
-  //   const { sharer } = this._opts;
-  //   return sharer.getActiveViewScaleInfo();
-  //   // const { sharer } = this._opts;
-  //   // const prevViewScaleInfo: ViewScaleInfo = sharer.getActiveViewScaleInfo();
-  //   // const viewSizeInfo: ViewSizeInfo = sharer.getActiveViewSizeInfo();
-  //   // const viewScaleInfo = viewScroll({ moveX: num - (prevViewScaleInfo.offsetLeft || 0), viewScaleInfo: prevViewScaleInfo, viewSizeInfo });
-  //   // sharer.setActiveViewScaleInfo(viewScaleInfo);
-  //   // return viewScaleInfo;
-  // }
-
-  // scrollY(num: number): ViewScaleInfo {
-  //   // TODO
-  //   const { sharer } = this._opts;
-  //   return sharer.getActiveViewScaleInfo();
-  //   // const { sharer } = this._opts;
-  //   // const prevViewScaleInfo: ViewScaleInfo = sharer.getActiveViewScaleInfo();
-  //   // const viewSizeInfo: ViewSizeInfo = sharer.getActiveViewSizeInfo();
-  //   // const viewScaleInfo = viewScroll({ moveY: num - (prevViewScaleInfo.offsetTop || 0), viewScaleInfo: prevViewScaleInfo, viewSizeInfo });
-  //   // sharer.setActiveViewScaleInfo(viewScaleInfo);
-  //   // return viewScaleInfo;
-  // }
-
   resize(viewSize: Partial<ViewSizeInfo> = {}): ViewSizeInfo {
-    const { sharer } = this._opts;
+    const { sharer } = this.#opts;
     const originViewSize = sharer.getActiveViewSizeInfo();
     const newViewSize = { ...originViewSize, ...viewSize };
 
     const { width, height, devicePixelRatio } = newViewSize;
-    const { underContext, boardContext, helperContext, viewContext } = this._opts.boardContent;
+    const { underContext, boardContext, helperContext, viewContext } = this.#opts.boardContent;
     boardContext.canvas.width = width * devicePixelRatio;
     boardContext.canvas.height = height * devicePixelRatio;
     boardContext.canvas.style.width = `${width}px`;
