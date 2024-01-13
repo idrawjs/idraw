@@ -2,7 +2,7 @@ import type { Point, PointSize } from './point';
 import type { BoardContent, ViewCalculator, ViewScaleInfo, ViewSizeInfo } from './view';
 import type { UtilEventEmitter } from './util';
 import type { ActiveStore, StoreSharer } from './store';
-import type { RendererEventMap, RendererOptions, RendererDrawOptions } from './renderer';
+import type { RendererEventMap, RendererOptions, RendererDrawOptions, RendererLoader } from './renderer';
 import type { Data } from './data';
 
 export interface BoardWatcherPointEvent {
@@ -134,6 +134,7 @@ export interface BoardRenderer extends UtilEventEmitter<RendererEventMap> {
   drawData(data: Data, opts: RendererDrawOptions): void;
   scale(num: number): void;
   destroy(): void;
+  getLoader(): RendererLoader;
 }
 
 export interface BoardWatcherOptions {

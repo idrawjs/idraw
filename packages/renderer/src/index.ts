@@ -1,24 +1,16 @@
 import { EventEmitter } from '@idraw/util';
 import type { LoadItemMap } from '@idraw/types';
-import { drawElementList } from './draw/index';
+import { drawElementList, drawUnderlay } from './draw/index';
 import { Loader } from './loader';
 import type { Data, BoardRenderer, RendererOptions, RendererEventMap, RendererDrawOptions } from '@idraw/types';
 
 export class Renderer extends EventEmitter<RendererEventMap> implements BoardRenderer {
   #opts: RendererOptions;
   #loader: Loader = new Loader();
-  // private _draftContextTop: CanvasRenderingContext2D;
-  // private _draftContextMiddle: CanvasRenderingContext2D;
-  // private _draftContextBottom: CanvasRenderingContext2D;
 
   constructor(opts: RendererOptions) {
     super();
     this.#opts = opts;
-    // const { width, height } = this.#opts.boardContent.viewContext.canvas;
-    // this._draftContextTop = createOffscreenContext2D({ width, height }) as CanvasRenderingContext2D;
-    // this._draftContextMiddle = createOffscreenContext2D({ width, height }) as CanvasRenderingContext2D;
-    // this._draftContextBottom = createOffscreenContext2D({ width, height }) as CanvasRenderingContext2D;
-
     this.#init();
   }
 
@@ -53,6 +45,15 @@ export class Renderer extends EventEmitter<RendererEventMap> implements BoardRen
       w: opts.viewSizeInfo.width,
       h: opts.viewSizeInfo.height
     };
+    if (data.underlay) {
+      drawUnderlay(viewContext, data.underlay, {
+        loader,
+        calculator,
+        parentElementSize,
+        parentOpacity: 1,
+        ...opts
+      });
+    }
     drawElementList(viewContext, data, {
       loader,
       calculator,
@@ -98,4 +99,10 @@ export class Renderer extends EventEmitter<RendererEventMap> implements BoardRen
   getLoadItemMap(): LoadItemMap {
     return this.#loader.getLoadItemMap();
   }
+
+  getLoader(): Loader {
+    return this.#loader;
+  }
 }
+
+export { drawRect } from './draw';
