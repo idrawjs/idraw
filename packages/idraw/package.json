@@ -1,6 +1,6 @@
 {
   "name": "idraw",
-  "version": "0.4.0-beta.7",
+  "version": "0.4.0-beta.8",
   "description": "",
   "main": "dist/esm/index.js",
   "module": "dist/esm/index.js",
@@ -22,11 +22,11 @@
   "license": "MIT",
   "devDependencies": {},
   "dependencies": {
-    "@idraw/board": "^0.4.0-beta.7",
-    "@idraw/core": "^0.4.0-beta.7",
-    "@idraw/renderer": "^0.4.0-beta.7",
-    "@idraw/types": "^0.4.0-beta.7",
-    "@idraw/util": "^0.4.0-beta.7"
+    "@idraw/board": "^0.4.0-beta.8",
+    "@idraw/core": "^0.4.0-beta.8",
+    "@idraw/renderer": "^0.4.0-beta.8",
+    "@idraw/types": "^0.4.0-beta.8",
+    "@idraw/util": "^0.4.0-beta.8"
   },
   "publishConfig": {
     "access": "public",
