@@ -1,5 +1,5 @@
 import type { Data } from '@idraw/types';
-import { deepClone } from '@idraw/util';
+import { deepClone, createUUID, parseSVGPath } from '@idraw/util';
 
 // const data: Data = {
 //   background: '#ffffff',
@@ -224,6 +224,69 @@ const data: Data = {
         borderColor: '#ff5722',
         textAlign: 'center',
         verticalAlign: 'middle'
+      }
+    },
+    {
+      uuid: createUUID(),
+      x: 250,
+      y: 150,
+      w: 100,
+      h: 100,
+      // angle: 30,
+      type: 'rect',
+      detail: {
+        background: '#4caf50',
+        clipPath: {
+          commands: parseSVGPath(`
+          M 10,30
+          A 20,20 0,0,1 50,30
+          A 20,20 0,0,1 90,30
+          Q 90,60 50,90
+          Q 10,60 10,30 z`),
+          // fill: '#ff0000',
+          originX: 10,
+          originY: 10,
+          originH: 80,
+          originW: 80
+          // background: '#0000002A'
+        }
+      }
+    },
+    {
+      uuid: createUUID(),
+      x: 100,
+      y: 10,
+      w: 80,
+      h: 80,
+      // angle: 30,
+      type: 'path',
+      detail: {
+        commands: parseSVGPath(`
+        M 10,30
+        A 20,20 0,0,1 50,30
+        A 20,20 0,0,1 90,30
+        Q 90,60 50,90
+        Q 10,60 10,30 z`),
+        fill: 'red',
+        originX: 10,
+        originY: 10,
+        originH: 80,
+        originW: 80,
+        background: '#0000002A'
+
+        // clipPath: {
+        //   commands: parseSVGPath(`
+        //     M 10,30
+        //     A 20,20 0,0,1 50,30
+        //     A 20,20 0,0,1 90,30
+        //     Q 90,60 50,90
+        //     Q 10,60 10,30 z`),
+        //   fill: '#ff0000',
+        //   originX: 10,
+        //   originY: 10,
+        //   originH: 80,
+        //   originW: 80
+        // }
       }
     }
   ]

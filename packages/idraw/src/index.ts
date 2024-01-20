@@ -17,6 +17,7 @@ export {
   delay,
   compose,
   throttle,
+  debounce,
   downloadImageFromCanvas,
   parseFileToBase64,
   pickFile,

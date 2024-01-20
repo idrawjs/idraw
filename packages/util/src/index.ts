@@ -1,4 +1,4 @@
-export { delay, compose, throttle } from './lib/time';
+export { delay, compose, throttle, debounce } from './lib/time';
 export { downloadImageFromCanvas, parseFileToBase64, pickFile, parseFileToText, downloadFileFromText } from './lib/file';
 export { toColorHexStr, toColorHexNum, isColorStr, colorNameToHex, colorToCSS, colorToLinearGradientCSS, mergeHexColorAlpha } from './lib/color';
 export { createUUID, isAssetId, createAssetId } from './lib/uuid';
