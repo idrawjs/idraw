@@ -13,6 +13,12 @@ export function drawElement(ctx: ViewContext2D, elem: Element<ElementType>, opts
   if (elem?.operations?.invisible === true) {
     return;
   }
+  const { w, h } = elem;
+  const { scale } = opts.viewScaleInfo;
+  if ((scale < 1 && (w * scale < 1 || h * scale < 1)) || opts.parentOpacity === 0) {
+    return;
+  }
+
   try {
     switch (elem.type) {
       case 'rect': {

@@ -41,34 +41,35 @@ export function drawCircle(ctx: ViewContext2D, elem: Element<'circle'>, opts: Re
           }
         }
 
-        const opacity = getOpacity(viewElem) * parentOpacity;
+        if (a >= 0 && b >= 0) {
+          const opacity = getOpacity(viewElem) * parentOpacity;
+          ctx.globalAlpha = opacity;
 
-        ctx.globalAlpha = opacity;
+          // draw border
+          if (typeof borderWidth === 'number' && borderWidth > 0) {
+            const ba = borderWidth / 2 + a;
+            const bb = borderWidth / 2 + b;
+            ctx.beginPath();
+            ctx.strokeStyle = borderColor;
+            ctx.lineWidth = borderWidth;
+            ctx.circle(centerX, centerY, ba, bb, 0, 0, 2 * Math.PI);
+            ctx.closePath();
+            ctx.stroke();
+          }
 
-        // draw border
-        if (typeof borderWidth === 'number' && borderWidth > 0) {
-          const ba = borderWidth / 2 + a;
-          const bb = borderWidth / 2 + b;
+          // draw content
           ctx.beginPath();
-          ctx.strokeStyle = borderColor;
-          ctx.lineWidth = borderWidth;
-          ctx.circle(centerX, centerY, ba, bb, 0, 0, 2 * Math.PI);
+          const fillStyle = createColorStyle(ctx, background, {
+            viewElementSize: { x, y, w, h },
+            viewScaleInfo,
+            opacity: ctx.globalAlpha
+          });
+          ctx.fillStyle = fillStyle;
+          ctx.circle(centerX, centerY, a, b, 0, 0, 2 * Math.PI);
           ctx.closePath();
-          ctx.stroke();
+          ctx.fill();
+          ctx.globalAlpha = parentOpacity;
         }
-
-        // draw content
-        ctx.beginPath();
-        const fillStyle = createColorStyle(ctx, background, {
-          viewElementSize: { x, y, w, h },
-          viewScaleInfo,
-          opacity: ctx.globalAlpha
-        });
-        ctx.fillStyle = fillStyle;
-        ctx.circle(centerX, centerY, a, b, 0, 0, 2 * Math.PI);
-        ctx.closePath();
-        ctx.fill();
-        ctx.globalAlpha = parentOpacity;
       }
     });
   });

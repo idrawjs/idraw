@@ -265,6 +265,28 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
       });
       triggerCursor(target);
 
+      if (target.type === null) {
+        return;
+      }
+
+      if (
+        target.type === 'over-element' &&
+        sharer.getSharedStorage(keyActionType) === 'select' &&
+        target.elements.length === 1 &&
+        target.elements[0].uuid === getActiveElements()?.[0]?.uuid
+      ) {
+        return;
+      }
+
+      if (
+        target.type === 'over-element' &&
+        sharer.getSharedStorage(keyActionType) === null &&
+        target.elements.length === 1 &&
+        target.elements[0].uuid === sharer.getSharedStorage(keyHoverElement)?.uuid
+      ) {
+        return;
+      }
+
       if (target.type === 'over-element' && target?.elements?.length === 1) {
         sharer.setSharedStorage(keyHoverElement, target.elements[0]);
         updateHoverElement(target.elements[0]);

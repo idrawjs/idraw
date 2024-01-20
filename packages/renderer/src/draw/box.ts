@@ -44,6 +44,7 @@ export function drawBox(
   });
 }
 
+// TODO
 function drawClipPath(
   ctx: ViewContext2D,
   viewElem: Element<ElementType>,
@@ -55,8 +56,8 @@ function drawClipPath(
     viewSizeInfo: ViewSizeInfo;
   }
 ) {
-  const { renderContent, originElem, calcElemSize, viewScaleInfo, viewSizeInfo } = opts;
-  const totalScale = viewScaleInfo.scale * viewSizeInfo.devicePixelRatio;
+  const { renderContent, originElem, calcElemSize, viewSizeInfo } = opts;
+  const totalScale = viewSizeInfo.devicePixelRatio;
   const { clipPath } = originElem?.detail || {};
   if (clipPath && calcElemSize && clipPath.commands) {
     const { x, y, w, h } = calcElemSize;
