@@ -12,7 +12,7 @@ import type {
 import { rotateElementVertexes, calcViewVertexes } from '@idraw/util';
 import type { AreaSize } from './types';
 
-import { resizeControllerBorderWidth, areaBorderWidth, wrapperColor, selectWrapperBorderWidth } from './config';
+import { resizeControllerBorderWidth, areaBorderWidth, wrapperColor, selectWrapperBorderWidth, lockColor } from './config';
 
 function drawVertexes(
   ctx: ViewContext2D,
@@ -51,6 +51,61 @@ export function drawHoverVertexesWrapper(
   drawVertexes(ctx, calcViewVertexes(vertexes, opts), wrapperOpts);
 }
 
+function drawCrossVertexes(
+  ctx: ViewContext2D,
+  vertexes: ViewRectVertexes,
+  opts: { borderColor: string; borderWidth: number; background: string; lineDash: number[] }
+) {
+  const { borderColor, borderWidth, background, lineDash } = opts;
+  ctx.setLineDash([]);
+  ctx.lineWidth = borderWidth;
+  ctx.strokeStyle = borderColor;
+  ctx.fillStyle = background;
+  ctx.setLineDash(lineDash);
+  ctx.beginPath();
+  ctx.moveTo(vertexes[0].x, vertexes[0].y);
+  ctx.lineTo(vertexes[2].x, vertexes[2].y);
+  ctx.closePath();
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(vertexes[1].x, vertexes[1].y);
+  ctx.lineTo(vertexes[3].x, vertexes[3].y);
+  ctx.closePath();
+  ctx.stroke();
+}
+
+export function drawLockVertexesWrapper(
+  ctx: ViewContext2D,
+  vertexes: ViewRectVertexes | null,
+  opts: {
+    viewScaleInfo: ViewScaleInfo;
+    viewSizeInfo: ViewSizeInfo;
+    controller?: ElementSizeController | null;
+  }
+) {
+  if (!vertexes) {
+    return;
+  }
+  const wrapperOpts = { borderColor: lockColor, borderWidth: 1, background: 'transparent', lineDash: [] };
+  drawVertexes(ctx, calcViewVertexes(vertexes, opts), wrapperOpts);
+
+  const { controller } = opts;
+  if (controller) {
+    const { topLeft, topRight, bottomLeft, bottomRight, topMiddle, bottomMiddle, leftMiddle, rightMiddle } = controller;
+    const ctrlOpts = { ...wrapperOpts, borderWidth: 1, background: lockColor };
+
+    drawCrossVertexes(ctx, calcViewVertexes(topMiddle.vertexes, opts), ctrlOpts);
+    drawCrossVertexes(ctx, calcViewVertexes(bottomMiddle.vertexes, opts), ctrlOpts);
+    drawCrossVertexes(ctx, calcViewVertexes(leftMiddle.vertexes, opts), ctrlOpts);
+    drawCrossVertexes(ctx, calcViewVertexes(rightMiddle.vertexes, opts), ctrlOpts);
+
+    drawCrossVertexes(ctx, calcViewVertexes(topLeft.vertexes, opts), ctrlOpts);
+    drawCrossVertexes(ctx, calcViewVertexes(topRight.vertexes, opts), ctrlOpts);
+    drawCrossVertexes(ctx, calcViewVertexes(bottomLeft.vertexes, opts), ctrlOpts);
+    drawCrossVertexes(ctx, calcViewVertexes(bottomRight.vertexes, opts), ctrlOpts);
+  }
+}
+
 export function drawSelectedElementControllersVertexes(
   ctx: ViewContext2D,
   controller: ElementSizeController | null,
@@ -60,7 +115,6 @@ export function drawSelectedElementControllersVertexes(
     return;
   }
   const { elementWrapper, topLeft, topRight, bottomLeft, bottomRight } = controller;
-  // const wrapperColor = 'red'; // TODO
   const wrapperOpts = { borderColor: wrapperColor, borderWidth: selectWrapperBorderWidth, background: 'transparent', lineDash: [] };
   const ctrlOpts = { ...wrapperOpts, borderWidth: resizeControllerBorderWidth, background: '#FFFFFF' };
 

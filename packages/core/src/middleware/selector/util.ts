@@ -842,7 +842,11 @@ export function getSelectedListArea(
   const startY = Math.min(start.y, end.y);
   const endY = Math.max(start.y, end.y);
 
-  data.elements.forEach((elem, idx) => {
+  for (let idx = 0; idx < data.elements.length; idx++) {
+    const elem = data.elements[idx];
+    if (elem?.operations?.lock === true) {
+      continue;
+    }
     const elemSize = calculator.elementSize(elem, viewScaleInfo, viewSizeInfo);
 
     const center = calcElementCenter(elemSize);
@@ -862,7 +866,8 @@ export function getSelectedListArea(
         }
       }
     }
-  });
+  }
+
   return { indexes, uuids, elements };
 }
 
