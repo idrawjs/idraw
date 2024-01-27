@@ -1,7 +1,19 @@
 import { ViewRectVertexes } from './view';
 import { PointSize } from './point';
 
-export type ElementSizeControllerType = 'left' | 'right' | 'top' | 'bottom' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+export type ElementSizeControllerType =
+  | 'left'
+  | 'right'
+  | 'top'
+  | 'bottom'
+  | 'top-left'
+  | 'top-right'
+  | 'bottom-left'
+  | 'bottom-right'
+  | 'left-middle'
+  | 'right-middle'
+  | 'top-middle'
+  | 'bottom-middle';
 
 export interface ElementSizeControllerItem {
   type: ElementSizeControllerType;
@@ -19,4 +31,9 @@ export interface ElementSizeController {
   topRight: ElementSizeControllerItem;
   bottomLeft: ElementSizeControllerItem;
   bottomRight: ElementSizeControllerItem;
+
+  topMiddle: ElementSizeControllerItem;
+  bottomMiddle: ElementSizeControllerItem;
+  leftMiddle: ElementSizeControllerItem;
+  rightMiddle: ElementSizeControllerItem;
 }

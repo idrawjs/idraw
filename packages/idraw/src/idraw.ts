@@ -29,7 +29,8 @@ import {
   moveElementPosition,
   getElementPositionFromList,
   calcElementListSize,
-  filterCompactData
+  filterCompactData,
+  calcViewCenterContent
 } from '@idraw/util';
 import { defaultSettings } from './config';
 import { exportImageFileBlobURL } from './file';
@@ -41,8 +42,8 @@ export class iDraw {
 
   constructor(mount: HTMLDivElement, options: IDrawOptions) {
     const opts = { ...defaultSettings, ...options };
-    const { width, height, devicePixelRatio } = opts;
-    const core = new Core<IDrawEvent>(mount, { width, height, devicePixelRatio });
+    const { width, height, devicePixelRatio, createCustomContext2D } = opts;
+    const core = new Core<IDrawEvent>(mount, { width, height, devicePixelRatio, createCustomContext2D });
     this.#core = core;
     this.#opts = opts;
     this.#init();
@@ -137,6 +138,15 @@ export class iDraw {
     const core = this.#core;
     core.setViewScale(opts);
     core.refresh();
+  }
+
+  centerContent(opts?: { data?: Data }) {
+    const data = opts?.data || this.#core.getData();
+    const { viewSizeInfo } = this.getViewInfo();
+    if (data) {
+      const result = calcViewCenterContent(data, { viewSizeInfo });
+      this.setViewScale(result);
+    }
   }
 
   resize(opts: Partial<ViewSizeInfo>) {
@@ -262,5 +272,10 @@ export class iDraw {
       },
       loadItemMap: this.#core.getLoadItemMap()
     });
+  }
+
+  destroy() {
+    const core = this.#core;
+    core.destroy();
   }
 }

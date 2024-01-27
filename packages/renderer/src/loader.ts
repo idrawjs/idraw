@@ -112,7 +112,7 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
 
   #emitError(item: LoadItem) {
     const assetId = getAssetIdFromElement(item.element);
-    const storageItem = this.#storageLoadItemMap[assetId];
+    const storageItem = this.#storageLoadItemMap?.[assetId];
     if (storageItem) {
       if (storageItem.startTime < item.startTime) {
         this.#storageLoadItemMap[assetId] = item;

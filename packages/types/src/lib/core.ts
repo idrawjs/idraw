@@ -1,10 +1,12 @@
 import type { Element, ElementType } from './element';
 import type { Data } from './data';
+import type { ViewContext2D } from './context2d';
 
 export interface CoreOptions {
   width: number;
   height: number;
   devicePixelRatio?: number;
+  createCustomContext2D?: (opts: { width: number; height: number; devicePixelRatio: number }) => ViewContext2D;
 }
 
 export type CursorType =

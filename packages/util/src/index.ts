@@ -74,3 +74,4 @@ export {
   updateElementInList
 } from './lib/handle-element';
 export { deepResizeGroupElement } from './lib/resize-element';
+export { calcViewCenterContent } from './lib/view-content';

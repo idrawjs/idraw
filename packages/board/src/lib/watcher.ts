@@ -38,7 +38,6 @@ export class BoardWatcher extends EventEmitter<BoardWatcherEventMap> {
     container.removeEventListener('wheel', this.#onWheel);
     container.removeEventListener('click', this.#onClick);
     container.removeEventListener('contextmenu', this.#onContextMenu);
-    this.destroy();
   }
 
   #onWheel = (e: WheelEvent) => {

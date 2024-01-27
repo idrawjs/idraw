@@ -14,19 +14,20 @@ export { MiddlewareDragger } from './middleware/dragger';
 export class Core<E extends CoreEvent = CoreEvent> {
   #board: Board<E>;
   // #opts: CoreOptions;
-  // #canvas: HTMLCanvasElement;
+  #canvas: HTMLCanvasElement;
   #container: HTMLDivElement;
+
   constructor(container: HTMLDivElement, opts: CoreOptions) {
-    const { devicePixelRatio = 1, width, height } = opts;
+    const { devicePixelRatio = 1, width, height, createCustomContext2D } = opts;
 
     // this.#opts = opts;
-    // this.#canvas = canvas;
     this.#container = container;
     const canvas = document.createElement('canvas');
+    this.#canvas = canvas;
     this.#initContainer();
     container.appendChild(canvas);
 
-    const boardContent = createBoardContent(canvas, { width, height, devicePixelRatio, offscreen: true });
+    const boardContent = createBoardContent(canvas, { width, height, devicePixelRatio, offscreen: true, createCustomContext2D });
     const board = new Board<E>({ boardContent, container });
     const sharer = board.getSharer();
     sharer.setActiveViewSizeInfo({
@@ -46,6 +47,7 @@ export class Core<E extends CoreEvent = CoreEvent> {
 
   destroy() {
     this.#board.destroy();
+    this.#canvas.remove();
   }
 
   #initContainer() {

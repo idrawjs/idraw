@@ -1,4 +1,4 @@
-import type { BoardContent } from '@idraw/types';
+import type { BoardContent, ViewContext2D } from '@idraw/types';
 import { Context2D } from './context2d';
 
 export function createContext2D(opts: { ctx?: CanvasRenderingContext2D; width: number; height: number; devicePixelRatio: number }): Context2D {
@@ -30,17 +30,54 @@ export function createOffscreenContext2D(opts: { width: number; height: number; 
 
 export function createBoardContent(
   canvas: HTMLCanvasElement,
-  opts: { width: number; height: number; devicePixelRatio: number; offscreen?: boolean }
+  opts: {
+    width: number;
+    height: number;
+    devicePixelRatio: number;
+    offscreen?: boolean;
+    createCustomContext2D?: (opts: { width: number; height: number; devicePixelRatio: number }) => ViewContext2D;
+  }
 ): BoardContent {
-  const { width, height, devicePixelRatio, offscreen } = opts;
+  const { width, height, devicePixelRatio, offscreen, createCustomContext2D } = opts;
   const ctxOpts = {
     width,
     height,
     devicePixelRatio
   };
 
+  const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+
+  if (createCustomContext2D) {
+    // TODO
+    const viewContext = createCustomContext2D(ctxOpts);
+    const helperContext = createCustomContext2D(ctxOpts);
+    const underContext = createCustomContext2D(ctxOpts);
+    const boardContext = createContext2D({ ctx, ...ctxOpts });
+
+    const drawView = () => {
+      const { width: w, height: h } = viewContext.$getSize();
+
+      boardContext.clearRect(0, 0, w, h);
+      boardContext.drawImage(underContext.canvas, 0, 0, w, h);
+      boardContext.drawImage(viewContext.canvas, 0, 0, w, h);
+      boardContext.drawImage(helperContext.canvas, 0, 0, w, h);
+      underContext.clearRect(0, 0, w, h);
+      viewContext.clearRect(0, 0, w, h);
+      helperContext.clearRect(0, 0, w, h);
+    };
+
+    const content: BoardContent = {
+      underContext,
+      viewContext,
+      helperContext,
+      boardContext,
+      drawView
+    };
+    return content;
+  }
+
   if (offscreen === true) {
-    const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+    // const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
     const viewContext = createOffscreenContext2D(ctxOpts);
     const helperContext = createOffscreenContext2D(ctxOpts);
     const underContext = createOffscreenContext2D(ctxOpts);
@@ -67,7 +104,7 @@ export function createBoardContent(
     };
     return content;
   } else {
-    const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+    // const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
     const viewContext = createContext2D(ctxOpts);
     const helperContext = createContext2D(ctxOpts);
     const underContext = createContext2D(ctxOpts);

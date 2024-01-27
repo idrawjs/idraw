@@ -25,6 +25,10 @@ export class Context2D implements ViewContext2D {
     return this.#ctx;
   }
 
+  $setContext(ctx: CanvasRenderingContext2D) {
+    this.#ctx = ctx;
+  }
+
   $setFont(opts: { fontSize: number; fontFamily?: string; fontWeight?: 'bold' | number | string }): void {
     const strList: string[] = [];
     if (opts.fontWeight) {
