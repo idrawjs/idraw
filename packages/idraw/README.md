@@ -1,3 +1,7 @@
+<p align="center">
+  <img width="200" src="https://github.com/idrawjs/idraw/assets/8216630/bcf8fbc6-6374-4cb9-a67f-1687d029a863" alt="iDraw.js Logo" />
+</p>
+
 <h1 align="center">iDraw.js</h1>
 
 <p align="center">iDraw.js is a simple JavaScript framework for Drawing on the web.</p>
@@ -28,9 +32,7 @@
 </p>
 
 
-<p align="center">
-  <img width="200" src="https://github.com/idrawjs/idraw/assets/8216630/bcf8fbc6-6374-4cb9-a67f-1687d029a863" />
-</p>
+
 
 
 <!-- [![Node.js CI](https://github.com/idrawjs/idraw/actions/workflows/node.js.yml/badge.svg?branch=main)](https://github.com/idrawjs/idraw/actions/workflows/node.js.yml) -->
@@ -48,11 +50,11 @@
 The preview of `@idraw/studo`. Click [here](https://github.com/idrawjs/studio) to get it.
 
 <p align="center">
-  <img alt="idraw studio dark preview" src="https://github.com/idrawjs/studio/assets/8216630/62b9bc71-5fca-421d-9c6e-b7512edc77f2" width="700">
-</p>
 
-<p align="center">
-  <img alt="idraw studio light preview" src="https://github.com/idrawjs/studio/assets/8216630/5b4cc1dc-89e1-4f67-84fa-578667d42bf7" width="700">
+  <img width="700" alt="idraw-studio-light-theme" src="https://github.com/idrawjs/studio/assets/8216630/8a49bab8-1e4a-44dd-9836-b6ce3861aaea" />
+
+  <img width="600" alt="idraw-studio-dark-theme" src="https://github.com/idrawjs/studio/assets/8216630/479fce0b-891f-47f2-ace8-d91580e68b4b" />
+
 </p>
 
 ## Install
