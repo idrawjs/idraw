@@ -34,7 +34,7 @@ export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
   #viewer: Viewer;
   #calculator: Calculator;
   #eventHub: EventEmitter<T> = new EventEmitter<T>();
-
+  #hasDestroyed: boolean = false;
   constructor(opts: BoardOptions) {
     const { boardContent } = opts;
     const sharer = new Sharer();
@@ -70,6 +70,10 @@ export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
     this.#resetActiveMiddlewareObjs();
   }
 
+  isDestroyed() {
+    return this.#hasDestroyed;
+  }
+
   destroy() {
     // #opts
     // #middlewareMap
@@ -81,6 +85,7 @@ export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
     // #viewer: Viewer;
     this.#calculator.destroy();
     this.#eventHub.destroy();
+    this.#hasDestroyed = true;
   }
 
   #init() {
@@ -375,6 +380,14 @@ export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
 
   getEventHub(): EventEmitter<T> {
     return this.#eventHub;
+  }
+
+  onWatcherEvents() {
+    this.#watcher.onEvents();
+  }
+
+  offWatcherEvents() {
+    this.#watcher.offEvents();
   }
 }
 

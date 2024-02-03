@@ -116,7 +116,8 @@ export {
   deleteElementInList,
   deepResizeGroupElement,
   deepCloneElement,
-  calcViewCenterContent
+  calcViewCenterContent,
+  calcViewCenter
 } from '@idraw/util';
 export { iDraw } from './idraw';
 export type { IDrawEvent, IDrawEventKeys } from './event';

@@ -19,7 +19,8 @@ export type CursorType =
   | 'resize-bottom-left'
   | 'resize-bottom-right'
   | 'drag-default'
-  | 'drag-active';
+  | 'drag-active'
+  | 'default';
 
 export interface CoreEventCursor {
   type: CursorType | string | null;

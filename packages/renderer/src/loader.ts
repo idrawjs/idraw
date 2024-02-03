@@ -25,6 +25,7 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
   #loadFuncMap: Record<LoadElementType | string, LoadFunc<LoadElementType, LoadContent>> = {};
   #currentLoadItemMap: LoadItemMap = {};
   #storageLoadItemMap: LoadItemMap = {};
+  #hasDestroyed: boolean = false;
 
   constructor() {
     super();
@@ -60,7 +61,13 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
     });
   }
 
+  isDestroyed() {
+    return this.#hasDestroyed;
+  }
+
   destroy() {
+    this.#hasDestroyed = true;
+    this.clear();
     this.#loadFuncMap = null as any;
     this.#currentLoadItemMap = null as any;
     this.#storageLoadItemMap = null as any;
@@ -99,28 +106,32 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
   #emitLoad(item: LoadItem) {
     const assetId = getAssetIdFromElement(item.element);
     const storageItem = this.#storageLoadItemMap[assetId];
-    if (storageItem) {
-      if (storageItem.startTime < item.startTime) {
+    if (!this.#hasDestroyed) {
+      if (storageItem) {
+        if (storageItem.startTime < item.startTime) {
+          this.#storageLoadItemMap[assetId] = item;
+          this.trigger('load', { ...item, countTime: item.endTime - item.startTime });
+        }
+      } else {
         this.#storageLoadItemMap[assetId] = item;
         this.trigger('load', { ...item, countTime: item.endTime - item.startTime });
       }
-    } else {
-      this.#storageLoadItemMap[assetId] = item;
-      this.trigger('load', { ...item, countTime: item.endTime - item.startTime });
     }
   }
 
   #emitError(item: LoadItem) {
     const assetId = getAssetIdFromElement(item.element);
     const storageItem = this.#storageLoadItemMap?.[assetId];
-    if (storageItem) {
-      if (storageItem.startTime < item.startTime) {
+    if (!this.#hasDestroyed) {
+      if (storageItem) {
+        if (storageItem.startTime < item.startTime) {
+          this.#storageLoadItemMap[assetId] = item;
+          this.trigger('error', { ...item, countTime: item.endTime - item.startTime });
+        }
+      } else {
         this.#storageLoadItemMap[assetId] = item;
         this.trigger('error', { ...item, countTime: item.endTime - item.startTime });
       }
-    } else {
-      this.#storageLoadItemMap[assetId] = item;
-      this.trigger('error', { ...item, countTime: item.endTime - item.startTime });
     }
   }
 
@@ -130,16 +141,19 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
 
     this.#currentLoadItemMap[assetId] = item;
     const loadFunc = this.#loadFuncMap[element.type];
-    if (typeof loadFunc === 'function') {
+    if (typeof loadFunc === 'function' && !this.#hasDestroyed) {
       item.startTime = Date.now();
       loadFunc(element, assets)
         .then((result) => {
-          item.content = result.content;
-          item.endTime = Date.now();
-          item.status = 'load';
-          this.#emitLoad(item);
+          if (!this.#hasDestroyed) {
+            item.content = result.content;
+            item.endTime = Date.now();
+            item.status = 'load';
+            this.#emitLoad(item);
+          }
         })
         .catch((err: Error) => {
+          // eslint-disable-next-line no-console
           console.warn(`Load element source "${item.source}" fail`, err, element);
           item.endTime = Date.now();
           item.status = 'error';
@@ -159,6 +173,9 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
   }
 
   load(element: Element<LoadElementType>, assets: ElementAssets) {
+    if (this.#hasDestroyed === true) {
+      return;
+    }
     if (this.#isExistingErrorStorage(element)) {
       return;
     }

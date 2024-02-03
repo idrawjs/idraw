@@ -110,10 +110,10 @@ export const MiddlewareTextEditor: BoardMiddleware<Record<string, any>, CoreEven
     }
 
     textarea.style.position = 'absolute';
-    textarea.style.left = `${elemX}px`;
-    textarea.style.top = `${elemY}px`;
-    textarea.style.width = `${elemW}px`;
-    textarea.style.height = `${elemH}px`;
+    textarea.style.left = `${elemX - 1}px`;
+    textarea.style.top = `${elemY - 1}px`;
+    textarea.style.width = `${elemW + 2}px`;
+    textarea.style.height = `${elemH + 2}px`;
     textarea.style.transform = `rotate(${limitAngle(element.angle || 0)}deg)`;
     // textarea.style.border = 'none';
     textarea.style.boxSizing = 'border-box';
@@ -127,6 +127,10 @@ export const MiddlewareTextEditor: BoardMiddleware<Record<string, any>, CoreEven
     textarea.style.lineHeight = `${detail.lineHeight * scale}px`;
     textarea.style.fontFamily = detail.fontFamily;
     textarea.style.fontWeight = `${detail.fontWeight}`;
+    textarea.style.padding = '0';
+    textarea.style.margin = '0';
+    textarea.style.outline = 'none';
+
     textarea.value = detail.text || '';
     parent.appendChild(textarea);
   };

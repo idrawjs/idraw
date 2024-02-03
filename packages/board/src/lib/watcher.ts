@@ -8,6 +8,7 @@ function isBoardAvailableNum(num: any): boolean {
 export class BoardWatcher extends EventEmitter<BoardWatcherEventMap> {
   #opts: BoardWatcherOptions;
   #store: Store<BoardWatcherStore>;
+  #hasDestroyed: boolean = false;
   constructor(opts: BoardWatcherOptions) {
     super();
     const store = new Store<BoardWatcherStore>({ defaultStorage: { hasPointDown: false, prevClickPoint: null } });
@@ -17,6 +18,13 @@ export class BoardWatcher extends EventEmitter<BoardWatcherEventMap> {
   }
 
   #init() {
+    this.onEvents();
+  }
+
+  onEvents() {
+    if (this.#hasDestroyed) {
+      return;
+    }
     const container = window;
     container.addEventListener('mousemove', this.#onHover);
     container.addEventListener('mousedown', this.#onPointStart);
@@ -28,7 +36,7 @@ export class BoardWatcher extends EventEmitter<BoardWatcherEventMap> {
     container.addEventListener('contextmenu', this.#onContextMenu);
   }
 
-  destroy() {
+  offEvents() {
     const container = window;
     container.removeEventListener('mousemove', this.#onHover);
     container.removeEventListener('mousedown', this.#onPointStart);
@@ -38,6 +46,12 @@ export class BoardWatcher extends EventEmitter<BoardWatcherEventMap> {
     container.removeEventListener('wheel', this.#onWheel);
     container.removeEventListener('click', this.#onClick);
     container.removeEventListener('contextmenu', this.#onContextMenu);
+  }
+
+  destroy() {
+    this.offEvents();
+    this.#store.destroy();
+    this.#hasDestroyed = true;
   }
 
   #onWheel = (e: WheelEvent) => {

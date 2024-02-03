@@ -30,7 +30,8 @@ import {
   getElementPositionFromList,
   calcElementListSize,
   filterCompactData,
-  calcViewCenterContent
+  calcViewCenterContent,
+  calcViewCenter
 } from '@idraw/util';
 import { defaultSettings } from './config';
 import { exportImageFileBlobURL } from './file';
@@ -143,7 +144,7 @@ export class iDraw {
   centerContent(opts?: { data?: Data }) {
     const data = opts?.data || this.#core.getData();
     const { viewSizeInfo } = this.getViewInfo();
-    if (data) {
+    if (Array.isArray(data?.elements) && data?.elements.length > 0) {
       const result = calcViewCenterContent(data, { viewSizeInfo });
       this.setViewScale(result);
     }
@@ -274,8 +275,25 @@ export class iDraw {
     });
   }
 
+  isDestroyed() {
+    return this.#core.isDestroyed();
+  }
+
   destroy() {
     const core = this.#core;
     core.destroy();
+  }
+
+  getViewCenter() {
+    const { viewScaleInfo, viewSizeInfo } = this.getViewInfo();
+    return calcViewCenter({ viewScaleInfo, viewSizeInfo });
+  }
+
+  $onBoardWatcherEvents() {
+    this.#core.onBoardWatcherEvents();
+  }
+
+  $offBoardWatcherEvents() {
+    this.#core.offBoardWatcherEvents();
   }
 }

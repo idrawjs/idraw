@@ -7,7 +7,7 @@ export function drawHTML(ctx: ViewContext2D, elem: Element<'html'>, opts: Render
   const { calculator, viewScaleInfo, viewSizeInfo, parentOpacity } = opts;
   const { x, y, w, h, angle } = calculator?.elementSize(elem, viewScaleInfo, viewSizeInfo) || elem;
   rotateElement(ctx, { x, y, w, h, angle }, () => {
-    if (!content) {
+    if (!content && !opts.loader.isDestroyed()) {
       opts.loader.load(elem as Element<'html'>, opts.elementAssets || {});
     }
     if (elem.type === 'html' && content) {

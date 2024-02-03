@@ -134,6 +134,7 @@ export interface BoardRenderer extends UtilEventEmitter<RendererEventMap> {
   drawData(data: Data, opts: RendererDrawOptions): void;
   scale(num: number): void;
   destroy(): void;
+  isDestroyed(): boolean;
   getLoader(): RendererLoader;
 }
 

@@ -20,7 +20,7 @@ export function drawImage(ctx: ViewContext2D, elem: Element<'image'>, opts: Rend
           viewSizeInfo,
           parentOpacity,
           renderContent: () => {
-            if (!content) {
+            if (!content && !opts.loader.isDestroyed()) {
               opts.loader.load(elem as Element<'image'>, opts.elementAssets || {});
             }
             if (elem.type === 'image' && content) {

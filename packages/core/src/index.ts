@@ -45,6 +45,10 @@ export class Core<E extends CoreEvent = CoreEvent> {
     });
   }
 
+  isDestroyed() {
+    return this.#board.isDestroyed();
+  }
+
   destroy() {
     this.#board.destroy();
     this.#canvas.remove();
@@ -128,5 +132,13 @@ export class Core<E extends CoreEvent = CoreEvent> {
 
   getLoadItemMap(): LoadItemMap {
     return this.#board.getRenderer().getLoadItemMap();
+  }
+
+  onBoardWatcherEvents() {
+    this.#board.onWatcherEvents();
+  }
+
+  offBoardWatcherEvents() {
+    this.#board.offWatcherEvents();
   }
 }

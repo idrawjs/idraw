@@ -55,6 +55,10 @@ export class EventEmitter<T extends Record<string, any>> implements UtilEventEmi
   }
 
   destroy() {
+    this.clear();
+  }
+
+  clear() {
     this.#listeners.clear();
   }
 }
