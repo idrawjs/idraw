@@ -119,7 +119,7 @@ export function filterCompactData(data: Data, opts?: { loadItemMap?: LoadItemMap
             type: 'image',
             value: loadItemMap[src].source as string
           };
-        } else {
+        } else if (!assets[src]) {
           const assetUUID = createAssetId(src);
           if (!assets[assetUUID]) {
             assets[assetUUID] = {
@@ -131,34 +131,40 @@ export function filterCompactData(data: Data, opts?: { loadItemMap?: LoadItemMap
         }
       } else if (elem.type === 'svg') {
         const svg = (elem as Element<'svg'>).detail.svg;
-        const assetUUID = createAssetId(svg);
+
         if (isAssetId(svg) && !assets[svg] && loadItemMap[svg] && typeof loadItemMap[svg]?.source === 'string') {
           assets[svg] = {
             type: 'svg',
             value: loadItemMap[svg].source as string
           };
-        } else if (!assets[assetUUID]) {
-          assets[assetUUID] = {
-            type: 'svg',
-            value: svg
-          };
+        } else if (!assets[svg]) {
+          const assetUUID = createAssetId(svg);
+          if (!assets[assetUUID]) {
+            assets[assetUUID] = {
+              type: 'svg',
+              value: svg
+            };
+          }
+          (elem as Element<'svg'>).detail.svg = assetUUID;
         }
-        (elem as Element<'svg'>).detail.svg = assetUUID;
       } else if (elem.type === 'html') {
         const html = (elem as Element<'html'>).detail.html;
-        const assetUUID = createAssetId(html);
+
         if (isAssetId(html) && !assets[html] && loadItemMap[html] && typeof loadItemMap[html]?.source === 'string') {
           assets[html] = {
             type: 'html',
             value: loadItemMap[html].source as string
           };
-        } else if (!assets[assetUUID]) {
-          assets[assetUUID] = {
-            type: 'html',
-            value: html
-          };
+        } else if (!assets[html]) {
+          const assetUUID = createAssetId(html);
+          if (!assets[assetUUID]) {
+            assets[assetUUID] = {
+              type: 'html',
+              value: html
+            };
+          }
+          (elem as Element<'html'>).detail.html = assetUUID;
         }
-        (elem as Element<'html'>).detail.html = assetUUID;
       } else if (elem.type === 'group' && Array.isArray((elem as Element<'group'>).detail.children)) {
         const groupAssets = (elem as Element<'group'>).detail.assets || {};
         Object.keys(groupAssets).forEach((assetId) => {

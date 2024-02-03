@@ -3,11 +3,11 @@ import { limitAngle, loadImage, parseAngleToRadian } from '@idraw/util';
 import { CURSOR, CURSOR_RESIZE, CURSOR_DRAG_DEFAULT, CURSOR_DRAG_ACTIVE } from './cursor-image';
 
 export class Cursor {
-  private _eventHub: UtilEventEmitter<CoreEvent>;
-  private _container: HTMLDivElement;
-  private _cursorType: 'auto' | string | null = null;
-  private _resizeCursorBaseImage: HTMLImageElement | null = null;
-  private _cursorImageMap: Record<string, string> = {
+  #eventHub: UtilEventEmitter<CoreEvent>;
+  #container: HTMLDivElement;
+  #cursorType: 'default' | string | null = null;
+  #resizeCursorBaseImage: HTMLImageElement | null = null;
+  #cursorImageMap: Record<string, string> = {
     auto: CURSOR,
     'drag-default': CURSOR_DRAG_DEFAULT,
     'drag-active': CURSOR_DRAG_ACTIVE,
@@ -19,56 +19,60 @@ export class Cursor {
       eventHub: UtilEventEmitter<CoreEvent>;
     }
   ) {
-    this._container = container;
-    this._eventHub = opts.eventHub;
-    this._init();
-    this._loadResizeCursorBaseImage();
+    this.#container = container;
+    this.#eventHub = opts.eventHub;
+    this.#init();
+    this.#loadResizeCursorBaseImage();
   }
 
-  private _init() {
-    const { _eventHub: eventHub } = this;
-    this._resetCursor('auto');
+  #init() {
+    const eventHub = this.#eventHub;
+    this.#resetCursor('default');
     eventHub.on('cursor', (e) => {
       if (e.type === 'over-element' || !e.type) {
-        this._resetCursor('auto');
+        this.#resetCursor('auto');
       } else if (typeof e.type === 'string' && e.type?.startsWith('resize-')) {
-        this._setCursorResize(e);
+        this.#setCursorResize(e);
       } else if (e.type === 'drag-default') {
-        this._resetCursor('drag-default');
+        this.#resetCursor('drag-default');
       } else if (e.type === 'drag-active') {
-        this._resetCursor('drag-active');
+        this.#resetCursor('drag-active');
       } else {
-        this._resetCursor('auto');
+        this.#resetCursor('auto');
       }
     });
   }
 
-  private _loadResizeCursorBaseImage() {
+  #loadResizeCursorBaseImage() {
     loadImage(CURSOR_RESIZE)
       .then((img) => {
-        this._resizeCursorBaseImage = img;
+        this.#resizeCursorBaseImage = img;
       })
       .catch((err) => {
         console.error(err);
       });
   }
 
-  private _resetCursor(cursorKey: string) {
-    if (this._cursorType === cursorKey) {
+  #resetCursor(cursorKey: string) {
+    if (this.#cursorType === cursorKey) {
       return;
     }
-    this._cursorType = cursorKey;
-    const image = this._cursorImageMap[this._cursorType] || this._cursorImageMap['auto'];
+    this.#cursorType = cursorKey;
+    const image = this.#cursorImageMap[this.#cursorType] || this.#cursorImageMap['auto'];
     let offsetX = 0;
     let offsetY = 0;
-    if (cursorKey.startsWith('rotate-') && this._cursorImageMap[this._cursorType]) {
+    if (cursorKey.startsWith('rotate-') && this.#cursorImageMap[this.#cursorType]) {
       offsetX = 10;
       offsetY = 10;
     }
-    this._container.style.cursor = `image-set(url(${image})2x) ${offsetX} ${offsetY}, auto`;
+    if (cursorKey === 'default') {
+      this.#container.style.cursor = 'default';
+    } else {
+      this.#container.style.cursor = `image-set(url(${image})2x) ${offsetX} ${offsetY}, auto`;
+    }
   }
 
-  private _setCursorResize(e: CoreEvent['cursor']) {
+  #setCursorResize(e: CoreEvent['cursor']) {
     let totalAngle = 0;
     if (e.type === 'resize-top') {
       totalAngle += 0;
@@ -94,14 +98,14 @@ export class Cursor {
       });
     }
     totalAngle = limitAngle(totalAngle);
-    const cursorKey = this._appendRotateResizeImage(totalAngle);
-    this._resetCursor(cursorKey);
+    const cursorKey = this.#appendRotateResizeImage(totalAngle);
+    this.#resetCursor(cursorKey);
   }
 
-  private _appendRotateResizeImage(angle: number): string {
+  #appendRotateResizeImage(angle: number): string {
     const key = `rotate-${angle}`;
-    if (!this._cursorImageMap[key]) {
-      const baseImage = this._resizeCursorBaseImage;
+    if (!this.#cursorImageMap[key]) {
+      const baseImage = this.#resizeCursorBaseImage;
       if (baseImage) {
         const canvas = document.createElement('canvas');
         const w = baseImage.width;
@@ -126,7 +130,7 @@ export class Cursor {
         ctx.translate(-center.x, -center.y);
 
         const base = canvas.toDataURL('image/png');
-        this._cursorImageMap[key] = base;
+        this.#cursorImageMap[key] = base;
       }
     }
     return key;

@@ -7,6 +7,7 @@ import type { Data, BoardRenderer, RendererOptions, RendererEventMap, RendererDr
 export class Renderer extends EventEmitter<RendererEventMap> implements BoardRenderer {
   #opts: RendererOptions;
   #loader: Loader = new Loader();
+  #hasDestroyed: boolean = false;
 
   constructor(opts: RendererOptions) {
     super();
@@ -14,10 +15,16 @@ export class Renderer extends EventEmitter<RendererEventMap> implements BoardRen
     this.#init();
   }
 
+  isDestroyed() {
+    return this.#hasDestroyed;
+  }
+
   destroy() {
+    this.clear();
     this.#opts = null as any;
     this.#loader.destroy();
     this.#loader = null as any;
+    this.#hasDestroyed = true;
   }
 
   #init() {
