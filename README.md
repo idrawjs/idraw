@@ -56,6 +56,16 @@ The preview of `@idraw/studo`. Click [here](https://github.com/idrawjs/studio) t
 
 </p>
 
+## Sponsors
+
+iDraw.js is an MIT-licensed open source project with its ongoing development made possible entirely by the support of these awesome backers. If you'd like to join them, please consider [sponsoring iDrawjs's development](https://opencollective.com/idrawjs).
+
+[![Become a Backer](https://opencollective.com/idrawjs/tiers/backers.svg?avatarHeight=36)](https://opencollective.com/idrawjs)
+
+
+
+
+
 ## Install
 
 ```
