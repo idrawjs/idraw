@@ -44,6 +44,13 @@
 - [Online Studio](https://idraw.js.org/studio/) | [在线绘图演示](https://idraw.js.org/studio/)
  
 
+## Sponsors
+
+iDraw.js is an MIT-licensed open source project with its ongoing development made possible entirely by the support of these awesome backers. If you'd like to join them, please consider [sponsoring iDrawjs's development](https://opencollective.com/idrawjs).
+
+[![Become a Backer](https://opencollective.com/idrawjs/tiers/backers.svg?avatarHeight=48)](https://opencollective.com/idrawjs)
+
+
 ## @idraw/studio Preview
 
 The preview of `@idraw/studo`. Click [here](https://github.com/idrawjs/studio) to get it.
@@ -55,6 +62,9 @@ The preview of `@idraw/studo`. Click [here](https://github.com/idrawjs/studio) t
   <img width="600" alt="idraw-studio-dark-theme" src="https://github.com/idrawjs/studio/assets/8216630/479fce0b-891f-47f2-ace8-d91580e68b4b" />
 
 </p>
+
+
+
 
 ## Install
 
