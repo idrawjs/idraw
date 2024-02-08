@@ -1,6 +1,6 @@
 import process from 'node:process';
 import * as dotenv from 'dotenv';
-import chalk from 'chalk';
+// import chalk from 'chalk';
 import { createServer } from 'vite';
 import pluginReact from '@vitejs/plugin-react';
 import type { UserConfig } from 'vite';
@@ -9,7 +9,7 @@ import { joinPackagePath } from './util/project';
 dotenv.config();
 
 const pkgName = process.env.DEV_IDRAW_MODULE || 'idraw';
-console.log(chalk.green(`Dev package [${pkgName}]`));
+console.log(`Dev package [${pkgName}]`);
 
 const openPage = '/dev/index.html';
 
@@ -23,7 +23,7 @@ async function dev() {
   server.printUrls();
   const { port, host = '127.0.0.1' } = server.config?.server || {};
 
-  console.log(`Open: ` + chalk.green(`http://${host}:${port}${openPage}`));
+  console.log(`Open: ` + `http://${host}:${port}${openPage}`);
 }
 
 function getViteConfig(): UserConfig {

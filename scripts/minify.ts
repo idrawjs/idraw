@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck
 import path from 'path';
 import fs from 'fs';
 import compose from 'koa-compose';
@@ -8,24 +9,12 @@ import { packages } from './config';
 async function main() {
   const tasks = [];
   packages.forEach((p) => {
-    // @ts-ignore
     tasks.push(async (_ctx: any, next: any) => {
       const baseFileName = 'index.global.js';
       const targetFileName = 'index.global.min.js';
-      const moduleBasePath = path.join(
-        __dirname,
-        '..',
-        'packages',
-        p.dirName,
-        'dist'
-      );
+      const moduleBasePath = path.join(__dirname, '..', 'packages', p.dirName, 'dist');
 
-      console.log(
-        `minify file: ${path.join(p.dirName, baseFileName)} > ${path.join(
-          p.dirName,
-          targetFileName
-        )}`
-      );
+      console.log(`minify file: ${path.join(p.dirName, baseFileName)} > ${path.join(p.dirName, targetFileName)}`);
       const filePath = path.join(moduleBasePath, baseFileName);
       const targetPath = path.join(moduleBasePath, targetFileName);
       const code = fs.readFileSync(filePath, { encoding: 'utf8' });

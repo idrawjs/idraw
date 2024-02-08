@@ -4,7 +4,7 @@ import type { CompilerOptions } from 'ts-morph';
 import path from 'path';
 import * as glob from 'glob';
 import { packages } from './config';
-import { joinPackagePath, joinProjectPath } from './util/project';
+import { joinPackagePath } from './util/project';
 import { removeFullDir } from './util/file';
 
 build();
