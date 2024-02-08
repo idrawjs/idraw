@@ -3,13 +3,14 @@ import {
   calcElementVertexesInGroup,
   calcElementQueueVertexesQueueInGroup,
   calcElementSizeController,
+  calcElementCenterFromVertexes,
   rotatePointInGroup,
   getGroupQueueFromList,
   findElementsFromList,
   findElementsFromListByPositions,
   deepResizeGroupElement
 } from '@idraw/util';
-import type { ViewRectVertexes, CoreEvent, ElementPosition } from '@idraw/types';
+import type { ViewRectVertexes, CoreEvent, ElementPosition, ViewScaleInfo, ViewSizeInfo, ElementSizeController } from '@idraw/types';
 import type {
   Point,
   PointSize,
@@ -33,6 +34,7 @@ import {
 import {
   getPointTarget,
   resizeElement,
+  rotateElement,
   getSelectedListArea,
   calcSelectedElementsArea,
   isElementInGroup,
@@ -50,7 +52,8 @@ import {
   keyHoverElementVertexes,
   keySelectedElementList,
   keySelectedElementListVertexes,
-  keySelectedElementController
+  keySelectedElementController,
+  controllerSize
   // keyDebugElemCenter,
   // keyDebugEnd0,
   // keyDebugEndHorizontal,
@@ -112,7 +115,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
     if (list.length === 1) {
       const controller = calcElementSizeController(list[0], {
         groupQueue: sharer.getSharedStorage(keyGroupQueue),
-        controllerSize: 10,
+        controllerSize,
         viewScaleInfo: sharer.getActiveViewScaleInfo()
       });
       sharer.setSharedStorage(keySelectedElementController, controller);
@@ -389,6 +392,8 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
       const data = sharer.getActiveStorage('data');
       const elems = getActiveElements();
       const scale = sharer.getActiveStorage('scale') || 1;
+      const viewScaleInfo: ViewScaleInfo = sharer.getActiveViewScaleInfo() as unknown as ViewScaleInfo;
+      const viewSizeInfo: ViewSizeInfo = sharer.getActiveViewSizeInfo() as unknown as ViewSizeInfo;
       const start = prevPoint;
       const end = e.point;
       const resizeType = sharer.getSharedStorage(keyResizeType);
@@ -432,26 +437,51 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
               angle: 0 - angle
             } as Element<'group'>);
           });
+
           let resizeStart: PointSize = start;
           let resizeEnd: PointSize = end;
+
           if (groupQueue.length > 0) {
             resizeStart = rotatePointInGroup(start, pointGroupQueue);
             resizeEnd = rotatePointInGroup(end, pointGroupQueue);
           }
-          const resizedElemSize = resizeElement(elems[0], { scale, start: resizeStart, end: resizeEnd, resizeType, sharer });
-          elems[0].x = resizedElemSize.x;
-          elems[0].y = resizedElemSize.y;
-          if (elems[0].type === 'group' && elems[0].operations?.deepResize === true) {
-            // TODO
-            // elems[0].w = resizedElemSize.w;
-            // elems[0].h = resizedElemSize.h;
-            deepResizeGroupElement(elems[0] as Element<'group'>, {
-              w: resizedElemSize.w,
-              h: resizedElemSize.h
+          if (resizeType === 'resize-rotate') {
+            const controller: ElementSizeController = sharer.getSharedStorage(keySelectedElementController) as ElementSizeController;
+            const viewVertexes: ViewRectVertexes = [
+              controller.topLeft.center,
+              controller.topRight.center,
+              controller.bottomLeft.center,
+              controller.bottomRight.center
+            ];
+
+            const viewCenter: PointSize = calcElementCenterFromVertexes(viewVertexes);
+            const resizedElemSize = rotateElement(elems[0], {
+              center: viewCenter,
+              viewScaleInfo,
+              viewSizeInfo,
+              start,
+              end,
+              resizeType,
+              sharer
             });
+
+            elems[0].angle = resizedElemSize.angle;
           } else {
-            elems[0].w = resizedElemSize.w;
-            elems[0].h = resizedElemSize.h;
+            const resizedElemSize = resizeElement(elems[0], { scale, start: resizeStart, end: resizeEnd, resizeType, sharer });
+            elems[0].x = resizedElemSize.x;
+            elems[0].y = resizedElemSize.y;
+            if (elems[0].type === 'group' && elems[0].operations?.deepResize === true) {
+              // TODO
+              // elems[0].w = resizedElemSize.w;
+              // elems[0].h = resizedElemSize.h;
+              deepResizeGroupElement(elems[0] as Element<'group'>, {
+                w: resizedElemSize.w,
+                h: resizedElemSize.h
+              });
+            } else {
+              elems[0].w = resizedElemSize.w;
+              elems[0].h = resizedElemSize.h;
+            }
           }
 
           updateSelectedElementList([elems[0]]);

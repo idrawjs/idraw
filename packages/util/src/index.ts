@@ -22,7 +22,8 @@ export {
   calcElementCenter,
   calcElementCenterFromVertexes,
   rotatePointInGroup,
-  limitAngle
+  limitAngle,
+  calcRadian
 } from './lib/rotate';
 export {
   getSelectedElementUUIDs,

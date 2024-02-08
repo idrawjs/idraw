@@ -66,7 +66,8 @@ export type ResizeType =
   | 'resize-top-left'
   | 'resize-top-right'
   | 'resize-bottom-left'
-  | 'resize-bottom-right';
+  | 'resize-bottom-right'
+  | 'resize-rotate';
 
 export type PointTargetType = null | ResizeType | 'list-area' | 'over-element';
 
