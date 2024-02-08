@@ -26,4 +26,6 @@ export const areaBorderWidth = 1;
 export const wrapperColor = '#1973ba';
 
 export const lockColor = '#5b5959b5';
+
+export const controllerSize = 10;
 // export const wrapperColor = '#1890ff';

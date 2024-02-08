@@ -1,6 +1,6 @@
 import type { UtilEventEmitter, CoreEvent } from '@idraw/types';
 import { limitAngle, loadImage, parseAngleToRadian } from '@idraw/util';
-import { CURSOR, CURSOR_RESIZE, CURSOR_DRAG_DEFAULT, CURSOR_DRAG_ACTIVE } from './cursor-image';
+import { CURSOR, CURSOR_RESIZE, CURSOR_DRAG_DEFAULT, CURSOR_DRAG_ACTIVE, CURSOR_RESIZE_ROTATE } from './cursor-image';
 
 export class Cursor {
   #eventHub: UtilEventEmitter<CoreEvent>;
@@ -11,7 +11,8 @@ export class Cursor {
     auto: CURSOR,
     'drag-default': CURSOR_DRAG_DEFAULT,
     'drag-active': CURSOR_DRAG_ACTIVE,
-    'rotate-0': CURSOR_RESIZE
+    'rotate-0': CURSOR_RESIZE,
+    rotate: CURSOR_RESIZE_ROTATE
   };
   constructor(
     container: HTMLDivElement,
@@ -31,6 +32,8 @@ export class Cursor {
     eventHub.on('cursor', (e) => {
       if (e.type === 'over-element' || !e.type) {
         this.#resetCursor('auto');
+      } else if (e.type === 'resize-rotate') {
+        this.#resetCursor('rotate');
       } else if (typeof e.type === 'string' && e.type?.startsWith('resize-')) {
         this.#setCursorResize(e);
       } else if (e.type === 'drag-default') {
@@ -62,6 +65,9 @@ export class Cursor {
     let offsetX = 0;
     let offsetY = 0;
     if (cursorKey.startsWith('rotate-') && this.#cursorImageMap[this.#cursorType]) {
+      offsetX = 10;
+      offsetY = 10;
+    } else if (cursorKey === 'rotate') {
       offsetX = 10;
       offsetY = 10;
     }

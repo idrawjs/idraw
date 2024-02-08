@@ -13,7 +13,8 @@ export type ElementSizeControllerType =
   | 'left-middle'
   | 'right-middle'
   | 'top-middle'
-  | 'bottom-middle';
+  | 'bottom-middle'
+  | 'rotate';
 
 export interface ElementSizeControllerItem {
   type: ElementSizeControllerType;
@@ -31,9 +32,9 @@ export interface ElementSizeController {
   topRight: ElementSizeControllerItem;
   bottomLeft: ElementSizeControllerItem;
   bottomRight: ElementSizeControllerItem;
-
   topMiddle: ElementSizeControllerItem;
   bottomMiddle: ElementSizeControllerItem;
   leftMiddle: ElementSizeControllerItem;
   rightMiddle: ElementSizeControllerItem;
+  rotate: ElementSizeControllerItem;
 }

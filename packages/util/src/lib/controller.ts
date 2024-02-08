@@ -27,6 +27,7 @@ export function calcElementSizeController(
 
   const ctrlSize = (controllerSize && controllerSize > 0 ? controllerSize : 8) / viewScaleInfo.scale;
   const { x, y, w, h, angle = 0 } = elemSize;
+
   const ctrlGroupQueue = [
     ...[
       {
@@ -48,6 +49,17 @@ export function calcElementSizeController(
   });
 
   const vertexes = calcElementVertexesInGroup(elemSize, { groupQueue }) as ViewRectVertexes;
+  const rotateElemVertexes = calcElementVertexesInGroup(
+    {
+      x: x - ctrlSize * 2,
+      y: y - ctrlSize * 2,
+      h: h + ctrlSize * 4,
+      w: w + ctrlSize * 4,
+      angle
+    },
+    { groupQueue: [...groupQueue] }
+  ) as ViewRectVertexes;
+
   const topCenter = getCenterFromTwoPoints(vertexes[0], vertexes[1]);
   const rightCenter = getCenterFromTwoPoints(vertexes[1], vertexes[2]);
   const bottomCenter = getCenterFromTwoPoints(vertexes[2], vertexes[3]);
@@ -82,6 +94,26 @@ export function calcElementSizeController(
   const rightMiddleVertexes = calcElementVertexes(rightMiddleSize);
   const bottomMiddleVertexes = calcElementVertexes(bottomMiddleSize);
   const leftMiddleVertexes = calcElementVertexes(leftMiddleSize);
+
+  // const originRotateCenter: PointSize = {
+  //   x: x + w / 2,
+  //   y: y - ctrlSize * 4
+  // };
+
+  // const rotateCenter = topCenter;
+  const rotateCenter = getCenterFromTwoPoints(rotateElemVertexes[0], rotateElemVertexes[1]);
+  const rotateSize = createControllerElementSizeFromCenter(rotateCenter, { size: ctrlSize, angle: totalAngle });
+  const rotateVertexes = calcElementVertexes(rotateSize);
+
+  // const rotateCtrlElem: ElementSize = {
+  //   x: originRotateCenter.x - ctrlSize / 2,
+  //   y: originRotateCenter.x - ctrlSize / 2,
+  //   w: ctrlSize,
+  //   h: ctrlSize,
+  //   angle
+  // };
+  // const rotateVertexes = calcElementVertexesInGroup(rotateCtrlElem, { groupQueue }) as ViewRectVertexes;
+  // const rotateCenter = getCenterFromTwoPoints(rotateVertexes[0], rotateVertexes[2]);
 
   const sizeController: ElementSizeController = {
     elementWrapper: vertexes,
@@ -144,6 +176,11 @@ export function calcElementSizeController(
       type: 'bottom-middle',
       vertexes: bottomMiddleVertexes,
       center: bottomCenter
+    },
+    rotate: {
+      type: 'rotate',
+      vertexes: rotateVertexes,
+      center: rotateCenter
     }
   };
   return sizeController;

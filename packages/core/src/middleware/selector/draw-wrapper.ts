@@ -9,10 +9,10 @@ import type {
   ViewSizeInfo,
   ElementSizeController
 } from '@idraw/types';
-import { rotateElementVertexes, calcViewVertexes } from '@idraw/util';
+import { rotateElementVertexes, calcViewPointSize, calcViewVertexes } from '@idraw/util';
 import type { AreaSize } from './types';
 
-import { resizeControllerBorderWidth, areaBorderWidth, wrapperColor, selectWrapperBorderWidth, lockColor } from './config';
+import { resizeControllerBorderWidth, areaBorderWidth, wrapperColor, selectWrapperBorderWidth, lockColor, controllerSize } from './config';
 
 function drawVertexes(
   ctx: ViewContext2D,
@@ -34,6 +34,69 @@ function drawVertexes(
   ctx.closePath();
   ctx.stroke();
   ctx.fill();
+}
+
+function drawLine(ctx: ViewContext2D, start: PointSize, end: PointSize, opts: { borderColor: string; borderWidth: number; lineDash: number[] }) {
+  const { borderColor, borderWidth, lineDash } = opts;
+  ctx.setLineDash([]);
+  ctx.lineWidth = borderWidth;
+  ctx.strokeStyle = borderColor;
+  ctx.setLineDash(lineDash);
+  ctx.beginPath();
+  ctx.moveTo(start.x, start.y);
+  ctx.lineTo(end.x, end.y);
+  ctx.closePath();
+  ctx.stroke();
+}
+
+function drawCircleController(
+  ctx: ViewContext2D,
+  circleCenter: PointSize,
+  opts: { borderColor: string; borderWidth: number; background: string; lineDash: number[]; size: number }
+) {
+  const { size, borderColor, borderWidth, background } = opts;
+  const center = circleCenter;
+  const r = size / 2;
+
+  const a = r;
+  const b = r;
+  // 'content-box'
+
+  if (a >= 0 && b >= 0) {
+    // draw border
+    if (typeof borderWidth === 'number' && borderWidth > 0) {
+      const ba = borderWidth / 2 + a;
+      const bb = borderWidth / 2 + b;
+      ctx.beginPath();
+      ctx.strokeStyle = borderColor;
+      ctx.lineWidth = borderWidth;
+      ctx.circle(center.x, center.y, ba, bb, 0, 0, 2 * Math.PI);
+      ctx.closePath();
+      ctx.stroke();
+    }
+
+    // draw content
+    ctx.beginPath();
+    ctx.fillStyle = background;
+    ctx.circle(center.x, center.y, a, b, 0, 0, 2 * Math.PI);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  // ctx.setLineDash([]);
+  // ctx.lineWidth = borderWidth;
+  // ctx.strokeStyle = borderColor;
+  // ctx.fillStyle = background;
+  // ctx.setLineDash(lineDash);
+  // ctx.beginPath();
+  // ctx.moveTo(vertexes[0].x, vertexes[0].y);
+  // ctx.lineTo(vertexes[1].x, vertexes[1].y);
+  // ctx.lineTo(vertexes[2].x, vertexes[2].y);
+  // ctx.lineTo(vertexes[3].x, vertexes[3].y);
+  // ctx.lineTo(vertexes[0].x, vertexes[0].y);
+  // ctx.closePath();
+  // ctx.stroke();
+  // ctx.fill();
 }
 
 export function drawHoverVertexesWrapper(
@@ -114,10 +177,11 @@ export function drawSelectedElementControllersVertexes(
   if (!controller) {
     return;
   }
-  const { elementWrapper, topLeft, topRight, bottomLeft, bottomRight } = controller;
+  const { elementWrapper, topLeft, topRight, bottomLeft, bottomRight, top, rotate } = controller;
   const wrapperOpts = { borderColor: wrapperColor, borderWidth: selectWrapperBorderWidth, background: 'transparent', lineDash: [] };
   const ctrlOpts = { ...wrapperOpts, borderWidth: resizeControllerBorderWidth, background: '#FFFFFF' };
 
+  drawLine(ctx, calcViewPointSize(top.center, opts), calcViewPointSize(rotate.center, opts), { ...ctrlOpts, borderWidth: 2 });
   drawVertexes(ctx, calcViewVertexes(elementWrapper, opts), wrapperOpts);
   // drawVertexes(ctx, calcViewVertexes(left.vertexes, opts), ctrlOpts);
   // drawVertexes(ctx, calcViewVertexes(right.vertexes, opts), ctrlOpts);
@@ -127,6 +191,7 @@ export function drawSelectedElementControllersVertexes(
   drawVertexes(ctx, calcViewVertexes(topRight.vertexes, opts), ctrlOpts);
   drawVertexes(ctx, calcViewVertexes(bottomLeft.vertexes, opts), ctrlOpts);
   drawVertexes(ctx, calcViewVertexes(bottomRight.vertexes, opts), ctrlOpts);
+  drawCircleController(ctx, calcViewPointSize(rotate.center, opts), { ...ctrlOpts, size: controllerSize, borderWidth: 2 });
 }
 
 export function drawElementListShadows(ctx: ViewContext2D, elements: Element<ElementType>[], opts?: Omit<RendererDrawElementOptions, 'loader'>) {

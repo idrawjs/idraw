@@ -7,9 +7,11 @@ import {
   rotatePointInGroup,
   rotatePoint,
   parseAngleToRadian,
-  limitAngle
+  parseRadianToAngle,
+  limitAngle,
+  calcRadian
 } from '@idraw/util';
-import type { ViewRectVertexes, ElementSizeController, StoreSharer } from '@idraw/types';
+import type { ViewRectVertexes, ElementSizeController, StoreSharer, ViewScaleInfo, ViewSizeInfo } from '@idraw/types';
 import type {
   Data,
   Element,
@@ -18,13 +20,11 @@ import type {
   PointSize,
   PointTarget,
   PointTargetType,
-  ViewScaleInfo,
   ViewCalculator,
   ElementType,
   ElementSize,
   ResizeType,
-  AreaSize,
-  ViewSizeInfo
+  AreaSize
 } from './types';
 // import { keyDebugElemCenter, keyDebugEnd0, keyDebugEndHorizontal, keyDebugEndVertical, keyDebugStartHorizontal, keyDebugStartVertical } from './config';
 
@@ -104,8 +104,8 @@ export function getPointTarget(
 
   // resize
   if (selectedElementController) {
-    const { left, right, top, bottom, topLeft, topRight, bottomLeft, bottomRight } = selectedElementController;
-    const ctrls = [left, right, top, bottom, topLeft, topRight, bottomLeft, bottomRight];
+    const { left, right, top, bottom, topLeft, topRight, bottomLeft, bottomRight, rotate } = selectedElementController;
+    const ctrls = [left, right, top, bottom, topLeft, topRight, bottomLeft, bottomRight, rotate];
     for (let i = 0; i < ctrls.length; i++) {
       const ctrl = ctrls[i];
       if (isPointInViewActiveVertexes(p, { ctx, vertexes: ctrl.vertexes, viewSizeInfo, viewScaleInfo })) {
@@ -817,6 +817,37 @@ export function resizeElement(
   // sharer.setSharedStorage(keyDebugEnd0, end);
 
   return { x, y, w, h, angle: elem.angle };
+}
+
+export function rotateElement(
+  elem: Element<ElementType>,
+  opts: {
+    center: PointSize;
+    start: PointSize;
+    end: PointSize;
+    resizeType: ResizeType;
+    viewScaleInfo: ViewScaleInfo;
+    viewSizeInfo: ViewSizeInfo;
+    sharer: StoreSharer; // TODO
+  }
+): ElementSize {
+  const { x, y, w, h, angle = 0 } = elem;
+  const { center, start, end, viewScaleInfo, viewSizeInfo } = opts;
+  const elemCenter = calcViewPointSize(center, {
+    viewScaleInfo,
+    viewSizeInfo
+  });
+  const startAngle = limitAngle(angle);
+  const changedRadian = calcRadian(elemCenter, start, end);
+  const endAngle = startAngle + parseRadianToAngle(changedRadian);
+
+  return {
+    x,
+    y,
+    w,
+    h,
+    angle: endAngle
+  };
 }
 
 export function getSelectedListArea(
