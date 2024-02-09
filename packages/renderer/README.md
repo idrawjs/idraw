@@ -64,5 +64,5 @@ renderer.on('drawFrameComplete', (e) => {
 
 ## Documents
 
-- [Documents](https://idraw.js.org/docs/en/) | [中文文档](https://idraw.js.org/docs/zh/) 
-- [Online Playground](https://idraw.js.org/playground/) | [在线API示例](https://idraw.js.org/playground/)
+- [Documents](https://idrawjs.com/docs/en/) | [中文文档](https://idrawjs.com/docs/zh/) 
+- [Online Playground](https://idrawjs.com/playground/) | [在线API示例](https://idrawjs.com/playground/)
