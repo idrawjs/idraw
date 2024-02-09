@@ -10,7 +10,7 @@
 <p align="center">一个面向Web绘图的JavaScript框架</p>
 
 
-<p align="center"><a href="https://idraw.js.org">idraw.js.org</a></p>
+<p align="center"><a href="https://idrawjs.com">idrawjs.com</a></p>
 
 
 
@@ -39,9 +39,9 @@
 <hr/>
 
 
-- [Documents](https://idraw.js.org/docs/en-US/) | [中文文档](https://idraw.js.org/docs/zh-CN/) 
-- [Online Playground](https://idraw.js.org/playground/) | [在线API示例](https://idraw.js.org/playground/)
-- [Online Studio](https://idraw.js.org/studio/) | [在线绘图演示](https://idraw.js.org/studio/)
+- [Documents](https://idrawjs.com/docs/en-US/) | [中文文档](https://idrawjs.com/docs/zh-CN/) 
+- [Online Playground](https://idrawjs.com/playground/) | [在线API示例](https://idrawjs.com/playground/)
+- [Online Studio](https://idrawjs.com/studio/) | [在线绘图演示](https://idrawjs.com/studio/)
  
 
 ## Sponsors
