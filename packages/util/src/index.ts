@@ -72,7 +72,10 @@ export {
   deleteElementInListByPosition,
   deleteElementInList,
   moveElementPosition,
-  updateElementInList
+  updateElementInList,
+  updateElementInListByPosition
 } from './lib/handle-element';
 export { deepResizeGroupElement } from './lib/resize-element';
 export { calcViewCenterContent, calcViewCenter } from './lib/view-content';
+export { modifyElement, getModifiedElement } from './lib/modify';
+// export { ModifyRecorder } from './lib/modify-recorder';

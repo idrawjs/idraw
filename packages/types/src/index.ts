@@ -16,3 +16,4 @@ export * from './lib/controller';
 export * from './lib/html';
 export * from './lib/svg-path';
 export * from './lib/config';
+export * from './lib/modify';
