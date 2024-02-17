@@ -59,7 +59,7 @@ The preview of `@idraw/studo`. Click [here](https://github.com/idrawjs/studio) t
 
   <img width="700" alt="idraw-studio-light-theme" src="https://github.com/idrawjs/studio/assets/8216630/8a49bab8-1e4a-44dd-9836-b6ce3861aaea" />
 
-  <img width="600" alt="idraw-studio-dark-theme" src="https://github.com/idrawjs/studio/assets/8216630/479fce0b-891f-47f2-ace8-d91580e68b4b" />
+  <img width="700" alt="idraw-studio-dark-theme" src="https://github.com/idrawjs/studio/assets/8216630/479fce0b-891f-47f2-ace8-d91580e68b4b" />
 
 </p>
 

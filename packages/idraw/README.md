@@ -2,6 +2,7 @@
   <img width="200" src="https://github.com/idrawjs/idraw/assets/8216630/bcf8fbc6-6374-4cb9-a67f-1687d029a863" alt="iDraw.js Logo" />
 </p>
 
+
 <h1 align="center">iDraw.js</h1>
 
 <p align="center">iDraw.js is a simple JavaScript framework for Drawing on the web.</p>
@@ -33,8 +34,6 @@
 
 
 
-
-
 <!-- [![Node.js CI](https://github.com/idrawjs/idraw/actions/workflows/node.js.yml/badge.svg?branch=main)](https://github.com/idrawjs/idraw/actions/workflows/node.js.yml) -->
 
 <hr/>
@@ -45,6 +44,13 @@
 - [Online Studio](https://idrawjs.com/studio/) | [在线绘图演示](https://idrawjs.com/studio/)
  
 
+## Sponsors
+
+iDraw.js is an MIT-licensed open source project with its ongoing development made possible entirely by the support of these awesome backers. If you'd like to join them, please consider [sponsoring iDrawjs's development](https://opencollective.com/idrawjs).
+
+[![Become a Backer](https://opencollective.com/idrawjs/tiers/backers.svg?avatarHeight=48)](https://opencollective.com/idrawjs)
+
+
 ## @idraw/studio Preview
 
 The preview of `@idraw/studo`. Click [here](https://github.com/idrawjs/studio) to get it.
@@ -53,9 +59,12 @@ The preview of `@idraw/studo`. Click [here](https://github.com/idrawjs/studio) t
 
   <img width="700" alt="idraw-studio-light-theme" src="https://github.com/idrawjs/studio/assets/8216630/8a49bab8-1e4a-44dd-9836-b6ce3861aaea" />
 
-  <img width="600" alt="idraw-studio-dark-theme" src="https://github.com/idrawjs/studio/assets/8216630/479fce0b-891f-47f2-ace8-d91580e68b4b" />
+  <img width="700" alt="idraw-studio-dark-theme" src="https://github.com/idrawjs/studio/assets/8216630/479fce0b-891f-47f2-ace8-d91580e68b4b" />
 
 </p>
+
+
+
 
 ## Install
 
