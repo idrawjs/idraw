@@ -111,7 +111,7 @@ export class iDraw {
   setData(data: Data) {
     const core = this.#core;
     core.setData(data);
-    core.trigger('change', { data, type: 'set-data' });
+    core.trigger('change', { data, type: 'setData' });
   }
 
   getData(opts?: { compact?: boolean }): Data | null {
@@ -212,7 +212,7 @@ export class iDraw {
     updateElementInList(element.uuid, element, data.elements);
     core.setData(data);
     core.refresh();
-    core.trigger('change', { data, type: 'update-element' });
+    core.trigger('change', { data, type: 'updateElement' });
   }
 
   addElement(
@@ -231,7 +231,7 @@ export class iDraw {
     }
     core.setData(data);
     core.refresh();
-    core.trigger('change', { data, type: 'add-element' });
+    core.trigger('change', { data, type: 'addElement' });
     return data;
   }
 
@@ -241,18 +241,18 @@ export class iDraw {
     deleteElementInList(uuid, data.elements);
     core.setData(data);
     core.refresh();
-    core.trigger('change', { data, type: 'delete-element' });
+    core.trigger('change', { data, type: 'deleteElement' });
   }
 
   moveElement(uuid: string, to: ElementPosition) {
     const core = this.#core;
     const data: Data = core.getData() || { elements: [] };
     const from = getElementPositionFromList(uuid, data.elements);
-    const list = moveElementPosition(data.elements, { from, to });
+    const { elements: list } = moveElementPosition(data.elements, { from, to });
     data.elements = list;
     core.setData(data);
     core.refresh();
-    core.trigger('change', { data, type: 'move-element' });
+    core.trigger('change', { data, type: 'moveElement' });
   }
 
   async getImageBlobURL(opts: ExportImageFileBaseOptions): Promise<ExportImageFileResult> {

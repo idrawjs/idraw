@@ -160,12 +160,14 @@ export function moveElementPosition(
     from: ElementPosition;
     to: ElementPosition;
   }
-): Elements {
-  const { from, to } = opts;
+): { elements: Elements; from: ElementPosition; to: ElementPosition } {
+  // const { from, to } = opts;
+  const from = [...opts.from];
+  const to = [...opts.to];
 
   // [] -> [1,2,3] or [1, 2 ,3] -> []
   if (from.length === 0 || to.length === 0) {
-    return elements;
+    return { elements, from, to };
   }
 
   // [1] -> [1, 2, 3]
@@ -173,7 +175,7 @@ export function moveElementPosition(
     for (let i = 0; i < from.length; i++) {
       if (to[i] === from[i]) {
         if (i === from.length - 1) {
-          return elements;
+          return { elements, from, to };
         }
         continue;
       }
@@ -181,10 +183,11 @@ export function moveElementPosition(
   }
 
   const target = findElementFromListByPosition(from, elements);
+
   if (target) {
     const insterResult = insertElementToListByPosition(target, to, elements);
     if (!insterResult) {
-      return elements;
+      return { elements, from, to };
     }
 
     let trimDeletePosIndex = -1;
@@ -210,7 +213,7 @@ export function moveElementPosition(
 
     deleteElementInListByPosition(from, elements);
   }
-  return elements;
+  return { elements, from, to };
 }
 
 function mergeElement<T extends Element<ElementType> = Element<ElementType>>(originElem: T, updateContent: RecursivePartial<T>): T {
@@ -275,4 +278,24 @@ export function updateElementInList(uuid: string, updateContent: RecursivePartia
     }
   }
   return targetElement;
+}
+
+export function updateElementInListByPosition(
+  position: ElementPosition,
+  updateContent: RecursivePartial<Element<ElementType>>,
+  elements: Element[]
+): Element | null {
+  const elem: Element | null = findElementFromListByPosition(position, elements);
+  if (elem) {
+    if (elem.type === 'group' && elem.operations?.deepResize === true) {
+      if ((updateContent.w && updateContent.w > 0) || (updateContent.h && updateContent.h > 0)) {
+        deepResizeGroupElement(elem as Element<'group'>, {
+          w: updateContent.w,
+          h: updateContent.h
+        });
+      }
+    }
+    mergeElement(elem, updateContent);
+  }
+  return elem;
 }

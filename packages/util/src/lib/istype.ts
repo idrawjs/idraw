@@ -25,6 +25,10 @@ export const istype = {
     return parsePrototype(data) === 'AsyncFunction';
   },
 
+  boolean(data: any): boolean {
+    return parsePrototype(data) === 'Boolean';
+  },
+
   string(data: any): boolean {
     return parsePrototype(data) === 'String';
   },

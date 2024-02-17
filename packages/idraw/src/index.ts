@@ -117,7 +117,8 @@ export {
   deepResizeGroupElement,
   deepCloneElement,
   calcViewCenterContent,
-  calcViewCenter
+  calcViewCenter,
+  modifyElement
 } from '@idraw/util';
 export { iDraw } from './idraw';
 export type { IDrawEvent, IDrawEventKeys } from './event';

@@ -565,9 +565,9 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
         }
 
         if (data && (['drag', 'drag-list', 'drag-list-end', 'resize'] as ActionType[]).includes(actionType)) {
-          let type = 'drag-element';
+          let type = 'dragElement';
           if (type === 'resize') {
-            type = 'resize-element';
+            type = 'resizeElement';
           }
           eventHub.trigger('change', { data, type });
         }
