@@ -58,7 +58,7 @@ export class iDraw {
     enableScale === true && core.use(MiddlewareScaler);
     enableRuler === true && core.use(MiddlewareRuler);
     enableTextEdit === true && core.use(MiddlewareTextEditor);
-    enableDrag === true && core.use(MiddlewareTextEditor);
+    enableDrag === true && core.use(MiddlewareDragger);
   }
 
   reset(opts: IDrawSettings) {
