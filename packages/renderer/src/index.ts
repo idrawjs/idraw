@@ -32,8 +32,10 @@ export class Renderer extends EventEmitter<RendererEventMap> implements BoardRen
     loader.on('load', (e) => {
       this.trigger('load', e);
     });
-    loader.on('error', () => {
+    loader.on('error', (e) => {
       // TODO
+      // eslint-disable-next-line no-console
+      console.error(e);
     });
   }
 

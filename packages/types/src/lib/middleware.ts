@@ -1,7 +1,5 @@
-import type { BoardMiddlewareObject, BoardMiddleware, BoardMode } from './board';
+import type { BoardMiddlewareObject, BoardMiddleware } from './board';
 
 export type Middleware = BoardMiddleware;
 
 export type MiddlewareObject = BoardMiddlewareObject;
-
-export type MiddlewareMode = BoardMode;

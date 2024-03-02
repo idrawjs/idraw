@@ -1,9 +1,14 @@
 import { Data } from './data';
-import { ViewScaleInfo, ViewSizeInfo } from './view';
+import {
+  // ViewRectVertexes,
+  ViewScaleInfo,
+  ViewSizeInfo
+} from './view';
 
 export type ActiveStore = ViewSizeInfo &
   ViewScaleInfo & {
     data: Data | null;
+    // selectedViewRectVertexes: ViewRectVertexes | null;
   };
 
 export interface StoreSharer<S extends Record<any, any> = any> {

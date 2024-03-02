@@ -1,4 +1,4 @@
-import type { Data, PointSize, CoreOptions, BoardMiddleware, ViewSizeInfo, CoreEvent, ViewScaleInfo, LoadItemMap } from '@idraw/types';
+import type { Data, PointSize, CoreOptions, BoardMiddleware, ViewSizeInfo, CoreEventMap, ViewScaleInfo, LoadItemMap } from '@idraw/types';
 import { Board } from '@idraw/board';
 import { createBoardContent, validateElements } from '@idraw/util';
 import { Cursor } from './lib/cursor';
@@ -8,10 +8,10 @@ export { MiddlewareSelector, middlewareEventSelect, middlewareEventSelectClear }
 export { MiddlewareScroller } from './middleware/scroller';
 export { MiddlewareScaler, middlewareEventScale } from './middleware/scaler';
 export { MiddlewareRuler, middlewareEventRuler } from './middleware/ruler';
-export { MiddlewareTextEditor, middlewareEventTextEdit } from './middleware/text-editor';
+export { MiddlewareTextEditor, middlewareEventTextEdit, middlewareEventTextChange } from './middleware/text-editor';
 export { MiddlewareDragger } from './middleware/dragger';
 
-export class Core<E extends CoreEvent = CoreEvent> {
+export class Core<E extends CoreEventMap = CoreEventMap> {
   #board: Board<E>;
   // #opts: CoreOptions;
   #canvas: HTMLCanvasElement;

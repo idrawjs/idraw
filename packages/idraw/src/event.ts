@@ -1,32 +1,49 @@
-import { middlewareEventScale, middlewareEventSelect } from '@idraw/core';
-import type { CoreEvent, Data } from '@idraw/types';
+import type { CoreEventMap, Data } from '@idraw/types';
 
-export interface IDrawEventKeys {
-  select: typeof middlewareEventSelect;
-  scale: typeof middlewareEventScale;
-  change: 'change';
-}
+import {
+  middlewareEventRuler,
+  middlewareEventScale,
+  middlewareEventSelect,
+  middlewareEventSelectClear,
+  middlewareEventTextEdit,
+  middlewareEventTextChange
+} from '@idraw/core';
 
-export type IDrawEvent = CoreEvent & {
+const idrawEventChange = 'change';
+
+export type IDrawEvent = CoreEventMap & {
   change: {
     data: Data;
     type: 'updateElement' | 'deleteElement' | 'moveElement' | 'addElement' | 'dragElement' | 'resizeElement' | 'setData' | 'undo' | 'redo' | 'other';
   };
 };
 
-// TODO
-const EventKeys = {} as {
-  select: typeof middlewareEventSelect;
+export interface IDrawEventKeys {
+  change: typeof idrawEventChange;
+  ruler: typeof middlewareEventRuler;
   scale: typeof middlewareEventScale;
-  change: 'change';
+  select: typeof middlewareEventSelect;
+  clearSelect: typeof middlewareEventSelectClear;
+  textEdit: typeof middlewareEventTextEdit;
+  textChange: typeof middlewareEventTextChange;
+}
+
+const innerEventKeys: IDrawEventKeys = {
+  change: idrawEventChange,
+  ruler: middlewareEventRuler,
+  scale: middlewareEventScale,
+  select: middlewareEventSelect,
+  clearSelect: middlewareEventSelectClear,
+  textEdit: middlewareEventTextEdit,
+  textChange: middlewareEventTextChange
 };
-Object.defineProperty(EventKeys, 'select', {
-  value: middlewareEventSelect,
-  writable: false
-});
-Object.defineProperty(EventKeys, 'scale', {
-  value: middlewareEventScale,
-  writable: false
+
+const eventKeys = {} as IDrawEventKeys;
+Object.keys(innerEventKeys).forEach((keyName: string) => {
+  Object.defineProperty(eventKeys, keyName, {
+    value: innerEventKeys[keyName as keyof IDrawEventKeys],
+    writable: false
+  });
 });
 
-export { EventKeys };
+export { eventKeys };

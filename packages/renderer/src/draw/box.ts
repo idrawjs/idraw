@@ -314,6 +314,12 @@ export function drawBoxShadow(
     renderContent();
     ctx.restore();
   } else {
+    ctx.save();
+    ctx.shadowColor = 'transparent';
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
+    ctx.shadowBlur = 0;
     renderContent();
+    ctx.restore();
   }
 }

@@ -1,9 +1,9 @@
-import type { UtilEventEmitter, CoreEvent } from '@idraw/types';
+import type { UtilEventEmitter, CoreEventMap } from '@idraw/types';
 import { limitAngle, loadImage, parseAngleToRadian } from '@idraw/util';
 import { CURSOR, CURSOR_RESIZE, CURSOR_DRAG_DEFAULT, CURSOR_DRAG_ACTIVE, CURSOR_RESIZE_ROTATE } from './cursor-image';
 
 export class Cursor {
-  #eventHub: UtilEventEmitter<CoreEvent>;
+  #eventHub: UtilEventEmitter<CoreEventMap>;
   #container: HTMLDivElement;
   #cursorType: 'default' | string | null = null;
   #resizeCursorBaseImage: HTMLImageElement | null = null;
@@ -17,7 +17,7 @@ export class Cursor {
   constructor(
     container: HTMLDivElement,
     opts: {
-      eventHub: UtilEventEmitter<CoreEvent>;
+      eventHub: UtilEventEmitter<CoreEventMap>;
     }
   ) {
     this.#container = container;
@@ -78,7 +78,7 @@ export class Cursor {
     }
   }
 
-  #setCursorResize(e: CoreEvent['cursor']) {
+  #setCursorResize(e: CoreEventMap['cursor']) {
     let totalAngle = 0;
     if (e.type === 'resize-top') {
       totalAngle += 0;

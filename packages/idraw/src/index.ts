@@ -121,5 +121,6 @@ export {
   modifyElement
 } from '@idraw/util';
 export { iDraw } from './idraw';
+export { eventKeys } from './event';
 export type { IDrawEvent, IDrawEventKeys } from './event';
 export type { ExportImageFileResult, ExportImageFileBaseOptions } from './file';

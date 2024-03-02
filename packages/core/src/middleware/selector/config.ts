@@ -12,6 +12,7 @@ export const keySelectedElementListVertexes = Symbol(`${key}_selectedElementList
 export const keySelectedElementController = Symbol(`${key}_selectedElementController`); // ElementSizeController
 export const keyGroupQueue = Symbol(`${key}_groupQueue`); // Array<Element<'group'>> | []
 export const keyGroupQueueVertexesList = Symbol(`${key}_groupQueueVertexesList`); // Array<ViewRectVertexes> | []
+export const keyIsMoving = Symbol(`${key}_isMoving`); // boolean | null
 
 export const keyDebugElemCenter = Symbol(`${key}_debug_elemCenter`);
 export const keyDebugStartVertical = Symbol(`${key}_debug_startVertical`);

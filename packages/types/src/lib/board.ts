@@ -5,6 +5,12 @@ import type { ActiveStore, StoreSharer } from './store';
 import type { RendererEventMap, RendererOptions, RendererDrawOptions, RendererLoader } from './renderer';
 import type { Data } from './data';
 
+export type BoardBaseEventMap = {
+  loadSource: void;
+};
+
+export type BoardExtendEventMap = BoardBaseEventMap & Record<string, any>;
+
 export interface BoardWatcherPointEvent {
   point: Point;
 }
@@ -81,7 +87,7 @@ export interface BoardMiddlewareObject<S extends Record<any | symbol, any> = any
   clear?(e: BoardWatcherEventMap<S>['clear']): void | boolean;
 }
 
-export interface BoardMiddlewareOptions<S extends Record<any | symbol, any> = Record<any | symbol, any>, E extends BoardExtendEvent = Record<string, any>> {
+export interface BoardMiddlewareOptions<S extends Record<any | symbol, any> = Record<any | symbol, any>, E extends BoardExtendEventMap = BoardExtendEventMap> {
   boardContent: BoardContent;
   sharer: StoreSharer<S>;
   viewer: BoardViewer;
@@ -91,7 +97,7 @@ export interface BoardMiddlewareOptions<S extends Record<any | symbol, any> = Re
   canvas?: HTMLCanvasElement;
 }
 
-export type BoardMiddleware<S extends Record<any | symbol, any> = any, E extends BoardExtendEvent = Record<string, any>> = (
+export type BoardMiddleware<S extends Record<any | symbol, any> = any, E extends BoardExtendEventMap = BoardExtendEventMap> = (
   opts: BoardMiddlewareOptions<S, E>
 ) => BoardMiddlewareObject<S>;
 
@@ -147,5 +153,3 @@ export interface BoardWatcherStore {
   hasPointDown: boolean;
   prevClickPoint: Point | null;
 }
-
-export type BoardExtendEvent = Record<string, any>;

@@ -1,9 +1,9 @@
-import type { BoardMiddleware, CoreEvent } from '@idraw/types';
+import type { BoardMiddleware, CoreEventMap } from '@idraw/types';
 import { formatNumber } from '@idraw/util';
 
 export const middlewareEventScale = '@middleware/scale';
 
-export const MiddlewareScaler: BoardMiddleware<Record<string, any>, CoreEvent> = (opts) => {
+export const MiddlewareScaler: BoardMiddleware<Record<string, any>, CoreEventMap> = (opts) => {
   const { viewer, sharer, eventHub } = opts;
   const maxScale = 50;
   const minScale = 0.05;

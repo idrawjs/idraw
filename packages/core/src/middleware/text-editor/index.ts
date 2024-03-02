@@ -1,23 +1,40 @@
-import type { BoardMiddleware, CoreEvent, Element, ElementSize, ViewScaleInfo } from '@idraw/types';
+import type { BoardMiddleware, CoreEventMap, Element, ElementSize, ViewScaleInfo, ElementPosition } from '@idraw/types';
 import { limitAngle, getDefaultElementDetailConfig } from '@idraw/util';
 export const middlewareEventTextEdit = '@middleware/text-edit';
+export const middlewareEventTextChange = '@middleware/text-change';
 
 type TextEditEvent = {
   element: Element<'text'>;
+  position: ElementPosition;
   groupQueue: Element<'group'>[];
   viewScaleInfo: ViewScaleInfo;
 };
 
+type TextChangeEvent = {
+  element: {
+    uuid: string;
+    detail: {
+      text: string;
+    };
+  };
+  position: ElementPosition;
+};
+
+type ExtendEventMap = Record<typeof middlewareEventTextEdit, TextEditEvent> & Record<typeof middlewareEventTextChange, TextChangeEvent>;
+
 const defaultElementDetail = getDefaultElementDetailConfig();
 
-export const MiddlewareTextEditor: BoardMiddleware<Record<string, any>, CoreEvent> = (opts) => {
+export const MiddlewareTextEditor: BoardMiddleware<ExtendEventMap, CoreEventMap & ExtendEventMap> = (opts) => {
   const { eventHub, boardContent, viewer } = opts;
   const canvas = boardContent.boardContext.canvas;
-  const textarea = document.createElement('textarea');
+  // const textarea = document.createElement('textarea');
+  const textarea = document.createElement('div');
+  textarea.setAttribute('contenteditable', 'true');
   const canvasWrapper = document.createElement('div');
   const container = opts.container || document.body;
   const mask = document.createElement('div');
   let activeElem: Element<'text'> | null = null;
+  let activePosition: ElementPosition = [];
 
   canvasWrapper.appendChild(textarea);
 
@@ -41,6 +58,7 @@ export const MiddlewareTextEditor: BoardMiddleware<Record<string, any>, CoreEven
   const hideTextArea = () => {
     mask.style.display = 'none';
     activeElem = null;
+    activePosition = [];
   };
 
   const getCanvasRect = () => {
@@ -109,6 +127,24 @@ export const MiddlewareTextEditor: BoardMiddleware<Record<string, any>, CoreEven
       elemH = element.h * scale;
     }
 
+    let justifyContent: ElementCSSInlineStyle['style']['justifyContent'] = 'center';
+    let alignItems = 'center';
+    if (detail.textAlign === 'left') {
+      justifyContent = 'start';
+    } else if (detail.textAlign === 'right') {
+      justifyContent = 'end';
+    }
+
+    if (detail.verticalAlign === 'top') {
+      alignItems = 'start';
+    } else if (detail.verticalAlign === 'bottom') {
+      alignItems = 'end';
+    }
+
+    textarea.style.display = 'inline-flex';
+    textarea.style.justifyContent = justifyContent;
+    textarea.style.alignItems = alignItems;
+
     textarea.style.position = 'absolute';
     textarea.style.left = `${elemX - 1}px`;
     textarea.style.top = `${elemY - 1}px`;
@@ -131,7 +167,8 @@ export const MiddlewareTextEditor: BoardMiddleware<Record<string, any>, CoreEven
     textarea.style.margin = '0';
     textarea.style.outline = 'none';
 
-    textarea.value = detail.text || '';
+    // textarea.value = detail.text || '';
+    textarea.innerText = detail.text || '';
     parent.appendChild(textarea);
   };
 
@@ -152,19 +189,42 @@ export const MiddlewareTextEditor: BoardMiddleware<Record<string, any>, CoreEven
   textarea.addEventListener('click', (e) => {
     e.stopPropagation();
   });
-  textarea.addEventListener('input', (e) => {
-    if (activeElem) {
-      activeElem.detail.text = (e.target as any).value || '';
+  textarea.addEventListener('input', () => {
+    if (activeElem && activePosition) {
+      // activeElem.detail.text = (e.target as any).value || '';
+      activeElem.detail.text = textarea.innerText || '';
+      eventHub.trigger(middlewareEventTextChange, {
+        element: {
+          uuid: activeElem.uuid,
+          detail: {
+            text: activeElem.detail.text
+          }
+        },
+        position: [...(activePosition || [])]
+      });
       viewer.drawFrame();
     }
   });
   textarea.addEventListener('blur', () => {
+    if (activeElem && activePosition) {
+      eventHub.trigger(middlewareEventTextChange, {
+        element: {
+          uuid: activeElem.uuid,
+          detail: {
+            text: activeElem.detail.text
+          }
+        },
+        position: [...activePosition]
+      });
+    }
+
     hideTextArea();
   });
 
   const textEditCallback = (e: TextEditEvent) => {
-    if (e?.element && e?.element?.type === 'text') {
+    if (e?.position && e?.element && e?.element?.type === 'text') {
       activeElem = e.element;
+      activePosition = e.position;
     }
     showTextArea(e);
   };

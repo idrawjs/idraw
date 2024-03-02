@@ -8,9 +8,10 @@ import {
   getGroupQueueFromList,
   findElementsFromList,
   findElementsFromListByPositions,
+  getElementPositionFromList,
   deepResizeGroupElement
 } from '@idraw/util';
-import type { ViewRectVertexes, CoreEvent, ElementPosition, ViewScaleInfo, ViewSizeInfo, ElementSizeController } from '@idraw/types';
+import type { ViewRectVertexes, CoreEventMap, ElementPosition, ViewScaleInfo, ViewSizeInfo, ElementSizeController } from '@idraw/types';
 import type {
   Point,
   PointSize,
@@ -53,6 +54,7 @@ import {
   keySelectedElementList,
   keySelectedElementListVertexes,
   keySelectedElementController,
+  keyIsMoving,
   controllerSize
   // keyDebugElemCenter,
   // keyDebugEnd0,
@@ -67,7 +69,7 @@ export const middlewareEventSelect: string = '@middleware/select';
 
 export const middlewareEventSelectClear: string = '@middleware/select-clear';
 
-export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, CoreEvent> = (opts) => {
+export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, CoreEventMap> = (opts) => {
   const { viewer, sharer, boardContent, calculator, eventHub } = opts;
   const { helperContext } = boardContent;
   let prevPoint: Point | null = null;
@@ -154,6 +156,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
     sharer.setSharedStorage(keySelectedElementList, []);
     sharer.setSharedStorage(keySelectedElementListVertexes, null);
     sharer.setSharedStorage(keySelectedElementController, null);
+    sharer.setSharedStorage(keyIsMoving, null);
   };
 
   clear();
@@ -389,6 +392,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
     },
 
     pointMove: (e: PointWatcherEvent) => {
+      sharer.setSharedStorage(keyIsMoving, true);
       const data = sharer.getActiveStorage('data');
       const elems = getActiveElements();
       const scale = sharer.getActiveStorage('scale') || 1;
@@ -501,6 +505,8 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
 
     pointEnd(e: PointWatcherEvent) {
       inBusyMode = null;
+
+      sharer.setSharedStorage(keyIsMoving, false);
       const data = sharer.getActiveStorage('data');
       const resizeType = sharer.getSharedStorage(keyResizeType);
       const actionType = sharer.getSharedStorage(keyActionType);
@@ -603,6 +609,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
         eventHub.trigger(middlewareEventTextEdit, {
           element: target.elements[0],
           groupQueue: sharer.getSharedStorage(keyGroupQueue) || [],
+          position: getElementPositionFromList(target.elements[0]?.uuid, sharer.getActiveStorage('data')?.elements || []),
           viewScaleInfo: sharer.getActiveViewScaleInfo()
         });
       }
@@ -625,9 +632,12 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
       const areaEnd: Point | null = sharedStore[keyAreaEnd];
       const groupQueue: Element<'group'>[] = sharedStore[keyGroupQueue];
       const groupQueueVertexesList: ViewRectVertexes[] = sharedStore[keyGroupQueueVertexesList];
+      const isMoving = sharedStore[keyIsMoving];
+
       const drawBaseOpts = { calculator, viewScaleInfo, viewSizeInfo };
       // const selectedElementController = sharedStore[keySelectedElementController];
       // const resizeType: ResizeType | null = sharedStore[keyResizeType];
+
       const selectedElementController = elem
         ? calcElementSizeController(elem, {
             groupQueue,
@@ -656,7 +666,12 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
           }
         }
         if (!isLock && elem && (['select', 'drag', 'resize'] as ActionType[]).includes(actionType)) {
-          drawSelectedElementControllersVertexes(helperContext, selectedElementController, { ...drawBaseOpts });
+          drawSelectedElementControllersVertexes(helperContext, selectedElementController, {
+            ...drawBaseOpts,
+            element: elem,
+            groupQueue,
+            hideControllers: !!isMoving && actionType === 'drag'
+          });
         }
       } else {
         // in root
@@ -675,7 +690,12 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
           }
         }
         if (!isLock && elem && (['select', 'drag', 'resize'] as ActionType[]).includes(actionType)) {
-          drawSelectedElementControllersVertexes(helperContext, selectedElementController, { ...drawBaseOpts });
+          drawSelectedElementControllersVertexes(helperContext, selectedElementController, {
+            ...drawBaseOpts,
+            element: elem,
+            groupQueue,
+            hideControllers: !!isMoving && actionType === 'drag'
+          });
         } else if (actionType === 'area' && areaStart && areaEnd) {
           drawArea(helperContext, { start: areaStart, end: areaEnd });
         } else if ((['drag-list', 'drag-list-end'] as ActionType[]).includes(actionType)) {

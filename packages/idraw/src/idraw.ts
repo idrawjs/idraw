@@ -1,13 +1,4 @@
-import {
-  Core,
-  MiddlewareSelector,
-  MiddlewareScroller,
-  MiddlewareScaler,
-  MiddlewareRuler,
-  MiddlewareTextEditor,
-  middlewareEventSelect,
-  MiddlewareDragger
-} from '@idraw/core';
+import { Core, MiddlewareSelector, MiddlewareScroller, MiddlewareScaler, MiddlewareRuler, MiddlewareTextEditor, MiddlewareDragger } from '@idraw/core';
 import type {
   PointSize,
   IDrawOptions,
@@ -36,6 +27,7 @@ import {
 import { defaultSettings } from './config';
 import { exportImageFileBlobURL } from './file';
 import type { ExportImageFileBaseOptions, ExportImageFileResult } from './file';
+import { eventKeys } from './event';
 
 export class iDraw {
   #core: Core<IDrawEvent>;
@@ -111,7 +103,7 @@ export class iDraw {
   setData(data: Data) {
     const core = this.#core;
     core.setData(data);
-    core.trigger('change', { data, type: 'setData' });
+    core.trigger(eventKeys.change, { data, type: 'setData' });
   }
 
   getData(opts?: { compact?: boolean }): Data | null {
@@ -171,7 +163,7 @@ export class iDraw {
   }
 
   selectElements(uuids: string[]) {
-    this.trigger(middlewareEventSelect, { uuids });
+    this.trigger(eventKeys.select, { uuids });
   }
 
   selectElementByPosition(position: ElementPosition) {
@@ -179,11 +171,11 @@ export class iDraw {
   }
 
   selectElementsByPositions(positions: ElementPosition[]) {
-    this.trigger(middlewareEventSelect, { positions });
+    this.trigger(eventKeys.select, { positions });
   }
 
   cancelElements() {
-    this.trigger(middlewareEventSelect, { uuids: [] });
+    this.trigger(eventKeys.select, { uuids: [] });
   }
 
   createElement<T extends ElementType>(
@@ -212,7 +204,7 @@ export class iDraw {
     updateElementInList(element.uuid, element, data.elements);
     core.setData(data);
     core.refresh();
-    core.trigger('change', { data, type: 'updateElement' });
+    core.trigger(eventKeys.change, { data, type: 'updateElement' });
   }
 
   addElement(
@@ -231,7 +223,7 @@ export class iDraw {
     }
     core.setData(data);
     core.refresh();
-    core.trigger('change', { data, type: 'addElement' });
+    core.trigger(eventKeys.change, { data, type: 'addElement' });
     return data;
   }
 
@@ -241,7 +233,7 @@ export class iDraw {
     deleteElementInList(uuid, data.elements);
     core.setData(data);
     core.refresh();
-    core.trigger('change', { data, type: 'deleteElement' });
+    core.trigger(eventKeys.change, { data, type: 'deleteElement' });
   }
 
   moveElement(uuid: string, to: ElementPosition) {
@@ -252,7 +244,7 @@ export class iDraw {
     data.elements = list;
     core.setData(data);
     core.refresh();
-    core.trigger('change', { data, type: 'moveElement' });
+    core.trigger(eventKeys.change, { data, type: 'moveElement' });
   }
 
   async getImageBlobURL(opts: ExportImageFileBaseOptions): Promise<ExportImageFileResult> {

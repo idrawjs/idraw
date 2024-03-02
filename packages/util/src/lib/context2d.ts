@@ -1,5 +1,9 @@
 import type { ViewContext2D, ViewContext2DOptions } from '@idraw/types';
 
+const defaultFontSize = 12;
+const defaultFontWeight = '400';
+const defaultFontFamily = `-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'`;
+
 export class Context2D implements ViewContext2D {
   #ctx: CanvasRenderingContext2D;
   #opts: Required<ViewContext2DOptions>;
@@ -12,6 +16,7 @@ export class Context2D implements ViewContext2D {
     this.#opts = { ...{ devicePixelRatio: 1, offscreenCanvas: null }, ...opts };
     // this._width = ctx.canvas.width / devicePixelRatio;
     // this._height = ctx.canvas.height / devicePixelRatio;
+    this.$resetFont();
   }
 
   $undoPixelRatio(num: number) {
@@ -37,6 +42,14 @@ export class Context2D implements ViewContext2D {
     strList.push(`${this.$doPixelRatio(opts.fontSize || 12)}px`);
     strList.push(`${opts.fontFamily || 'sans-serif'}`);
     this.#ctx.font = `${strList.join(' ')}`;
+  }
+
+  $resetFont() {
+    this.$setFont({
+      fontSize: defaultFontSize,
+      fontFamily: defaultFontFamily,
+      fontWeight: defaultFontWeight
+    });
   }
 
   $getOffscreenCanvas(): OffscreenCanvas | null {

@@ -1,4 +1,4 @@
-import type { BoardMiddleware, CoreEvent, Point } from '@idraw/types';
+import type { BoardMiddleware, CoreEventMap, Point } from '@idraw/types';
 
 const key = 'DRAG';
 const keyPrevPoint = Symbol(`${key}_prevPoint`);
@@ -7,7 +7,7 @@ type DraggerSharedStorage = {
   [keyPrevPoint]: Point | null;
 };
 
-export const MiddlewareDragger: BoardMiddleware<DraggerSharedStorage, CoreEvent> = (opts) => {
+export const MiddlewareDragger: BoardMiddleware<DraggerSharedStorage, CoreEventMap> = (opts) => {
   const { eventHub, sharer, viewer } = opts;
   let isDragging = false;
 

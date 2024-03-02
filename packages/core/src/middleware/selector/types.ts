@@ -11,6 +11,7 @@ import {
   keySelectedElementList,
   keySelectedElementListVertexes,
   keySelectedElementController,
+  keyIsMoving,
   keyDebugElemCenter,
   keyDebugEnd0,
   keyDebugEndHorizontal,
@@ -95,6 +96,7 @@ export type DeepSelectorSharedStorage = {
   [keySelectedElementList]: Array<Element<ElementType>>;
   [keySelectedElementListVertexes]: ViewRectVertexes | null;
   [keySelectedElementController]: ElementSizeController | null;
+  [keyIsMoving]: boolean | null;
 
   [keyDebugElemCenter]: PointSize | null;
   [keyDebugEnd0]: PointSize | null;

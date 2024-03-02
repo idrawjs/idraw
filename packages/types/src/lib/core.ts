@@ -1,6 +1,7 @@
 import type { Element, ElementType } from './element';
 import type { Data } from './data';
 import type { ViewContext2D } from './context2d';
+import type { BoardBaseEventMap } from './board';
 
 export interface CoreOptions {
   width: number;
@@ -40,7 +41,7 @@ export interface CoreEventScale {
   scale: number;
 }
 
-export type CoreEvent = {
+export type CoreEventMap = BoardBaseEventMap & {
   cursor: CoreEventCursor;
   change: CoreEventChange;
   [key: string]: any;
