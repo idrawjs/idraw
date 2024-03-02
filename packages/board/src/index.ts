@@ -8,7 +8,7 @@ import type {
   BoardWatcherEventMap,
   ViewSizeInfo,
   PointSize,
-  BoardExtendEvent,
+  BoardExtendEventMap,
   UtilEventEmitter
 } from '@idraw/types';
 import { Calculator } from './lib/calculator';
@@ -23,7 +23,7 @@ interface BoardMiddlewareMapItem {
   middlewareObject: BoardMiddlewareObject;
 }
 
-export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
+export class Board<T extends BoardExtendEventMap = BoardExtendEventMap> {
   #opts: BoardOptions;
   #middlewareMap: WeakMap<BoardMiddleware, BoardMiddlewareMapItem> = new WeakMap();
   #middlewares: BoardMiddleware[] = [];
@@ -120,6 +120,10 @@ export class Board<T extends BoardExtendEvent = BoardExtendEvent> {
     this.#watcher.on('scrollY', this.#handleScrollY.bind(this));
     this.#watcher.on('resize', this.#handleResize.bind(this));
     this.#watcher.on('doubleClick', this.#handleDoubleClick.bind(this));
+
+    this.#renderer.on('load', () => {
+      this.#eventHub.trigger('loadResource');
+    });
   }
 
   #handlePointStart(e: BoardWatcherEventMap['pointStart']) {

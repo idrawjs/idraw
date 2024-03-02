@@ -5,6 +5,7 @@ import { drawBoxShadow, getOpacity } from './box';
 
 export function drawCircle(ctx: ViewContext2D, elem: Element<'circle'>, opts: RendererDrawElementOptions) {
   const { detail, angle } = elem;
+  const { calculator, viewScaleInfo, viewSizeInfo, parentOpacity } = opts;
   const { background = '#000000', borderColor = '#000000', boxSizing, borderWidth = 0 } = detail;
   let bw: number = 0;
   if (typeof borderWidth === 'number' && borderWidth > 0) {
@@ -12,7 +13,8 @@ export function drawCircle(ctx: ViewContext2D, elem: Element<'circle'>, opts: Re
   } else if (Array.isArray(borderWidth) && typeof borderWidth[0] === 'number' && borderWidth[0] > 0) {
     bw = borderWidth[0] as number;
   }
-  const { calculator, viewScaleInfo, viewSizeInfo, parentOpacity } = opts;
+  bw = bw * viewScaleInfo.scale;
+
   // const { scale, offsetTop, offsetBottom, offsetLeft, offsetRight } = viewScaleInfo;
   const { x, y, w, h } = calculator?.elementSize({ x: elem.x, y: elem.y, w: elem.w, h: elem.h }, viewScaleInfo, viewSizeInfo) || elem;
   const viewElem = { ...elem, ...{ x, y, w, h, angle } };
@@ -46,12 +48,12 @@ export function drawCircle(ctx: ViewContext2D, elem: Element<'circle'>, opts: Re
           ctx.globalAlpha = opacity;
 
           // draw border
-          if (typeof borderWidth === 'number' && borderWidth > 0) {
-            const ba = borderWidth / 2 + a;
-            const bb = borderWidth / 2 + b;
+          if (typeof bw === 'number' && bw > 0) {
+            const ba = bw / 2 + a;
+            const bb = bw / 2 + b;
             ctx.beginPath();
             ctx.strokeStyle = borderColor;
-            ctx.lineWidth = borderWidth;
+            ctx.lineWidth = bw;
             ctx.circle(centerX, centerY, ba, bb, 0, 0, 2 * Math.PI);
             ctx.closePath();
             ctx.stroke();

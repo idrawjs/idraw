@@ -1,10 +1,10 @@
-import type { BoardMiddleware, CoreEvent } from '@idraw/types';
+import type { BoardMiddleware, CoreEventMap } from '@idraw/types';
 import { getViewScaleInfoFromSnapshot, getViewSizeInfoFromSnapshot } from '@idraw/util';
 import { drawRulerBackground, drawXRuler, drawYRuler, calcXRulerScaleList, calcYRulerScaleList, drawUnderGrid } from './util';
 
 export const middlewareEventRuler = '@middleware/show-ruler';
 
-export const MiddlewareRuler: BoardMiddleware<Record<string, any>, CoreEvent> = (opts) => {
+export const MiddlewareRuler: BoardMiddleware<Record<string, any>, CoreEventMap> = (opts) => {
   const { boardContent, viewer, eventHub } = opts;
   const { helperContext, underContext } = boardContent;
   let show: boolean = true;

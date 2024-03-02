@@ -138,6 +138,9 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
   #loadResource(element: Element<LoadElementType>, assets: ElementAssets) {
     const item = this.#createLoadItem(element);
     const assetId = getAssetIdFromElement(element);
+    if (this.#currentLoadItemMap[assetId]) {
+      return;
+    }
 
     this.#currentLoadItemMap[assetId] = item;
     const loadFunc = this.#loadFuncMap[element.type];

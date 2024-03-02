@@ -9,6 +9,7 @@ export interface ViewContext2D {
   // extend API
   $getContext(): CanvasRenderingContext2D;
   $setContext(ctx: CanvasRenderingContext2D): void;
+  $resetFont(): void;
   $setFont(opts: { fontSize: number; fontFamily?: string; fontWeight?: string | number }): void;
   $resize(opts: { width: number; height: number; devicePixelRatio: number }): void;
   $getSize(): { width: number; height: number; devicePixelRatio: number };
