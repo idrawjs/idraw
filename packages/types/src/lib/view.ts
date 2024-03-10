@@ -1,4 +1,4 @@
-import type { Element, ElementType, ElementSize } from './element';
+import type { Element, ElementType, ElementSize, ElementPosition } from './element';
 import type { Point, PointSize } from './point';
 import type { Data } from './data';
 import type { ViewContext2D } from './context2d';
@@ -54,3 +54,31 @@ export interface ViewBoxSize {
   h: number;
   radiusList: [number, number, number, number];
 }
+
+export type ViewRectInfo = {
+  topLeft: PointSize;
+  topRight: PointSize;
+  bottomRight: PointSize;
+  bottomLeft: PointSize;
+  top: PointSize;
+  right: PointSize;
+  bottom: PointSize;
+  left: PointSize;
+  center: PointSize;
+};
+
+export type ViewRectInfoMap = {
+  originRectInfo: ViewRectInfo;
+  viewRectInfo: ViewRectInfo | null;
+  rangeRectInfo: ViewRectInfo | null;
+};
+
+export type ViewVisibleInfo = ViewRectInfoMap & {
+  isVisibleInView: boolean;
+  isGroup: boolean;
+  position: ElementPosition;
+};
+
+export type ViewVisibleInfoMap = {
+  [uuid: string]: ViewVisibleInfo;
+};

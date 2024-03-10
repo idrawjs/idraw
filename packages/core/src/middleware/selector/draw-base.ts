@@ -85,16 +85,12 @@ export function drawCircleController(
   // ctx.fill();
 }
 
-export function drawCrossVertexes(
-  ctx: ViewContext2D,
-  vertexes: ViewRectVertexes,
-  opts: { borderColor: string; borderWidth: number; background: string; lineDash: number[] }
-) {
-  const { borderColor, borderWidth, background, lineDash } = opts;
+export function drawCrossVertexes(ctx: ViewContext2D, vertexes: ViewRectVertexes, opts: { borderColor: string; borderWidth: number; lineDash: number[] }) {
+  const { borderColor, borderWidth, lineDash } = opts;
   ctx.setLineDash([]);
   ctx.lineWidth = borderWidth;
   ctx.strokeStyle = borderColor;
-  ctx.fillStyle = background;
+  // ctx.fillStyle = background;
   ctx.setLineDash(lineDash);
   ctx.beginPath();
   ctx.moveTo(vertexes[0].x, vertexes[0].y);
@@ -106,4 +102,35 @@ export function drawCrossVertexes(
   ctx.lineTo(vertexes[3].x, vertexes[3].y);
   ctx.closePath();
   ctx.stroke();
+}
+
+export function drawCrossByCenter(ctx: ViewContext2D, center: PointSize, opts: { size: number; borderColor: string; borderWidth: number; lineDash: number[] }) {
+  const { size, borderColor, borderWidth, lineDash } = opts;
+  const minX = center.x - size / 2;
+  const maxX = center.x + size / 2;
+  const minY = center.y - size / 2;
+  const maxY = center.y + size / 2;
+  const vertexes: ViewRectVertexes = [
+    {
+      x: minX,
+      y: minY
+    },
+    {
+      x: maxX,
+      y: minY
+    },
+    {
+      x: maxX,
+      y: maxY
+    },
+    {
+      x: minX,
+      y: maxY
+    }
+  ];
+  drawCrossVertexes(ctx, vertexes, {
+    borderColor,
+    borderWidth,
+    lineDash
+  });
 }

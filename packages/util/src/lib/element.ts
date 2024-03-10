@@ -293,6 +293,23 @@ export function getGroupQueueFromList(uuid: string, elements: Element<ElementTyp
   return groupQueue;
 }
 
+export function getGroupQueueByElementPosition(elements: Element<ElementType>[], position: ElementPosition): Element<'group'>[] | null {
+  const groupQueue: Element<'group'>[] = [];
+  let currentElements: Element[] = elements;
+  if (position.length > 1) {
+    for (let i = 0; i < position.length - 1; i++) {
+      const group = currentElements[i] as Element<'group'>;
+      if (group?.type === 'group' && Array.isArray(group?.detail?.children)) {
+        groupQueue.push(group);
+        currentElements = group.detail.children;
+      } else {
+        return null;
+      }
+    }
+  }
+  return groupQueue;
+}
+
 export function getElementSize(elem: Element): ElementSize {
   const { x, y, w, h, angle } = elem;
   const size: ElementSize = { x, y, w, h, angle };

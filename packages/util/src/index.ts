@@ -37,6 +37,7 @@ export {
   findElementQueueFromListByPosition,
   findElementsFromListByPositions,
   getGroupQueueFromList,
+  getGroupQueueByElementPosition,
   getElementSize,
   mergeElementAsset,
   filterElementAsset,
@@ -54,8 +55,12 @@ export {
   isViewPointInElement,
   getViewPointAtElement,
   isElementInView,
-  calcViewScaleInfo
+  calcViewScaleInfo,
+  calcElementViewRectInfo,
+  calcElementOriginRectInfo,
+  calcElementViewRectInfoMap
 } from './lib/view-calc';
+export { sortElementsViewVisiableInfoMap } from './lib/view-visible';
 export { rotatePoint, rotateVertexes, rotateByCenter } from './lib/rotate';
 export { getElementVertexes, calcElementVertexesInGroup, calcElementVertexesQueueInGroup, calcElementQueueVertexesQueueInGroup } from './lib/vertex';
 export { calcElementSizeController } from './lib/controller';

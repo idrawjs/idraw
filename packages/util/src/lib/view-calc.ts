@@ -1,6 +1,21 @@
-import { Point, PointSize, Data, ViewScaleInfo, ViewSizeInfo, Element, ElementType, ElementSize, ViewContext2D, ViewRectVertexes } from '@idraw/types';
+import {
+  Point,
+  PointSize,
+  Data,
+  ViewScaleInfo,
+  ViewSizeInfo,
+  Element,
+  ElementType,
+  ElementSize,
+  ViewContext2D,
+  ViewRectVertexes,
+  ViewRectInfo,
+  ViewRectInfoMap
+} from '@idraw/types';
 import { rotateElementVertexes } from './rotate';
 import { checkRectIntersect } from './rect';
+import { calcElementVertexesInGroup } from './vertex';
+import { getCenterFromTwoPoints } from './point';
 
 export function calcViewScaleInfo(info: { scale: number; offsetX: number; offsetY: number }, opts: { viewSizeInfo: ViewSizeInfo }): ViewScaleInfo {
   const { scale, offsetX, offsetY } = info;
@@ -83,7 +98,7 @@ export function calcViewElementSize(size: ElementSize, opts: { viewScaleInfo: Vi
   return newSize;
 }
 
-export function calcViewPointSize(size: PointSize, opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }): PointSize {
+export function calcViewPointSize(size: PointSize, opts: { viewScaleInfo: ViewScaleInfo }): PointSize {
   const { viewScaleInfo } = opts;
   const { x, y } = size;
   const { scale, offsetTop, offsetLeft } = viewScaleInfo;
@@ -223,4 +238,172 @@ export function isElementInView(elem: ElementSize, opts: { viewScaleInfo: ViewSc
   const elemEndY = Math.max(ves[0].y, ves[1].y, ves[2].y, ves[3].y);
   const elemSize = { x: elemStartX, y: elemStartY, w: elemEndX - elemStartX, h: elemEndY - elemStartY };
   return checkRectIntersect(viewSize, elemSize);
+}
+
+export function calcElementOriginRectInfo(
+  elemSize: ElementSize,
+  opts: {
+    groupQueue: Element<'group'>[];
+  }
+): ViewRectInfo {
+  const { groupQueue } = opts;
+
+  const vertexes = calcElementVertexesInGroup(elemSize, { groupQueue }) as ViewRectVertexes;
+
+  const top = getCenterFromTwoPoints(vertexes[0], vertexes[1]);
+  const right = getCenterFromTwoPoints(vertexes[1], vertexes[2]);
+  const bottom = getCenterFromTwoPoints(vertexes[2], vertexes[3]);
+  const left = getCenterFromTwoPoints(vertexes[3], vertexes[0]);
+
+  const topLeft = vertexes[0];
+  const topRight = vertexes[1];
+  const bottomRight = vertexes[2];
+  const bottomLeft = vertexes[3];
+
+  const maxX = Math.max(topLeft.x, topRight.x, bottomRight.x, bottomLeft.x);
+  const maxY = Math.max(topLeft.y, topRight.y, bottomRight.y, bottomLeft.y);
+  const minX = Math.min(topLeft.x, topRight.x, bottomRight.x, bottomLeft.x);
+  const minY = Math.min(topLeft.y, topRight.y, bottomRight.y, bottomLeft.y);
+  const center: PointSize = {
+    x: (maxX + minX) / 2,
+    y: (maxY + minY) / 2
+  };
+
+  const rectInfo: ViewRectInfo = {
+    center,
+    topLeft,
+    topRight,
+    bottomLeft,
+    bottomRight,
+    top,
+    right,
+    left,
+    bottom
+  };
+
+  return rectInfo;
+}
+
+export function calcElementViewRectInfo(
+  elemSize: ElementSize,
+  opts: {
+    groupQueue: Element<'group'>[];
+    viewScaleInfo: ViewScaleInfo;
+    range?: boolean;
+  }
+): ViewRectInfo {
+  const { groupQueue, viewScaleInfo, range } = opts;
+
+  // Original RectInfo
+  const originRectInfo = calcElementOriginRectInfo(elemSize, { groupQueue });
+  const { center, top, bottom, left, right, topLeft, topRight, bottomLeft, bottomRight } = originRectInfo;
+
+  // View RectInfo
+  const viewRectInfo: ViewRectInfo = {
+    center: calcViewPointSize(center, { viewScaleInfo }),
+    topLeft: calcViewPointSize(topLeft, { viewScaleInfo }),
+    topRight: calcViewPointSize(topRight, { viewScaleInfo }),
+    bottomLeft: calcViewPointSize(bottomLeft, { viewScaleInfo }),
+    bottomRight: calcViewPointSize(bottomRight, { viewScaleInfo }),
+    top: calcViewPointSize(top, { viewScaleInfo }),
+    right: calcViewPointSize(right, { viewScaleInfo }),
+    left: calcViewPointSize(left, { viewScaleInfo }),
+    bottom: calcViewPointSize(bottom, { viewScaleInfo })
+  };
+
+  if (range === true) {
+    // Range RectInfo
+    const viewMaxX = Math.max(viewRectInfo.topLeft.x, viewRectInfo.topRight.x, viewRectInfo.bottomRight.x, viewRectInfo.bottomLeft.x);
+    const viewMaxY = Math.max(viewRectInfo.topLeft.y, viewRectInfo.topRight.y, viewRectInfo.bottomRight.y, viewRectInfo.bottomLeft.y);
+    const viewMinX = Math.min(viewRectInfo.topLeft.x, viewRectInfo.topRight.x, viewRectInfo.bottomRight.x, viewRectInfo.bottomLeft.x);
+    const viewMinY = Math.min(viewRectInfo.topLeft.y, viewRectInfo.topRight.y, viewRectInfo.bottomRight.y, viewRectInfo.bottomLeft.y);
+
+    const rangeCenter = { x: viewRectInfo.center.x, y: viewRectInfo.center.y };
+    const rangeTopLeft = { x: viewMinX, y: viewMinY };
+    const rangeTopRight = { x: viewMaxX, y: viewMinY };
+    const rangeBottomRight = { x: viewMaxX, y: viewMaxY };
+    const rangeBottomLeft = { x: viewMinX, y: viewMaxY };
+
+    const rangeTop = getCenterFromTwoPoints(rangeTopLeft, rangeTopRight);
+    const rangeBottom = getCenterFromTwoPoints(rangeBottomLeft, rangeBottomRight);
+    const rangeLeft = getCenterFromTwoPoints(rangeTopLeft, rangeBottomLeft);
+    const rangeRight = getCenterFromTwoPoints(rangeTopRight, rangeBottomRight);
+
+    const rangeRectInfo: ViewRectInfo = {
+      center: rangeCenter,
+      topLeft: rangeTopLeft,
+      topRight: rangeTopRight,
+      bottomLeft: rangeBottomLeft,
+      bottomRight: rangeBottomRight,
+      top: rangeTop,
+      right: rangeRight,
+      left: rangeLeft,
+      bottom: rangeBottom
+    };
+    return rangeRectInfo;
+  }
+
+  return viewRectInfo;
+}
+
+export function calcElementViewRectInfoMap(
+  elemSize: ElementSize,
+  opts: {
+    groupQueue: Element<'group'>[];
+    viewScaleInfo: ViewScaleInfo;
+  }
+): ViewRectInfoMap {
+  const { groupQueue, viewScaleInfo } = opts;
+
+  // Original RectInfo
+  const originRectInfo = calcElementOriginRectInfo(elemSize, { groupQueue });
+  const { center, top, bottom, left, right, topLeft, topRight, bottomLeft, bottomRight } = originRectInfo;
+
+  // View RectInfo
+  const viewRectInfo: ViewRectInfo = {
+    center: calcViewPointSize(center, { viewScaleInfo }),
+    topLeft: calcViewPointSize(topLeft, { viewScaleInfo }),
+    topRight: calcViewPointSize(topRight, { viewScaleInfo }),
+    bottomLeft: calcViewPointSize(bottomLeft, { viewScaleInfo }),
+    bottomRight: calcViewPointSize(bottomRight, { viewScaleInfo }),
+    top: calcViewPointSize(top, { viewScaleInfo }),
+    right: calcViewPointSize(right, { viewScaleInfo }),
+    left: calcViewPointSize(left, { viewScaleInfo }),
+    bottom: calcViewPointSize(bottom, { viewScaleInfo })
+  };
+
+  // Range RectInfo
+  const viewMaxX = Math.max(viewRectInfo.topLeft.x, viewRectInfo.topRight.x, viewRectInfo.bottomRight.x, viewRectInfo.bottomLeft.x);
+  const viewMaxY = Math.max(viewRectInfo.topLeft.y, viewRectInfo.topRight.y, viewRectInfo.bottomRight.y, viewRectInfo.bottomLeft.y);
+  const viewMinX = Math.min(viewRectInfo.topLeft.x, viewRectInfo.topRight.x, viewRectInfo.bottomRight.x, viewRectInfo.bottomLeft.x);
+  const viewMinY = Math.min(viewRectInfo.topLeft.y, viewRectInfo.topRight.y, viewRectInfo.bottomRight.y, viewRectInfo.bottomLeft.y);
+
+  const rangeCenter = { x: viewRectInfo.center.x, y: viewRectInfo.center.y };
+  const rangeTopLeft = { x: viewMinX, y: viewMinY };
+  const rangeTopRight = { x: viewMaxX, y: viewMinY };
+  const rangeBottomRight = { x: viewMaxX, y: viewMaxY };
+  const rangeBottomLeft = { x: viewMinX, y: viewMaxY };
+
+  const rangeTop = getCenterFromTwoPoints(rangeTopLeft, rangeTopRight);
+  const rangeBottom = getCenterFromTwoPoints(rangeBottomLeft, rangeBottomRight);
+  const rangeLeft = getCenterFromTwoPoints(rangeTopLeft, rangeBottomLeft);
+  const rangeRight = getCenterFromTwoPoints(rangeTopRight, rangeBottomRight);
+
+  const rangeRectInfo: ViewRectInfo = {
+    center: rangeCenter,
+    topLeft: rangeTopLeft,
+    topRight: rangeTopRight,
+    bottomLeft: rangeBottomLeft,
+    bottomRight: rangeBottomRight,
+    top: rangeTop,
+    right: rangeRight,
+    left: rangeLeft,
+    bottom: rangeBottom
+  };
+
+  return {
+    originRectInfo,
+    viewRectInfo,
+    rangeRectInfo
+  };
 }

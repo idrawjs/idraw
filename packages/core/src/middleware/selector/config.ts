@@ -30,3 +30,5 @@ export const lockColor = '#5b5959b5';
 
 export const controllerSize = 10;
 // export const wrapperColor = '#1890ff';
+
+export const auxiliaryColor = '#f7276e';
