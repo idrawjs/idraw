@@ -1,15 +1,18 @@
-import { Core, MiddlewareSelector, MiddlewareScroller, MiddlewareScaler, MiddlewareRuler, MiddlewareTextEditor, MiddlewareDragger } from '@idraw/core';
+import { Core } from '@idraw/core';
 import type {
   PointSize,
   IDrawOptions,
   IDrawSettings,
+  IDrawFeature,
+  IDrawMode,
   Data,
   ViewSizeInfo,
   ViewScaleInfo,
   ElementType,
   Element,
   RecursivePartial,
-  ElementPosition
+  ElementPosition,
+  IDrawStorage
 } from '@idraw/types';
 import type { IDrawEvent } from './event';
 import {
@@ -22,16 +25,21 @@ import {
   calcElementListSize,
   filterCompactData,
   calcViewCenterContent,
-  calcViewCenter
+  calcViewCenter,
+  Store
 } from '@idraw/util';
-import { defaultSettings } from './config';
+import { defaultSettings, getDefaultStorage, defaultMode } from './config';
 import { exportImageFileBlobURL } from './file';
 import type { ExportImageFileBaseOptions, ExportImageFileResult } from './file';
 import { eventKeys } from './event';
+import { changeMode } from './mode';
 
 export class iDraw {
   #core: Core<IDrawEvent>;
   #opts: IDrawOptions;
+  #store: Store<IDrawStorage> = new Store<IDrawStorage>({
+    defaultStorage: getDefaultStorage()
+  });
 
   constructor(mount: HTMLDivElement, options: IDrawOptions) {
     const opts = { ...defaultSettings, ...options };
@@ -43,61 +51,46 @@ export class iDraw {
   }
 
   #init() {
-    const { enableRuler, enableScale, enableScroll, enableSelect, enableTextEdit, enableDrag } = this.#opts;
     const core = this.#core;
-    enableScroll === true && core.use(MiddlewareScroller);
-    enableSelect === true && core.use(MiddlewareSelector);
-    enableScale === true && core.use(MiddlewareScaler);
-    enableRuler === true && core.use(MiddlewareRuler);
-    enableTextEdit === true && core.use(MiddlewareTextEditor);
-    enableDrag === true && core.use(MiddlewareDragger);
+    const store = this.#store;
+    changeMode('select', core, store);
+    this.enable('ruler');
+  }
+
+  #setFeature(feat: IDrawFeature, status: boolean) {
+    if (feat === 'ruler') {
+      const store = this.#store;
+      store.set('enableRuler', !!status);
+      const currentMode = store.get('mode');
+      this.setMode(currentMode);
+    }
   }
 
   reset(opts: IDrawSettings) {
     const core = this.#core;
-    const { enableRuler, enableScale, enableScroll, enableSelect, enableTextEdit, enableDrag } = opts;
-    if (enableScroll === true) {
-      core.use(MiddlewareScroller);
-    } else if (enableScroll === false) {
-      core.disuse(MiddlewareScroller);
-    }
-
-    if (enableSelect === true) {
-      core.use(MiddlewareSelector);
-    } else if (enableSelect === false) {
-      core.disuse(MiddlewareSelector);
-    }
-
-    if (enableScale === true) {
-      core.use(MiddlewareScaler);
-    } else if (enableScale === false) {
-      core.disuse(MiddlewareScaler);
-    }
-
-    if (enableRuler === true) {
-      core.use(MiddlewareRuler);
-    } else if (enableRuler === false) {
-      core.disuse(MiddlewareRuler);
-    }
-
-    if (enableTextEdit === true) {
-      core.use(MiddlewareTextEditor);
-    } else if (enableTextEdit === false) {
-      core.disuse(MiddlewareTextEditor);
-    }
-
-    if (enableDrag === true) {
-      core.use(MiddlewareDragger);
-    } else if (enableDrag === false) {
-      core.disuse(MiddlewareDragger);
-    }
-
+    const store = this.#store;
+    store.clear();
+    changeMode(opts.mode || defaultMode, core, store);
     core.refresh();
-
     this.#opts = {
       ...this.#opts,
       ...opts
     };
+  }
+
+  setMode(mode: IDrawMode) {
+    const core = this.#core;
+    const store = this.#store;
+    changeMode(mode || defaultMode, core, store);
+    core.refresh();
+  }
+
+  enable(feat: IDrawFeature) {
+    this.#setFeature(feat, true);
+  }
+
+  disable(feat: IDrawFeature) {
+    this.#setFeature(feat, false);
   }
 
   setData(data: Data) {
@@ -273,7 +266,9 @@ export class iDraw {
 
   destroy() {
     const core = this.#core;
+    const store = this.#store;
     core.destroy();
+    store.destroy();
   }
 
   getViewCenter() {

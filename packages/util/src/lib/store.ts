@@ -18,7 +18,8 @@ export class Store<T extends Record<string | symbol, any> = Record<string | symb
   }
 
   getSnapshot(): T {
-    return deepClone(this.#temp);
+    // return deepClone(this.#temp);
+    return this.#temp;
   }
 
   clear() {

@@ -220,6 +220,19 @@ export const MiddlewareTextEditor: BoardMiddleware<ExtendEventMap, CoreEventMap 
 
     hideTextArea();
   });
+  textarea.addEventListener('keydown', (e) => {
+    e.stopPropagation();
+  });
+  textarea.addEventListener('keypress', (e) => {
+    e.stopPropagation();
+  });
+  textarea.addEventListener('keyup', (e) => {
+    e.stopPropagation();
+  });
+  textarea.addEventListener('wheel', (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+  });
 
   const textEditCallback = (e: TextEditEvent) => {
     if (e?.position && e?.element && e?.element?.type === 'text') {

@@ -118,7 +118,11 @@ export {
   deepCloneElement,
   calcViewCenterContent,
   calcViewCenter,
-  modifyElement
+  modifyElement,
+  calcElementViewRectInfo,
+  calcElementOriginRectInfo,
+  calcElementViewRectInfoMap,
+  sortElementsViewVisiableInfoMap
 } from '@idraw/util';
 export { iDraw } from './idraw';
 export { eventKeys } from './event';

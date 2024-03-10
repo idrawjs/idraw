@@ -13,7 +13,7 @@ import { rotateElementVertexes, calcViewPointSize, calcViewVertexes } from '@idr
 import type { AreaSize } from './types';
 import { resizeControllerBorderWidth, areaBorderWidth, wrapperColor, selectWrapperBorderWidth, lockColor, controllerSize } from './config';
 import { drawVertexes, drawLine, drawCircleController, drawCrossVertexes } from './draw-base';
-// import { drawSizeAuxiliaryLines } from './draw-auxiliary';
+// import { drawAuxiliaryLines } from './draw-auxiliary';
 
 export function drawHoverVertexesWrapper(
   ctx: ViewContext2D,
@@ -77,7 +77,7 @@ export function drawSelectedElementControllersVertexes(
     return;
   }
   const { hideControllers } = opts;
-  // const { element, groupQueue } = opts;
+  // const { element, groupQueue, viewScaleInfo } = opts;
   const { elementWrapper, topLeft, topRight, bottomLeft, bottomRight, top, rotate } = controller;
   const wrapperOpts = { borderColor: wrapperColor, borderWidth: selectWrapperBorderWidth, background: 'transparent', lineDash: [] };
   const ctrlOpts = { ...wrapperOpts, borderWidth: resizeControllerBorderWidth, background: '#FFFFFF' };
@@ -96,7 +96,7 @@ export function drawSelectedElementControllersVertexes(
     drawCircleController(ctx, calcViewPointSize(rotate.center, opts), { ...ctrlOpts, size: controllerSize, borderWidth: 2 });
   }
 
-  // drawSizeAuxiliaryLines(ctx, {
+  // drawAuxiliaryLines(ctx, {
   //   vertexes: [
   //     calcViewPointSize(topLeft.center, opts),
   //     calcViewPointSize(topRight.center, opts),
@@ -104,7 +104,8 @@ export function drawSelectedElementControllersVertexes(
   //     calcViewPointSize(bottomLeft.center, opts)
   //   ],
   //   element,
-  //   groupQueue
+  //   groupQueue,
+  //   viewScaleInfo
   // });
 }
 
