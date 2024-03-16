@@ -7,7 +7,7 @@ function isValidMode(mode: string | IDrawMode) {
   return ['select', 'drag', 'readOnly'].includes(mode);
 }
 
-function runMiddlewares(core: Core<IDrawEvent>, store: Store<IDrawStorage>) {
+export function runMiddlewares(core: Core<IDrawEvent>, store: Store<IDrawStorage>) {
   const { enableRuler, enableScale, enableScroll, enableSelect, enableTextEdit, enableDrag } = store.getSnapshot();
   if (enableScroll === true) {
     core.use(MiddlewareScroller);
@@ -52,7 +52,7 @@ export function changeMode(mode: IDrawMode, core: Core<IDrawEvent>, store: Store
   let enableSelect: boolean = false;
   let enableTextEdit: boolean = false;
   let enableDrag: boolean = false;
-  let enableRuler = store.get('enableRuler');
+  let enableRuler: boolean = false;
 
   let innerMode: IDrawMode = 'select';
   store.set('mode', innerMode);
@@ -69,12 +69,14 @@ export function changeMode(mode: IDrawMode, core: Core<IDrawEvent>, store: Store
     enableSelect = true;
     enableTextEdit = true;
     enableDrag = false;
+    enableRuler = true;
   } else if (innerMode === 'drag') {
     enableScale = true;
     enableScroll = true;
     enableSelect = false;
     enableTextEdit = false;
     enableDrag = true;
+    enableRuler = true;
   } else if (innerMode === 'readOnly') {
     enableScale = false;
     enableScroll = false;

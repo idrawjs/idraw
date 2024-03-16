@@ -298,7 +298,8 @@ export function getGroupQueueByElementPosition(elements: Element<ElementType>[],
   let currentElements: Element[] = elements;
   if (position.length > 1) {
     for (let i = 0; i < position.length - 1; i++) {
-      const group = currentElements[i] as Element<'group'>;
+      const index = position[i];
+      const group = currentElements[index] as Element<'group'>;
       if (group?.type === 'group' && Array.isArray(group?.detail?.children)) {
         groupQueue.push(group);
         currentElements = group.detail.children;

@@ -1,12 +1,12 @@
 import type { Element, RendererDrawElementOptions, ViewContext2D } from '@idraw/types';
-import { rotateElement, generateSVGPath } from '@idraw/util';
+import { rotateElement, generateSVGPath, calcViewElementSize } from '@idraw/util';
 import { drawBox, drawBoxShadow } from './box';
 
 export function drawPath(ctx: ViewContext2D, elem: Element<'path'>, opts: RendererDrawElementOptions) {
   const { detail } = elem;
   const { originX, originY, originW, originH } = detail;
-  const { calculator, viewScaleInfo, viewSizeInfo, parentOpacity } = opts;
-  const { x, y, w, h, angle } = calculator?.elementSize(elem, viewScaleInfo, viewSizeInfo) || elem;
+  const { viewScaleInfo, viewSizeInfo, parentOpacity } = opts;
+  const { x, y, w, h, angle } = calcViewElementSize(elem, { viewScaleInfo, viewSizeInfo }) || elem;
   const scaleW = w / originW;
   const scaleH = h / originH;
   const viewOriginX = originX * scaleW;

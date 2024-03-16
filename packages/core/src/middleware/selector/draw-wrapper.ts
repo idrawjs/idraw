@@ -7,13 +7,14 @@ import type {
   ViewRectVertexes,
   ViewScaleInfo,
   ViewSizeInfo,
-  ElementSizeController
+  ElementSizeController,
+  ViewCalculator
 } from '@idraw/types';
-import { rotateElementVertexes, calcViewPointSize, calcViewVertexes } from '@idraw/util';
+import { rotateElementVertexes, calcViewPointSize, calcViewVertexes, calcViewElementSize } from '@idraw/util';
 import type { AreaSize } from './types';
 import { resizeControllerBorderWidth, areaBorderWidth, wrapperColor, selectWrapperBorderWidth, lockColor, controllerSize } from './config';
 import { drawVertexes, drawLine, drawCircleController, drawCrossVertexes } from './draw-base';
-// import { drawAuxiliaryLines } from './draw-auxiliary';
+// import { drawAuxiliaryExperimentBox } from './draw-auxiliary';
 
 export function drawHoverVertexesWrapper(
   ctx: ViewContext2D,
@@ -70,14 +71,16 @@ export function drawSelectedElementControllersVertexes(
     viewScaleInfo: ViewScaleInfo;
     viewSizeInfo: ViewSizeInfo;
     element: Element | null;
-    groupQueue: Element<'group'>[];
+    calculator: ViewCalculator;
   }
 ) {
   if (!controller) {
     return;
   }
-  const { hideControllers } = opts;
-  // const { element, groupQueue, viewScaleInfo } = opts;
+  const {
+    hideControllers
+    // calculator, element, viewScaleInfo, viewSizeInfo
+  } = opts;
   const { elementWrapper, topLeft, topRight, bottomLeft, bottomRight, top, rotate } = controller;
   const wrapperOpts = { borderColor: wrapperColor, borderWidth: selectWrapperBorderWidth, background: 'transparent', lineDash: [] };
   const ctrlOpts = { ...wrapperOpts, borderWidth: resizeControllerBorderWidth, background: '#FFFFFF' };
@@ -96,16 +99,11 @@ export function drawSelectedElementControllersVertexes(
     drawCircleController(ctx, calcViewPointSize(rotate.center, opts), { ...ctrlOpts, size: controllerSize, borderWidth: 2 });
   }
 
-  // drawAuxiliaryLines(ctx, {
-  //   vertexes: [
-  //     calcViewPointSize(topLeft.center, opts),
-  //     calcViewPointSize(topRight.center, opts),
-  //     calcViewPointSize(bottomRight.center, opts),
-  //     calcViewPointSize(bottomLeft.center, opts)
-  //   ],
+  // drawAuxiliaryExperimentBox(ctx, {
+  //   calculator,
   //   element,
-  //   groupQueue,
-  //   viewScaleInfo
+  //   viewScaleInfo,
+  //   viewSizeInfo
   // });
 }
 
@@ -114,8 +112,7 @@ export function drawElementListShadows(ctx: ViewContext2D, elements: Element<Ele
     let { x, y, w, h } = elem;
     const { angle = 0 } = elem;
     if (opts?.calculator) {
-      const { calculator } = opts;
-      const size = calculator.elementSize({ x, y, w, h }, opts.viewScaleInfo, opts.viewSizeInfo);
+      const size = calcViewElementSize({ x, y, w, h }, opts);
       x = size.x;
       y = size.y;
       w = size.w;

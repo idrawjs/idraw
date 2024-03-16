@@ -1,4 +1,4 @@
-import type { Data, PointSize, CoreOptions, BoardMiddleware, ViewSizeInfo, CoreEventMap, ViewScaleInfo, LoadItemMap } from '@idraw/types';
+import type { Data, PointSize, CoreOptions, BoardMiddleware, ViewSizeInfo, CoreEventMap, ViewScaleInfo, LoadItemMap, ModifyOptions } from '@idraw/types';
 import { Board } from '@idraw/board';
 import { createBoardContent, validateElements } from '@idraw/util';
 import { Cursor } from './lib/cursor';
@@ -67,9 +67,14 @@ export class Core<E extends CoreEventMap = CoreEventMap> {
     this.#board.disuse(middleware);
   }
 
-  setData(data: Data) {
+  setData(
+    data: Data,
+    opts?: {
+      modifiedOptions?: ModifyOptions;
+    }
+  ) {
     validateElements(data?.elements || []);
-    this.#board.setData(data);
+    this.#board.setData(data, opts);
   }
 
   getData(): Data | null {

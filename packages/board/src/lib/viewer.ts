@@ -4,10 +4,12 @@ import type {
   BoardViewer,
   BoardViewerEventMap,
   BoardViewerOptions,
+  // BoardViewerStorage,
   ActiveStore,
   BoardViewerFrameSnapshot,
   ViewScaleInfo,
-  ViewSizeInfo
+  ViewSizeInfo,
+  Data
 } from '@idraw/types';
 
 const { requestAnimationFrame } = window;
@@ -84,6 +86,18 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
     }
   }
 
+  resetViewVisibleInfoMap(
+    data: Data,
+    opts: {
+      viewScaleInfo: ViewScaleInfo;
+      viewSizeInfo: ViewSizeInfo;
+    }
+  ): void {
+    if (data) {
+      this.#opts.calculator.resetViewVisibleInfoMap(data, opts);
+    }
+  }
+
   drawFrame(): void {
     const { sharer } = this.#opts;
     const activeStore: ActiveStore = sharer.getActiveStoreSnapshot();
@@ -95,8 +109,8 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
     this.#drawAnimationFrame();
   }
 
-  scale(opts: { scale: number; point: PointSize }): { moveX: number; moveY: number } {
-    const { scale, point } = opts;
+  scale(opts: { scale: number; point: PointSize; ignoreUpdateVisibleStatus?: boolean }): { moveX: number; moveY: number } {
+    const { scale, point, ignoreUpdateVisibleStatus } = opts;
     const { sharer } = this.#opts;
     const { moveX, moveY } = viewScale({
       scale,
@@ -105,13 +119,19 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
       viewSizeInfo: sharer.getActiveViewSizeInfo()
     });
     sharer.setActiveStorage('scale', scale);
+    if (!ignoreUpdateVisibleStatus) {
+      this.#opts.calculator.updateVisiableStatus({
+        viewScaleInfo: sharer.getActiveViewScaleInfo(),
+        viewSizeInfo: sharer.getActiveViewSizeInfo()
+      });
+    }
     return { moveX, moveY };
   }
 
-  scroll(opts: { moveX: number; moveY: number }): ViewScaleInfo {
+  scroll(opts: { moveX: number; moveY: number; ignoreUpdateVisibleStatus?: boolean }): ViewScaleInfo {
     const { sharer } = this.#opts;
     const prevViewScaleInfo: ViewScaleInfo = sharer.getActiveViewScaleInfo();
-    const { moveX, moveY } = opts;
+    const { moveX, moveY, ignoreUpdateVisibleStatus } = opts;
     const viewSizeInfo: ViewSizeInfo = sharer.getActiveViewSizeInfo();
     const viewScaleInfo = viewScroll({
       moveX,
@@ -120,6 +140,12 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
       viewSizeInfo
     });
     sharer.setActiveViewScaleInfo(viewScaleInfo);
+    if (!ignoreUpdateVisibleStatus) {
+      this.#opts.calculator.updateVisiableStatus({
+        viewScaleInfo: sharer.getActiveViewScaleInfo(),
+        viewSizeInfo: sharer.getActiveViewSizeInfo()
+      });
+    }
     return viewScaleInfo;
   }
 
@@ -130,10 +156,15 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
     });
 
     sharer.setActiveViewScaleInfo(viewScaleInfo);
+
+    this.#opts.calculator.updateVisiableStatus({
+      viewScaleInfo: sharer.getActiveViewScaleInfo(),
+      viewSizeInfo: sharer.getActiveViewSizeInfo()
+    });
     return viewScaleInfo;
   }
 
-  resize(viewSize: Partial<ViewSizeInfo> = {}): ViewSizeInfo {
+  resize(viewSize: Partial<ViewSizeInfo> = {}, opts?: { ignoreUpdateVisibleStatus?: boolean }): ViewSizeInfo {
     const { sharer } = this.#opts;
     const originViewSize = sharer.getActiveViewSizeInfo();
     const newViewSize = { ...originViewSize, ...viewSize };
@@ -155,6 +186,12 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
     viewContext.canvas.height = height * devicePixelRatio;
 
     sharer.setActiveViewSizeInfo(newViewSize);
+    if (!opts?.ignoreUpdateVisibleStatus) {
+      this.#opts.calculator.updateVisiableStatus({
+        viewScaleInfo: sharer.getActiveViewScaleInfo(),
+        viewSizeInfo: sharer.getActiveViewSizeInfo()
+      });
+    }
     return newViewSize;
   }
 }

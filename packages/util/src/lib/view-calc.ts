@@ -284,6 +284,37 @@ export function calcElementOriginRectInfo(
   return rectInfo;
 }
 
+export function originRectInfoToRangeRectInfo(originRectInfo: ViewRectInfo): ViewRectInfo {
+  const rangeMaxX = Math.max(originRectInfo.topLeft.x, originRectInfo.topRight.x, originRectInfo.bottomRight.x, originRectInfo.bottomLeft.x);
+  const rangeMaxY = Math.max(originRectInfo.topLeft.y, originRectInfo.topRight.y, originRectInfo.bottomRight.y, originRectInfo.bottomLeft.y);
+  const rangeMinX = Math.min(originRectInfo.topLeft.x, originRectInfo.topRight.x, originRectInfo.bottomRight.x, originRectInfo.bottomLeft.x);
+  const rangeMinY = Math.min(originRectInfo.topLeft.y, originRectInfo.topRight.y, originRectInfo.bottomRight.y, originRectInfo.bottomLeft.y);
+
+  const rangeCenter = { x: originRectInfo.center.x, y: originRectInfo.center.y };
+  const rangeTopLeft = { x: rangeMinX, y: rangeMinY };
+  const rangeTopRight = { x: rangeMaxX, y: rangeMinY };
+  const rangeBottomRight = { x: rangeMaxX, y: rangeMaxY };
+  const rangeBottomLeft = { x: rangeMinX, y: rangeMaxY };
+
+  const rangeTop = getCenterFromTwoPoints(rangeTopLeft, rangeTopRight);
+  const rangeBottom = getCenterFromTwoPoints(rangeBottomLeft, rangeBottomRight);
+  const rangeLeft = getCenterFromTwoPoints(rangeTopLeft, rangeBottomLeft);
+  const rangeRight = getCenterFromTwoPoints(rangeTopRight, rangeBottomRight);
+
+  const rangeRectInfo: ViewRectInfo = {
+    center: rangeCenter,
+    topLeft: rangeTopLeft,
+    topRight: rangeTopRight,
+    bottomLeft: rangeBottomLeft,
+    bottomRight: rangeBottomRight,
+    top: rangeTop,
+    right: rangeRight,
+    left: rangeLeft,
+    bottom: rangeBottom
+  };
+  return rangeRectInfo;
+}
+
 export function calcElementViewRectInfo(
   elemSize: ElementSize,
   opts: {

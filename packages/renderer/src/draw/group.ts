@@ -1,5 +1,5 @@
 import type { Element, ElementType, ElementSize, RendererDrawElementOptions, ViewContext2D } from '@idraw/types';
-import { rotateElement, calcViewBoxSize } from '@idraw/util';
+import { rotateElement, calcViewBoxSize, calcViewElementSize } from '@idraw/util';
 import { drawCircle } from './circle';
 import { drawRect } from './rect';
 import { drawImage } from './image';
@@ -70,8 +70,8 @@ export function drawElement(ctx: ViewContext2D, elem: Element<ElementType>, opts
 }
 
 export function drawGroup(ctx: ViewContext2D, elem: Element<'group'>, opts: RendererDrawElementOptions) {
-  const { calculator, viewScaleInfo, viewSizeInfo, parentOpacity } = opts;
-  const { x, y, w, h, angle } = calculator?.elementSize({ x: elem.x, y: elem.y, w: elem.w, h: elem.h, angle: elem.angle }, viewScaleInfo, viewSizeInfo) || elem;
+  const { viewScaleInfo, viewSizeInfo, parentOpacity } = opts;
+  const { x, y, w, h, angle } = calcViewElementSize({ x: elem.x, y: elem.y, w: elem.w, h: elem.h, angle: elem.angle }, { viewScaleInfo, viewSizeInfo }) || elem;
   const viewElem = { ...elem, ...{ x, y, w, h, angle } };
   rotateElement(ctx, { x, y, w, h, angle }, () => {
     ctx.globalAlpha = getOpacity(elem) * parentOpacity;

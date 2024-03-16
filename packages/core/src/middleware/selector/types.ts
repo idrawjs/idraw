@@ -1,25 +1,3 @@
-import type { ElementSizeController } from '@idraw/types';
-import {
-  keyActionType,
-  keyResizeType,
-  keyAreaStart,
-  keyAreaEnd,
-  keyGroupQueue,
-  keyGroupQueueVertexesList,
-  keyHoverElement,
-  keyHoverElementVertexes,
-  keySelectedElementList,
-  keySelectedElementListVertexes,
-  keySelectedElementController,
-  keyIsMoving,
-  keyDebugElemCenter,
-  keyDebugEnd0,
-  keyDebugEndHorizontal,
-  keyDebugEndVertical,
-  keyDebugStartHorizontal,
-  keyDebugStartVertical
-} from './config';
-
 import {
   Data,
   ElementSize,
@@ -33,8 +11,33 @@ import {
   ViewCalculator,
   PointWatcherEvent,
   BoardMiddleware,
-  ViewRectVertexes
+  ViewRectVertexes,
+  ElementSizeController,
+  ElementPosition
 } from '@idraw/types';
+import {
+  keyActionType,
+  keyResizeType,
+  keyAreaStart,
+  keyAreaEnd,
+  keyGroupQueue,
+  keyGroupQueueVertexesList,
+  keyHoverElement,
+  keyHoverElementVertexes,
+  keySelectedElementList,
+  keySelectedElementListVertexes,
+  keySelectedElementController,
+  keySelectedElementPosition,
+  keySelectedReferenceXLines,
+  keySelectedReferenceYLines,
+  keyIsMoving,
+  keyDebugElemCenter,
+  keyDebugEnd0,
+  keyDebugEndHorizontal,
+  keyDebugEndVertical,
+  keyDebugStartHorizontal,
+  keyDebugStartVertical
+} from './config';
 
 export {
   Data,
@@ -96,6 +99,9 @@ export type DeepSelectorSharedStorage = {
   [keySelectedElementList]: Array<Element<ElementType>>;
   [keySelectedElementListVertexes]: ViewRectVertexes | null;
   [keySelectedElementController]: ElementSizeController | null;
+  [keySelectedElementPosition]: ElementPosition;
+  [keySelectedReferenceXLines]: Array<PointSize[]>;
+  [keySelectedReferenceYLines]: Array<PointSize[]>;
   [keyIsMoving]: boolean | null;
 
   [keyDebugElemCenter]: PointSize | null;

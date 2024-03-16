@@ -1,7 +1,8 @@
-import type { Element, ElementType, ElementSize, ElementPosition } from './element';
+import type { Element, ElementType, ElementPosition } from './element';
 import type { Point, PointSize } from './point';
 import type { Data } from './data';
 import type { ViewContext2D } from './context2d';
+import type { ModifyOptions } from './modify';
 
 export interface ViewScaleInfo {
   scale: number;
@@ -35,14 +36,53 @@ export interface ViewCalculatorOptions {
   viewContext: ViewContext2D;
 }
 
+export interface ViewCalculatorStorage {
+  viewVisibleInfoMap: ViewVisibleInfoMap;
+  visibleCount: number;
+  invisibleCount: number;
+}
+
 export interface ViewCalculator {
   isElementInView(elem: Element<ElementType>, viewScaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): boolean;
   isPointInElement(p: Point, elem: Element<ElementType>, viewScaleInfo: ViewScaleInfo, viewSize: ViewSizeInfo): boolean;
-  elementSize(size: ElementSize, viewScaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): ElementSize;
   getPointElement(
     p: Point,
     opts: { data: Data; viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo; groupQueue?: Element<'group'>[] }
   ): { index: number; element: null | Element<ElementType>; groupQueueIndex: number };
+  resetViewVisibleInfoMap(
+    data: Data,
+    opts: {
+      viewScaleInfo: ViewScaleInfo;
+      viewSizeInfo: ViewSizeInfo;
+    }
+  ): void;
+  updateVisiableStatus(opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }): void;
+  calcViewRectInfoFromOrigin(
+    uuid: string,
+    opts: {
+      checkVisible?: boolean;
+      viewScaleInfo: ViewScaleInfo;
+      viewSizeInfo: ViewSizeInfo;
+    }
+  ): ViewRectInfo | null;
+  calcViewRectInfoFromRange(
+    uuid: string,
+    opts: {
+      checkVisible?: boolean;
+      viewScaleInfo: ViewScaleInfo;
+      viewSizeInfo: ViewSizeInfo;
+    }
+  ): ViewRectInfo | null;
+  modifyViewVisibleInfoMap(
+    data: Data,
+    opts: {
+      modifyOptions: ModifyOptions;
+      viewScaleInfo: ViewScaleInfo;
+      viewSizeInfo: ViewSizeInfo;
+    }
+  ): void;
+
+  toGridNum(num: number): number;
 }
 
 export type ViewRectVertexes = [PointSize, PointSize, PointSize, PointSize];
@@ -69,8 +109,7 @@ export type ViewRectInfo = {
 
 export type ViewRectInfoMap = {
   originRectInfo: ViewRectInfo;
-  viewRectInfo: ViewRectInfo | null;
-  rangeRectInfo: ViewRectInfo | null;
+  rangeRectInfo: ViewRectInfo;
 };
 
 export type ViewVisibleInfo = ViewRectInfoMap & {
