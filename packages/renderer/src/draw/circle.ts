@@ -1,11 +1,11 @@
 import type { Element, RendererDrawElementOptions, ViewContext2D } from '@idraw/types';
-import { rotateElement } from '@idraw/util';
+import { rotateElement, calcViewElementSize } from '@idraw/util';
 import { createColorStyle } from './color';
 import { drawBoxShadow, getOpacity } from './box';
 
 export function drawCircle(ctx: ViewContext2D, elem: Element<'circle'>, opts: RendererDrawElementOptions) {
   const { detail, angle } = elem;
-  const { calculator, viewScaleInfo, viewSizeInfo, parentOpacity } = opts;
+  const { viewScaleInfo, viewSizeInfo, parentOpacity } = opts;
   const { background = '#000000', borderColor = '#000000', boxSizing, borderWidth = 0 } = detail;
   let bw: number = 0;
   if (typeof borderWidth === 'number' && borderWidth > 0) {
@@ -16,7 +16,7 @@ export function drawCircle(ctx: ViewContext2D, elem: Element<'circle'>, opts: Re
   bw = bw * viewScaleInfo.scale;
 
   // const { scale, offsetTop, offsetBottom, offsetLeft, offsetRight } = viewScaleInfo;
-  const { x, y, w, h } = calculator?.elementSize({ x: elem.x, y: elem.y, w: elem.w, h: elem.h }, viewScaleInfo, viewSizeInfo) || elem;
+  const { x, y, w, h } = calcViewElementSize({ x: elem.x, y: elem.y, w: elem.w, h: elem.h }, { viewScaleInfo, viewSizeInfo }) || elem;
   const viewElem = { ...elem, ...{ x, y, w, h, angle } };
 
   rotateElement(ctx, { x, y, w, h, angle }, () => {

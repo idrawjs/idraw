@@ -10,6 +10,9 @@ export const keyHoverElementVertexes = Symbol(`${key}_hoverElementVertexes`); //
 export const keySelectedElementList = Symbol(`${key}_selectedElementList`); // Array<Element<ElementType>> | []
 export const keySelectedElementListVertexes = Symbol(`${key}_selectedElementListVertexes`); // ViewRectVertexes | null
 export const keySelectedElementController = Symbol(`${key}_selectedElementController`); // ElementSizeController
+export const keySelectedElementPosition = Symbol(`${key}_selectedElementPosition`); // ElementPosition | []
+export const keySelectedReferenceXLines = Symbol(`${key}_selectedReferenceXLines`); // Array<PointSize[]>
+export const keySelectedReferenceYLines = Symbol(`${key}_selectedReferenceYLines`); // Array<PointSize[]>
 export const keyGroupQueue = Symbol(`${key}_groupQueue`); // Array<Element<'group'>> | []
 export const keyGroupQueueVertexesList = Symbol(`${key}_groupQueueVertexesList`); // Array<ViewRectVertexes> | []
 export const keyIsMoving = Symbol(`${key}_isMoving`); // boolean | null
@@ -32,3 +35,5 @@ export const controllerSize = 10;
 // export const wrapperColor = '#1890ff';
 
 export const auxiliaryColor = '#f7276e';
+
+export const referenceColor = '#f7276e';

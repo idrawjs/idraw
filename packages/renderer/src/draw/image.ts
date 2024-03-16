@@ -1,11 +1,11 @@
 import type { Element, RendererDrawElementOptions, ViewContext2D } from '@idraw/types';
-import { rotateElement, calcViewBoxSize } from '@idraw/util';
+import { rotateElement, calcViewBoxSize, calcViewElementSize } from '@idraw/util';
 import { drawBox, drawBoxShadow, getOpacity } from './box';
 
 export function drawImage(ctx: ViewContext2D, elem: Element<'image'>, opts: RendererDrawElementOptions) {
   const content = opts.loader.getContent(elem);
-  const { calculator, viewScaleInfo, viewSizeInfo, parentOpacity } = opts;
-  const { x, y, w, h, angle } = calculator?.elementSize(elem, viewScaleInfo, viewSizeInfo) || elem;
+  const { viewScaleInfo, viewSizeInfo, parentOpacity } = opts;
+  const { x, y, w, h, angle } = calcViewElementSize(elem, { viewScaleInfo, viewSizeInfo }) || elem;
 
   const viewElem = { ...elem, ...{ x, y, w, h, angle } };
   rotateElement(ctx, { x, y, w, h, angle }, () => {

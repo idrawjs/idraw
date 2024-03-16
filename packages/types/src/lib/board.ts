@@ -125,14 +125,32 @@ export interface BoardViewerOptions {
   afterDrawFrame: (e: { snapshot: BoardViewerFrameSnapshot<Record<any | symbol, any>> }) => void;
 }
 
+// export interface BoardViewerStorage {
+//   viewVisibleInfoMap: ViewVisibleInfoMap;
+// }
+
 export interface BoardViewer extends UtilEventEmitter<BoardViewerEventMap> {
   drawFrame(): void;
-  scale(opts: { scale: number; point: PointSize }): { moveX: number; moveY: number };
-  scroll(opts: { moveX?: number; moveY?: number }): ViewScaleInfo;
-  // scrollX(num: number): ViewScaleInfo;
-  // scrollY(num: number): ViewScaleInfo;
-  resize(viewSize: Partial<ViewSizeInfo>): ViewSizeInfo;
+  scale(opts: { scale: number; point: PointSize; ignoreUpdateVisibleStatus?: boolean }): { moveX: number; moveY: number };
+  scroll(opts: { moveX?: number; moveY?: number; ignoreUpdateVisibleStatus?: boolean }): ViewScaleInfo;
+  resize(viewSize: Partial<ViewSizeInfo>, opts?: { ignoreUpdateVisibleStatus?: boolean }): ViewSizeInfo;
   updateViewScaleInfo(opts: { scale: number; offsetX: number; offsetY: number }): ViewScaleInfo;
+
+  // resetViewVisibleInfoMap(
+  //   data: Data,
+  //   opts: {
+  //     viewScaleInfo: ViewScaleInfo;
+  //     viewSizeInfo: ViewSizeInfo;
+  //   }
+  // ): void;
+  // modifyViewVisibleInfoMap(
+  //   data: Data,
+  //   opts: {
+  //     modifyOptions: ModifyOptions;
+  //     viewScaleInfo: ViewScaleInfo;
+  //     viewSizeInfo: ViewSizeInfo;
+  //   }
+  // ): void;
 }
 
 export interface BoardRenderer extends UtilEventEmitter<RendererEventMap> {

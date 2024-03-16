@@ -14,10 +14,10 @@ export type ActiveStore = ViewSizeInfo &
 export interface StoreSharer<S extends Record<any, any> = any> {
   getActiveStorage<T extends keyof ActiveStore>(key: T): ActiveStore[T];
   setActiveStorage<T extends keyof ActiveStore>(key: T, storage: ActiveStore[T]): void;
-  getActiveStoreSnapshot(): ActiveStore;
+  getActiveStoreSnapshot(opts?: { deepClone?: boolean }): ActiveStore;
   getSharedStorage<K extends keyof S = string>(key: K): S[K];
   setSharedStorage<K extends keyof S = string>(key: K, storage: S[K]): void;
-  getSharedStoreSnapshot(): Record<string, any>;
+  getSharedStoreSnapshot(opts?: { deepClone?: boolean }): Record<string, any>;
 
   getActiveViewScaleInfo(): ViewScaleInfo;
   setActiveViewScaleInfo(viewScaleInfo: ViewScaleInfo): void;

@@ -14,7 +14,7 @@ export interface ModifyContentMap {
   moveElement: { from: ElementPosition; to: ElementPosition };
 }
 
-export interface ModifyOptions<T extends ModifyType> {
+export interface ModifyOptions<T extends ModifyType = ModifyType> {
   type: T;
   content: ModifyContentMap[T];
 }

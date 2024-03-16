@@ -58,9 +58,10 @@ export {
   calcViewScaleInfo,
   calcElementViewRectInfo,
   calcElementOriginRectInfo,
-  calcElementViewRectInfoMap
+  calcElementViewRectInfoMap,
+  originRectInfoToRangeRectInfo
 } from './lib/view-calc';
-export { sortElementsViewVisiableInfoMap } from './lib/view-visible';
+export { sortElementsViewVisiableInfoMap, calcVisibleOriginCanvasRectInfo, updateViewVisibleInfoMapStatus } from './lib/view-visible';
 export { rotatePoint, rotateVertexes, rotateByCenter } from './lib/rotate';
 export { getElementVertexes, calcElementVertexesInGroup, calcElementVertexesQueueInGroup, calcElementQueueVertexesQueueInGroup } from './lib/vertex';
 export { calcElementSizeController } from './lib/controller';

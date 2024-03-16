@@ -4,6 +4,7 @@ import {
   calcElementVertexesInGroup,
   calcElementQueueVertexesQueueInGroup,
   calcViewPointSize,
+  calcViewElementSize,
   rotatePointInGroup,
   rotatePoint,
   parseAngleToRadian,
@@ -44,11 +45,11 @@ export function isPointInViewActiveVertexes(
   p: PointSize,
   opts: { ctx: ViewContext2D; vertexes: ViewRectVertexes; viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }
 ): boolean {
-  const { ctx, viewScaleInfo, viewSizeInfo, vertexes } = opts;
-  const v0 = calcViewPointSize(vertexes[0], { viewScaleInfo, viewSizeInfo });
-  const v1 = calcViewPointSize(vertexes[1], { viewScaleInfo, viewSizeInfo });
-  const v2 = calcViewPointSize(vertexes[2], { viewScaleInfo, viewSizeInfo });
-  const v3 = calcViewPointSize(vertexes[3], { viewScaleInfo, viewSizeInfo });
+  const { ctx, viewScaleInfo, vertexes } = opts;
+  const v0 = calcViewPointSize(vertexes[0], { viewScaleInfo });
+  const v1 = calcViewPointSize(vertexes[1], { viewScaleInfo });
+  const v2 = calcViewPointSize(vertexes[2], { viewScaleInfo });
+  const v3 = calcViewPointSize(vertexes[3], { viewScaleInfo });
   ctx.beginPath();
   ctx.moveTo(v0.x, v0.y);
   ctx.lineTo(v1.x, v1.y);
@@ -832,10 +833,9 @@ export function rotateElement(
   }
 ): ElementSize {
   const { x, y, w, h, angle = 0 } = elem;
-  const { center, start, end, viewScaleInfo, viewSizeInfo } = opts;
+  const { center, start, end, viewScaleInfo } = opts;
   const elemCenter = calcViewPointSize(center, {
-    viewScaleInfo,
-    viewSizeInfo
+    viewScaleInfo
   });
   const startAngle = limitAngle(angle);
   const changedRadian = calcRadian(elemCenter, start, end);
@@ -863,7 +863,7 @@ export function getSelectedListArea(
   const indexes: number[] = [];
   const uuids: string[] = [];
   const elements: Element<ElementType>[] = [];
-  const { calculator, viewScaleInfo, viewSizeInfo, start, end } = opts;
+  const { viewScaleInfo, viewSizeInfo, start, end } = opts;
 
   if (!(Array.isArray(data.elements) && start && end)) {
     return { indexes, uuids, elements };
@@ -878,7 +878,7 @@ export function getSelectedListArea(
     if (elem?.operations?.lock === true) {
       continue;
     }
-    const elemSize = calculator.elementSize(elem, viewScaleInfo, viewSizeInfo);
+    const elemSize = calcViewElementSize(elem, { viewScaleInfo, viewSizeInfo });
 
     const center = calcElementCenter(elemSize);
     if (center.x >= startX && center.x <= endX && center.y >= startY && center.y <= endY) {
@@ -914,7 +914,7 @@ export function calcSelectedElementsArea(
     return null;
   }
   const area: AreaSize = { x: 0, y: 0, w: 0, h: 0 };
-  const { calculator, viewScaleInfo, viewSizeInfo } = opts;
+  const { viewScaleInfo, viewSizeInfo } = opts;
   let prevElemSize: ElementSize | null = null;
 
   for (let i = 0; i < elements.length; i++) {
@@ -922,7 +922,7 @@ export function calcSelectedElementsArea(
     if (elem?.operations?.invisible) {
       continue;
     }
-    const elemSize = calculator.elementSize(elem, viewScaleInfo, viewSizeInfo);
+    const elemSize = calcViewElementSize(elem, { viewScaleInfo, viewSizeInfo });
 
     if (elemSize.angle && (elemSize.angle > 0 || elemSize.angle < 0)) {
       const ves = rotateElementVertexes(elemSize);

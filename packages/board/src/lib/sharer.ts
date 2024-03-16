@@ -40,8 +40,8 @@ export class Sharer implements StoreSharer<Record<string | number | symbol, any>
     return this.#activeStore.set(key, storage);
   }
 
-  getActiveStoreSnapshot(): ActiveStore {
-    return this.#activeStore.getSnapshot();
+  getActiveStoreSnapshot(opts?: { deepClone?: boolean }): ActiveStore {
+    return this.#activeStore.getSnapshot(opts);
   }
 
   getSharedStorage(key: string | number | symbol): any {
@@ -52,8 +52,8 @@ export class Sharer implements StoreSharer<Record<string | number | symbol, any>
     return this.#sharedStore.set(key, storage);
   }
 
-  getSharedStoreSnapshot(): Record<string, any> {
-    return this.#sharedStore.getSnapshot();
+  getSharedStoreSnapshot(opts?: { deepClone?: boolean }): Record<string, any> {
+    return this.#sharedStore.getSnapshot(opts);
   }
 
   // get/set active info

@@ -32,7 +32,7 @@ import { defaultSettings, getDefaultStorage, defaultMode } from './config';
 import { exportImageFileBlobURL } from './file';
 import type { ExportImageFileBaseOptions, ExportImageFileResult } from './file';
 import { eventKeys } from './event';
-import { changeMode } from './mode';
+import { changeMode, runMiddlewares } from './mode';
 
 export class iDraw {
   #core: Core<IDrawEvent>;
@@ -54,15 +54,19 @@ export class iDraw {
     const core = this.#core;
     const store = this.#store;
     changeMode('select', core, store);
-    this.enable('ruler');
   }
 
   #setFeature(feat: IDrawFeature, status: boolean) {
-    if (feat === 'ruler') {
-      const store = this.#store;
-      store.set('enableRuler', !!status);
-      const currentMode = store.get('mode');
-      this.setMode(currentMode);
+    const store = this.#store;
+    if (['ruler', 'scroll', 'scale'].includes(feat)) {
+      const map: Record<IDrawFeature, keyof Omit<IDrawStorage, 'mode'>> = {
+        ruler: 'enableRuler',
+        scroll: 'enableScroll',
+        scale: 'enableScale'
+      };
+      store.set(map[feat], !!status);
+      runMiddlewares(this.#core, store);
+      this.#core.refresh();
     }
   }
 

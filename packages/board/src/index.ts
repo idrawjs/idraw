@@ -13,7 +13,8 @@ import type {
   ViewSizeInfo,
   PointSize,
   BoardExtendEventMap,
-  UtilEventEmitter
+  UtilEventEmitter,
+  ModifyOptions
 } from '@idraw/types';
 import { Calculator } from './lib/calculator';
 import { BoardWatcher } from './lib/watcher';
@@ -288,16 +289,41 @@ export class Board<T extends BoardExtendEventMap = BoardExtendEventMap> {
     return this.#renderer;
   }
 
-  setData(data: Data): { viewSizeInfo: ViewSizeInfo } {
+  setData(
+    data: Data,
+    opts?: {
+      modifiedOptions?: ModifyOptions; // TODO
+    }
+  ): { viewSizeInfo: ViewSizeInfo } {
+    const { modifiedOptions } = opts || {};
     const sharer = this.#sharer;
     this.#sharer.setActiveStorage('data', data);
     const viewSizeInfo = sharer.getActiveViewSizeInfo();
+    const viewScaleInfo = sharer.getActiveViewScaleInfo();
     // const currentScaleInfo = sharer.getActiveViewScaleInfo();
     const newViewContextSize = calcElementsContextSize(data.elements, {
       viewWidth: viewSizeInfo.width,
       viewHeight: viewSizeInfo.height,
       extend: true
     });
+    if (modifiedOptions) {
+      // TODO
+      // this.#viewer.modifyViewVisibleInfoMap(data, {
+      //   viewSizeInfo,
+      //   viewScaleInfo,
+      //   modifyOptions: modifiedOptions
+      // });
+      this.#viewer.resetViewVisibleInfoMap(data, {
+        viewSizeInfo,
+        viewScaleInfo
+      });
+    } else {
+      this.#viewer.resetViewVisibleInfoMap(data, {
+        viewSizeInfo,
+        viewScaleInfo
+      });
+    }
+
     this.#viewer.drawFrame();
     const newViewSizeInfo = {
       ...viewSizeInfo,
@@ -352,22 +378,30 @@ export class Board<T extends BoardExtendEventMap = BoardExtendEventMap> {
     }
   }
 
-  scale(opts: { scale: number; point: PointSize }) {
+  scale(opts: { scale: number; point: PointSize; ignoreUpdateVisibleStatus?: boolean }) {
     const viewer = this.#viewer;
-    const { moveX, moveY } = viewer.scale(opts);
-    viewer.scroll({ moveX, moveY });
+    const { ignoreUpdateVisibleStatus } = opts;
+    const { moveX, moveY } = viewer.scale({
+      ...opts,
+      ...{
+        ignoreUpdateVisibleStatus: true
+      }
+    });
+    viewer.scroll({ moveX, moveY, ignoreUpdateVisibleStatus });
   }
 
-  scroll(opts: { moveX: number; moveY: number }) {
-    return this.#viewer.scroll(opts);
+  scroll(opts: { moveX: number; moveY: number; ignoreUpdateVisibleStatus?: boolean }) {
+    const result = this.#viewer.scroll(opts);
+    return result;
   }
 
   updateViewScaleInfo(opts: { scale: number; offsetX: number; offsetY: number }) {
-    return this.#viewer.updateViewScaleInfo(opts);
+    const result = this.#viewer.updateViewScaleInfo(opts);
+    return result;
   }
 
-  resize(newViewSize: ViewSizeInfo) {
-    const viewSize = this.#viewer.resize(newViewSize);
+  resize(newViewSize: ViewSizeInfo, opts?: { ignoreUpdateVisibleStatus?: boolean }) {
+    const viewSize = this.#viewer.resize(newViewSize, opts);
     const { width, height, devicePixelRatio } = newViewSize;
     const { boardContent } = this.#opts;
     boardContent.viewContext.$resize({ width, height, devicePixelRatio });
