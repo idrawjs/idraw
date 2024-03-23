@@ -2,8 +2,9 @@ import type { Point, BoardMiddleware, PointWatcherEvent, BoardWatherWheelEvent }
 import { drawScroller, isPointInScrollThumb } from './util';
 // import type { ScrollbarThumbType } from './util';
 import { keyXThumbRect, keyYThumbRect, keyPrevPoint, keyActivePoint, keyActiveThumbType } from './config';
+import type { DeepScrollerSharedStorage } from './types';
 
-export const MiddlewareScroller: BoardMiddleware = (opts) => {
+export const MiddlewareScroller: BoardMiddleware<DeepScrollerSharedStorage> = (opts) => {
   const { viewer, boardContent, sharer } = opts;
   const { helperContext } = boardContent;
   sharer.setSharedStorage(keyXThumbRect, null); // null | ElementSize

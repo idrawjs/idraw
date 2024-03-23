@@ -18,39 +18,45 @@ export function calcViewCenterContent(data: Data, opts: { viewSizeInfo: ViewSize
   let contentY: number = data?.elements?.[0]?.y || 0;
   let contentW: number = data?.elements?.[0]?.w || 0;
   let contentH: number = data?.elements?.[0]?.h || 0;
-
   const { width, height } = opts.viewSizeInfo;
 
-  data.elements.forEach((elem: Element) => {
-    const elemSize: ElementSize = {
-      x: elem.x,
-      y: elem.y,
-      w: elem.w,
-      h: elem.h,
-      angle: elem.angle
-    };
-    if (elemSize.angle && (elemSize.angle > 0 || elemSize.angle < 0)) {
-      const ves = rotateElementVertexes(elemSize);
-      if (ves.length === 4) {
-        const xList = [ves[0].x, ves[1].x, ves[2].x, ves[3].x];
-        const yList = [ves[0].y, ves[1].y, ves[2].y, ves[3].y];
-        elemSize.x = Math.min(...xList);
-        elemSize.y = Math.min(...yList);
-        elemSize.w = Math.abs(Math.max(...xList) - Math.min(...xList));
-        elemSize.h = Math.abs(Math.max(...yList) - Math.min(...yList));
+  if (data.layout && data.layout?.detail?.overflow === 'hidden') {
+    contentX = 0;
+    contentY = 0;
+    contentW = data.layout.w || 0;
+    contentH = data.layout.h || 0;
+  } else {
+    data.elements.forEach((elem: Element) => {
+      const elemSize: ElementSize = {
+        x: elem.x,
+        y: elem.y,
+        w: elem.w,
+        h: elem.h,
+        angle: elem.angle
+      };
+      if (elemSize.angle && (elemSize.angle > 0 || elemSize.angle < 0)) {
+        const ves = rotateElementVertexes(elemSize);
+        if (ves.length === 4) {
+          const xList = [ves[0].x, ves[1].x, ves[2].x, ves[3].x];
+          const yList = [ves[0].y, ves[1].y, ves[2].y, ves[3].y];
+          elemSize.x = Math.min(...xList);
+          elemSize.y = Math.min(...yList);
+          elemSize.w = Math.abs(Math.max(...xList) - Math.min(...xList));
+          elemSize.h = Math.abs(Math.max(...yList) - Math.min(...yList));
+        }
       }
-    }
-    const areaStartX = Math.min(elemSize.x, contentX);
-    const areaStartY = Math.min(elemSize.y, contentY);
+      const areaStartX = Math.min(elemSize.x, contentX);
+      const areaStartY = Math.min(elemSize.y, contentY);
 
-    const areaEndX = Math.max(elemSize.x + elemSize.w, contentX + contentW);
-    const areaEndY = Math.max(elemSize.y + elemSize.h, contentY + contentH);
+      const areaEndX = Math.max(elemSize.x + elemSize.w, contentX + contentW);
+      const areaEndY = Math.max(elemSize.y + elemSize.h, contentY + contentH);
 
-    contentX = areaStartX;
-    contentY = areaStartY;
-    contentW = Math.abs(areaEndX - areaStartX);
-    contentH = Math.abs(areaEndY - areaStartY);
-  });
+      contentX = areaStartX;
+      contentY = areaStartY;
+      contentW = Math.abs(areaEndX - areaStartX);
+      contentH = Math.abs(areaEndY - areaStartY);
+    });
+  }
 
   if (contentW > 0 && contentH > 0) {
     const scaleW = formatNumber(width / contentW, { decimalPlaces: 4 });

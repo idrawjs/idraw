@@ -1,11 +1,12 @@
-import type { Element, ElementType, ElementAssets } from './element';
+import type { Element, ElementType, ElementAssets, ElementSize, ElementGroupDetail } from './element';
 
-export type DataUnderlay = Omit<Element<'rect'>, 'uuid' | 'angle'>; // TODO color background
-
+export type DataLayout = Pick<ElementSize, 'w' | 'h'> & {
+  detail: Omit<ElementGroupDetail, 'children'>;
+};
 export interface Data<E extends Record<string, any> = Record<string, any>> {
   elements: Element<ElementType, E>[];
   assets?: ElementAssets;
-  underlay?: DataUnderlay; // Rect or Color
+  layout?: DataLayout;
 }
 
 export type Matrix = [

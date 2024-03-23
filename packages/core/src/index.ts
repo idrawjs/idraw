@@ -10,6 +10,7 @@ export { MiddlewareScaler, middlewareEventScale } from './middleware/scaler';
 export { MiddlewareRuler, middlewareEventRuler } from './middleware/ruler';
 export { MiddlewareTextEditor, middlewareEventTextEdit, middlewareEventTextChange } from './middleware/text-editor';
 export { MiddlewareDragger } from './middleware/dragger';
+export { MiddlewareInfo } from './middleware/info';
 
 export class Core<E extends CoreEventMap = CoreEventMap> {
   #board: Board<E>;

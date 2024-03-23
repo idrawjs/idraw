@@ -58,11 +58,12 @@ export class iDraw {
 
   #setFeature(feat: IDrawFeature, status: boolean) {
     const store = this.#store;
-    if (['ruler', 'scroll', 'scale'].includes(feat)) {
+    if (['ruler', 'scroll', 'scale', 'info'].includes(feat)) {
       const map: Record<IDrawFeature, keyof Omit<IDrawStorage, 'mode'>> = {
         ruler: 'enableRuler',
         scroll: 'enableScroll',
-        scale: 'enableScale'
+        scale: 'enableScale',
+        info: 'enableInfo'
       };
       store.set(map[feat], !!status);
       runMiddlewares(this.#core, store);

@@ -1,6 +1,6 @@
 import { EventEmitter } from '@idraw/util';
-import type { LoadItemMap } from '@idraw/types';
-import { drawElementList, drawUnderlay } from './draw/index';
+import type { DataLayout, LoadItemMap } from '@idraw/types';
+import { drawElementList, drawLayout } from './draw/index';
 import { Loader } from './loader';
 import type { Data, BoardRenderer, RendererOptions, RendererEventMap, RendererDrawOptions } from '@idraw/types';
 
@@ -54,23 +54,30 @@ export class Renderer extends EventEmitter<RendererEventMap> implements BoardRen
       w: opts.viewSizeInfo.width,
       h: opts.viewSizeInfo.height
     };
-    if (data.underlay) {
-      drawUnderlay(viewContext, data.underlay, {
-        loader,
-        calculator,
-        parentElementSize,
-        parentOpacity: 1,
-        ...opts
-      });
-    }
-    drawElementList(viewContext, data, {
+    // if (data.underlay) {
+    //   drawUnderlay(viewContext, data.underlay, {
+    //     loader,
+    //     calculator,
+    //     parentElementSize,
+    //     parentOpacity: 1,
+    //     ...opts
+    //   });
+    // }
+    const drawOpts = {
       loader,
       calculator,
       parentElementSize,
       elementAssets: data.assets,
       parentOpacity: 1,
       ...opts
-    });
+    };
+    if (data.layout) {
+      drawLayout(viewContext, data.layout as DataLayout, drawOpts, () => {
+        drawElementList(viewContext, data, drawOpts);
+      });
+    } else {
+      drawElementList(viewContext, data, drawOpts);
+    }
   }
 
   scale(num: number) {

@@ -5,4 +5,4 @@ export { drawSVG } from './svg';
 export { drawHTML } from './html';
 export { drawText } from './text';
 export { drawElementList } from './elements';
-export { drawUnderlay } from './underlay';
+export { drawLayout } from './layout';

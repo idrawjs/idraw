@@ -43,8 +43,11 @@ export interface ViewCalculatorStorage {
 }
 
 export interface ViewCalculator {
-  isElementInView(elem: Element<ElementType>, viewScaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): boolean;
+  /**
+   * @deprecated
+   */
   isPointInElement(p: Point, elem: Element<ElementType>, viewScaleInfo: ViewScaleInfo, viewSize: ViewSizeInfo): boolean;
+  needRender(elem: Element<ElementType>): boolean;
   getPointElement(
     p: Point,
     opts: { data: Data; viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo; groupQueue?: Element<'group'>[] }
@@ -82,7 +85,7 @@ export interface ViewCalculator {
     }
   ): void;
 
-  toGridNum(num: number): number;
+  toGridNum(num: number, opts?: { ignore?: boolean }): number;
 }
 
 export type ViewRectVertexes = [PointSize, PointSize, PointSize, PointSize];

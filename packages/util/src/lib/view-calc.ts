@@ -119,6 +119,9 @@ export function calcViewVertexes(vertexes: ViewRectVertexes, opts: { viewScaleIn
   ];
 }
 
+/**
+ * @deprecated
+ */
 export function isViewPointInElement(
   p: Point,
   opts: { context2d: ViewContext2D; element: ElementSize; viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }
@@ -224,6 +227,9 @@ export function getViewPointAtElement(
   return result;
 }
 
+/**
+ * @deprecated
+ */
 export function isElementInView(elem: ElementSize, opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }): boolean {
   const { viewSizeInfo, viewScaleInfo } = opts;
   const { width, height } = viewSizeInfo;
@@ -434,7 +440,7 @@ export function calcElementViewRectInfoMap(
 
   return {
     originRectInfo,
-    viewRectInfo,
+    // viewRectInfo,
     rangeRectInfo
   };
 }

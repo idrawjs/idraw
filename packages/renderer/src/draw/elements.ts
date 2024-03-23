@@ -19,7 +19,7 @@ export function drawElementList(ctx: ViewContext2D, data: Data, opts: RendererDr
       }
     };
     if (opts.forceDrawAll !== true) {
-      if (!opts.calculator?.isElementInView(elem, opts.viewScaleInfo, opts.viewSizeInfo)) {
+      if (!opts.calculator?.needRender(elem)) {
         continue;
       }
     }

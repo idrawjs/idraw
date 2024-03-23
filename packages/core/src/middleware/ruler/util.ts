@@ -1,5 +1,7 @@
-import type { ViewScaleInfo, ViewSizeInfo, ViewContext2D } from '@idraw/types';
-import { formatNumber, rotateByCenter } from '@idraw/util';
+import type { Element, ViewScaleInfo, ViewSizeInfo, ViewContext2D, BoardViewerFrameSnapshot, ViewRectInfo, ViewCalculator } from '@idraw/types';
+import { formatNumber, rotateByCenter, getViewScaleInfoFromSnapshot, getViewSizeInfoFromSnapshot } from '@idraw/util';
+import type { DeepRulerSharedStorage } from './types';
+import { keySelectedElementList, keyActionType } from '../selector';
 
 const rulerSize = 16;
 const background = '#FFFFFFA8';
@@ -12,6 +14,7 @@ const fontWeight = 100;
 const gridColor = '#AAAAAA20';
 const gridKeyColor = '#AAAAAA40';
 const lineSize = 1;
+const selectedAreaColor = '#196097';
 
 // const rulerUnit = 10;
 // const rulerKeyUnit = 100;
@@ -234,4 +237,63 @@ export function drawUnderGrid(
     ctx.stroke();
   }
   // TODO
+}
+
+export function drawScrollerSelectedArea(ctx: ViewContext2D, opts: { snapshot: BoardViewerFrameSnapshot<DeepRulerSharedStorage>; calculator: ViewCalculator }) {
+  const { snapshot, calculator } = opts;
+  const { sharedStore } = snapshot;
+  const selectedElementList = sharedStore[keySelectedElementList];
+  const actionType = sharedStore[keyActionType];
+
+  if (['select', 'drag', 'drag-list', 'drag-list-end'].includes(actionType as string) && selectedElementList.length > 0) {
+    const viewScaleInfo = getViewScaleInfoFromSnapshot(snapshot);
+    const viewSizeInfo = getViewSizeInfoFromSnapshot(snapshot);
+    const rangeRectInfoList: ViewRectInfo[] = [];
+    const xAreaStartList: number[] = [];
+    const xAreaEndList: number[] = [];
+    const yAreaStartList: number[] = [];
+    const yAreaEndList: number[] = [];
+    selectedElementList.forEach((elem: Element) => {
+      const rectInfo = calculator.calcViewRectInfoFromRange(elem.uuid, {
+        viewScaleInfo,
+        viewSizeInfo
+      });
+      if (rectInfo) {
+        rangeRectInfoList.push(rectInfo);
+        xAreaStartList.push(rectInfo.left.x);
+        xAreaEndList.push(rectInfo.right.x);
+        yAreaStartList.push(rectInfo.top.y);
+        yAreaEndList.push(rectInfo.bottom.y);
+      }
+    });
+
+    if (!(rangeRectInfoList.length > 0)) {
+      return;
+    }
+
+    const xAreaStart = Math.min(...xAreaStartList);
+    const xAreaEnd = Math.max(...xAreaEndList);
+    const yAreaStart = Math.min(...yAreaStartList);
+    const yAreaEnd = Math.max(...yAreaEndList);
+
+    ctx.globalAlpha = 1;
+
+    ctx.beginPath();
+    ctx.moveTo(xAreaStart, 0);
+    ctx.lineTo(xAreaEnd, 0);
+    ctx.lineTo(xAreaEnd, rulerSize);
+    ctx.lineTo(xAreaStart, rulerSize);
+    ctx.fillStyle = selectedAreaColor;
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(0, yAreaStart);
+    ctx.lineTo(rulerSize, yAreaStart);
+    ctx.lineTo(rulerSize, yAreaEnd);
+    ctx.lineTo(0, yAreaEnd);
+    ctx.fillStyle = selectedAreaColor;
+    ctx.closePath();
+    ctx.fill();
+  }
 }

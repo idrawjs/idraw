@@ -14,7 +14,8 @@ export function getDefaultStorage(): IDrawStorage {
     enableScroll: false,
     enableSelect: false,
     enableTextEdit: false,
-    enableDrag: false
+    enableDrag: false,
+    enableInfo: false
   };
   return storage;
 }
