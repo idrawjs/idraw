@@ -102,6 +102,8 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
     const { sharer } = this.#opts;
     const activeStore: ActiveStore = sharer.getActiveStoreSnapshot();
     const sharedStore: Record<string, any> = sharer.getSharedStoreSnapshot();
+    // const activeStore: ActiveStore = sharer.getActiveStoreSnapshot({ deepClone: true });
+    // const sharedStore: Record<string, any> = sharer.getSharedStoreSnapshot({ deepClone: true });
     this.#drawFrameSnapshotQueue.push({
       activeStore,
       sharedStore

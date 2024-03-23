@@ -14,9 +14,9 @@ export function getOpacity(elem: Element): number {
 
 export function drawBox(
   ctx: ViewContext2D,
-  viewElem: Element<ElementType>,
+  viewElem: Element,
   opts: {
-    originElem: Element<ElementType>;
+    originElem: Element;
     calcElemSize: ElementSize;
     pattern?: string | CanvasPattern | null;
     renderContent: () => void;
@@ -88,7 +88,7 @@ function drawClipPath(
   }
 }
 
-function drawBoxBackground(
+export function drawBoxBackground(
   ctx: ViewContext2D,
   viewElem: Element<ElementType>,
   opts: { pattern?: string | CanvasPattern | null; viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }
@@ -149,7 +149,7 @@ function drawBoxBackground(
   }
 }
 
-function drawBoxBorder(ctx: ViewContext2D, viewElem: Element<ElementType>, opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }): void {
+export function drawBoxBorder(ctx: ViewContext2D, viewElem: Element<ElementType>, opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }): void {
   if (viewElem.detail.borderWidth === 0) {
     return;
   }

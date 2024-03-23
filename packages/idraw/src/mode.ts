@@ -1,6 +1,15 @@
 import type { IDrawMode, IDrawStorage } from '@idraw/types';
 import { Store } from '@idraw/util';
-import { Core, MiddlewareSelector, MiddlewareScroller, MiddlewareScaler, MiddlewareRuler, MiddlewareTextEditor, MiddlewareDragger } from '@idraw/core';
+import {
+  Core,
+  MiddlewareSelector,
+  MiddlewareScroller,
+  MiddlewareScaler,
+  MiddlewareRuler,
+  MiddlewareTextEditor,
+  MiddlewareDragger,
+  MiddlewareInfo
+} from '@idraw/core';
 import { IDrawEvent } from './event';
 
 function isValidMode(mode: string | IDrawMode) {
@@ -8,7 +17,7 @@ function isValidMode(mode: string | IDrawMode) {
 }
 
 export function runMiddlewares(core: Core<IDrawEvent>, store: Store<IDrawStorage>) {
-  const { enableRuler, enableScale, enableScroll, enableSelect, enableTextEdit, enableDrag } = store.getSnapshot();
+  const { enableRuler, enableScale, enableScroll, enableSelect, enableTextEdit, enableDrag, enableInfo } = store.getSnapshot();
   if (enableScroll === true) {
     core.use(MiddlewareScroller);
   } else if (enableScroll === false) {
@@ -44,6 +53,12 @@ export function runMiddlewares(core: Core<IDrawEvent>, store: Store<IDrawStorage
   } else if (enableDrag === false) {
     core.disuse(MiddlewareDragger);
   }
+
+  if (enableInfo === true) {
+    core.use(MiddlewareInfo);
+  } else if (enableInfo === false) {
+    core.disuse(MiddlewareInfo);
+  }
 }
 
 export function changeMode(mode: IDrawMode, core: Core<IDrawEvent>, store: Store<IDrawStorage>) {
@@ -53,6 +68,7 @@ export function changeMode(mode: IDrawMode, core: Core<IDrawEvent>, store: Store
   let enableTextEdit: boolean = false;
   let enableDrag: boolean = false;
   let enableRuler: boolean = false;
+  const enableInfo: boolean = true;
 
   let innerMode: IDrawMode = 'select';
   store.set('mode', innerMode);
@@ -92,6 +108,7 @@ export function changeMode(mode: IDrawMode, core: Core<IDrawEvent>, store: Store
   store.set('enableTextEdit', enableTextEdit);
   store.set('enableDrag', enableDrag);
   store.set('enableRuler', enableRuler);
+  store.set('enableInfo', enableInfo);
 
   runMiddlewares(core, store);
 }

@@ -126,7 +126,7 @@ export function drawGroup(ctx: ViewContext2D, elem: Element<'group'>, opts: Rend
                   }
                 };
                 if (opts.forceDrawAll !== true) {
-                  if (!calculator?.isElementInView(child, opts.viewScaleInfo, opts.viewSizeInfo)) {
+                  if (!calculator?.needRender(child)) {
                     continue;
                   }
                 }

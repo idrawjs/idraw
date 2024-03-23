@@ -6,7 +6,6 @@ import type {
   ViewCalculator,
   ViewCalculatorOptions,
   ViewScaleInfo,
-  ElementSize,
   ViewSizeInfo,
   ViewCalculatorStorage,
   ViewRectInfo,
@@ -17,7 +16,6 @@ import {
   is,
   isViewPointInElement,
   getViewPointAtElement,
-  isElementInView,
   Store,
   sortElementsViewVisiableInfoMap,
   updateViewVisibleInfoMapStatus,
@@ -43,7 +41,10 @@ export class Calculator implements ViewCalculator {
     });
   }
 
-  toGridNum(num: number): number {
+  toGridNum(num: number, opts?: { ignore?: boolean }): number {
+    if (opts?.ignore === true) {
+      return num;
+    }
     // TODO
     // const gridUnitSize = 1; // px;
     return Math.round(num);
@@ -53,10 +54,18 @@ export class Calculator implements ViewCalculator {
     this.#opts = null as any;
   }
 
-  isElementInView(elem: ElementSize, viewScaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): boolean {
-    return isElementInView(elem, { viewScaleInfo, viewSizeInfo });
+  needRender(elem: Element<ElementType>): boolean {
+    const viewVisibleInfoMap = this.#store.get('viewVisibleInfoMap');
+    const info = viewVisibleInfoMap[elem.uuid];
+    if (!info) {
+      return true;
+    }
+    return info.isVisibleInView;
   }
 
+  /**
+   * @deprecated
+   */
   isPointInElement(p: Point, elem: Element<ElementType>, viewScaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): boolean {
     const context2d = this.#opts.viewContext;
     return isViewPointInElement(p, {

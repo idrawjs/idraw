@@ -71,6 +71,9 @@ import {
 import { calcReferenceInfo } from './reference';
 import { middlewareEventTextEdit } from '../text-editor';
 
+export { keySelectedElementList, keyActionType, keyResizeType, keyGroupQueue };
+export type { DeepSelectorSharedStorage };
+
 export const middlewareEventSelect: string = '@middleware/select';
 
 export const middlewareEventSelectClear: string = '@middleware/select-clear';
@@ -445,6 +448,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
               sharer.setSharedStorage(keySelectedReferenceYLines, referenceInfo.yLines);
             }
           } catch (err) {
+            // eslint-disable-next-line no-console
             console.error(err);
           }
 
@@ -479,7 +483,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
                   type: 'updateElement',
                   content: {
                     element: elem,
-                    position: sharer.getSharedStorage(keySelectedElementPosition) || []
+                    position: getElementPositionFromList(elem.uuid, data.elements) || []
                   }
                 },
                 viewSizeInfo,
@@ -487,6 +491,10 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
               });
             }
           });
+          // calculator.updateVisiableStatus({
+          //   viewSizeInfo,
+          //   viewScaleInfo
+          // });
 
           sharer.setActiveStorage('data', data);
         }
@@ -533,22 +541,20 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
               sharer
             });
 
-            elems[0].angle = resizedElemSize.angle;
+            elems[0].angle = calculator.toGridNum(resizedElemSize.angle || 0);
           } else {
             const resizedElemSize = resizeElement(elems[0], { scale, start: resizeStart, end: resizeEnd, resizeType, sharer });
-            elems[0].x = calculator.toGridNum(resizedElemSize.x);
-            elems[0].y = calculator.toGridNum(resizedElemSize.y);
+            const calcOpts = { ignore: !!elems[0].angle };
+            elems[0].x = calculator.toGridNum(resizedElemSize.x, calcOpts);
+            elems[0].y = calculator.toGridNum(resizedElemSize.y, calcOpts);
             if (elems[0].type === 'group' && elems[0].operations?.deepResize === true) {
-              // TODO
-              // elems[0].w = resizedElemSize.w;
-              // elems[0].h = resizedElemSize.h;
               deepResizeGroupElement(elems[0] as Element<'group'>, {
-                w: calculator.toGridNum(resizedElemSize.w),
-                h: calculator.toGridNum(resizedElemSize.h)
+                w: calculator.toGridNum(resizedElemSize.w, calcOpts),
+                h: calculator.toGridNum(resizedElemSize.h, calcOpts)
               });
             } else {
-              elems[0].w = calculator.toGridNum(resizedElemSize.w);
-              elems[0].h = calculator.toGridNum(resizedElemSize.h);
+              elems[0].w = calculator.toGridNum(resizedElemSize.w, calcOpts);
+              elems[0].h = calculator.toGridNum(resizedElemSize.h, calcOpts);
             }
           }
 

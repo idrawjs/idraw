@@ -4,7 +4,7 @@ import { keyActivePoint, keyActiveThumbType, keyPrevPoint, keyXThumbRect, keyYTh
 
 const minScrollerWidth = 12;
 const scrollerLineWidth = 16;
-const scrollerThumbAlpha = 0.36;
+const scrollerThumbAlpha = 0.3;
 
 export type ScrollbarThumbType = 'X' | 'Y';
 

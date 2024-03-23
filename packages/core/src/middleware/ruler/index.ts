@@ -1,11 +1,12 @@
 import type { BoardMiddleware, CoreEventMap } from '@idraw/types';
 import { getViewScaleInfoFromSnapshot, getViewSizeInfoFromSnapshot } from '@idraw/util';
-import { drawRulerBackground, drawXRuler, drawYRuler, calcXRulerScaleList, calcYRulerScaleList, drawUnderGrid } from './util';
+import { drawRulerBackground, drawXRuler, drawYRuler, calcXRulerScaleList, calcYRulerScaleList, drawUnderGrid, drawScrollerSelectedArea } from './util';
+import type { DeepRulerSharedStorage } from './types';
 
 export const middlewareEventRuler = '@middleware/show-ruler';
 
-export const MiddlewareRuler: BoardMiddleware<Record<string, any>, CoreEventMap> = (opts) => {
-  const { boardContent, viewer, eventHub } = opts;
+export const MiddlewareRuler: BoardMiddleware<DeepRulerSharedStorage, CoreEventMap> = (opts) => {
+  const { boardContent, viewer, eventHub, calculator } = opts;
   const { helperContext, underContext } = boardContent;
   let show: boolean = true;
   let showGrid: boolean = true;
@@ -35,6 +36,8 @@ export const MiddlewareRuler: BoardMiddleware<Record<string, any>, CoreEventMap>
       if (show === true) {
         const viewScaleInfo = getViewScaleInfoFromSnapshot(snapshot);
         const viewSizeInfo = getViewSizeInfoFromSnapshot(snapshot);
+        drawScrollerSelectedArea(helperContext, { snapshot, calculator });
+
         drawRulerBackground(helperContext, { viewScaleInfo, viewSizeInfo });
 
         const xList = calcXRulerScaleList({ viewScaleInfo, viewSizeInfo });
