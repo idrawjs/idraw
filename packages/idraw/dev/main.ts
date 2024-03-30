@@ -3,10 +3,8 @@ import { iDraw } from '../src/index';
 import { getData } from './data';
 
 const opts = {
-  width: 400,
-  height: 400,
-  contextWidth: 400,
-  contextHeight: 400,
+  width: 800,
+  height: 500,
   devicePixelRatio: 2
 };
 
@@ -20,6 +18,7 @@ const idraw = new iDraw(
   })
 );
 idraw.setData(data);
+idraw.centerContent();
 // idraw.scale(0.5);
 // idraw.scale(2);
 // idraw.scrollX(-80);
