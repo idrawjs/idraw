@@ -4,7 +4,7 @@ import { drawBoxShadow, drawBoxBackground, drawBoxBorder } from './box';
 
 export function drawLayout(ctx: ViewContext2D, layout: DataLayout, opts: RendererDrawElementOptions, renderContent: (ctx: ViewContext2D) => void) {
   const { viewScaleInfo, viewSizeInfo, parentOpacity } = opts;
-  const elem: Element = { uuid: 'layout', type: 'group', x: 0, y: 0, ...layout };
+  const elem: Element = { uuid: 'layout', type: 'group', ...layout };
   const { x, y, w, h } = calcViewElementSize(elem, { viewScaleInfo, viewSizeInfo }) || elem;
   const angle = 0;
   const viewElem: Element = { ...elem, ...{ x, y, w, h, angle } } as Element;
@@ -19,7 +19,7 @@ export function drawLayout(ctx: ViewContext2D, layout: DataLayout, opts: Rendere
 
   if (layout.detail.overflow === 'hidden') {
     const { viewScaleInfo, viewSizeInfo } = opts;
-    const elem: Element<'group'> = { uuid: 'layout', type: 'group', x: 0, y: 0, ...layout } as Element<'group'>;
+    const elem: Element<'group'> = { uuid: 'layout', type: 'group', ...layout } as Element<'group'>;
     const viewElemSize = calcViewElementSize(elem, { viewScaleInfo, viewSizeInfo }) || elem;
     const viewElem = { ...elem, ...viewElemSize };
     const { x, y, w, h, radiusList } = calcViewBoxSize(viewElem, {

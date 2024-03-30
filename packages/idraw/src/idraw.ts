@@ -134,7 +134,7 @@ export class iDraw {
   centerContent(opts?: { data?: Data }) {
     const data = opts?.data || this.#core.getData();
     const { viewSizeInfo } = this.getViewInfo();
-    if (Array.isArray(data?.elements) && data?.elements.length > 0) {
+    if (data?.layout || (Array.isArray(data?.elements) && data?.elements.length > 0)) {
       const result = calcViewCenterContent(data, { viewSizeInfo });
       this.setViewScale(result);
     }

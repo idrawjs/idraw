@@ -1,4 +1,5 @@
 import type { CoreEventMap, Data } from '@idraw/types';
+import { eventChange } from '@idraw/core';
 
 import {
   middlewareEventRuler,
@@ -9,12 +10,23 @@ import {
   middlewareEventTextChange
 } from '@idraw/core';
 
-const idrawEventChange = 'change';
+const idrawEventChange = eventChange;
 
 export type IDrawEvent = CoreEventMap & {
-  change: {
+  [idrawEventChange]: {
     data: Data;
-    type: 'updateElement' | 'deleteElement' | 'moveElement' | 'addElement' | 'dragElement' | 'resizeElement' | 'setData' | 'undo' | 'redo' | 'other';
+    type:
+      | 'updateElement'
+      | 'deleteElement'
+      | 'moveElement'
+      | 'addElement'
+      | 'dragElement'
+      | 'resizeElement'
+      | 'setData'
+      | 'undo'
+      | 'redo'
+      | 'changeLayout' // TODO
+      | 'other';
   };
 };
 

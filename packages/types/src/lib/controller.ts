@@ -38,3 +38,5 @@ export interface ElementSizeController {
   rightMiddle: ElementSizeControllerItem;
   rotate: ElementSizeControllerItem;
 }
+
+export type LayoutSizeController = Omit<ElementSizeController, 'rotate' | 'elementWrapper'>;

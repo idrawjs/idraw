@@ -2,6 +2,7 @@ import type { Data, PointSize, CoreOptions, BoardMiddleware, ViewSizeInfo, CoreE
 import { Board } from '@idraw/board';
 import { createBoardContent, validateElements } from '@idraw/util';
 import { Cursor } from './lib/cursor';
+export { eventChange } from './config';
 
 // export { MiddlewareSelector } from './middleware/selector';
 export { MiddlewareSelector, middlewareEventSelect, middlewareEventSelectClear } from './middleware/selector';
@@ -11,6 +12,7 @@ export { MiddlewareRuler, middlewareEventRuler } from './middleware/ruler';
 export { MiddlewareTextEditor, middlewareEventTextEdit, middlewareEventTextChange } from './middleware/text-editor';
 export { MiddlewareDragger } from './middleware/dragger';
 export { MiddlewareInfo } from './middleware/info';
+export { MiddlewareLayoutSelector } from './middleware/layout-selector';
 
 export class Core<E extends CoreEventMap = CoreEventMap> {
   #board: Board<E>;

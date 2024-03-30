@@ -28,7 +28,7 @@ export function getDefaultElementDetailConfig(): DefaultElementDetailConfig {
     textAlign: 'left',
     verticalAlign: 'top',
     fontSize: 16,
-    lineHeight: 20,
+    // lineHeight: 20,
     fontFamily: 'sans-serif',
     fontWeight: 400,
     overflow: 'hidden'
