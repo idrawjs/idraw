@@ -288,8 +288,30 @@ const data: Data = {
         //   originW: 80
         // }
       }
+    },
+    {
+      uuid: createUUID(),
+      type: 'text',
+      x: 0,
+      y: 150,
+      w: 200,
+      h: 100,
+      detail: {
+        text: '文字',
+        fontSize: 100
+        // lineHeight: 100
+      }
     }
-  ]
+  ],
+  layout: {
+    x: 0,
+    y: 0,
+    w: 400,
+    h: 400,
+    detail: {
+      background: '#F0F0F0'
+    }
+  }
 };
 
 // const data: Data = {
