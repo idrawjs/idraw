@@ -7,7 +7,7 @@ const detailConfig = getDefaultElementDetailConfig();
 
 export function drawText(ctx: ViewContext2D, elem: Element<'text'>, opts: RendererDrawElementOptions) {
   const { viewScaleInfo, viewSizeInfo, parentOpacity } = opts;
-  const { x, y, w, h, angle } = calcViewElementSize(elem, { viewScaleInfo, viewSizeInfo }) || elem;
+  const { x, y, w, h, angle } = calcViewElementSize(elem, { viewScaleInfo }) || elem;
   const viewElem = { ...elem, ...{ x, y, w, h, angle } };
   rotateElement(ctx, { x, y, w, h, angle }, () => {
     drawBox(ctx, viewElem, {
@@ -21,8 +21,11 @@ export function drawText(ctx: ViewContext2D, elem: Element<'text'>, opts: Render
           ...detailConfig,
           ...elem.detail
         };
-        const fontSize = (detail.fontSize || detailConfig.fontSize) * viewScaleInfo.scale;
-        const lineHeight = detail.lineHeight ? detail.lineHeight * viewScaleInfo.scale : fontSize;
+        const originFontSize = detail.fontSize || detailConfig.fontSize;
+        const fontSize = originFontSize * viewScaleInfo.scale;
+
+        const originLineHeight = detail.lineHeight || originFontSize;
+        const lineHeight = originLineHeight * viewScaleInfo.scale;
 
         ctx.fillStyle = elem.detail.color || detailConfig.color;
         ctx.textBaseline = 'top';
@@ -42,7 +45,7 @@ export function drawText(ctx: ViewContext2D, elem: Element<'text'>, opts: Render
 
           if (tempText.length > 0) {
             for (let i = 0; i < tempText.length; i++) {
-              if (ctx.measureText(lineText + (tempText[i] || '')).width < ctx.$doPixelRatio(w)) {
+              if (ctx.measureText(lineText + (tempText[i] || '')).width <= ctx.$doPixelRatio(w)) {
                 lineText += tempText[i] || '';
               } else {
                 lines.push({
@@ -56,7 +59,7 @@ export function drawText(ctx: ViewContext2D, elem: Element<'text'>, opts: Render
                 break;
               }
               if (tempText.length - 1 === i) {
-                if ((lineNum + 1) * fontHeight < h) {
+                if ((lineNum + 1) * fontHeight <= h) {
                   lines.push({
                     text: lineText,
                     width: ctx.$undoPixelRatio(ctx.measureText(lineText).width)

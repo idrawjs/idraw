@@ -70,9 +70,10 @@ import {
 } from './config';
 import { calcReferenceInfo } from './reference';
 import { middlewareEventTextEdit } from '../text-editor';
+import { eventChange } from '../../config';
 
 export { keySelectedElementList, keyActionType, keyResizeType, keyGroupQueue };
-export type { DeepSelectorSharedStorage };
+export type { DeepSelectorSharedStorage, ActionType };
 
 export const middlewareEventSelect: string = '@middleware/select';
 
@@ -292,6 +293,11 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
       triggerCursor(target);
 
       if (target.type === null) {
+        if (sharer.getSharedStorage(keyHoverElement) || sharer.getSharedStorage(keyHoverElementVertexes)) {
+          sharer.setSharedStorage(keyHoverElement, null);
+          sharer.setSharedStorage(keyHoverElementVertexes, null);
+          viewer.drawFrame();
+        }
         return;
       }
 
@@ -314,7 +320,6 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
       }
 
       if (target.type === 'over-element' && target?.elements?.length === 1) {
-        // sharer.setSharedStorage(keyHoverElement, target.elements[0]);
         updateHoverElement(target.elements[0]);
         viewer.drawFrame();
         return;
@@ -580,7 +585,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
       prevPoint = e.point;
 
       // if (data && (['drag', 'drag-list', 'drag-list-end', 'resize'] as ActionType[]).includes(actionType)) {
-      //   eventHub.trigger('change', { data });
+      //   eventHub.trigger(eventChange, { data });
       // }
     },
 
@@ -657,7 +662,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
           if (type === 'resize') {
             type = 'resizeElement';
           }
-          eventHub.trigger('change', { data, type });
+          eventHub.trigger(eventChange, { data, type });
         }
         viewer.drawFrame();
       };

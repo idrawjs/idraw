@@ -14,7 +14,7 @@ import {
 } from '@idraw/types';
 import { rotateElementVertexes } from './rotate';
 import { checkRectIntersect } from './rect';
-import { calcElementVertexesInGroup } from './vertex';
+import { calcElementVertexesInGroup, calcElementVertexes } from './vertex';
 import { getCenterFromTwoPoints } from './point';
 
 export function calcViewScaleInfo(info: { scale: number; offsetX: number; offsetY: number }, opts: { viewSizeInfo: ViewSizeInfo }): ViewScaleInfo {
@@ -83,7 +83,7 @@ export function viewScroll(opts: { moveX?: number; moveY?: number; viewScaleInfo
   };
 }
 
-export function calcViewElementSize(size: ElementSize, opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }): ElementSize {
+export function calcViewElementSize(size: ElementSize, opts: { viewScaleInfo: ViewScaleInfo }): ElementSize {
   const { viewScaleInfo } = opts;
   const { x, y, w, h, angle } = size;
   const { scale, offsetTop, offsetLeft } = viewScaleInfo;
@@ -126,10 +126,10 @@ export function isViewPointInElement(
   p: Point,
   opts: { context2d: ViewContext2D; element: ElementSize; viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }
 ): boolean {
-  const { context2d: ctx, element: elem, viewScaleInfo, viewSizeInfo } = opts;
+  const { context2d: ctx, element: elem, viewScaleInfo } = opts;
 
   const { angle = 0 } = elem;
-  const { x, y, w, h } = calcViewElementSize(elem, { viewScaleInfo, viewSizeInfo });
+  const { x, y, w, h } = calcViewElementSize(elem, { viewScaleInfo });
   const vertexes = rotateElementVertexes({ x, y, w, h, angle });
   if (vertexes.length >= 2) {
     ctx.beginPath();
@@ -140,6 +140,40 @@ export function isViewPointInElement(
     ctx.closePath();
   }
   if (ctx.isPointInPath(p.x, p.y)) {
+    return true;
+  }
+  return false;
+}
+
+export function isViewPointInElementSize(
+  p: Point,
+  elemSize: ElementSize,
+  opts?: {
+    includeBorder?: boolean;
+  }
+): boolean {
+  const vertexes = calcElementVertexes(elemSize);
+  return isViewPointInVertexes(p, vertexes, opts);
+}
+
+export function isViewPointInVertexes(
+  p: Point,
+  vertexes: ViewRectVertexes,
+  opts?: {
+    includeBorder?: boolean;
+  }
+): boolean {
+  const xList = [vertexes[0].x, vertexes[1].x, vertexes[2].x, vertexes[3].x];
+  const yList = [vertexes[0].y, vertexes[1].y, vertexes[2].y, vertexes[3].y];
+  const mixX = Math.min(...xList);
+  const maxX = Math.max(...xList);
+  const mixY = Math.min(...yList);
+  const maxY = Math.max(...yList);
+
+  if (p.x > mixX && p.x < maxX && p.y > mixY && p.y < maxY) {
+    return true;
+  }
+  if (opts?.includeBorder === true && (p.x === mixX || p.x === maxX || p.y === mixY || p.y === maxY)) {
     return true;
   }
   return false;
@@ -234,7 +268,7 @@ export function isElementInView(elem: ElementSize, opts: { viewScaleInfo: ViewSc
   const { viewSizeInfo, viewScaleInfo } = opts;
   const { width, height } = viewSizeInfo;
   const { angle } = elem;
-  const { x, y, w, h } = calcViewElementSize(elem, { viewScaleInfo, viewSizeInfo });
+  const { x, y, w, h } = calcViewElementSize(elem, { viewScaleInfo });
   const ves = rotateElementVertexes({ x, y, w, h, angle });
   const viewSize = { x: 0, y: 0, w: width, h: height };
 

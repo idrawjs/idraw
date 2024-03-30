@@ -59,12 +59,14 @@ export {
   calcElementViewRectInfo,
   calcElementOriginRectInfo,
   calcElementViewRectInfoMap,
-  originRectInfoToRangeRectInfo
+  originRectInfoToRangeRectInfo,
+  isViewPointInElementSize,
+  isViewPointInVertexes
 } from './lib/view-calc';
 export { sortElementsViewVisiableInfoMap, calcVisibleOriginCanvasRectInfo, updateViewVisibleInfoMapStatus } from './lib/view-visible';
 export { rotatePoint, rotateVertexes, rotateByCenter } from './lib/rotate';
 export { getElementVertexes, calcElementVertexesInGroup, calcElementVertexesQueueInGroup, calcElementQueueVertexesQueueInGroup } from './lib/vertex';
-export { calcElementSizeController } from './lib/controller';
+export { calcElementSizeController, calcLayoutSizeController } from './lib/controller';
 export { generateSVGPath, parseSVGPath } from './lib/svg-path';
 export { generateHTML, parseHTML } from './lib/html';
 export { compressImage } from './lib/image';

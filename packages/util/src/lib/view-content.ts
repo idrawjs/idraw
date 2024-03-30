@@ -2,6 +2,7 @@ import type { Data, ViewSizeInfo, Element, ElementSize, ViewScaleInfo, PointSize
 import { rotateElementVertexes } from './rotate';
 import {} from './view-calc';
 import { formatNumber } from './number';
+import { is } from './is';
 
 interface ViewCenterContentResult {
   offsetX: number;
@@ -56,6 +57,16 @@ export function calcViewCenterContent(data: Data, opts: { viewSizeInfo: ViewSize
       contentW = Math.abs(areaEndX - areaStartX);
       contentH = Math.abs(areaEndY - areaStartY);
     });
+  }
+
+  if (data.layout) {
+    const { x, y, w, h } = data.layout;
+    if (is.x(x) && is.y(y) && is.w(w) && is.h(h)) {
+      contentX = Math.min(contentX, x);
+      contentY = Math.min(contentY, y);
+      contentW = Math.max(contentW, w);
+      contentH = Math.max(contentH, h);
+    }
   }
 
   if (contentW > 0 && contentH > 0) {

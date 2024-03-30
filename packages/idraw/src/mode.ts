@@ -2,6 +2,7 @@ import type { IDrawMode, IDrawStorage } from '@idraw/types';
 import { Store } from '@idraw/util';
 import {
   Core,
+  MiddlewareLayoutSelector,
   MiddlewareSelector,
   MiddlewareScroller,
   MiddlewareScaler,
@@ -25,8 +26,10 @@ export function runMiddlewares(core: Core<IDrawEvent>, store: Store<IDrawStorage
   }
 
   if (enableSelect === true) {
+    core.use(MiddlewareLayoutSelector);
     core.use(MiddlewareSelector);
   } else if (enableSelect === false) {
+    core.disuse(MiddlewareLayoutSelector);
     core.disuse(MiddlewareSelector);
   }
 
