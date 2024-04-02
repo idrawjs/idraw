@@ -81,6 +81,7 @@ function textDesc(desc: any): boolean {
     color,
     fontSize,
     lineHeight,
+    lineSpacing,
     fontFamily,
     textAlign,
     fontWeight,
@@ -104,6 +105,9 @@ function textDesc(desc: any): boolean {
     return false;
   }
   if (desc.hasOwnProperty('lineHeight') && !is.lineHeight(lineHeight)) {
+    return false;
+  }
+  if (desc.hasOwnProperty('lineSpacing') && !is.lineSpacing(lineSpacing)) {
     return false;
   }
   if (desc.hasOwnProperty('fontFamily') && !is.fontFamily(fontFamily)) {
