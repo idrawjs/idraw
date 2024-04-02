@@ -43,6 +43,14 @@ export function drawText(
             ctx.calcDeviceNum(elem.w)
           ) {
             lineText += tempText[i] || '';
+          } else if (ctx.measureText(lineText + (tempText[i] || '')).width == ctx.calcDeviceNum(elem.w)) {
+            lineText += tempText[i] || '';
+            lines.push({
+              text: lineText,
+              width: ctx.calcScreenNum(ctx.measureText(lineText).width)
+            });
+            lineText = '';
+            lineNum++;
           } else {
             lines.push({
               text: lineText,
