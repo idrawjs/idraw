@@ -17,6 +17,7 @@ type IsTypeUtil = {
   fontSize: (value: any) => boolean;
   fontWeight: (value: any) => boolean;
   lineHeight: (value: any) => boolean;
+  lineSpacing: (value: any) => boolean;
   textAlign: (value: any) => boolean;
   fontFamily: (value: any) => boolean;
   strokeWidth: (value: any) => boolean;
