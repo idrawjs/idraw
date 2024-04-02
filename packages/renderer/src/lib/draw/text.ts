@@ -31,6 +31,7 @@ export function drawText(
     const fontHeight = desc.lineHeight || desc.fontSize;
     const descTextList = descText.split('\n');
     const lines: { text: string; width: number }[] = [];
+    const lineSpacing = desc.lineSpacing || 0;
 
     let lineNum = 0;
     descTextList.forEach((tempText: string, idx: number) => {
@@ -84,40 +85,31 @@ export function drawText(
     });
 
     let startY = 0;
-    if (lines.length * fontHeight < elem.h) {
+    if (lines.length * fontHeight + (lines.length > 1 ? (lines.length - 1) * lineSpacing : 0) < elem.h) {
       if (elem.desc.verticalAlign === 'top') {
         startY = 0;
       } else if (elem.desc.verticalAlign === 'bottom') {
-        startY += elem.h - lines.length * fontHeight;
+        startY += elem.h - lines.length * fontHeight - (lines.length > 1 ? (lines.length - 1) * lineSpacing : 0);
       } else {
         // middle and default
-        startY += (elem.h - lines.length * fontHeight) / 2;
+        startY += (elem.h - lines.length * fontHeight - (lines.length > 1 ? (lines.length - 1) * lineSpacing : 0)) / 2;
       }
     }
 
     // draw text lines
     {
       const _y = elem.y + startY;
-      if (
-        desc.textShadowColor !== undefined &&
-        isColorStr(desc.textShadowColor)
-      ) {
-        ctx.setShadowColor(desc.textShadowColor);
+      if (desc.textShadowColor !== undefined && isColorStr(desc.textShadowColor)) {
+        ctx.shadowColor = desc.textShadowColor;
       }
-      if (
-        desc.textShadowOffsetX !== undefined &&
-        is.number(desc.textShadowOffsetX)
-      ) {
-        ctx.setShadowOffsetX(desc.textShadowOffsetX);
+      if (desc.textShadowOffsetX !== undefined && is.number(desc.textShadowOffsetX)) {
+        ctx.shadowOffsetX = desc.textShadowOffsetX;
       }
-      if (
-        desc.textShadowOffsetY !== undefined &&
-        is.number(desc.textShadowOffsetY)
-      ) {
-        ctx.setShadowOffsetY(desc.textShadowOffsetY);
+      if (desc.textShadowOffsetY !== undefined && is.number(desc.textShadowOffsetY)) {
+        ctx.shadowOffsetY = desc.textShadowOffsetY;
       }
       if (desc.textShadowBlur !== undefined && is.number(desc.textShadowBlur)) {
-        ctx.setShadowBlur(desc.textShadowBlur);
+        ctx.shadowBlur = desc.textShadowBlur;
       }
       lines.forEach((line, i) => {
         let _x = elem.x;
@@ -126,32 +118,7 @@ export function drawText(
         } else if (desc.textAlign === 'right') {
           _x = elem.x + (elem.w - line.width);
         }
-        ctx.fillText(line.text, _x, _y + fontHeight * i);
-      });
-      clearContext(ctx);
-    }
-
-    // draw text stroke
-    if (
-      isColorStr(desc.strokeColor) &&
-      desc.strokeWidth !== undefined &&
-      desc.strokeWidth > 0
-    ) {
-      const _y = elem.y + startY;
-      lines.forEach((line, i) => {
-        let _x = elem.x;
-        if (desc.textAlign === 'center') {
-          _x = elem.x + (elem.w - line.width) / 2;
-        } else if (desc.textAlign === 'right') {
-          _x = elem.x + (elem.w - line.width);
-        }
-        if (desc.strokeColor !== undefined) {
-          ctx.setStrokeStyle(desc.strokeColor);
-        }
-        if (desc.strokeWidth !== undefined && desc.strokeWidth > 0) {
-          ctx.setLineWidth(desc.strokeWidth);
-        }
-        ctx.strokeText(line.text, _x, _y + fontHeight * i);
+        ctx.fillText(line.text, _x, _y + fontHeight * i + i * lineSpacing);
       });
     }
   });
