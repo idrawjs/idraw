@@ -201,6 +201,7 @@ describe('@idraw/core static check', () => {
         bgColor: '#f0f0f0',
         fontSize: 12,
         lineHeight: 12,
+        lineSpacing: 0,
         fontWeight: 'bold',
         fontFamily: 'abc',
         textAlign: 'center',
