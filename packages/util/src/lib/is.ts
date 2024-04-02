@@ -77,6 +77,10 @@ function lineHeight(value: any) {
   return number(value) && value > 0;
 }
 
+function lineSpacing(value: any) {
+  return number(value) && value > 0;
+}
+
 function strokeWidth(value: any) {
   return number(value) && value > 0;
 }
@@ -97,7 +101,7 @@ const is = {
   x, y, w, h, angle, number,
   borderWidth, borderRadius, color,
   imageSrc, imageURL, imageBase64, svg, html,
-  text, fontSize, lineHeight, textAlign, fontFamily, fontWeight,
+  text, fontSize, lineHeight, lineSpacing textAlign, fontFamily, fontWeight,
   strokeWidth,
 };
 
