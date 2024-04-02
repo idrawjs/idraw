@@ -150,6 +150,12 @@ describe('@idraw/core:static is', () => {
     expect(Core.is.lineHeight(-10)).toStrictEqual(false);
   });
 
+  test('Core.is.lineSpacing', () => {
+    expect(Core.is.lineSpacing(12)).toStrictEqual(true);
+    expect(Core.is.lineSpacing(0)).toStrictEqual(false);
+    expect(Core.is.lineSpacing(-10)).toStrictEqual(false);
+  });
+
   test('Core.is.textAlign', () => {
     expect(Core.is.textAlign('center')).toStrictEqual(true);
     expect(Core.is.textAlign('left')).toStrictEqual(true);
