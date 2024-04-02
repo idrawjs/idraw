@@ -72,6 +72,7 @@ type DataElemDescText = {
   color: string;
   fontSize: number;
   lineHeight?: number;
+  lineSpacing?: number;
   fontWeight?: 'bold' | '';
   fontFamily?: string;
   textAlign?: 'center' | 'left' | 'right';
