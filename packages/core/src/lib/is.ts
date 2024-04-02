@@ -84,6 +84,10 @@ function lineHeight(value: any) {
   return number(value) && value > 0;
 }
 
+function lineSpacing(value: any) {
+  return number(value) && value > 0;
+}
+
 function strokeWidth(value: any) {
   return number(value) && value > 0;
 }
@@ -118,6 +122,7 @@ const is: IsTypeUtil = {
   text,
   fontSize,
   lineHeight,
+  lineSpacing,
   textAlign,
   fontFamily,
   fontWeight,
@@ -143,6 +148,7 @@ type IsTypeUtil = {
   fontSize: (value: any) => boolean;
   fontWeight: (value: any) => boolean;
   lineHeight: (value: any) => boolean;
+  lineSpacing: (value: any) => boolean;
   textAlign: (value: any) => boolean;
   fontFamily: (value: any) => boolean;
   strokeWidth: (value: any) => boolean;
