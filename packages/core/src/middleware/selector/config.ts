@@ -16,6 +16,7 @@ export const keySelectedReferenceYLines = Symbol(`${key}_selectedReferenceYLines
 export const keyGroupQueue = Symbol(`${key}_groupQueue`); // Array<Element<'group'>> | []
 export const keyGroupQueueVertexesList = Symbol(`${key}_groupQueueVertexesList`); // Array<ViewRectVertexes> | []
 export const keyIsMoving = Symbol(`${key}_isMoving`); // boolean | null
+export const keyEnableSelectInGroup = Symbol(`${key}_canSelectInGroup`);
 
 export const keyDebugElemCenter = Symbol(`${key}_debug_elemCenter`);
 export const keyDebugStartVertical = Symbol(`${key}_debug_startVertical`);
@@ -37,3 +38,9 @@ export const controllerSize = 10;
 export const auxiliaryColor = '#f7276e';
 
 export const referenceColor = '#f7276e';
+
+export const middlewareEventSelect: string = '@middleware/select';
+
+export const middlewareEventSelectClear: string = '@middleware/select-clear';
+
+export const middlewareEventSelectInGroup: string = '@middleware/select-in-group';

@@ -45,6 +45,9 @@ import {
   calcMoveInGroup
 } from './util';
 import {
+  middlewareEventSelect,
+  middlewareEventSelectClear,
+  middlewareEventSelectInGroup,
   keyActionType,
   keyResizeType,
   keyAreaStart,
@@ -60,6 +63,7 @@ import {
   keySelectedReferenceXLines,
   keySelectedReferenceYLines,
   keyIsMoving,
+  keyEnableSelectInGroup,
   controllerSize
   // keyDebugElemCenter,
   // keyDebugEnd0,
@@ -75,9 +79,7 @@ import { eventChange } from '../../config';
 export { keySelectedElementList, keyActionType, keyResizeType, keyGroupQueue };
 export type { DeepSelectorSharedStorage, ActionType };
 
-export const middlewareEventSelect: string = '@middleware/select';
-
-export const middlewareEventSelectClear: string = '@middleware/select-clear';
+export { middlewareEventSelect, middlewareEventSelectClear, middlewareEventSelectInGroup };
 
 export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, CoreEventMap> = (opts) => {
   const { viewer, sharer, boardContent, calculator, eventHub } = opts;
@@ -173,6 +175,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
     sharer.setSharedStorage(keySelectedReferenceXLines, []);
     sharer.setSharedStorage(keySelectedReferenceYLines, []);
     sharer.setSharedStorage(keyIsMoving, null);
+    sharer.setSharedStorage(keyEnableSelectInGroup, null);
   };
 
   clear();
@@ -210,16 +213,22 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
     viewer.drawFrame();
   };
 
+  const selectInGroupCallback = (e: { enable: boolean }) => {
+    sharer.setSharedStorage(keyEnableSelectInGroup, !!e.enable);
+  };
+
   return {
     name: '@middleware/selector',
     use() {
       eventHub.on(middlewareEventSelect, selectCallback);
       eventHub.on(middlewareEventSelectClear, selectClearCallback);
+      eventHub.on(middlewareEventSelectInGroup, selectInGroupCallback);
     },
 
     disuse() {
       eventHub.off(middlewareEventSelect, selectCallback);
       eventHub.off(middlewareEventSelectClear, selectClearCallback);
+      eventHub.off(middlewareEventSelectInGroup, selectInGroupCallback);
     },
 
     hover: (e: PointWatcherEvent) => {
@@ -677,6 +686,10 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
     },
 
     doubleClick(e: PointWatcherEvent) {
+      if (sharer.getSharedStorage(keyEnableSelectInGroup) === false) {
+        return;
+      }
+
       const target = getPointTarget(e.point, pointTargetBaseOptions());
       sharer.setSharedStorage(keySelectedElementController, null);
       sharer.setSharedStorage(keySelectedElementList, []);

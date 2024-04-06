@@ -2,7 +2,7 @@ import type { CoreOptions } from './core';
 
 export type IDrawMode = 'select' | 'drag' | 'readOnly';
 
-export type IDrawFeature = 'ruler' | 'scroll' | 'scale' | 'info'; // TODO other feature
+export type IDrawFeature = 'ruler' | 'scroll' | 'scale' | 'info' | 'selectInGroup'; // TODO other feature
 
 export interface IDrawSettings {
   mode?: IDrawMode;

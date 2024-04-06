@@ -31,6 +31,9 @@ import {
   keySelectedReferenceXLines,
   keySelectedReferenceYLines,
   keyIsMoving,
+  keyEnableSelectInGroup,
+
+  // debug keys
   keyDebugElemCenter,
   keyDebugEnd0,
   keyDebugEndHorizontal,
@@ -103,6 +106,7 @@ export type DeepSelectorSharedStorage = {
   [keySelectedReferenceXLines]: Array<PointSize[]>;
   [keySelectedReferenceYLines]: Array<PointSize[]>;
   [keyIsMoving]: boolean | null;
+  [keyEnableSelectInGroup]: boolean | null;
 
   [keyDebugElemCenter]: PointSize | null;
   [keyDebugEnd0]: PointSize | null;
