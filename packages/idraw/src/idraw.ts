@@ -1,4 +1,4 @@
-import { Core } from '@idraw/core';
+import { Core, middlewareEventSelectInGroup } from '@idraw/core';
 import type {
   PointSize,
   IDrawOptions,
@@ -59,7 +59,7 @@ export class iDraw {
   #setFeature(feat: IDrawFeature, status: boolean) {
     const store = this.#store;
     if (['ruler', 'scroll', 'scale', 'info'].includes(feat)) {
-      const map: Record<IDrawFeature, keyof Omit<IDrawStorage, 'mode'>> = {
+      const map: Record<IDrawFeature | string, keyof Omit<IDrawStorage, 'mode'>> = {
         ruler: 'enableRuler',
         scroll: 'enableScroll',
         scale: 'enableScale',
@@ -68,6 +68,10 @@ export class iDraw {
       store.set(map[feat], !!status);
       runMiddlewares(this.#core, store);
       this.#core.refresh();
+    } else if (feat === 'selectInGroup') {
+      this.#core.trigger(middlewareEventSelectInGroup, {
+        enable: !!status
+      });
     }
   }
 

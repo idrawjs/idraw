@@ -5,7 +5,7 @@ import { Cursor } from './lib/cursor';
 export { eventChange } from './config';
 
 // export { MiddlewareSelector } from './middleware/selector';
-export { MiddlewareSelector, middlewareEventSelect, middlewareEventSelectClear } from './middleware/selector';
+export { MiddlewareSelector, middlewareEventSelect, middlewareEventSelectClear, middlewareEventSelectInGroup } from './middleware/selector';
 export { MiddlewareScroller } from './middleware/scroller';
 export { MiddlewareScaler, middlewareEventScale } from './middleware/scaler';
 export { MiddlewareRuler, middlewareEventRuler } from './middleware/ruler';
