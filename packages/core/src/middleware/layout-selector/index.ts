@@ -31,28 +31,28 @@ export const MiddlewareLayoutSelector: BoardMiddleware<LayoutSelectorSharedStora
     const data = sharer.getActiveStorage('data');
     if (data?.layout?.operations) {
       const operations = data.layout.operations;
-      if (controlType === 'left' && operations.disableLeft === true) {
+      if (controlType === 'left' && operations.disabledLeft === true) {
         return true;
       }
-      if (controlType === 'top' && operations.disableTop === true) {
+      if (controlType === 'top' && operations.disabledTop === true) {
         return true;
       }
-      if (controlType === 'right' && operations.disableRight === true) {
+      if (controlType === 'right' && operations.disabledRight === true) {
         return true;
       }
-      if (controlType === 'bottom' && operations.disableBottom === true) {
+      if (controlType === 'bottom' && operations.disabledBottom === true) {
         return true;
       }
-      if (controlType === 'top-left' && operations.disableTopLeft === true) {
+      if (controlType === 'top-left' && operations.disabledTopLeft === true) {
         return true;
       }
-      if (controlType === 'top-right' && operations.disableTopRight === true) {
+      if (controlType === 'top-right' && operations.disabledTopRight === true) {
         return true;
       }
-      if (controlType === 'bottom-left' && operations.disableBottomLeft === true) {
+      if (controlType === 'bottom-left' && operations.disabledBottomLeft === true) {
         return true;
       }
-      if (controlType === 'bottom-right' && operations.disableBottomRight === true) {
+      if (controlType === 'bottom-right' && operations.disabledBottomRight === true) {
         return true;
       }
     }
