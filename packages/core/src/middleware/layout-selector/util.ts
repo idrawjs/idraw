@@ -76,34 +76,34 @@ export function drawLayoutController(
   const { controller, operations } = opts;
   const { topLeft, topRight, bottomLeft, bottomRight, topMiddle, rightMiddle, bottomMiddle, leftMiddle } = controller;
 
-  drawControllerLine(ctx, { start: topLeft.center, end: topRight.center, centerVertexes: topMiddle.vertexes, disabled: !!operations?.disableTop });
-  drawControllerLine(ctx, { start: topRight.center, end: bottomRight.center, centerVertexes: rightMiddle.vertexes, disabled: !!operations?.disableRight });
-  drawControllerLine(ctx, { start: bottomRight.center, end: bottomLeft.center, centerVertexes: bottomMiddle.vertexes, disabled: !!operations?.disableBottom });
-  drawControllerLine(ctx, { start: bottomLeft.center, end: topLeft.center, centerVertexes: leftMiddle.vertexes, disabled: !!operations?.disableLeft });
+  drawControllerLine(ctx, { start: topLeft.center, end: topRight.center, centerVertexes: topMiddle.vertexes, disabled: !!operations?.disabledTop });
+  drawControllerLine(ctx, { start: topRight.center, end: bottomRight.center, centerVertexes: rightMiddle.vertexes, disabled: !!operations?.disabledRight });
+  drawControllerLine(ctx, { start: bottomRight.center, end: bottomLeft.center, centerVertexes: bottomMiddle.vertexes, disabled: !!operations?.disabledBottom });
+  drawControllerLine(ctx, { start: bottomLeft.center, end: topLeft.center, centerVertexes: leftMiddle.vertexes, disabled: !!operations?.disabledLeft });
 
   const disabledOpts = {
     lineWidth: 1,
     strokeStyle: disableColor
   };
-  if (operations?.disableTopLeft === true) {
+  if (operations?.disabledTopLeft === true) {
     drawControllerCross(ctx, { vertexes: topLeft.vertexes, ...disabledOpts });
   } else {
     drawControllerBox(ctx, topLeft.vertexes);
   }
 
-  if (operations?.disableTopRight === true) {
+  if (operations?.disabledTopRight === true) {
     drawControllerCross(ctx, { vertexes: topRight.vertexes, ...disabledOpts });
   } else {
     drawControllerBox(ctx, topRight.vertexes);
   }
 
-  if (operations?.disableBottomRight === true) {
+  if (operations?.disabledBottomRight === true) {
     drawControllerCross(ctx, { vertexes: bottomRight.vertexes, ...disabledOpts });
   } else {
     drawControllerBox(ctx, bottomRight.vertexes);
   }
 
-  if (operations?.disableBottomLeft === true) {
+  if (operations?.disabledBottomLeft === true) {
     drawControllerCross(ctx, { vertexes: bottomLeft.vertexes, ...disabledOpts });
   } else {
     drawControllerBox(ctx, bottomLeft.vertexes);
