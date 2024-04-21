@@ -6,7 +6,7 @@ import { drawBoxShadow, getOpacity } from './box';
 export function drawCircle(ctx: ViewContext2D, elem: Element<'circle'>, opts: RendererDrawElementOptions) {
   const { detail, angle } = elem;
   const { viewScaleInfo, viewSizeInfo, parentOpacity } = opts;
-  const { background = '#000000', borderColor = '#000000', boxSizing, borderWidth = 0 } = detail;
+  const { background = '#000000', borderColor = '#000000', boxSizing, borderWidth = 0, borderDash } = detail;
   let bw: number = 0;
   if (typeof borderWidth === 'number' && borderWidth > 0) {
     bw = borderWidth as number;
@@ -16,7 +16,7 @@ export function drawCircle(ctx: ViewContext2D, elem: Element<'circle'>, opts: Re
   bw = bw * viewScaleInfo.scale;
 
   // const { scale, offsetTop, offsetBottom, offsetLeft, offsetRight } = viewScaleInfo;
-  const { x, y, w, h } = calcViewElementSize({ x: elem.x, y: elem.y, w: elem.w, h: elem.h }, { viewScaleInfo, viewSizeInfo }) || elem;
+  const { x, y, w, h } = calcViewElementSize({ x: elem.x, y: elem.y, w: elem.w, h: elem.h }, { viewScaleInfo }) || elem;
   const viewElem = { ...elem, ...{ x, y, w, h, angle } };
 
   rotateElement(ctx, { x, y, w, h, angle }, () => {
@@ -29,10 +29,12 @@ export function drawCircle(ctx: ViewContext2D, elem: Element<'circle'>, opts: Re
         // 'content-box'
         const centerX = x + a;
         const centerY = y + b;
+        const radiusA = a;
+        const radiusB = b;
         if (bw > 0) {
-          if (boxSizing === 'border-box') {
-            a = a - bw;
-            b = b - bw;
+          if (boxSizing === 'content-box') {
+            a = a;
+            b = b;
           } else if (boxSizing === 'center-line') {
             a = a - bw / 2;
             b = b - bw / 2;
@@ -47,18 +49,6 @@ export function drawCircle(ctx: ViewContext2D, elem: Element<'circle'>, opts: Re
           const opacity = getOpacity(viewElem) * parentOpacity;
           ctx.globalAlpha = opacity;
 
-          // draw border
-          if (typeof bw === 'number' && bw > 0) {
-            const ba = bw / 2 + a;
-            const bb = bw / 2 + b;
-            ctx.beginPath();
-            ctx.strokeStyle = borderColor;
-            ctx.lineWidth = bw;
-            ctx.circle(centerX, centerY, ba, bb, 0, 0, 2 * Math.PI);
-            ctx.closePath();
-            ctx.stroke();
-          }
-
           // draw content
           ctx.beginPath();
           const fillStyle = createColorStyle(ctx, background, {
@@ -67,10 +57,27 @@ export function drawCircle(ctx: ViewContext2D, elem: Element<'circle'>, opts: Re
             opacity: ctx.globalAlpha
           });
           ctx.fillStyle = fillStyle;
-          ctx.circle(centerX, centerY, a, b, 0, 0, 2 * Math.PI);
+          ctx.circle(centerX, centerY, radiusA, radiusB, 0, 0, 2 * Math.PI);
           ctx.closePath();
           ctx.fill();
           ctx.globalAlpha = parentOpacity;
+
+          // draw border
+          if (typeof bw === 'number' && bw > 0) {
+            const ba = bw / 2 + a;
+            const bb = bw / 2 + b;
+            ctx.beginPath();
+            if (borderDash) {
+              const lineDash = borderDash.map((n) => n * viewScaleInfo.scale);
+              ctx.setLineDash(lineDash);
+            }
+            ctx.strokeStyle = borderColor;
+            ctx.lineWidth = bw;
+            ctx.circle(centerX, centerY, ba, bb, 0, 0, 2 * Math.PI);
+            ctx.closePath();
+            ctx.stroke();
+            ctx.setLineDash([]);
+          }
         }
       }
     });

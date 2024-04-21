@@ -5,7 +5,9 @@ const defaultElemConfig = getDefaultElementDetailConfig();
 export function calcViewBoxSize(viewElem: Element, opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }): ViewBoxSize {
   const { viewScaleInfo } = opts;
   const { scale } = viewScaleInfo;
-  let { borderRadius } = viewElem.detail;
+  let { borderRadius, borderDash } = viewElem.detail;
+  const hasBorderDash = Array.isArray(borderDash) && borderDash.length > 0;
+
   const { boxSizing = defaultElemConfig.boxSizing, borderWidth } = viewElem.detail;
 
   if (Array.isArray(borderWidth)) {
@@ -24,7 +26,8 @@ export function calcViewBoxSize(viewElem: Element, opts: { viewScaleInfo: ViewSc
   if (typeof borderWidth === 'number') {
     bw = (borderWidth || 0) * scale;
   }
-  if (boxSizing === 'border-box') {
+  if (boxSizing === 'border-box' && !hasBorderDash) {
+    // TODO
     x = viewElem.x + bw / 2;
     y = viewElem.y + bw / 2;
     w = viewElem.w - bw;
