@@ -6,7 +6,7 @@ export function drawPath(ctx: ViewContext2D, elem: Element<'path'>, opts: Render
   const { detail } = elem;
   const { originX, originY, originW, originH } = detail;
   const { viewScaleInfo, viewSizeInfo, parentOpacity } = opts;
-  const { x, y, w, h, angle } = calcViewElementSize(elem, { viewScaleInfo, viewSizeInfo }) || elem;
+  const { x, y, w, h, angle } = calcViewElementSize(elem, { viewScaleInfo }) || elem;
   const scaleW = w / originW;
   const scaleH = h / originH;
   const viewOriginX = originX * scaleW;

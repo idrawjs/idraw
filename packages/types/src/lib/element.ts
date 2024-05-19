@@ -104,6 +104,8 @@ export interface ElementTextDetail extends ElementBaseDetail {
   textShadowOffsetX?: number;
   textShadowOffsetY?: number;
   textShadowBlur?: number;
+  minInlineSize?: 'maxContent' | 'auto';
+  textTransform?: 'none' | 'uppercase' | 'lowercase';
 }
 
 export interface ElementCircleDetail extends ElementBaseDetail {
