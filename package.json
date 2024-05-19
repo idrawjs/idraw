@@ -25,7 +25,9 @@
     "precommit": "npm run lint",
     "prepush": "npm run lint",
     "clear:jest": "rm -rf ./packages/*/__tests__/__snapshots__",
-    "upgrade:version": "ts-node --project ./tsconfig.node.json ./scripts/upgrade-version.ts && pnpm i"
+    "version:reset": "ts-node --project ./tsconfig.node.json ./scripts/upgrade-version.ts",
+    "version:reset-for-release": "ts-node --project ./tsconfig.node.json ./scripts/upgrade-version.ts --for-release",
+    "upgrade:version": "version:reset && pnpm i"
   },
   "devDependencies": {
     "@babel/core": "^7.24.4",

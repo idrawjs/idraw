@@ -1,9 +1,13 @@
+import process from 'node:process';
 import { readJSONFile, writeJSONFile } from './util/file';
 import { getRootPackageJSON, getAllSubPackageDirs } from './util/project';
 const pkg = getRootPackageJSON();
 const version = pkg.version;
 
-const workspacePrefix = 'workspace:';
+let workspacePrefix = 'workspace:';
+if (process.argv[2] === '--for-release') {
+  workspacePrefix = '';
+}
 
 async function run(): Promise<void> {
   const pkgDirs = getAllSubPackageDirs();
