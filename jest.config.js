@@ -30,7 +30,5 @@ module.exports = {
     '@idraw/util': '<rootDir>/packages/util/src/index.ts'
   },
   // "testRegex": "(/packages/idraw/__tests__/.*)\\.test.ts$",
-  setupFiles: [
-    // 'jest-canvas-mock'
-  ]
+  setupFiles: ['jest-canvas-mock']
 };
