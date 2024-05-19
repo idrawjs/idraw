@@ -34,48 +34,60 @@ export function drawText(ctx: ViewContext2D, elem: Element<'text'>, opts: Render
           fontSize: fontSize,
           fontFamily: detail.fontFamily
         });
-        const detailText = detail.text.replace(/\r\n/gi, '\n');
+        let detailText = detail.text.replace(/\r\n/gi, '\n');
+        if (detail.textTransform === 'lowercase') {
+          detailText = detailText.toLowerCase();
+        } else if (detail.textTransform === 'uppercase') {
+          detailText = detailText.toUpperCase();
+        }
+
         const fontHeight = lineHeight;
         const detailTextList = detailText.split('\n');
         const lines: { text: string; width: number }[] = [];
 
         let lineNum = 0;
         detailTextList.forEach((tempText: string, idx: number) => {
-          let lineText = '';
-
-          if (tempText.length > 0) {
-            for (let i = 0; i < tempText.length; i++) {
-              if (ctx.measureText(lineText + (tempText[i] || '')).width <= ctx.$doPixelRatio(w)) {
-                lineText += tempText[i] || '';
-              } else {
-                lines.push({
-                  text: lineText,
-                  width: ctx.$undoPixelRatio(ctx.measureText(lineText).width)
-                });
-                lineText = tempText[i] || '';
-                lineNum++;
-              }
-              if ((lineNum + 1) * fontHeight > h) {
-                break;
-              }
-              if (tempText.length - 1 === i) {
-                if ((lineNum + 1) * fontHeight <= h) {
+          if (detail.minInlineSize === 'maxContent') {
+            lines.push({
+              text: tempText,
+              width: ctx.$undoPixelRatio(ctx.measureText(tempText).width)
+            });
+          } else {
+            let lineText = '';
+            if (tempText.length > 0) {
+              for (let i = 0; i < tempText.length; i++) {
+                if (ctx.measureText(lineText + (tempText[i] || '')).width <= ctx.$doPixelRatio(w)) {
+                  lineText += tempText[i] || '';
+                } else {
                   lines.push({
                     text: lineText,
                     width: ctx.$undoPixelRatio(ctx.measureText(lineText).width)
                   });
-                  if (idx < detailTextList.length - 1) {
-                    lineNum++;
-                  }
+                  lineText = tempText[i] || '';
+                  lineNum++;
+                }
+                if ((lineNum + 1) * fontHeight > h) {
                   break;
                 }
+                if (tempText.length - 1 === i) {
+                  if ((lineNum + 1) * fontHeight <= h) {
+                    lines.push({
+                      text: lineText,
+                      width: ctx.$undoPixelRatio(ctx.measureText(lineText).width)
+                    });
+                    if (idx < detailTextList.length - 1) {
+                      lineNum++;
+                    }
+                    break;
+                  }
+                }
               }
+            } else {
+              lines.push({
+                text: '',
+                width: 0
+              });
             }
-          } else {
-            lines.push({
-              text: '',
-              width: 0
-            });
           }
         });
 
