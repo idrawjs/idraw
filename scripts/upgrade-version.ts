@@ -2,7 +2,10 @@ import { readJSONFile, writeJSONFile } from './util/file';
 import { getRootPackageJSON, getAllSubPackageDirs } from './util/project';
 const pkg = getRootPackageJSON();
 const version = pkg.version;
-async function run() {
+
+const workspacePrefix = 'workspace:';
+
+async function run(): Promise<void> {
   const pkgDirs = getAllSubPackageDirs();
   const allPkgMap: Record<string, { file: string; json: any }> = {};
   pkgDirs.forEach((dir) => {
@@ -17,17 +20,17 @@ async function run() {
       if (allPkgMap[key]?.json?.dependencies) {
         for (const depName in allPkgMap[key].json.dependencies) {
           if (allPkgMap.hasOwnProperty(depName)) {
-            allPkgMap[key].json.dependencies[depName] = `^${version}`;
+            allPkgMap[key].json.dependencies[depName] = `${workspacePrefix}^${version}`;
           }
         }
         for (const depName in allPkgMap[key].json.devDependencies) {
           if (allPkgMap.hasOwnProperty(depName)) {
-            allPkgMap[key].json.devDependencies[depName] = `^${version}`;
+            allPkgMap[key].json.devDependencies[depName] = `${workspacePrefix}^${version}`;
           }
         }
         for (const depName in allPkgMap[key].json.peerDependencies) {
           if (allPkgMap.hasOwnProperty(depName)) {
-            allPkgMap[key].json.peerDependencies[depName] = `^${version}`;
+            allPkgMap[key].json.peerDependencies[depName] = `${workspacePrefix}^${version}`;
           }
         }
       }
