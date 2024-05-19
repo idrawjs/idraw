@@ -13,28 +13,28 @@ jobs:
       # Setup .npmrc file to publish to npm
       - uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
+          node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
       - run: npm install --global pnpm
       - run: pnpm i
       - run: npm run test
       - run: npm run build
       # - run: npm publish --provenance --access public -w ./packages/types --tag next
-      - run: pnpm publish --provenance --access public -w ./packages/types
+      - run: pnpm publish --no-git-checks  --provenance --access public -w ./packages/types
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - run: pnpm publish --provenance --access public -w ./packages/util
+      - run: pnpm publish --no-git-checks  --provenance --access public -w ./packages/util
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - run: pnpm publish --provenance --access public -w ./packages/renderer
+      - run: pnpm publish --no-git-checks  --provenance --access public -w ./packages/renderer
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - run: pnpm publish --provenance --access public -w ./packages/board
+      - run: pnpm publish --no-git-checks  --provenance --access public -w ./packages/board
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - run: pnpm publish --provenance --access public -w ./packages/core
+      - run: pnpm publish --no-git-checks  --provenance --access public -w ./packages/core
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - run: pnpm publish --provenance --access public -w ./packages/idraw
+      - run: pnpm publish --no-git-checks  --provenance --access public -w ./packages/idraw
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
