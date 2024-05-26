@@ -50,26 +50,26 @@ export function createBoardContent(
   if (createCustomContext2D) {
     // TODO
     const viewContext = createCustomContext2D(ctxOpts);
-    const helperContext = createCustomContext2D(ctxOpts);
-    const underContext = createCustomContext2D(ctxOpts);
+    const overlayContext = createCustomContext2D(ctxOpts);
+    const underlayContext = createCustomContext2D(ctxOpts);
     const boardContext = createContext2D({ ctx, ...ctxOpts });
 
     const drawView = () => {
       const { width: w, height: h } = viewContext.$getSize();
 
       boardContext.clearRect(0, 0, w, h);
-      boardContext.drawImage(underContext.canvas, 0, 0, w, h);
+      boardContext.drawImage(underlayContext.canvas, 0, 0, w, h);
       boardContext.drawImage(viewContext.canvas, 0, 0, w, h);
-      boardContext.drawImage(helperContext.canvas, 0, 0, w, h);
-      underContext.clearRect(0, 0, w, h);
+      boardContext.drawImage(overlayContext.canvas, 0, 0, w, h);
+      underlayContext.clearRect(0, 0, w, h);
       viewContext.clearRect(0, 0, w, h);
-      helperContext.clearRect(0, 0, w, h);
+      overlayContext.clearRect(0, 0, w, h);
     };
 
     const content: BoardContent = {
-      underContext,
+      underlayContext,
       viewContext,
-      helperContext,
+      overlayContext,
       boardContext,
       drawView
     };
@@ -79,26 +79,26 @@ export function createBoardContent(
   if (offscreen === true) {
     // const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
     const viewContext = createOffscreenContext2D(ctxOpts);
-    const helperContext = createOffscreenContext2D(ctxOpts);
-    const underContext = createOffscreenContext2D(ctxOpts);
+    const overlayContext = createOffscreenContext2D(ctxOpts);
+    const underlayContext = createOffscreenContext2D(ctxOpts);
     const boardContext = createContext2D({ ctx, ...ctxOpts });
 
     const drawView = () => {
       const { width: w, height: h } = viewContext.$getSize();
 
       boardContext.clearRect(0, 0, w, h);
-      boardContext.drawImage(underContext.canvas, 0, 0, w, h);
+      boardContext.drawImage(underlayContext.canvas, 0, 0, w, h);
       boardContext.drawImage(viewContext.canvas, 0, 0, w, h);
-      boardContext.drawImage(helperContext.canvas, 0, 0, w, h);
-      underContext.clearRect(0, 0, w, h);
+      boardContext.drawImage(overlayContext.canvas, 0, 0, w, h);
+      underlayContext.clearRect(0, 0, w, h);
       viewContext.clearRect(0, 0, w, h);
-      helperContext.clearRect(0, 0, w, h);
+      overlayContext.clearRect(0, 0, w, h);
     };
 
     const content: BoardContent = {
-      underContext,
+      underlayContext,
       viewContext,
-      helperContext,
+      overlayContext,
       boardContext,
       drawView
     };
@@ -106,24 +106,24 @@ export function createBoardContent(
   } else {
     // const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
     const viewContext = createContext2D(ctxOpts);
-    const helperContext = createContext2D(ctxOpts);
-    const underContext = createContext2D(ctxOpts);
+    const overlayContext = createContext2D(ctxOpts);
+    const underlayContext = createContext2D(ctxOpts);
     const boardContext = createContext2D({ ctx, ...ctxOpts });
 
     const drawView = () => {
       boardContext.clearRect(0, 0, width, height);
-      boardContext.drawImage(underContext.canvas, 0, 0, width, height);
+      boardContext.drawImage(underlayContext.canvas, 0, 0, width, height);
       boardContext.drawImage(viewContext.canvas, 0, 0, width, height);
-      boardContext.drawImage(helperContext.canvas, 0, 0, width, height);
-      underContext.clearRect(0, 0, width, height);
+      boardContext.drawImage(overlayContext.canvas, 0, 0, width, height);
+      underlayContext.clearRect(0, 0, width, height);
       viewContext.clearRect(0, 0, width, height);
-      helperContext.clearRect(0, 0, width, height);
+      overlayContext.clearRect(0, 0, width, height);
     };
 
     const content: BoardContent = {
-      underContext,
+      underlayContext,
       viewContext,
-      helperContext,
+      overlayContext,
       boardContext,
       drawView
     };

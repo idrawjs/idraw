@@ -15,8 +15,8 @@ const scrollConfig = {
   showScrollBar: false
 };
 
-function isPointAtRect(helperContext: ViewContext2D, p: Point, rect: ElementSize): boolean {
-  const ctx = helperContext;
+function isPointAtRect(overlayContext: ViewContext2D, p: Point, rect: ElementSize): boolean {
+  const ctx = overlayContext;
   const { x, y, w, h } = rect;
   ctx.beginPath();
   ctx.rect(x, y, w, h);
@@ -28,7 +28,7 @@ function isPointAtRect(helperContext: ViewContext2D, p: Point, rect: ElementSize
 }
 
 export function isPointInScrollThumb(
-  helperContext: ViewContext2D,
+  overlayContext: ViewContext2D,
   p: Point,
   opts: {
     xThumbRect?: ElementSize | null;
@@ -37,9 +37,9 @@ export function isPointInScrollThumb(
 ): ScrollbarThumbType | null {
   let thumbType: ScrollbarThumbType | null = null;
   const { xThumbRect, yThumbRect } = opts;
-  if (xThumbRect && isPointAtRect(helperContext, p, xThumbRect)) {
+  if (xThumbRect && isPointAtRect(overlayContext, p, xThumbRect)) {
     thumbType = 'X';
-  } else if (yThumbRect && isPointAtRect(helperContext, p, yThumbRect)) {
+  } else if (yThumbRect && isPointAtRect(overlayContext, p, yThumbRect)) {
     thumbType = 'Y';
   }
   return thumbType;
@@ -194,8 +194,8 @@ function drawScrollerThumb(
   ctx.restore();
 }
 
-function drawScrollerInfo(helperContext: ViewContext2D, opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo; scrollInfo: ScrollInfo }) {
-  const ctx = helperContext;
+function drawScrollerInfo(overlayContext: ViewContext2D, opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo; scrollInfo: ScrollInfo }) {
+  const ctx = overlayContext;
   const { viewScaleInfo, viewSizeInfo, scrollInfo } = opts;
   const { activeThumbType, prevPoint, activePoint } = scrollInfo;
   const { width, height } = viewSizeInfo;

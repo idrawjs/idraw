@@ -8,7 +8,7 @@ import { eventChange } from '../../config';
 
 export const MiddlewareLayoutSelector: BoardMiddleware<LayoutSelectorSharedStorage> = (opts) => {
   const { sharer, boardContent, calculator, viewer, eventHub } = opts;
-  const { helperContext } = boardContent;
+  const { overlayContext } = boardContent;
 
   let prevPoint: Point | null = null;
 
@@ -244,7 +244,7 @@ export const MiddlewareLayoutSelector: BoardMiddleware<LayoutSelectorSharedStora
           const size = { x, y, w, h };
           const controller = calcLayoutSizeController(size, { viewScaleInfo, controllerSize: 10 });
 
-          drawLayoutController(helperContext, { controller, operations: activeStore.data.layout.operations || {} });
+          drawLayoutController(overlayContext, { controller, operations: activeStore.data.layout.operations || {} });
         }
       }
     },

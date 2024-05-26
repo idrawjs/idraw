@@ -121,6 +121,9 @@ export interface ElementHTMLDetail extends ElementBaseDetail {
 
 export interface ElementImageDetail extends ElementBaseDetail {
   src: string;
+  originW?: number;
+  originH?: number;
+  scaleMode?: 'auto' | 'fill' | 'fit' | 'tile';
 }
 
 export interface ElementSVGDetail extends ElementBaseDetail {
@@ -144,6 +147,7 @@ export interface ElementPathDetail extends ElementBaseDetail {
   stroke?: string;
   strokeWidth?: number;
   strokeLineCap?: 'butt' | 'round' | 'square';
+  fillRule?: string; // "evenodd" | "nonzero"
 }
 
 export interface ElementDetailMap {

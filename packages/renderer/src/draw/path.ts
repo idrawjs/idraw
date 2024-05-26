@@ -4,7 +4,7 @@ import { drawBox, drawBoxShadow } from './box';
 
 export function drawPath(ctx: ViewContext2D, elem: Element<'path'>, opts: RendererDrawElementOptions) {
   const { detail } = elem;
-  const { originX, originY, originW, originH } = detail;
+  const { originX, originY, originW, originH, fillRule } = detail;
   const { viewScaleInfo, viewSizeInfo, parentOpacity } = opts;
   const { x, y, w, h, angle } = calcViewElementSize(elem, { viewScaleInfo }) || elem;
   const scaleW = w / originW;
@@ -43,7 +43,7 @@ export function drawPath(ctx: ViewContext2D, elem: Element<'path'>, opts: Render
             const path2d = new Path2D(pathStr);
             if (detail.fill) {
               ctx.fillStyle = detail.fill;
-              ctx.fill(path2d);
+              ctx.fill(path2d, fillRule as CanvasFillRule);
             }
 
             if (detail.stroke && detail.strokeWidth !== 0) {

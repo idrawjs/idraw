@@ -405,9 +405,9 @@ export class Board<T extends BoardExtendEventMap = BoardExtendEventMap> {
     const { width, height, devicePixelRatio } = newViewSize;
     const { boardContent } = this.#opts;
     boardContent.viewContext.$resize({ width, height, devicePixelRatio });
-    boardContent.helperContext.$resize({ width, height, devicePixelRatio });
+    boardContent.overlayContext.$resize({ width, height, devicePixelRatio });
     boardContent.boardContext.$resize({ width, height, devicePixelRatio });
-    boardContent.underContext.$resize({ width, height, devicePixelRatio });
+    boardContent.underlayContext.$resize({ width, height, devicePixelRatio });
     this.#viewer.drawFrame();
     this.#watcher.trigger('resize', viewSize);
     this.#sharer.setActiveViewSizeInfo(newViewSize);
@@ -415,9 +415,9 @@ export class Board<T extends BoardExtendEventMap = BoardExtendEventMap> {
 
   clear() {
     const { boardContent } = this.#opts;
-    const { underContext, helperContext, viewContext, boardContext } = boardContent;
-    underContext.clearRect(0, 0, underContext.canvas.width, underContext.canvas.height);
-    helperContext.clearRect(0, 0, helperContext.canvas.width, helperContext.canvas.height);
+    const { underlayContext, overlayContext, viewContext, boardContext } = boardContent;
+    underlayContext.clearRect(0, 0, underlayContext.canvas.width, underlayContext.canvas.height);
+    overlayContext.clearRect(0, 0, overlayContext.canvas.width, overlayContext.canvas.height);
     viewContext.clearRect(0, 0, viewContext.canvas.width, viewContext.canvas.height);
     boardContext.clearRect(0, 0, boardContext.canvas.width, boardContext.canvas.height);
     this.#handleClear();

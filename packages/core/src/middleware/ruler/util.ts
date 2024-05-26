@@ -28,14 +28,40 @@ interface RulerScale {
   isSubKeyNum: boolean;
 }
 
-function calcRulerScaleList(opts: { axis: 'X' | 'Y'; scale: number; viewLength: number; viewOffset: number }): RulerScale[] {
+const limitRulerUnitList = [1, 2, 5, 10, 20, 50, 100, 200, 500];
+
+function limitRulerUnit(unit: number): number {
+  unit = Math.max(limitRulerUnitList[0], Math.min(unit, limitRulerUnitList[limitRulerUnitList.length - 1]));
+  for (let i = 0; i < limitRulerUnitList.length - 1; i++) {
+    const thisUnit = limitRulerUnitList[i];
+    const nextUnit = limitRulerUnitList[i + 1];
+    if (unit > nextUnit) {
+      continue;
+    }
+    if (unit === thisUnit) {
+      return unit;
+    }
+    if (unit === nextUnit) {
+      return unit;
+    }
+
+    const mid = (thisUnit + nextUnit) / 2;
+    if (unit <= mid) {
+      return thisUnit;
+    }
+    return nextUnit;
+  }
+  return unit;
+}
+
+function calcRulerScaleList(opts: { axis: 'X' | 'Y'; scale: number; viewLength: number; viewOffset: number }): { list: RulerScale[]; rulerUnit: number } {
   const { scale, viewLength, viewOffset } = opts;
   const list: RulerScale[] = [];
   let rulerUnit = 10;
 
   rulerUnit = formatNumber(rulerUnit / scale, { decimalPlaces: 0 });
-  rulerUnit = Math.max(10, Math.min(rulerUnit, 1000));
-
+  // rulerUnit = Math.max(10, Math.min(rulerUnit, 1000));
+  rulerUnit = limitRulerUnit(rulerUnit);
   const rulerKeyUnit = rulerUnit * 10;
   const rulerSubKeyUnit = rulerUnit * 5;
 
@@ -46,6 +72,7 @@ function calcRulerScaleList(opts: { axis: 'X' | 'Y'; scale: number; viewLength: 
   const remainderNum = startNum % viewUnit;
   const firstNum = (startNum - remainderNum + viewUnit) / scale;
   const firstPosition = startPosition + (viewUnit - remainderNum);
+
   while (firstPosition + index * viewUnit < viewLength) {
     const num = formatNumber(firstNum + index * rulerUnit, { decimalPlaces: 0 });
     const position = formatNumber(firstPosition + index * viewUnit, { decimalPlaces: 0 });
@@ -60,10 +87,10 @@ function calcRulerScaleList(opts: { axis: 'X' | 'Y'; scale: number; viewLength: 
     index++;
   }
 
-  return list;
+  return { list, rulerUnit };
 }
 
-export function calcXRulerScaleList(opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }): RulerScale[] {
+export function calcXRulerScaleList(opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }): { list: RulerScale[]; rulerUnit: number } {
   const { viewScaleInfo, viewSizeInfo } = opts;
   const { scale, offsetLeft } = viewScaleInfo;
   const { width } = viewSizeInfo;
@@ -75,7 +102,7 @@ export function calcXRulerScaleList(opts: { viewScaleInfo: ViewScaleInfo; viewSi
   });
 }
 
-export function calcYRulerScaleList(opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }): RulerScale[] {
+export function calcYRulerScaleList(opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }): { list: RulerScale[]; rulerUnit: number } {
   const { viewScaleInfo, viewSizeInfo } = opts;
   const { scale, offsetTop } = viewScaleInfo;
   const { height } = viewSizeInfo;
@@ -195,7 +222,7 @@ export function drawRulerBackground(
   ctx.stroke();
 }
 
-export function drawUnderGrid(
+export function drawGrid(
   ctx: ViewContext2D,
   opts: {
     xList: RulerScale[];
