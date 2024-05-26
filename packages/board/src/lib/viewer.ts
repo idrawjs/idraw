@@ -172,17 +172,17 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
     const newViewSize = { ...originViewSize, ...viewSize };
 
     const { width, height, devicePixelRatio } = newViewSize;
-    const { underContext, boardContext, helperContext, viewContext } = this.#opts.boardContent;
+    const { underlayContext, boardContext, overlayContext, viewContext } = this.#opts.boardContent;
     boardContext.canvas.width = width * devicePixelRatio;
     boardContext.canvas.height = height * devicePixelRatio;
     boardContext.canvas.style.width = `${width}px`;
     boardContext.canvas.style.height = `${height}px`;
 
-    underContext.canvas.width = width * devicePixelRatio;
-    underContext.canvas.height = height * devicePixelRatio;
+    underlayContext.canvas.width = width * devicePixelRatio;
+    underlayContext.canvas.height = height * devicePixelRatio;
 
-    helperContext.canvas.width = width * devicePixelRatio;
-    helperContext.canvas.height = height * devicePixelRatio;
+    overlayContext.canvas.width = width * devicePixelRatio;
+    overlayContext.canvas.height = height * devicePixelRatio;
 
     viewContext.canvas.width = width * devicePixelRatio;
     viewContext.canvas.height = height * devicePixelRatio;

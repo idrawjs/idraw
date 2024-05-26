@@ -83,7 +83,7 @@ export { middlewareEventSelect, middlewareEventSelectClear, middlewareEventSelec
 
 export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, CoreEventMap> = (opts) => {
   const { viewer, sharer, boardContent, calculator, eventHub } = opts;
-  const { helperContext } = boardContent;
+  const { overlayContext } = boardContent;
   let prevPoint: Point | null = null;
   let inBusyMode: 'resize' | 'drag' | 'drag-list' | 'area' | null = null;
 
@@ -146,7 +146,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
 
   const pointTargetBaseOptions = () => {
     return {
-      ctx: helperContext,
+      ctx: overlayContext,
       calculator,
       data: sharer.getActiveStorage('data'),
       selectedElements: getActiveElements(),
@@ -249,7 +249,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
       if (groupQueue?.length > 0) {
         // in group
         const isInActiveGroup = isPointInViewActiveGroup(e.point, {
-          ctx: helperContext,
+          ctx: overlayContext,
           viewScaleInfo: sharer.getActiveViewScaleInfo(),
           viewSizeInfo: sharer.getActiveViewSizeInfo(),
           groupQueue: sharer.getSharedStorage(keyGroupQueue)
@@ -350,7 +350,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
       if (groupQueue?.length > 0) {
         if (
           isPointInViewActiveGroup(e.point, {
-            ctx: helperContext,
+            ctx: overlayContext,
             viewScaleInfo: sharer.getActiveViewScaleInfo(),
             viewSizeInfo: sharer.getActiveViewSizeInfo(),
             groupQueue
@@ -750,10 +750,10 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
 
       if (groupQueue?.length > 0) {
         // in group
-        drawGroupQueueVertexesWrappers(helperContext, groupQueueVertexesList, drawBaseOpts);
+        drawGroupQueueVertexesWrappers(overlayContext, groupQueueVertexesList, drawBaseOpts);
         if (hoverElement && actionType !== 'drag') {
           if (isLock) {
-            drawLockVertexesWrapper(helperContext, hoverElementVertexes, {
+            drawLockVertexesWrapper(overlayContext, hoverElementVertexes, {
               ...drawBaseOpts,
               controller: calcElementSizeController(hoverElement, {
                 groupQueue,
@@ -762,11 +762,11 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
               })
             });
           } else {
-            drawHoverVertexesWrapper(helperContext, hoverElementVertexes, drawBaseOpts);
+            drawHoverVertexesWrapper(overlayContext, hoverElementVertexes, drawBaseOpts);
           }
         }
         if (!isLock && elem && (['select', 'drag', 'resize'] as ActionType[]).includes(actionType)) {
-          drawSelectedElementControllersVertexes(helperContext, selectedElementController, {
+          drawSelectedElementControllersVertexes(overlayContext, selectedElementController, {
             ...drawBaseOpts,
             element: elem,
             calculator,
@@ -775,7 +775,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
           if (actionType === 'drag') {
             const xLines = sharer.getSharedStorage(keySelectedReferenceXLines);
             const yLines = sharer.getSharedStorage(keySelectedReferenceYLines);
-            drawReferenceLines(helperContext, {
+            drawReferenceLines(overlayContext, {
               xLines,
               yLines
             });
@@ -785,7 +785,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
         // in root
         if (hoverElement && actionType !== 'drag') {
           if (isLock) {
-            drawLockVertexesWrapper(helperContext, hoverElementVertexes, {
+            drawLockVertexesWrapper(overlayContext, hoverElementVertexes, {
               ...drawBaseOpts,
               controller: calcElementSizeController(hoverElement, {
                 groupQueue,
@@ -794,11 +794,11 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
               })
             });
           } else {
-            drawHoverVertexesWrapper(helperContext, hoverElementVertexes, drawBaseOpts);
+            drawHoverVertexesWrapper(overlayContext, hoverElementVertexes, drawBaseOpts);
           }
         }
         if (!isLock && elem && (['select', 'drag', 'resize'] as ActionType[]).includes(actionType)) {
-          drawSelectedElementControllersVertexes(helperContext, selectedElementController, {
+          drawSelectedElementControllersVertexes(overlayContext, selectedElementController, {
             ...drawBaseOpts,
             element: elem,
             calculator,
@@ -807,13 +807,13 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
           if (actionType === 'drag') {
             const xLines = sharer.getSharedStorage(keySelectedReferenceXLines);
             const yLines = sharer.getSharedStorage(keySelectedReferenceYLines);
-            drawReferenceLines(helperContext, {
+            drawReferenceLines(overlayContext, {
               xLines,
               yLines
             });
           }
         } else if (actionType === 'area' && areaStart && areaEnd) {
-          drawArea(helperContext, { start: areaStart, end: areaEnd });
+          drawArea(overlayContext, { start: areaStart, end: areaEnd });
         } else if ((['drag-list', 'drag-list-end'] as ActionType[]).includes(actionType)) {
           const listAreaSize = calcSelectedElementsArea(getActiveElements(), {
             viewScaleInfo: sharer.getActiveViewScaleInfo(),
@@ -821,7 +821,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
             calculator
           });
           if (listAreaSize) {
-            drawListArea(helperContext, { areaSize: listAreaSize });
+            drawListArea(overlayContext, { areaSize: listAreaSize });
           }
         }
       }
@@ -834,28 +834,28 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
       // const endHorizontal: any = sharer.getSharedStorage(keyDebugEndHorizontal);
       // const end0: any = sharer.getSharedStorage(keyDebugEnd0);
       // if (elemCenter && end0) {
-      //   helperContext.beginPath();
-      //   helperContext.moveTo(elemCenter.x, elemCenter.y);
-      //   helperContext.lineTo(end0.x, end0.y);
-      //   helperContext.closePath();
-      //   helperContext.strokeStyle = 'black';
-      //   helperContext.stroke();
+      //   overlayContext.beginPath();
+      //   overlayContext.moveTo(elemCenter.x, elemCenter.y);
+      //   overlayContext.lineTo(end0.x, end0.y);
+      //   overlayContext.closePath();
+      //   overlayContext.strokeStyle = 'black';
+      //   overlayContext.stroke();
       // }
       // if (elemCenter && endVertical) {
-      //   helperContext.beginPath();
-      //   helperContext.moveTo(elemCenter.x, elemCenter.y);
-      //   helperContext.lineTo(endVertical.x, endVertical.y);
-      //   helperContext.closePath();
-      //   helperContext.strokeStyle = 'red';
-      //   helperContext.stroke();
+      //   overlayContext.beginPath();
+      //   overlayContext.moveTo(elemCenter.x, elemCenter.y);
+      //   overlayContext.lineTo(endVertical.x, endVertical.y);
+      //   overlayContext.closePath();
+      //   overlayContext.strokeStyle = 'red';
+      //   overlayContext.stroke();
       // }
       // if (elemCenter && endHorizontal) {
-      //   helperContext.beginPath();
-      //   helperContext.moveTo(elemCenter.x, elemCenter.y);
-      //   helperContext.lineTo(endHorizontal.x, endHorizontal.y);
-      //   helperContext.closePath();
-      //   helperContext.strokeStyle = 'blue';
-      //   helperContext.stroke();
+      //   overlayContext.beginPath();
+      //   overlayContext.moveTo(elemCenter.x, elemCenter.y);
+      //   overlayContext.lineTo(endHorizontal.x, endHorizontal.y);
+      //   overlayContext.closePath();
+      //   overlayContext.strokeStyle = 'blue';
+      //   overlayContext.stroke();
       // }
     }
   };

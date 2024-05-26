@@ -26,8 +26,8 @@ export interface ViewSizeInfo extends ViewContextSize {
 export interface BoardContent {
   boardContext: ViewContext2D;
   viewContext: ViewContext2D;
-  helperContext: ViewContext2D;
-  underContext: ViewContext2D;
+  overlayContext: ViewContext2D;
+  underlayContext: ViewContext2D;
   drawView: () => void;
 }
 
