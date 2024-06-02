@@ -29,22 +29,40 @@ export function drawBox(
   const { parentOpacity } = opts;
   const opacity = getOpacity(originElem) * parentOpacity;
 
-  drawClipPath(ctx, viewElem, {
-    originElem,
-    calcElemSize,
-    viewScaleInfo,
-    viewSizeInfo,
-    renderContent: () => {
-      ctx.globalAlpha = opacity;
-      drawBoxBackground(ctx, viewElem, { pattern, viewScaleInfo, viewSizeInfo });
-      renderContent?.();
-      drawBoxBorder(ctx, viewElem, { viewScaleInfo, viewSizeInfo });
-      ctx.globalAlpha = parentOpacity;
+  const { clipPath, clipPathStrokeColor, clipPathStrokeWidth } = originElem.detail;
+
+  const mainRender = () => {
+    ctx.globalAlpha = opacity;
+    drawBoxBackground(ctx, viewElem, { pattern, viewScaleInfo, viewSizeInfo });
+    renderContent?.();
+    drawBoxBorder(ctx, viewElem, { viewScaleInfo, viewSizeInfo });
+    ctx.globalAlpha = parentOpacity;
+  };
+  if (clipPath) {
+    drawClipPath(ctx, viewElem, {
+      originElem,
+      calcElemSize,
+      viewScaleInfo,
+      viewSizeInfo,
+      renderContent: () => {
+        mainRender();
+      }
+    });
+
+    if (typeof clipPathStrokeWidth === 'number' && clipPathStrokeWidth > 0 && clipPathStrokeColor) {
+      drawClipPathStroke(ctx, viewElem, {
+        originElem,
+        calcElemSize,
+        viewScaleInfo,
+        viewSizeInfo,
+        parentOpacity
+      });
     }
-  });
+  } else {
+    mainRender();
+  }
 }
 
-// TODO
 function drawClipPath(
   ctx: ViewContext2D,
   viewElem: Element<ElementType>,
@@ -75,6 +93,56 @@ function drawClipPath(
     const pathStr = generateSVGPath(clipPath.commands || []);
     const path2d = new Path2D(pathStr);
     ctx.clip(path2d);
+
+    ctx.translate(0 - (internalX as number), 0 - (internalY as number));
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+    rotateElement(ctx, { ...viewElem }, () => {
+      renderContent?.();
+    });
+
+    ctx.restore();
+  } else {
+    renderContent?.();
+  }
+}
+
+function drawClipPathStroke(
+  ctx: ViewContext2D,
+  viewElem: Element<ElementType>,
+  opts: {
+    originElem?: Element<ElementType>;
+    calcElemSize?: ElementSize;
+    renderContent?: () => void;
+    viewScaleInfo: ViewScaleInfo;
+    viewSizeInfo: ViewSizeInfo;
+    parentOpacity: number;
+  }
+) {
+  const { renderContent, originElem, calcElemSize, viewSizeInfo, parentOpacity } = opts;
+  const totalScale = viewSizeInfo.devicePixelRatio;
+  const { clipPath, clipPathStrokeColor, clipPathStrokeWidth } = originElem?.detail || {};
+  if (clipPath && calcElemSize && clipPath.commands && typeof clipPathStrokeWidth === 'number' && clipPathStrokeWidth > 0 && clipPathStrokeColor) {
+    const { x, y, w, h } = calcElemSize;
+    const { originW, originH, originX, originY } = clipPath;
+    const scaleW = w / originW;
+    const scaleH = h / originH;
+    const viewOriginX = originX * scaleW;
+    const viewOriginY = originY * scaleH;
+    const internalX = x - viewOriginX;
+    const internalY = y - viewOriginY;
+
+    ctx.save();
+    ctx.globalAlpha = parentOpacity;
+    ctx.translate(internalX as number, internalY as number);
+    ctx.scale(totalScale * scaleW, totalScale * scaleH);
+    const pathStr = generateSVGPath(clipPath.commands || []);
+    const path2d = new Path2D(pathStr);
+
+    ctx.strokeStyle = clipPathStrokeColor;
+    ctx.lineWidth = clipPathStrokeWidth;
+    ctx.stroke(path2d);
+
     ctx.translate(0 - (internalX as number), 0 - (internalY as number));
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 

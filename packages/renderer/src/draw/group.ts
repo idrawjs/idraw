@@ -19,6 +19,11 @@ export function drawElement(ctx: ViewContext2D, elem: Element<ElementType>, opts
     return;
   }
 
+  const { overrideElementMap } = opts;
+  if (overrideElementMap?.[elem.uuid]?.operations?.invisible) {
+    return;
+  }
+
   try {
     switch (elem.type) {
       case 'rect': {
@@ -71,7 +76,7 @@ export function drawElement(ctx: ViewContext2D, elem: Element<ElementType>, opts
 
 export function drawGroup(ctx: ViewContext2D, elem: Element<'group'>, opts: RendererDrawElementOptions) {
   const { viewScaleInfo, viewSizeInfo, parentOpacity } = opts;
-  const { x, y, w, h, angle } = calcViewElementSize({ x: elem.x, y: elem.y, w: elem.w, h: elem.h, angle: elem.angle }, { viewScaleInfo, viewSizeInfo }) || elem;
+  const { x, y, w, h, angle } = calcViewElementSize({ x: elem.x, y: elem.y, w: elem.w, h: elem.h, angle: elem.angle }, { viewScaleInfo }) || elem;
   const viewElem = { ...elem, ...{ x, y, w, h, angle } };
   rotateElement(ctx, { x, y, w, h, angle }, () => {
     ctx.globalAlpha = getOpacity(elem) * parentOpacity;

@@ -1,4 +1,4 @@
-import type { ActiveStore, StoreSharer, ViewScaleInfo, ViewSizeInfo } from '@idraw/types';
+import type { ActiveStore, Element, ElementDetailMap, RecursivePartial, StoreSharer, ViewScaleInfo, ViewSizeInfo } from '@idraw/types';
 import { Store } from '@idraw/util';
 
 const defaultActiveStorage: ActiveStore = {
@@ -12,10 +12,11 @@ const defaultActiveStorage: ActiveStore = {
   offsetLeft: 0,
   offsetRight: 0,
   offsetTop: 0,
-  offsetBottom: 0
+  offsetBottom: 0,
+  overrideElementMap: null
 };
 
-export class Sharer implements StoreSharer<Record<string | number | symbol, any>> {
+export class Sharer implements StoreSharer<Record<string | number | symbol | any, any>> {
   #activeStore: Store<ActiveStore>;
   #sharedStore: Store<{
     [string: string | number | symbol]: any;
@@ -95,5 +96,13 @@ export class Sharer implements StoreSharer<Record<string | number | symbol, any>
       contextHeight: this.#activeStore.get('contextHeight')
     };
     return sizeInfo;
+  }
+
+  getActiveOverrideElemenentMap(): Record<string, RecursivePartial<Element<keyof ElementDetailMap, Record<string, any>>>> | null {
+    return this.#activeStore.get('overrideElementMap');
+  }
+
+  setActiveOverrideElemenentMap(map: Record<string, RecursivePartial<Element<keyof ElementDetailMap, Record<string, any>>>> | null): void {
+    this.#activeStore.set('overrideElementMap', map);
   }
 }

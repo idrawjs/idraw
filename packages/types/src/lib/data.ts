@@ -1,4 +1,4 @@
-import type { Element, ElementType, ElementAssets, ElementSize, ElementGroupDetail } from './element';
+import type { Element, ElementType, ElementAssets, ElementSize, ElementGroupDetail, ElementGlobalDetail } from './element';
 
 export type DataLayout = Pick<ElementSize, 'x' | 'y' | 'w' | 'h'> & {
   detail: Pick<
@@ -16,11 +16,13 @@ export type DataLayout = Pick<ElementSize, 'x' | 'y' | 'w' | 'h'> & {
     disabledBottomRight?: boolean;
   };
 };
-export interface Data<E extends Record<string, any> = Record<string, any>> {
+
+export type Data<E extends Record<string, any> = Record<string, any>> = {
   elements: Element<ElementType, E>[];
   assets?: ElementAssets;
   layout?: DataLayout;
-}
+  global?: ElementGlobalDetail;
+};
 
 export type Matrix = [
   number,

@@ -82,6 +82,8 @@ export interface ElementBaseDetail {
   background?: string | LinearGradientColor | RadialGradientColor;
   opacity?: number;
   clipPath?: ElementClipPath;
+  clipPathStrokeWidth?: number;
+  clipPathStrokeColor?: string;
 }
 
 // interface ElementRectDetail extends ElementBaseDetail {
@@ -106,6 +108,8 @@ export interface ElementTextDetail extends ElementBaseDetail {
   textShadowBlur?: number;
   minInlineSize?: 'maxContent' | 'auto';
   textTransform?: 'none' | 'uppercase' | 'lowercase';
+  wordBreak?: 'break-all' | 'normal'; // default: 'normal'
+  overflow?: 'hidden' | 'visible'; // default: 'hidden'
 }
 
 export interface ElementCircleDetail extends ElementBaseDetail {
@@ -174,6 +178,10 @@ export interface ElementOperations {
   deepResize?: boolean;
 }
 
+export interface ElementGlobalDetail {
+  background?: string;
+}
+
 export interface Element<T extends ElementType = ElementType, E extends Record<string, any> = Record<string, any>> extends ElementSize {
   uuid: string;
   name?: string;
@@ -181,6 +189,7 @@ export interface Element<T extends ElementType = ElementType, E extends Record<s
   detail: ElementDetailMap[T];
   operations?: ElementOperations;
   extends?: E;
+  global?: ElementGlobalDetail;
 }
 
 export type Elements = Element<ElementType>[];
