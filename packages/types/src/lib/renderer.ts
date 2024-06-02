@@ -1,7 +1,7 @@
 import type { ViewScaleInfo, ViewCalculator, ViewSizeInfo } from './view';
 import type { Element, ElementSize, ElementAssets } from './element';
 import type { LoaderEventMap, LoadElementType, LoadContent, LoadItemMap } from './loader';
-import type { UtilEventEmitter } from './util';
+import type { UtilEventEmitter, RecursivePartial } from './util';
 import type { StoreSharer } from './store';
 import { ViewContext2D } from '@idraw/types';
 
@@ -43,4 +43,5 @@ export interface RendererDrawElementOptions extends RendererDrawOptions {
   parentElementSize: ElementSize;
   elementAssets?: ElementAssets;
   parentOpacity: number;
+  overrideElementMap?: Record<string, RecursivePartial<Element>> | null;
 }

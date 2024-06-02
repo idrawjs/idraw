@@ -1,6 +1,6 @@
 import { EventEmitter } from '@idraw/util';
 import type { DataLayout, LoadItemMap } from '@idraw/types';
-import { drawElementList, drawLayout } from './draw/index';
+import { drawElementList, drawLayout, drawGlobalBackground } from './draw/index';
 import { Loader } from './loader';
 import type { Data, BoardRenderer, RendererOptions, RendererEventMap, RendererDrawOptions } from '@idraw/types';
 
@@ -45,7 +45,7 @@ export class Renderer extends EventEmitter<RendererEventMap> implements BoardRen
 
   drawData(data: Data, opts: RendererDrawOptions) {
     const loader = this.#loader;
-    const { calculator } = this.#opts;
+    const { calculator, sharer } = this.#opts;
     const viewContext = this.#opts.viewContext;
     viewContext.clearRect(0, 0, viewContext.canvas.width, viewContext.canvas.height);
     const parentElementSize = {
@@ -69,8 +69,10 @@ export class Renderer extends EventEmitter<RendererEventMap> implements BoardRen
       parentElementSize,
       elementAssets: data.assets,
       parentOpacity: 1,
+      overrideElementMap: sharer?.getActiveOverrideElemenentMap(),
       ...opts
     };
+    drawGlobalBackground(viewContext, data.global, drawOpts);
     if (data.layout) {
       drawLayout(viewContext, data.layout as DataLayout, drawOpts, () => {
         drawElementList(viewContext, data, drawOpts);

@@ -6,3 +6,4 @@ export { drawHTML } from './html';
 export { drawText } from './text';
 export { drawElementList } from './elements';
 export { drawLayout } from './layout';
+export { drawGlobalBackground } from './global';

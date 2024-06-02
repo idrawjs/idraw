@@ -705,7 +705,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
           viewer.drawFrame();
           return;
         }
-      } else if (target.elements.length === 1 && target.elements[0]?.type === 'text') {
+      } else if (target.elements.length === 1 && target.elements[0]?.type === 'text' && !target.elements[0]?.operations?.invisible) {
         eventHub.trigger(middlewareEventTextEdit, {
           element: target.elements[0],
           groupQueue: sharer.getSharedStorage(keyGroupQueue) || [],
