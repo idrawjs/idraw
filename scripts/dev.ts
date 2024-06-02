@@ -29,7 +29,7 @@ async function dev() {
 function getViteConfig(): UserConfig {
   const viteConfig: UserConfig = {
     root: joinPackagePath(pkgName),
-    publicDir: joinPackagePath(pkgName, 'demo', 'public'),
+    publicDir: joinPackagePath(pkgName, 'dev'),
     server: {
       port: 8080,
       host: '127.0.0.1',
