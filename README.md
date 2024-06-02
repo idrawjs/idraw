@@ -181,15 +181,11 @@ onMounted(() => {
 We appreciate your help!
 
 To contribute, please follow the steps:
-
-### Step 1: Prepare Project
+ 
 
 - `git clone git@github.com:idrawjs/idraw.git`
 - `cd idraw`
 - `pnpm i`
 - `npm run dev`
-
-### Step 2: Development
-
-- `npm run dev` to select and develop single package
-
+ 
+ 
