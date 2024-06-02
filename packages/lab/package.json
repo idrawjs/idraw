@@ -1,17 +1,17 @@
 {
   "name": "@idraw/lab",
-  "version": "0.4.0-beta.24",
+  "version": "0.4.0-beta.25",
   "dependencies": {
     "@ant-design/icons": "^5.1.3",
-    "@idraw/core": "workspace:^0.4.0-beta.24",
-    "@idraw/util": "workspace:^0.4.0-beta.24",
+    "@idraw/core": "workspace:^0.4.0-beta.25",
+    "@idraw/util": "workspace:^0.4.0-beta.25",
     "antd": "^5.5.0",
     "classnames": "^2.3.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@idraw/types": "workspace:^0.4.0-beta.24",
+    "@idraw/types": "workspace:^0.4.0-beta.25",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.1"
   }
