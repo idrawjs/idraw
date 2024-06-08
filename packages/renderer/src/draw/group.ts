@@ -9,13 +9,15 @@ import { drawHTML } from './html';
 import { drawBox, drawBoxShadow, getOpacity } from './box';
 import { drawPath } from './path';
 
+const visiableMinSize = 0.4; // px;
+
 export function drawElement(ctx: ViewContext2D, elem: Element<ElementType>, opts: RendererDrawElementOptions) {
   if (elem?.operations?.invisible === true) {
     return;
   }
   const { w, h } = elem;
   const { scale } = opts.viewScaleInfo;
-  if ((scale < 1 && (w * scale < 1 || h * scale < 1)) || opts.parentOpacity === 0) {
+  if ((scale < 1 && (w * scale < visiableMinSize || h * scale < visiableMinSize)) || opts.parentOpacity === 0) {
     return;
   }
 

@@ -140,19 +140,19 @@ export interface ElementGroupDetail extends ElementBaseDetail {
   assets?: ElementAssets;
 }
 
-export interface ElementPathDetail extends ElementBaseDetail {
+export type ElementPathDetail = ElementBaseDetail & {
   // path: string;
   commands: SVGPathCommand[];
   originX: number;
   originY: number;
   originW: number;
   originH: number;
-  fill?: string;
+  fill?: string | LinearGradientColor | RadialGradientColor;
   stroke?: string;
   strokeWidth?: number;
   strokeLineCap?: 'butt' | 'round' | 'square';
   fillRule?: string; // "evenodd" | "nonzero"
-}
+};
 
 export interface ElementDetailMap {
   rect: ElementRectDetail;
