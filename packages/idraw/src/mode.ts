@@ -112,6 +112,5 @@ export function changeMode(mode: IDrawMode, core: Core<IDrawEvent>, store: Store
   store.set('enableDrag', enableDrag);
   store.set('enableRuler', enableRuler);
   store.set('enableInfo', enableInfo);
-
   runMiddlewares(core, store);
 }

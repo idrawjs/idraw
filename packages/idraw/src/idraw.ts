@@ -1,4 +1,4 @@
-import { Core, middlewareEventSelectInGroup } from '@idraw/core';
+import { Core, middlewareEventSelectInGroup, middlewareEventSnapToGrid } from '@idraw/core';
 import type {
   PointSize,
   IDrawOptions,
@@ -70,6 +70,10 @@ export class iDraw {
       this.#core.refresh();
     } else if (feat === 'selectInGroup') {
       this.#core.trigger(middlewareEventSelectInGroup, {
+        enable: !!status
+      });
+    } else if (feat === 'snapToGrid') {
+      this.#core.trigger(middlewareEventSnapToGrid, {
         enable: !!status
       });
     }
