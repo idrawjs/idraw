@@ -1,1 +1,0 @@
-export { createPrefixName } from './variable';
