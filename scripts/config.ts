@@ -13,10 +13,6 @@ const packages = [
     dirName: 'renderer',
     globalName: 'iDrawRenderer'
   },
-  // {
-  //   dirName: 'kernal',
-  //   globalName: 'iDrawKernal',
-  // },
   {
     dirName: 'core',
     globalName: 'iDrawCore'
@@ -24,6 +20,10 @@ const packages = [
   {
     dirName: 'idraw',
     globalName: 'iDraw'
+  },
+  {
+    dirName: 'figma',
+    globalName: 'iDrawFigma'
   }
 ];
 
