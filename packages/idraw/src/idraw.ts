@@ -284,9 +284,10 @@ export class iDraw {
     store.destroy();
   }
 
-  getViewCenter() {
+  getViewCenter(): PointSize {
     const { viewScaleInfo, viewSizeInfo } = this.getViewInfo();
-    return calcViewCenter({ viewScaleInfo, viewSizeInfo });
+    const pointSize: PointSize = calcViewCenter({ viewScaleInfo, viewSizeInfo });
+    return pointSize;
   }
 
   $onBoardWatcherEvents() {
