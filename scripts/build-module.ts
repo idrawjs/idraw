@@ -2,6 +2,7 @@ import ts from 'typescript';
 import { Project } from 'ts-morph';
 import type { CompilerOptions } from 'ts-morph';
 import path from 'path';
+import fs from 'fs';
 import * as glob from 'glob';
 import { packages } from './config';
 import { joinPackagePath } from './util/project';
@@ -18,8 +19,26 @@ async function build() {
     console.log(`Remove packages/${dirName}/dist/`);
     removeFullDir(`${pkgDir}/dist`);
     buildPackage(dirName);
+    checkPackageDts(dirName);
     console.log(`Build ESM of ${dirName} successfully!`);
   }
+}
+
+function checkPackageDts(dirName: string) {
+  console.log(`Checking dts files for ${dirName} ...`);
+  const pattern = '**/*.js';
+  const cwd = joinPackagePath(dirName, 'dist');
+  const files = glob.sync(pattern, { cwd });
+
+  for (let i = 0; i < files.length; i++) {
+    const jsFilePath = files[i];
+    const dtsFilePath = jsFilePath.replace(/.js$/, '.d.ts');
+    const dtsAbsolutePath = path.join(cwd, dtsFilePath);
+    if (!(fs.existsSync(dtsAbsolutePath) && fs.statSync(dtsAbsolutePath).isFile())) {
+      throw Error(`ERROR: lack ${dirName}/dist/${dtsFilePath} `);
+    }
+  }
+  console.log(`Check dts files of ${dirName} successfully!`);
 }
 
 function buildPackage(dirName: string) {
@@ -37,7 +56,6 @@ function buildPackage(dirName: string) {
     // const compilerOptions = tsConfig.compilerOptions;
     const compilerOptions: CompilerOptions = {
       noUnusedLocals: true,
-
       declaration: true,
       sourceMap: false,
       target: ts.ScriptTarget.ES2015,
