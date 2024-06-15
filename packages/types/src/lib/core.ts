@@ -36,6 +36,8 @@ export interface CoreEventSelect {
 export interface CoreEventChange {
   type: string;
   data: Data;
+  selectedElements?: Element[] | null;
+  hoverElement?: Element | null;
 }
 export interface CoreEventScale {
   scale: number;

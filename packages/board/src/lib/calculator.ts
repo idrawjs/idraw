@@ -188,30 +188,53 @@ export class Calculator implements ViewCalculator {
     const viewVisibleInfoMap = this.#store.get('viewVisibleInfoMap');
     if (type === 'deleteElement') {
       const { element } = content as ModifyOptions<'deleteElement'>['content'];
-      delete viewVisibleInfoMap[element.uuid];
-    } else if (type === 'addElement' || type === 'updateElement') {
+      const uuids: string[] = [];
+      const _walk = (e: Element) => {
+        uuids.push(e.uuid);
+        if (e.type === 'group' && Array.isArray((e as Element<'group'>).detail.children)) {
+          (e as Element<'group'>).detail.children.forEach((child) => {
+            _walk(child);
+          });
+        }
+      };
+      _walk(element);
+      uuids.forEach((uuid) => {
+        delete viewVisibleInfoMap[uuid];
+      });
+      this.#store.set('viewVisibleInfoMap', viewVisibleInfoMap);
+    }
+    // else if (type === 'updateElement') {
+    //   // TODO
+    //   this.resetViewVisibleInfoMap(data, { viewScaleInfo, viewSizeInfo });
+    // }
+    else if (type === 'addElement' || type === 'updateElement') {
       const { position } = content as ModifyOptions<'addElement'>['content'];
       const element = findElementFromListByPosition(position, data.elements);
       const groupQueue = getGroupQueueByElementPosition(list, position);
       if (element) {
-        const originRectInfo = calcElementOriginRectInfo(element, {
-          groupQueue: groupQueue || []
-        });
-        const newViewVisibleInfo: ViewVisibleInfo = {
-          originRectInfo,
-          rangeRectInfo: is.angle(element.angle) ? originRectInfoToRangeRectInfo(originRectInfo) : originRectInfo,
-          isVisibleInView: true,
-          isGroup: element?.type === 'group',
-          position: [...position]
-        };
-        viewVisibleInfoMap[element.uuid] = newViewVisibleInfo;
-        if (type === 'updateElement') {
-          this.updateVisiableStatus({ viewScaleInfo, viewSizeInfo });
+        if (type === 'updateElement' && element.type === 'group') {
+          // TODO
+          this.resetViewVisibleInfoMap(data, { viewScaleInfo, viewSizeInfo });
+        } else {
+          const originRectInfo = calcElementOriginRectInfo(element, {
+            groupQueue: groupQueue || []
+          });
+          const newViewVisibleInfo: ViewVisibleInfo = {
+            originRectInfo,
+            rangeRectInfo: is.angle(element.angle) ? originRectInfoToRangeRectInfo(originRectInfo) : originRectInfo,
+            isVisibleInView: true,
+            isGroup: element?.type === 'group',
+            position: [...position]
+          };
+          viewVisibleInfoMap[element.uuid] = newViewVisibleInfo;
+          this.#store.set('viewVisibleInfoMap', viewVisibleInfoMap);
+          if (type === 'updateElement') {
+            this.updateVisiableStatus({ viewScaleInfo, viewSizeInfo });
+          }
         }
       }
     } else if (type === 'moveElement') {
       this.resetViewVisibleInfoMap(data, { viewScaleInfo, viewSizeInfo });
     }
-    this.#store.set('viewVisibleInfoMap', viewVisibleInfoMap);
   }
 }

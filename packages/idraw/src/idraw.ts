@@ -253,9 +253,9 @@ export class iDraw {
     core.trigger(eventKeys.change, { data, type: 'moveElement' });
   }
 
-  async getImageBlobURL(opts: ExportImageFileBaseOptions): Promise<ExportImageFileResult> {
+  async getImageBlobURL(opts?: ExportImageFileBaseOptions): Promise<ExportImageFileResult> {
     const data = this.getData() || { elements: [] };
-    const { devicePixelRatio } = opts;
+    const { devicePixelRatio } = opts || { devicePixelRatio: 1 };
 
     const outputSize = calcElementListSize(data.elements);
     const { viewSizeInfo } = this.getViewInfo();
