@@ -307,12 +307,6 @@ export class Board<T extends BoardExtendEventMap = BoardExtendEventMap> {
       extend: true
     });
     if (modifiedOptions) {
-      // TODO
-      // this.#viewer.modifyViewVisibleInfoMap(data, {
-      //   viewSizeInfo,
-      //   viewScaleInfo,
-      //   modifyOptions: modifiedOptions
-      // });
       this.#viewer.resetViewVisibleInfoMap(data, {
         viewSizeInfo,
         viewScaleInfo

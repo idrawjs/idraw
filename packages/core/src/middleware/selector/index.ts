@@ -12,7 +12,7 @@ import {
   getElementPositionFromList,
   deepResizeGroupElement
 } from '@idraw/util';
-import type { ViewRectVertexes, CoreEventMap, ElementPosition, ViewScaleInfo, ViewSizeInfo, ElementSizeController } from '@idraw/types';
+import type { Data, ViewRectVertexes, CoreEventMap, ElementPosition, ViewScaleInfo, ViewSizeInfo, ElementSizeController } from '@idraw/types';
 import type {
   Point,
   PointSize,
@@ -61,8 +61,6 @@ import {
   keySelectedElementListVertexes,
   keySelectedElementController,
   keySelectedElementPosition,
-  keySelectedReferenceXLines,
-  keySelectedReferenceYLines,
   keyIsMoving,
   keyEnableSelectInGroup,
   keyEnableSnapToGrid,
@@ -175,8 +173,6 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
     sharer.setSharedStorage(keySelectedElementListVertexes, null);
     sharer.setSharedStorage(keySelectedElementController, null);
     sharer.setSharedStorage(keySelectedElementPosition, []);
-    sharer.setSharedStorage(keySelectedReferenceXLines, []);
-    sharer.setSharedStorage(keySelectedReferenceYLines, []);
     sharer.setSharedStorage(keyIsMoving, null);
     sharer.setSharedStorage(keyEnableSelectInGroup, null);
   };
@@ -430,8 +426,6 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
     },
 
     pointMove: (e: PointWatcherEvent) => {
-      sharer.setSharedStorage(keySelectedReferenceXLines, []);
-      sharer.setSharedStorage(keySelectedReferenceYLines, []);
       sharer.setSharedStorage(keyIsMoving, true);
       const data = sharer.getActiveStorage('data');
       const elems = getActiveElements();
@@ -470,8 +464,6 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
                 if (is.y(referenceInfo.offsetY) && referenceInfo.offsetY !== null) {
                   totalMoveY = calculator.toGridNum(totalMoveY + referenceInfo.offsetY);
                 }
-                sharer.setSharedStorage(keySelectedReferenceXLines, referenceInfo.xLines);
-                sharer.setSharedStorage(keySelectedReferenceYLines, referenceInfo.yLines);
               }
             } catch (err) {
               // eslint-disable-next-line no-console
@@ -518,10 +510,6 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
               });
             }
           });
-          // calculator.updateVisiableStatus({
-          //   viewSizeInfo,
-          //   viewScaleInfo
-          // });
 
           sharer.setActiveStorage('data', data);
         }
@@ -613,10 +601,10 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
 
     pointEnd(e: PointWatcherEvent) {
       inBusyMode = null;
-      sharer.setSharedStorage(keySelectedReferenceXLines, []);
-      sharer.setSharedStorage(keySelectedReferenceYLines, []);
       sharer.setSharedStorage(keyIsMoving, false);
       const data = sharer.getActiveStorage('data');
+      const selectedElements = sharer.getSharedStorage(keySelectedElementList);
+      const hoverElement = sharer.getSharedStorage(keyHoverElement);
       const resizeType = sharer.getSharedStorage(keyResizeType);
       const actionType = sharer.getSharedStorage(keyActionType);
       // const viewScaleInfo = sharer.getActiveViewScaleInfo();
@@ -684,7 +672,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
           if (type === 'resize') {
             type = 'resizeElement';
           }
-          eventHub.trigger(eventChange, { data, type });
+          eventHub.trigger(eventChange, { data, type, selectedElements, hoverElement });
         }
         viewer.drawFrame();
       };
@@ -787,13 +775,23 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
             hideControllers: !!isMoving && actionType === 'drag'
           });
           if (actionType === 'drag') {
-            const xLines = sharer.getSharedStorage(keySelectedReferenceXLines);
-            const yLines = sharer.getSharedStorage(keySelectedReferenceYLines);
             if (enableSnapToGrid === true) {
-              drawReferenceLines(overlayContext, {
-                xLines,
-                yLines
+              const referenceInfo = calcReferenceInfo(elem.uuid, {
+                calculator,
+                data: activeStore.data as Data,
+                groupQueue,
+                viewScaleInfo,
+                viewSizeInfo
               });
+              if (referenceInfo) {
+                const { offsetX, offsetY, xLines, yLines } = referenceInfo;
+                if (offsetX === 0 || offsetY === 0) {
+                  drawReferenceLines(overlayContext, {
+                    xLines,
+                    yLines
+                  });
+                }
+              }
             }
           }
         }
@@ -821,13 +819,23 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
             hideControllers: !!isMoving && actionType === 'drag'
           });
           if (actionType === 'drag') {
-            const xLines = sharer.getSharedStorage(keySelectedReferenceXLines);
-            const yLines = sharer.getSharedStorage(keySelectedReferenceYLines);
             if (enableSnapToGrid === true) {
-              drawReferenceLines(overlayContext, {
-                xLines,
-                yLines
+              const referenceInfo = calcReferenceInfo(elem.uuid, {
+                calculator,
+                data: activeStore.data as Data,
+                groupQueue,
+                viewScaleInfo,
+                viewSizeInfo
               });
+              if (referenceInfo) {
+                const { offsetX, offsetY, xLines, yLines } = referenceInfo;
+                if (offsetX === 0 || offsetY === 0) {
+                  drawReferenceLines(overlayContext, {
+                    xLines,
+                    yLines
+                  });
+                }
+              }
             }
           }
         } else if (actionType === 'area' && areaStart && areaEnd) {

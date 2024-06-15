@@ -88,3 +88,4 @@ export { calcViewCenterContent, calcViewCenter } from './lib/view-content';
 export { modifyElement, getModifiedElement } from './lib/modify';
 // export { ModifyRecorder } from './lib/modify-recorder';
 export { enhanceFontFamliy } from './lib/text';
+export { flatElementList } from './lib/flat';

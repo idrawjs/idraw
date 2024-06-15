@@ -28,8 +28,6 @@ import {
   keySelectedElementListVertexes,
   keySelectedElementController,
   keySelectedElementPosition,
-  keySelectedReferenceXLines,
-  keySelectedReferenceYLines,
   keyIsMoving,
   keyEnableSelectInGroup,
   keyEnableSnapToGrid,
@@ -104,8 +102,6 @@ export type DeepSelectorSharedStorage = {
   [keySelectedElementListVertexes]: ViewRectVertexes | null;
   [keySelectedElementController]: ElementSizeController | null;
   [keySelectedElementPosition]: ElementPosition;
-  [keySelectedReferenceXLines]: Array<PointSize[]>;
-  [keySelectedReferenceYLines]: Array<PointSize[]>;
   [keyIsMoving]: boolean | null;
   [keyEnableSelectInGroup]: boolean | null;
   [keyEnableSnapToGrid]: boolean | null;
