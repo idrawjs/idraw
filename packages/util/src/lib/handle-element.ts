@@ -193,15 +193,72 @@ export function moveElementPosition(
     let trimDeletePosIndex = -1;
     const trimDeletePosAction = 'down'; // +1
 
-    for (let i = 0; i < from.length; i++) {
-      if (!(to[i] >= 0)) {
-        break;
+    let isEffectToIndex = false;
+
+    if (from.length >= 1 && to.length >= 1) {
+      // isEffectToIndex
+      // false [2, 4] -> [1, 2]
+      // false [3, 4, 5] -> [4, 5]
+
+      // up -> down
+      // true  [2] -> [4]
+      // true  [2] -> [3, 4]
+      // true  [2, 3] -> [2, 3, 4]
+      if (from.length <= to.length) {
+        if (from.length === 1) {
+          if (from[0] < to[0]) {
+            isEffectToIndex = true;
+          }
+        } else {
+          for (let i = 0; i < from.length; i++) {
+            if (from[i] === to[i]) {
+              if (from.length === from.length - 1) {
+                isEffectToIndex = true;
+                break;
+              }
+            } else {
+              break;
+            }
+          }
+        }
       }
-      if (to[i] === from[i]) {
-        continue;
+
+      // down -> up
+      // true  [4] -> [2]
+      // true  [3, 4, 5] -> [3, 3]
+      // true  [3, 4, 5] -> [2]
+      if (from.length >= to.length) {
+        if (to.length === 1) {
+          if (to[0] < from[0]) {
+            isEffectToIndex = true;
+          }
+        } else {
+          for (let i = 0; i < to.length; i++) {
+            if (i === to.length - 1 && to[i] < from[i]) {
+              isEffectToIndex = true;
+            }
+            if (from[i] === to[i]) {
+              continue;
+            } else {
+              break;
+            }
+          }
+        }
       }
-      if (to[i] < from[i] && i == to.length - 1) {
-        trimDeletePosIndex = i;
+    }
+
+    if (isEffectToIndex === true) {
+      for (let i = 0; i < from.length; i++) {
+        if (!(to[i] >= 0)) {
+          break;
+        }
+        if (to[i] === from[i]) {
+          continue;
+        }
+
+        if (to[i] < from[i] && i == to.length - 1) {
+          trimDeletePosIndex = i;
+        }
       }
     }
 

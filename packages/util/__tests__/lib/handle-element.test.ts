@@ -1,4 +1,4 @@
-import { moveElementPosition, deepClone } from '@idraw/util';
+import { moveElementPosition } from '@idraw/util';
 import type { Elements } from '@idraw/types';
 const getElemBase = () => {
   return {
@@ -8,72 +8,9 @@ const getElemBase = () => {
     h: 1
   };
 };
-// const elements: Elements = [
-//   {
-//     ...getElemBase(),
-//     uuid: 'rect-01',
-//     type: 'rect',
-//     detail: {}
-//   },
-//   {
-//     ...getElemBase(),
-//     uuid: 'rect-02',
-//     type: 'rect',
-//     detail: {}
-//   },
-//   {
-//     ...getElemBase(),
-//     uuid: 'rect-03',
-//     type: 'rect',
-//     detail: {}
-//   },
-//   {
-//     ...getElemBase(),
-//     uuid: 'group-01',
-//     type: 'group',
-//     detail: {
-//       children: [
-//         {
-//           ...getElemBase(),
-//           uuid: 'rect-04',
-//           type: 'rect',
-//           detail: {}
-//         },
-//         {
-//           ...getElemBase(),
-//           uuid: 'rect-05',
-//           type: 'rect',
-//           detail: {}
-//         },
-
-//         {
-//           ...getElemBase(),
-//           uuid: 'group-02',
-//           type: 'group',
-//           detail: {
-//             children: [
-//               {
-//                 ...getElemBase(),
-//                 uuid: 'rect-06',
-//                 type: 'rect',
-//                 detail: {}
-//               },
-//               {
-//                 ...getElemBase(),
-//                 uuid: 'rect-07',
-//                 type: 'rect',
-//                 detail: {}
-//               }
-//             ]
-//           }
-//         }
-//       ]
-//     }
-//   }
-// ];
 
 function generateElements(list: any[]): Elements {
-  const elements: Elements = list.map((item, i) => {
+  const elements: Elements = list.map((item) => {
     if (Array.isArray(item)) {
       return {
         ...getElemBase(),
@@ -86,7 +23,7 @@ function generateElements(list: any[]): Elements {
     } else {
       return {
         ...getElemBase(),
-        uuid: `rect`,
+        uuid: `rect-${item}`,
         type: 'rect',
         detail: {}
       };
@@ -165,7 +102,7 @@ describe('@idraw/util: handle-element ', () => {
     expect(list).toStrictEqual(expectResult);
   });
 
-  //
+  // [1] -> [1]
   test('moveElementPosition, move-up [1] -> [1]', () => {
     const list: Elements = generateElements([0, 1, 2, [0, 1, [0, 1, 2, 3], 3], 4, 5]);
 
@@ -175,6 +112,19 @@ describe('@idraw/util: handle-element ', () => {
     });
 
     const expectResult = generateElements([0, 1, 2, [0, 1, [0, 1, 2, 3], 3], 4, 5]);
+    expect(list).toStrictEqual(expectResult);
+  });
+
+  // [2, 4] -> [1, 2]
+  test('moveElementPosition, move-up [1, 2] -> [2, 4]', () => {
+    const list: Elements = generateElements([0, [0, 1, 2, 3, 4], [0, 1, 2, 3, 4], 3, 4]);
+
+    moveElementPosition(list, {
+      from: [2, 4],
+      to: [1, 2]
+    });
+    const expectResult = generateElements([0, [0, 1, 4, 2, 3, 4], [0, 1, 2, 3], 3, 4]);
+
     expect(list).toStrictEqual(expectResult);
   });
 });
