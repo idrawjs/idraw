@@ -1,20 +1,24 @@
 import type { Point, BoardMiddleware, PointWatcherEvent, BoardWatherWheelEvent } from '@idraw/types';
 import { drawScroller, isPointInScrollThumb } from './util';
 // import type { ScrollbarThumbType } from './util';
-import { keyXThumbRect, keyYThumbRect, keyPrevPoint, keyActivePoint, keyActiveThumbType } from './config';
+import { keyXThumbRect, keyYThumbRect, keyPrevPoint, keyActivePoint, keyActiveThumbType, keyHoverXThumbRect, keyHoverYThumbRect } from './config';
 import type { DeepScrollerSharedStorage } from './types';
 
 export const MiddlewareScroller: BoardMiddleware<DeepScrollerSharedStorage> = (opts) => {
-  const { viewer, boardContent, sharer } = opts;
+  const { viewer, boardContent, sharer, eventHub } = opts;
   const { overlayContext } = boardContent;
   sharer.setSharedStorage(keyXThumbRect, null); // null | ElementSize
   sharer.setSharedStorage(keyYThumbRect, null); // null | ElementSize
+  let isBusy: boolean = false;
 
   // viewer.drawFrame();
   const clear = () => {
     sharer.setSharedStorage(keyPrevPoint, null); // null | Point;
     sharer.setSharedStorage(keyActivePoint, null); // null | Point;
     sharer.setSharedStorage(keyActiveThumbType, null); // null | 'X' | 'Y'
+    sharer.setSharedStorage(keyHoverXThumbRect, null); // null | boolean
+    sharer.setSharedStorage(keyHoverYThumbRect, null); // null | boolean
+    isBusy = false;
   };
 
   clear();
@@ -64,10 +68,33 @@ export const MiddlewareScroller: BoardMiddleware<DeepScrollerSharedStorage> = (o
       viewer.drawFrame();
     },
 
+    hover: (e: PointWatcherEvent) => {
+      if (isBusy === true) {
+        return false;
+      }
+      const { point } = e;
+      const thumbType = getThumbType(point);
+      if (thumbType === 'X' || thumbType === 'Y') {
+        if (thumbType === 'X') {
+          sharer.setSharedStorage(keyHoverXThumbRect, true);
+          sharer.setSharedStorage(keyHoverYThumbRect, false);
+        } else {
+          sharer.setSharedStorage(keyHoverXThumbRect, false);
+          sharer.setSharedStorage(keyHoverYThumbRect, true);
+        }
+        eventHub.trigger('cursor', { type: 'default' });
+        return false;
+      }
+
+      sharer.setSharedStorage(keyHoverXThumbRect, false);
+      sharer.setSharedStorage(keyHoverYThumbRect, false);
+    },
+
     pointStart: (e: PointWatcherEvent) => {
       const { point } = e;
       const thumbType = getThumbType(point);
       if (thumbType === 'X' || thumbType === 'Y') {
+        isBusy = true;
         sharer.setSharedStorage(keyActiveThumbType, thumbType);
         sharer.setSharedStorage(keyPrevPoint, point);
         return false;
@@ -88,6 +115,7 @@ export const MiddlewareScroller: BoardMiddleware<DeepScrollerSharedStorage> = (o
       }
     },
     pointEnd: () => {
+      isBusy = false;
       const activeThumbType = sharer.getSharedStorage(keyActiveThumbType);
       clear();
       if (activeThumbType === 'X' || activeThumbType === 'Y') {

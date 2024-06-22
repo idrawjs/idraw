@@ -40,6 +40,7 @@ import {
   keyDebugStartHorizontal,
   keyDebugStartVertical
 } from './config';
+import { keyLayoutIsSelected } from '../layout-selector';
 
 export {
   Data,
@@ -112,4 +113,7 @@ export type DeepSelectorSharedStorage = {
   [keyDebugEndVertical]: PointSize | null;
   [keyDebugStartHorizontal]: PointSize | null;
   [keyDebugStartVertical]: PointSize | null;
+
+  // layout-selector
+  [keyLayoutIsSelected]: boolean | null;
 };

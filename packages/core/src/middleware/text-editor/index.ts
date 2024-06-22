@@ -174,9 +174,8 @@ export const MiddlewareTextEditor: BoardMiddleware<ExtendEventMap, CoreEventMap 
     textarea.style.resize = 'none';
     textarea.style.overflow = 'hidden';
     textarea.style.wordBreak = 'break-all';
-    // textarea.style.background = '#FFFFFF';
-    textarea.style.background = 'transparent';
-    // textarea.style.color = '#333333';
+    textarea.style.borderRadius = `${(typeof detail.borderRadius === 'number' ? detail.borderRadius : 0) * scale}px`;
+    textarea.style.background = `${detail.background || 'transparent'}`;
     textarea.style.color = `${detail.color || '#333333'}`;
     textarea.style.fontSize = `${detail.fontSize * scale}px`;
     textarea.style.lineHeight = `${(detail.lineHeight || detail.fontSize) * scale}px`;

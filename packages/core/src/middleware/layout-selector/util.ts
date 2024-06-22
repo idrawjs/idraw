@@ -1,4 +1,4 @@
-import type { ViewContext2D, LayoutSizeController, DataLayout, ViewRectVertexes, PointSize } from '@idraw/types';
+import type { ViewContext2D, LayoutSizeController, DataLayout, ViewRectVertexes, PointSize, ElementSize } from '@idraw/types';
 import { selectColor, disableColor } from './config';
 
 function drawControllerBox(ctx: ViewContext2D, boxVertexes: ViewRectVertexes) {
@@ -108,4 +108,25 @@ export function drawLayoutController(
   } else {
     drawControllerBox(ctx, bottomLeft.vertexes);
   }
+}
+
+export function drawLayoutHover(
+  ctx: ViewContext2D,
+  opts: {
+    layoutSize: ElementSize;
+  }
+) {
+  const { layoutSize } = opts;
+  const { x, y, w, h } = layoutSize;
+  ctx.setLineDash([]);
+  ctx.strokeStyle = selectColor;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+  ctx.lineTo(x + w, y);
+  ctx.lineTo(x + w, y + h);
+  ctx.lineTo(x, y + h);
+  ctx.lineTo(x, y);
+  ctx.closePath();
+  ctx.stroke();
 }

@@ -19,7 +19,7 @@ export function drawBox(
     originElem: Element;
     calcElemSize: ElementSize;
     pattern?: string | CanvasPattern | null;
-    renderContent: () => void;
+    renderContent?: () => void;
     viewScaleInfo: ViewScaleInfo;
     viewSizeInfo: ViewSizeInfo;
     parentOpacity: number;
