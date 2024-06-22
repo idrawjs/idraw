@@ -6,14 +6,7 @@ export type DataLayout = Pick<ElementSize, 'x' | 'y' | 'w' | 'h'> & {
     'background' | 'borderWidth' | 'overflow' | 'borderColor' | 'borderDash' | 'borderRadius' | 'shadowBlur' | 'shadowColor' | 'shadowOffsetX' | 'shadowOffsetY'
   >;
   operations?: {
-    disabledLeft?: boolean;
-    disabledTop?: boolean;
-    disabledRight?: boolean;
-    disabledBottom?: boolean;
-    disabledTopLeft?: boolean;
-    disabledTopRight?: boolean;
-    disabledBottomLeft?: boolean;
-    disabledBottomRight?: boolean;
+    position?: 'absolute' | 'relative';
   };
 };
 

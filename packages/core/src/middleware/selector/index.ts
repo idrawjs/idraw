@@ -75,8 +75,9 @@ import {
 import { calcReferenceInfo } from './reference';
 import { middlewareEventTextEdit } from '../text-editor';
 import { eventChange } from '../../config';
+import { keyLayoutIsSelected } from '../layout-selector';
 
-export { keySelectedElementList, keyActionType, keyResizeType, keyGroupQueue };
+export { keySelectedElementList, keyHoverElement, keyActionType, keyResizeType, keyGroupQueue };
 export type { DeepSelectorSharedStorage, ActionType };
 
 export { middlewareEventSelect, middlewareEventSelectClear, middlewareEventSelectInGroup, middlewareEventSnapToGrid };
@@ -237,10 +238,15 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
     },
 
     hover: (e: PointWatcherEvent) => {
+      const layoutIsSelected = sharer.getSharedStorage(keyLayoutIsSelected);
+
       const resizeType = sharer.getSharedStorage(keyResizeType);
       const actionType = sharer.getSharedStorage(keyActionType);
       const groupQueue = sharer.getSharedStorage(keyGroupQueue);
       const triggerCursor = (target: PointTarget) => {
+        if (layoutIsSelected === true) {
+          return;
+        }
         const cursor: string | null = target.type;
         if (inBusyMode === null) {
           eventHub.trigger('cursor', {
