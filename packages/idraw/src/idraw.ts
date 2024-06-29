@@ -28,7 +28,7 @@ import {
   calcViewCenter,
   Store
 } from '@idraw/util';
-import { defaultSettings, getDefaultStorage, defaultMode } from './config';
+import { defaultSettings, getDefaultStorage, defaultMode, parseStyles } from './config';
 import { exportImageFileBlobURL } from './file';
 import type { ExportImageFileBaseOptions, ExportImageFileResult } from './file';
 import { eventKeys } from './event';
@@ -43,6 +43,7 @@ export class iDraw {
 
   constructor(mount: HTMLDivElement, options: IDrawOptions) {
     const opts = { ...defaultSettings, ...options };
+    this.#store.set('middlewareStyles', parseStyles(opts));
     const { width, height, devicePixelRatio, createCustomContext2D } = opts;
     const core = new Core<IDrawEvent>(mount, { width, height, devicePixelRatio, createCustomContext2D });
     this.#core = core;

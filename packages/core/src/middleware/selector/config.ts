@@ -1,3 +1,5 @@
+import type { MiddlewareSelectorStyle } from '@idraw/types';
+
 export const key = 'SELECT';
 // export const keyHoverElement = Symbol(`${key}_hoverElementSize`);
 export const keyActionType = Symbol(`${key}_actionType`); // 'select' | 'drag-list' | 'drag-list-end' | 'drag' | 'hover' | 'resize' | 'area' | null = null;
@@ -27,16 +29,19 @@ export const keyDebugEnd0 = Symbol(`${key}_debug_end0`);
 export const selectWrapperBorderWidth = 2;
 export const resizeControllerBorderWidth = 4;
 export const areaBorderWidth = 1;
-export const wrapperColor = '#1973ba';
-
-export const lockColor = '#5b5959b5';
-
 export const controllerSize = 10;
-// export const wrapperColor = '#1890ff';
 
-export const auxiliaryColor = '#f7276e';
+const activeColor = '#1973ba';
+const activeAreaColor = '#1976d21c';
+const lockedColor = '#5b5959b5';
+const referenceColor = '#f7276e';
 
-export const referenceColor = '#f7276e';
+export const defaultStyle: MiddlewareSelectorStyle = {
+  activeColor,
+  activeAreaColor,
+  lockedColor,
+  referenceColor
+};
 
 export const middlewareEventSelect: string = '@middleware/select';
 

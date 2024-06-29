@@ -1,20 +1,8 @@
 import type { Element, ViewScaleInfo, ViewSizeInfo, ViewContext2D, BoardViewerFrameSnapshot, ViewRectInfo, ViewCalculator } from '@idraw/types';
 import { formatNumber, rotateByCenter, getViewScaleInfoFromSnapshot, getViewSizeInfoFromSnapshot } from '@idraw/util';
-import type { DeepRulerSharedStorage } from './types';
+import type { DeepRulerSharedStorage, MiddlewareRulerStyle } from './types';
 import { keySelectedElementList, keyActionType } from '../selector';
-
-const rulerSize = 16;
-const background = '#FFFFFFA8';
-const borderColor = '#00000080';
-const scaleColor = '#000000';
-const textColor = '#00000080';
-const fontFamily = 'monospace';
-const fontSize = 10;
-const fontWeight = 100;
-const gridColor = '#AAAAAA20';
-const gridKeyColor = '#AAAAAA40';
-const lineSize = 1;
-const selectedAreaColor = '#196097';
+import { rulerSize, fontSize, fontWeight, lineSize, fontFamily } from './config';
 
 // const rulerUnit = 10;
 // const rulerKeyUnit = 100;
@@ -118,9 +106,11 @@ export function drawXRuler(
   ctx: ViewContext2D,
   opts: {
     scaleList: RulerScale[];
+    style: MiddlewareRulerStyle;
   }
 ) {
-  const { scaleList } = opts;
+  const { scaleList, style } = opts;
+  const { scaleColor, textColor } = style;
   const scaleDrawStart = rulerSize;
   const scaleDrawEnd = (rulerSize * 4) / 5;
   const subKeyScaleDrawEnd = (rulerSize * 2) / 5;
@@ -156,9 +146,11 @@ export function drawYRuler(
   ctx: ViewContext2D,
   opts: {
     scaleList: RulerScale[];
+    style: MiddlewareRulerStyle;
   }
 ) {
-  const { scaleList } = opts;
+  const { scaleList, style } = opts;
+  const { scaleColor, textColor } = style;
   const scaleDrawStart = rulerSize;
   const scaleDrawEnd = (rulerSize * 4) / 5;
   const subKeyScaleDrawEnd = (rulerSize * 2) / 5;
@@ -200,10 +192,13 @@ export function drawRulerBackground(
   opts: {
     viewScaleInfo: ViewScaleInfo;
     viewSizeInfo: ViewSizeInfo;
+    style: MiddlewareRulerStyle;
   }
 ) {
-  const { viewSizeInfo } = opts;
+  const { viewSizeInfo, style } = opts;
   const { width, height } = viewSizeInfo;
+
+  const { background, borderColor } = style;
 
   ctx.beginPath();
   ctx.moveTo(0, 0);
@@ -229,17 +224,19 @@ export function drawGrid(
     yList: RulerScale[];
     viewScaleInfo: ViewScaleInfo;
     viewSizeInfo: ViewSizeInfo;
+    style: MiddlewareRulerStyle;
   }
 ) {
-  const { xList, yList, viewSizeInfo } = opts;
+  const { xList, yList, viewSizeInfo, style } = opts;
   const { width, height } = viewSizeInfo;
+  const { gridColor, gridPrimaryColor } = style;
   for (let i = 0; i < xList.length; i++) {
     const item = xList[i];
     ctx.beginPath();
     ctx.moveTo(item.position, 0);
     ctx.lineTo(item.position, height);
     if (item.isKeyNum === true || item.isSubKeyNum === true) {
-      ctx.strokeStyle = gridKeyColor;
+      ctx.strokeStyle = gridPrimaryColor;
     } else {
       ctx.strokeStyle = gridColor;
     }
@@ -255,7 +252,7 @@ export function drawGrid(
     ctx.moveTo(0, item.position);
     ctx.lineTo(width, item.position);
     if (item.isKeyNum === true || item.isSubKeyNum === true) {
-      ctx.strokeStyle = gridKeyColor;
+      ctx.strokeStyle = gridPrimaryColor;
     } else {
       ctx.strokeStyle = gridColor;
     }
@@ -266,9 +263,13 @@ export function drawGrid(
   // TODO
 }
 
-export function drawScrollerSelectedArea(ctx: ViewContext2D, opts: { snapshot: BoardViewerFrameSnapshot<DeepRulerSharedStorage>; calculator: ViewCalculator }) {
-  const { snapshot, calculator } = opts;
+export function drawScrollerSelectedArea(
+  ctx: ViewContext2D,
+  opts: { snapshot: BoardViewerFrameSnapshot<DeepRulerSharedStorage>; calculator: ViewCalculator; style: MiddlewareRulerStyle }
+) {
+  const { snapshot, calculator, style } = opts;
   const { sharedStore } = snapshot;
+  const { selectedAreaColor } = style;
   const selectedElementList = sharedStore[keySelectedElementList];
   const actionType = sharedStore[keyActionType];
 

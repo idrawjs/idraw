@@ -12,7 +12,16 @@ import {
   getElementPositionFromList,
   deepResizeGroupElement
 } from '@idraw/util';
-import type { Data, ViewRectVertexes, CoreEventMap, ElementPosition, ViewScaleInfo, ViewSizeInfo, ElementSizeController } from '@idraw/types';
+import type {
+  Data,
+  ViewRectVertexes,
+  CoreEventMap,
+  ElementPosition,
+  ViewScaleInfo,
+  ViewSizeInfo,
+  ElementSizeController,
+  MiddlewareSelectorConfig
+} from '@idraw/types';
 import type {
   Point,
   PointSize,
@@ -64,7 +73,8 @@ import {
   keyIsMoving,
   keyEnableSelectInGroup,
   keyEnableSnapToGrid,
-  controllerSize
+  controllerSize,
+  defaultStyle
   // keyDebugElemCenter,
   // keyDebugEnd0,
   // keyDebugEndHorizontal,
@@ -82,7 +92,13 @@ export type { DeepSelectorSharedStorage, ActionType };
 
 export { middlewareEventSelect, middlewareEventSelectClear, middlewareEventSelectInGroup, middlewareEventSnapToGrid };
 
-export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, CoreEventMap> = (opts) => {
+export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, CoreEventMap, MiddlewareSelectorConfig> = (opts, config) => {
+  const innerConfig = {
+    ...defaultStyle,
+    ...config
+  };
+  const { activeColor, activeAreaColor, lockedColor, referenceColor } = innerConfig;
+  const style = { activeColor, activeAreaColor, lockedColor, referenceColor };
   const { viewer, sharer, boardContent, calculator, eventHub } = opts;
   const { overlayContext } = boardContent;
   let prevPoint: Point | null = null;
@@ -742,7 +758,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
       const isMoving = sharedStore[keyIsMoving];
       const enableSnapToGrid = sharedStore[keyEnableSnapToGrid];
 
-      const drawBaseOpts = { calculator, viewScaleInfo, viewSizeInfo };
+      const drawBaseOpts = { calculator, viewScaleInfo, viewSizeInfo, style };
       // const selectedElementController = sharedStore[keySelectedElementController];
       // const resizeType: ResizeType | null = sharedStore[keyResizeType];
 
@@ -767,7 +783,8 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
                 groupQueue,
                 controllerSize: 10,
                 viewScaleInfo
-              })
+              }),
+              style
             });
           } else {
             drawHoverVertexesWrapper(overlayContext, hoverElementVertexes, drawBaseOpts);
@@ -778,7 +795,8 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
             ...drawBaseOpts,
             element: elem,
             calculator,
-            hideControllers: !!isMoving && actionType === 'drag'
+            hideControllers: !!isMoving && actionType === 'drag',
+            style
           });
           if (actionType === 'drag') {
             if (enableSnapToGrid === true) {
@@ -794,7 +812,8 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
                 if (offsetX === 0 || offsetY === 0) {
                   drawReferenceLines(overlayContext, {
                     xLines,
-                    yLines
+                    yLines,
+                    style
                   });
                 }
               }
@@ -811,7 +830,8 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
                 groupQueue,
                 controllerSize: 10,
                 viewScaleInfo
-              })
+              }),
+              style
             });
           } else {
             drawHoverVertexesWrapper(overlayContext, hoverElementVertexes, drawBaseOpts);
@@ -822,7 +842,8 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
             ...drawBaseOpts,
             element: elem,
             calculator,
-            hideControllers: !!isMoving && actionType === 'drag'
+            hideControllers: !!isMoving && actionType === 'drag',
+            style
           });
           if (actionType === 'drag') {
             if (enableSnapToGrid === true) {
@@ -838,14 +859,15 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
                 if (offsetX === 0 || offsetY === 0) {
                   drawReferenceLines(overlayContext, {
                     xLines,
-                    yLines
+                    yLines,
+                    style
                   });
                 }
               }
             }
           }
         } else if (actionType === 'area' && areaStart && areaEnd) {
-          drawArea(overlayContext, { start: areaStart, end: areaEnd });
+          drawArea(overlayContext, { start: areaStart, end: areaEnd, style });
         } else if ((['drag-list', 'drag-list-end'] as ActionType[]).includes(actionType)) {
           const listAreaSize = calcSelectedElementsArea(getActiveElements(), {
             viewScaleInfo: sharer.getActiveViewScaleInfo(),
@@ -853,7 +875,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
             calculator
           });
           if (listAreaSize) {
-            drawListArea(overlayContext, { areaSize: listAreaSize });
+            drawListArea(overlayContext, { areaSize: listAreaSize, style });
           }
         }
       }

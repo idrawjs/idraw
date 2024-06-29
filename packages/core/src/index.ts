@@ -68,11 +68,11 @@ export class Core<E extends CoreEventMap = CoreEventMap> {
     container.style.position = 'relative';
   }
 
-  use(middleware: BoardMiddleware<any, any>) {
-    this.#board.use(middleware);
+  use<C extends any = any>(middleware: BoardMiddleware<any, any, any>, config?: C) {
+    this.#board.use<C>(middleware, config);
   }
 
-  disuse(middleware: BoardMiddleware<any, any>) {
+  disuse(middleware: BoardMiddleware<any, any, any>) {
     this.#board.disuse(middleware);
   }
 

@@ -97,8 +97,9 @@ export interface BoardMiddlewareOptions<S extends Record<any | symbol, any> = Re
   canvas?: HTMLCanvasElement;
 }
 
-export type BoardMiddleware<S extends Record<any | symbol, any> = any, E extends BoardExtendEventMap = BoardExtendEventMap> = (
-  opts: BoardMiddlewareOptions<S, E>
+export type BoardMiddleware<S extends Record<any | symbol, any> = any, E extends BoardExtendEventMap = BoardExtendEventMap, C extends any = undefined> = (
+  opts: BoardMiddlewareOptions<S, E>,
+  config?: C
 ) => BoardMiddlewareObject<S>;
 
 export interface BoardOptions {
