@@ -1,13 +1,29 @@
-import type { BoardMiddleware, CoreEventMap } from '@idraw/types';
+import type { BoardMiddleware, CoreEventMap, MiddlewareRulerConfig } from '@idraw/types';
 import { getViewScaleInfoFromSnapshot, getViewSizeInfoFromSnapshot } from '@idraw/util';
 import { drawRulerBackground, drawXRuler, drawYRuler, calcXRulerScaleList, calcYRulerScaleList, drawGrid, drawScrollerSelectedArea } from './util';
 import type { DeepRulerSharedStorage } from './types';
+import { defaultStyle } from './config';
 
 export const middlewareEventRuler = '@middleware/show-ruler';
 
-export const MiddlewareRuler: BoardMiddleware<DeepRulerSharedStorage, CoreEventMap> = (opts) => {
+export const MiddlewareRuler: BoardMiddleware<DeepRulerSharedStorage, CoreEventMap, MiddlewareRulerConfig> = (opts, config) => {
   const { boardContent, viewer, eventHub, calculator } = opts;
   const { overlayContext, underlayContext } = boardContent;
+  const innerConfig = {
+    ...defaultStyle,
+    ...config
+  };
+  const { background, borderColor, scaleColor, textColor, gridColor, gridPrimaryColor, selectedAreaColor } = innerConfig;
+  const style = {
+    background,
+    borderColor,
+    scaleColor,
+    textColor,
+    gridColor,
+    gridPrimaryColor,
+    selectedAreaColor
+  };
+
   let show: boolean = true;
   let showGrid: boolean = true;
 
@@ -37,15 +53,15 @@ export const MiddlewareRuler: BoardMiddleware<DeepRulerSharedStorage, CoreEventM
         const viewScaleInfo = getViewScaleInfoFromSnapshot(snapshot);
         const viewSizeInfo = getViewSizeInfoFromSnapshot(snapshot);
 
-        drawScrollerSelectedArea(overlayContext, { snapshot, calculator });
+        drawScrollerSelectedArea(overlayContext, { snapshot, calculator, style });
 
-        drawRulerBackground(overlayContext, { viewScaleInfo, viewSizeInfo });
+        drawRulerBackground(overlayContext, { viewScaleInfo, viewSizeInfo, style });
 
         const { list: xList, rulerUnit } = calcXRulerScaleList({ viewScaleInfo, viewSizeInfo });
-        drawXRuler(overlayContext, { scaleList: xList });
+        drawXRuler(overlayContext, { scaleList: xList, style });
 
         const { list: yList } = calcYRulerScaleList({ viewScaleInfo, viewSizeInfo });
-        drawYRuler(overlayContext, { scaleList: yList });
+        drawYRuler(overlayContext, { scaleList: yList, style });
 
         if (showGrid === true) {
           const ctx = rulerUnit === 1 ? overlayContext : underlayContext;
@@ -53,7 +69,8 @@ export const MiddlewareRuler: BoardMiddleware<DeepRulerSharedStorage, CoreEventM
             xList,
             yList,
             viewScaleInfo,
-            viewSizeInfo
+            viewSizeInfo,
+            style
           });
         }
       }

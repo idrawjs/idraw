@@ -1,5 +1,5 @@
 import type { ViewContext2D, PointSize } from '@idraw/types';
-import { referenceColor } from './config';
+import { MiddlewareSelectorStyle } from './types';
 import { drawLine, drawCrossByCenter } from './draw-base';
 
 export function drawReferenceLines(
@@ -7,9 +7,11 @@ export function drawReferenceLines(
   opts: {
     xLines?: Array<PointSize[]>;
     yLines?: Array<PointSize[]>;
+    style: MiddlewareSelectorStyle;
   }
 ) {
-  const { xLines, yLines } = opts;
+  const { xLines, yLines, style } = opts;
+  const { referenceColor } = style;
   const lineOpts = {
     borderColor: referenceColor,
     borderWidth: 1,

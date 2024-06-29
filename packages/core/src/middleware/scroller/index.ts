@@ -1,15 +1,31 @@
-import type { Point, BoardMiddleware, PointWatcherEvent, BoardWatherWheelEvent } from '@idraw/types';
+import type { Point, BoardMiddleware, PointWatcherEvent, BoardWatherWheelEvent, MiddlewareScrollerConfig } from '@idraw/types';
 import { drawScroller, isPointInScrollThumb } from './util';
 // import type { ScrollbarThumbType } from './util';
-import { keyXThumbRect, keyYThumbRect, keyPrevPoint, keyActivePoint, keyActiveThumbType, keyHoverXThumbRect, keyHoverYThumbRect } from './config';
+import { keyXThumbRect, keyYThumbRect, keyPrevPoint, keyActivePoint, keyActiveThumbType, keyHoverXThumbRect, keyHoverYThumbRect, defaultStyle } from './config';
 import type { DeepScrollerSharedStorage } from './types';
 
-export const MiddlewareScroller: BoardMiddleware<DeepScrollerSharedStorage> = (opts) => {
+export const MiddlewareScroller: BoardMiddleware<DeepScrollerSharedStorage, any, MiddlewareScrollerConfig> = (opts, config) => {
   const { viewer, boardContent, sharer, eventHub } = opts;
   const { overlayContext } = boardContent;
   sharer.setSharedStorage(keyXThumbRect, null); // null | ElementSize
   sharer.setSharedStorage(keyYThumbRect, null); // null | ElementSize
   let isBusy: boolean = false;
+
+  const innerConfig = {
+    ...defaultStyle,
+    ...config
+  };
+
+  const { thumbBackground, thumbBorderColor, hoverThumbBackground, hoverThumbBorderColor, activeThumbBackground, activeThumbBorderColor } = innerConfig;
+
+  const style = {
+    thumbBackground,
+    thumbBorderColor,
+    hoverThumbBackground,
+    hoverThumbBorderColor,
+    activeThumbBackground,
+    activeThumbBorderColor
+  };
 
   // viewer.drawFrame();
   const clear = () => {
@@ -125,7 +141,7 @@ export const MiddlewareScroller: BoardMiddleware<DeepScrollerSharedStorage> = (o
       }
     },
     beforeDrawFrame({ snapshot }) {
-      const { xThumbRect, yThumbRect } = drawScroller(overlayContext, { snapshot });
+      const { xThumbRect, yThumbRect } = drawScroller(overlayContext, { snapshot, style });
       sharer.setSharedStorage(keyXThumbRect, xThumbRect);
       sharer.setSharedStorage(keyYThumbRect, yThumbRect);
     }

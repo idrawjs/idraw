@@ -26,6 +26,7 @@ import { Viewer } from './lib/viewer';
 interface BoardMiddlewareMapItem {
   status: 'enable' | 'disable';
   middlewareObject: BoardMiddlewareObject;
+  config: any;
 }
 
 export class Board<T extends BoardExtendEventMap = BoardExtendEventMap> {
@@ -333,7 +334,7 @@ export class Board<T extends BoardExtendEventMap = BoardExtendEventMap> {
     return data;
   }
 
-  use(middleware: BoardMiddleware<any, any>) {
+  use<C extends any = any>(middleware: BoardMiddleware<any, any, any>, config?: Partial<C>) {
     if (this.#middlewareMap.has(middleware)) {
       const item = this.#middlewareMap.get(middleware);
       if (item) {
@@ -350,14 +351,15 @@ export class Board<T extends BoardExtendEventMap = BoardExtendEventMap> {
     const calculator = this.#calculator;
     const eventHub = this.#eventHub;
 
-    const obj = middleware({ boardContent, sharer, viewer, calculator, eventHub: eventHub as UtilEventEmitter<any>, container });
+    const obj = middleware({ boardContent, sharer, viewer, calculator, eventHub: eventHub as UtilEventEmitter<any>, container }, config);
     obj.use?.();
     this.#middlewares.push(middleware);
     this.#activeMiddlewareObjs.push(obj);
 
     this.#middlewareMap.set(middleware, {
       status: 'enable',
-      middlewareObject: obj
+      middlewareObject: obj,
+      config
     });
     this.#resetActiveMiddlewareObjs();
   }

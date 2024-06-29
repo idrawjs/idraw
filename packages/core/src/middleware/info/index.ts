@@ -1,17 +1,25 @@
-import type { BoardMiddleware, ViewRectInfo, Element } from '@idraw/types';
+import type { BoardMiddleware, ViewRectInfo, Element, MiddlewareInfoConfig } from '@idraw/types';
 import { formatNumber, getViewScaleInfoFromSnapshot, getViewSizeInfoFromSnapshot, createUUID, limitAngle, rotatePoint, parseAngleToRadian } from '@idraw/util';
 import { keySelectedElementList, keyActionType, keyGroupQueue } from '../selector';
 import { drawSizeInfoText, drawPositionInfoText, drawAngleInfoText } from './draw-info';
 import type { DeepInfoSharedStorage } from './types';
+import { defaltStyle } from './config';
 
-const infoBackground = '#1973bac6';
-const infoTextColor = '#ffffff';
 const infoFontSize = 10;
 const infoLineHeight = 16;
 
-export const MiddlewareInfo: BoardMiddleware<DeepInfoSharedStorage> = (opts) => {
+export const MiddlewareInfo: BoardMiddleware<DeepInfoSharedStorage, any, MiddlewareInfoConfig> = (opts, config) => {
   const { boardContent, calculator } = opts;
   const { overlayContext } = boardContent;
+  const innerConfig = {
+    ...defaltStyle,
+    ...config
+  };
+  const { textBackground, textColor } = innerConfig;
+  const style = {
+    textBackground,
+    textColor
+  };
 
   return {
     name: '@middleware/info',
@@ -101,8 +109,7 @@ export const MiddlewareInfo: BoardMiddleware<DeepInfoSharedStorage> = (opts) => 
               text: whText,
               fontSize: infoFontSize,
               lineHeight: infoLineHeight,
-              color: infoTextColor,
-              background: infoBackground
+              style
             });
 
             drawPositionInfoText(overlayContext, {
@@ -115,8 +122,7 @@ export const MiddlewareInfo: BoardMiddleware<DeepInfoSharedStorage> = (opts) => 
               text: xyText,
               fontSize: infoFontSize,
               lineHeight: infoLineHeight,
-              color: infoTextColor,
-              background: infoBackground
+              style
             });
 
             drawAngleInfoText(overlayContext, {
@@ -129,8 +135,7 @@ export const MiddlewareInfo: BoardMiddleware<DeepInfoSharedStorage> = (opts) => 
               text: angleText,
               fontSize: infoFontSize,
               lineHeight: infoLineHeight,
-              color: infoTextColor,
-              background: infoBackground
+              style
             });
           }
         }

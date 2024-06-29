@@ -19,15 +19,16 @@ function isValidMode(mode: string | IDrawMode) {
 
 export function runMiddlewares(core: Core<IDrawEvent>, store: Store<IDrawStorage>) {
   const { enableRuler, enableScale, enableScroll, enableSelect, enableTextEdit, enableDrag, enableInfo } = store.getSnapshot();
+  const styles = store.get('middlewareStyles');
   if (enableScroll === true) {
-    core.use(MiddlewareScroller);
+    core.use(MiddlewareScroller, styles?.scroller);
   } else if (enableScroll === false) {
     core.disuse(MiddlewareScroller);
   }
 
   if (enableSelect === true) {
     core.use(MiddlewareLayoutSelector);
-    core.use(MiddlewareSelector);
+    core.use(MiddlewareSelector, styles?.selector);
   } else if (enableSelect === false) {
     core.disuse(MiddlewareLayoutSelector);
     core.disuse(MiddlewareSelector);
@@ -40,7 +41,7 @@ export function runMiddlewares(core: Core<IDrawEvent>, store: Store<IDrawStorage
   }
 
   if (enableRuler === true) {
-    core.use(MiddlewareRuler);
+    core.use(MiddlewareRuler, styles?.ruler);
   } else if (enableRuler === false) {
     core.disuse(MiddlewareRuler);
   }
@@ -58,7 +59,7 @@ export function runMiddlewares(core: Core<IDrawEvent>, store: Store<IDrawStorage
   }
 
   if (enableInfo === true) {
-    core.use(MiddlewareInfo);
+    core.use(MiddlewareInfo, styles?.info);
   } else if (enableInfo === false) {
     core.disuse(MiddlewareInfo);
   }
