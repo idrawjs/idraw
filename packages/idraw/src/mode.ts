@@ -27,7 +27,7 @@ export function runMiddlewares(core: Core<IDrawEvent>, store: Store<IDrawStorage
   }
 
   if (enableSelect === true) {
-    core.use(MiddlewareLayoutSelector);
+    core.use(MiddlewareLayoutSelector, styles?.layoutSelector);
     core.use(MiddlewareSelector, styles?.selector);
   } else if (enableSelect === false) {
     core.disuse(MiddlewareLayoutSelector);
@@ -72,7 +72,7 @@ export function changeMode(mode: IDrawMode, core: Core<IDrawEvent>, store: Store
   let enableTextEdit: boolean = false;
   let enableDrag: boolean = false;
   let enableRuler: boolean = false;
-  const enableInfo: boolean = true;
+  let enableInfo: boolean = false;
 
   let innerMode: IDrawMode = 'select';
   store.set('mode', innerMode);
@@ -87,6 +87,7 @@ export function changeMode(mode: IDrawMode, core: Core<IDrawEvent>, store: Store
     enableScale = true;
     enableScroll = true;
     enableSelect = true;
+    enableInfo = true;
     enableTextEdit = true;
     enableDrag = false;
     enableRuler = true;

@@ -62,8 +62,8 @@ export function nodeToBaseDetail(node: FigmaNode<FigmaNodeType>): ElementBaseDet
     opacity
   } = node as FigmaNode<'ROUNDED_RECTANGLE'>;
   const background = figmaPaintsToColor(fillPaints, {
-    w: node.size.x,
-    h: node.size.y
+    w: node?.size?.x || 0,
+    h: node?.size?.y || 0
   });
   if (background) {
     detail.background = background;

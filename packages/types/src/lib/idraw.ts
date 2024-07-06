@@ -1,5 +1,5 @@
 import type { CoreOptions } from './core';
-import type { MiddlewareSelectorStyle, MiddlewareInfoStyle, MiddlewareRulerStyle, MiddlewareScrollerStyle } from './middleware';
+import type { MiddlewareSelectorStyle, MiddlewareInfoStyle, MiddlewareRulerStyle, MiddlewareScrollerStyle, MiddlewareLayoutSelectorStyle } from './middleware';
 
 export type IDrawMode = 'select' | 'drag' | 'readOnly';
 
@@ -12,6 +12,7 @@ export interface IDrawSettings {
     info?: Partial<MiddlewareInfoStyle>;
     ruler?: Partial<MiddlewareRulerStyle>;
     scroller?: Partial<MiddlewareScrollerStyle>;
+    layoutSelector?: Partial<MiddlewareLayoutSelectorStyle>;
   };
 }
 

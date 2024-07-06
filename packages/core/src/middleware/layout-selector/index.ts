@@ -1,16 +1,22 @@
-import type { BoardMiddleware, ElementSize, Point } from '@idraw/types';
+import type { BoardMiddleware, ElementSize, Point, MiddlewareLayoutSelectorConfig } from '@idraw/types';
 import { calcLayoutSizeController, isViewPointInVertexes, getViewScaleInfoFromSnapshot, isViewPointInElementSize, calcViewElementSize } from '@idraw/util';
 import type { LayoutSelectorSharedStorage, ControlType } from './types';
-import { keyLayoutActionType, keyLayoutController, keyLayoutControlType, keyLayoutIsHover, keyLayoutIsSelected, controllerSize } from './config';
+import { keyLayoutActionType, keyLayoutController, keyLayoutControlType, keyLayoutIsHover, keyLayoutIsSelected, controllerSize, defaultStyle } from './config';
 import { keyActionType as keyElementActionType, keyHoverElement, middlewareEventSelectClear } from '../selector';
 import { drawLayoutController, drawLayoutHover } from './util';
 import { eventChange } from '../../config';
 
 export { keyLayoutIsSelected };
 
-export const MiddlewareLayoutSelector: BoardMiddleware<LayoutSelectorSharedStorage> = (opts) => {
+export const MiddlewareLayoutSelector: BoardMiddleware<LayoutSelectorSharedStorage, any, MiddlewareLayoutSelectorConfig> = (opts, config) => {
   const { sharer, boardContent, calculator, viewer, eventHub } = opts;
   const { overlayContext } = boardContent;
+  const innerConfig = {
+    ...defaultStyle,
+    ...config
+  };
+  const { activeColor } = innerConfig;
+  const style = { activeColor };
 
   let prevPoint: Point | null = null;
   let prevIsHover: boolean | null = null;
@@ -327,11 +333,11 @@ export const MiddlewareLayoutSelector: BoardMiddleware<LayoutSelectorSharedStora
 
         if (layoutIsHover === true) {
           const viewSize = calcViewElementSize(size, { viewScaleInfo });
-          drawLayoutHover(overlayContext, { layoutSize: viewSize });
+          drawLayoutHover(overlayContext, { layoutSize: viewSize, style });
         }
 
         if ((layoutActionType && ['resize'].includes(layoutActionType)) || layoutIsSelected === true) {
-          drawLayoutController(overlayContext, { controller, operations: activeStore.data.layout.operations || {} });
+          drawLayoutController(overlayContext, { controller, style });
         }
       }
     },

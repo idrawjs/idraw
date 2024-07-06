@@ -33,6 +33,9 @@ const opts = {
       hoverThumbBorderColor: '#FF0000EE',
       activeThumbBackground: '#FF00005E',
       activeThumbBorderColor: '#FF0000F0'
+    },
+    layoutSelector: {
+      activeColor: '#00FF00'
     }
   }
 };
