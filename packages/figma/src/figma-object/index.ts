@@ -62,8 +62,8 @@ export async function figmaMapToIDrawData(figmaMap: FigmaMap): Promise<Data> {
   const canvasFig: FigmaMap['canvas.fig'] = figmaMap['canvas.fig'];
   const { root } = canvasFig;
 
-  // // TODO
-  // console.log('root =', root);
+  // TODO
+  console.log('root =', root);
 
   if (Array.isArray(root.children)) {
     for (let i = 0; i < root.children.length; i++) {

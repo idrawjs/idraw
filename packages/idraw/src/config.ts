@@ -21,7 +21,8 @@ export function getDefaultStorage(): IDrawStorage {
       selector: {},
       info: {},
       ruler: {},
-      scroller: {}
+      scroller: {},
+      layoutSelector: {}
     }
   };
   return storage;
@@ -32,11 +33,12 @@ export function parseStyles(opts: IDrawSettings) {
     selector: {},
     ruler: {},
     info: {},
-    scroller: {}
+    scroller: {},
+    layoutSelector: {}
   };
   if (opts.styles) {
     // selector
-    const { selector, info, ruler, scroller } = opts.styles;
+    const { selector, info, ruler, scroller, layoutSelector } = opts.styles;
     if (istype.string(selector?.activeColor)) {
       styles.selector.activeColor = selector?.activeColor;
     }
@@ -99,6 +101,11 @@ export function parseStyles(opts: IDrawSettings) {
     }
     if (istype.string(scroller?.activeThumbBorderColor)) {
       styles.scroller.activeThumbBorderColor = scroller?.activeThumbBorderColor;
+    }
+
+    // layoutSelector
+    if (istype.string(layoutSelector?.activeColor)) {
+      styles.layoutSelector.activeColor = layoutSelector?.activeColor;
     }
   }
   return styles;

@@ -1,7 +1,7 @@
-import type { ViewContext2D, LayoutSizeController, DataLayout, ViewRectVertexes, PointSize, ElementSize } from '@idraw/types';
-import { selectColor, disableColor } from './config';
+import type { ViewContext2D, LayoutSizeController, ViewRectVertexes, PointSize, ElementSize, MiddlewareLayoutSelectorStyle } from '@idraw/types';
 
-function drawControllerBox(ctx: ViewContext2D, boxVertexes: ViewRectVertexes) {
+function drawControllerBox(ctx: ViewContext2D, boxVertexes: ViewRectVertexes, style: MiddlewareLayoutSelectorStyle) {
+  const { activeColor } = style;
   ctx.setLineDash([]);
   ctx.fillStyle = '#FFFFFF';
   ctx.beginPath();
@@ -12,7 +12,7 @@ function drawControllerBox(ctx: ViewContext2D, boxVertexes: ViewRectVertexes) {
   ctx.closePath();
   ctx.fill();
 
-  ctx.strokeStyle = selectColor;
+  ctx.strokeStyle = activeColor;
   ctx.lineWidth = 2;
   ctx.beginPath();
   ctx.moveTo(boxVertexes[0].x, boxVertexes[0].y);
@@ -23,30 +23,14 @@ function drawControllerBox(ctx: ViewContext2D, boxVertexes: ViewRectVertexes) {
   ctx.stroke();
 }
 
-function drawControllerCross(ctx: ViewContext2D, opts: { vertexes: ViewRectVertexes; strokeStyle: string; lineWidth: number }) {
-  const { vertexes, strokeStyle, lineWidth } = opts;
-
-  ctx.setLineDash([]);
-  ctx.strokeStyle = strokeStyle;
-  ctx.lineWidth = lineWidth;
-
-  ctx.beginPath();
-  ctx.moveTo(vertexes[0].x, vertexes[0].y);
-  ctx.lineTo(vertexes[2].x, vertexes[2].y);
-  ctx.closePath();
-  ctx.stroke();
-
-  ctx.beginPath();
-  ctx.moveTo(vertexes[1].x, vertexes[1].y);
-  ctx.lineTo(vertexes[3].x, vertexes[3].y);
-  ctx.closePath();
-  ctx.stroke();
-}
-
-function drawControllerLine(ctx: ViewContext2D, opts: { start: PointSize; end: PointSize; centerVertexes: ViewRectVertexes; disabled: boolean }) {
-  const { start, end, centerVertexes, disabled } = opts;
-  const lineWidth = disabled === true ? 1 : 2;
-  const strokeStyle = disabled === true ? disableColor : selectColor;
+function drawControllerLine(
+  ctx: ViewContext2D,
+  opts: { start: PointSize; end: PointSize; centerVertexes: ViewRectVertexes; style: MiddlewareLayoutSelectorStyle }
+) {
+  const { start, end, style } = opts;
+  const { activeColor } = style;
+  const lineWidth = 2;
+  const strokeStyle = activeColor;
   ctx.setLineDash([]);
   ctx.strokeStyle = strokeStyle;
   ctx.lineWidth = lineWidth;
@@ -55,71 +39,41 @@ function drawControllerLine(ctx: ViewContext2D, opts: { start: PointSize; end: P
   ctx.lineTo(end.x, end.y);
   ctx.closePath();
   ctx.stroke();
-
-  if (disabled === true) {
-    drawControllerCross(ctx, {
-      vertexes: centerVertexes,
-      lineWidth,
-      strokeStyle
-    });
-  }
 }
 
 export function drawLayoutController(
   ctx: ViewContext2D,
   opts: {
     controller: LayoutSizeController;
-    operations: DataLayout['operations'];
+    style: MiddlewareLayoutSelectorStyle;
   }
 ) {
-  // TODO
-  const { controller, operations } = opts;
+  const { controller, style } = opts;
   const { topLeft, topRight, bottomLeft, bottomRight, topMiddle, rightMiddle, bottomMiddle, leftMiddle } = controller;
 
-  drawControllerLine(ctx, { start: topLeft.center, end: topRight.center, centerVertexes: topMiddle.vertexes, disabled: !!operations?.disabledTop });
-  drawControllerLine(ctx, { start: topRight.center, end: bottomRight.center, centerVertexes: rightMiddle.vertexes, disabled: !!operations?.disabledRight });
-  drawControllerLine(ctx, { start: bottomRight.center, end: bottomLeft.center, centerVertexes: bottomMiddle.vertexes, disabled: !!operations?.disabledBottom });
-  drawControllerLine(ctx, { start: bottomLeft.center, end: topLeft.center, centerVertexes: leftMiddle.vertexes, disabled: !!operations?.disabledLeft });
+  drawControllerLine(ctx, { start: topLeft.center, end: topRight.center, centerVertexes: topMiddle.vertexes, style });
+  drawControllerLine(ctx, { start: topRight.center, end: bottomRight.center, centerVertexes: rightMiddle.vertexes, style });
+  drawControllerLine(ctx, { start: bottomRight.center, end: bottomLeft.center, centerVertexes: bottomMiddle.vertexes, style });
+  drawControllerLine(ctx, { start: bottomLeft.center, end: topLeft.center, centerVertexes: leftMiddle.vertexes, style });
 
-  const disabledOpts = {
-    lineWidth: 1,
-    strokeStyle: disableColor
-  };
-  if (operations?.disabledTopLeft === true) {
-    drawControllerCross(ctx, { vertexes: topLeft.vertexes, ...disabledOpts });
-  } else {
-    drawControllerBox(ctx, topLeft.vertexes);
-  }
-
-  if (operations?.disabledTopRight === true) {
-    drawControllerCross(ctx, { vertexes: topRight.vertexes, ...disabledOpts });
-  } else {
-    drawControllerBox(ctx, topRight.vertexes);
-  }
-
-  if (operations?.disabledBottomRight === true) {
-    drawControllerCross(ctx, { vertexes: bottomRight.vertexes, ...disabledOpts });
-  } else {
-    drawControllerBox(ctx, bottomRight.vertexes);
-  }
-
-  if (operations?.disabledBottomLeft === true) {
-    drawControllerCross(ctx, { vertexes: bottomLeft.vertexes, ...disabledOpts });
-  } else {
-    drawControllerBox(ctx, bottomLeft.vertexes);
-  }
+  drawControllerBox(ctx, topLeft.vertexes, style);
+  drawControllerBox(ctx, topRight.vertexes, style);
+  drawControllerBox(ctx, bottomRight.vertexes, style);
+  drawControllerBox(ctx, bottomLeft.vertexes, style);
 }
 
 export function drawLayoutHover(
   ctx: ViewContext2D,
   opts: {
     layoutSize: ElementSize;
+    style: MiddlewareLayoutSelectorStyle;
   }
 ) {
-  const { layoutSize } = opts;
+  const { layoutSize, style } = opts;
+  const { activeColor } = style;
   const { x, y, w, h } = layoutSize;
   ctx.setLineDash([]);
-  ctx.strokeStyle = selectColor;
+  ctx.strokeStyle = activeColor;
   ctx.lineWidth = 1;
   ctx.beginPath();
   ctx.moveTo(x, y);

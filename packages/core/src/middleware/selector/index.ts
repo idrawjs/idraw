@@ -191,7 +191,6 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
     sharer.setSharedStorage(keySelectedElementController, null);
     sharer.setSharedStorage(keySelectedElementPosition, []);
     sharer.setSharedStorage(keyIsMoving, null);
-    sharer.setSharedStorage(keyEnableSelectInGroup, null);
   };
 
   clear();

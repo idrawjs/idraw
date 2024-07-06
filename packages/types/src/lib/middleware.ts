@@ -16,7 +16,6 @@ export type MiddlewareInfoStyle = {
   textBackground: string;
   textColor: string;
 };
-
 export type MiddlewareInfoConfig = MiddlewareInfoStyle & {};
 
 export type MiddlewareRulerStyle = {
@@ -28,7 +27,6 @@ export type MiddlewareRulerStyle = {
   gridPrimaryColor: string;
   selectedAreaColor: string;
 };
-
 export type MiddlewareRulerConfig = MiddlewareRulerStyle & {};
 
 export type MiddlewareScrollerStyle = {
@@ -39,5 +37,9 @@ export type MiddlewareScrollerStyle = {
   activeThumbBackground: string;
   activeThumbBorderColor: string;
 };
-
 export type MiddlewareScrollerConfig = MiddlewareScrollerStyle & {};
+
+export type MiddlewareLayoutSelectorStyle = {
+  activeColor: string;
+};
+export type MiddlewareLayoutSelectorConfig = MiddlewareLayoutSelectorStyle & {};

@@ -80,16 +80,18 @@ async function nestedNodeToGroupElement<T extends 'CANVAS' | 'FRAME' | 'SYMBOL' 
   const overrideData = mergeNodeOverrideData<T>(figmaNode as any, opts);
   const node: FigmaNode = { ...figmaNode, ...overrideData } as FigmaNode;
   const elemBase = nodeToElementBase(node);
+  const baseDetail = nodeToBaseDetail(node);
+
   let group: Element<'group'> = {
     ...elemBase,
     type: 'group',
     detail: {
+      ...baseDetail,
       children: [],
       overflow: 'visible'
     },
     operations: nodeToOperations(node)
   };
-  // const baseDetail = nodeToBaseDetail(treeNode.node);
   if ((node as unknown as FigmaNode<'FRAME'>).type === 'FRAME') {
     // const background = figmaPaintsToHexColor(node.fillPaints);
     const background = figmaPaintsToColor(node.fillPaints, { w: elemBase.w, h: elemBase.h });
@@ -117,7 +119,7 @@ async function nestedNodeToGroupElement<T extends 'CANVAS' | 'FRAME' | 'SYMBOL' 
   }
 
   if (['FRAME', 'BOOLEAN_OPERATION'].includes(node.type)) {
-    if (group.x === 0 || group.y === 0) {
+    if (group.w === 0 || group.h === 0) {
       const size = resetGroupSize(group);
       group = {
         ...size,
