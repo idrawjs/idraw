@@ -7,6 +7,7 @@ export interface ElementSize {
   w: number;
   h: number;
   angle?: number;
+  operations?: ElementOperations;
 }
 
 export type ElementClipPath = Pick<ElementPathDetail, 'commands' | 'originX' | 'originY' | 'originW' | 'originH'>;
@@ -169,7 +170,7 @@ export interface ElementDetailMap {
 export type ElementType = keyof ElementDetailMap;
 
 export interface ElementOperations {
-  lock?: boolean;
+  locked?: boolean;
   invisible?: boolean;
   disableScale?: boolean;
   disableRotate?: boolean;

@@ -1,6 +1,6 @@
 import type { BoardMiddleware, ViewRectInfo, Element, MiddlewareInfoConfig } from '@idraw/types';
 import { formatNumber, getViewScaleInfoFromSnapshot, getViewSizeInfoFromSnapshot, createUUID, limitAngle, rotatePoint, parseAngleToRadian } from '@idraw/util';
-import { keySelectedElementList, keyActionType, keyGroupQueue } from '../selector';
+import { keySelectedElementList, keyHoverElement, keyActionType, keyGroupQueue } from '../selector';
 import { drawSizeInfoText, drawPositionInfoText, drawAngleInfoText } from './draw-info';
 import type { DeepInfoSharedStorage } from './types';
 import { defaltStyle } from './config';
@@ -28,12 +28,11 @@ export const MiddlewareInfo: BoardMiddleware<DeepInfoSharedStorage, any, Middlew
       const { sharedStore } = snapshot;
 
       const selectedElementList = sharedStore[keySelectedElementList];
+      const hoverElement = sharedStore[keyHoverElement];
       const actionType = sharedStore[keyActionType];
       const groupQueue = sharedStore[keyGroupQueue] || [];
 
-      // console.log('resizeType ===== ', resizeType);
-
-      if (selectedElementList.length === 1) {
+      if (selectedElementList.length === 1 && !hoverElement?.operations?.locked) {
         const elem = selectedElementList[0];
         if (elem && ['select', 'drag', 'resize'].includes(actionType as string)) {
           const viewScaleInfo = getViewScaleInfoFromSnapshot(snapshot);

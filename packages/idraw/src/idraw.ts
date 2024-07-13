@@ -182,7 +182,7 @@ export class iDraw {
   }
 
   cancelElements() {
-    this.trigger(eventKeys.select, { uuids: [] });
+    this.trigger(eventKeys.clearSelect, { uuids: [] });
   }
 
   createElement<T extends ElementType>(

@@ -10,7 +10,8 @@ import {
   findElementsFromList,
   findElementsFromListByPositions,
   getElementPositionFromList,
-  deepResizeGroupElement
+  deepResizeGroupElement,
+  getElementSize
 } from '@idraw/util';
 import type {
   Data,
@@ -20,7 +21,8 @@ import type {
   ViewScaleInfo,
   ViewSizeInfo,
   ElementSizeController,
-  MiddlewareSelectorConfig
+  MiddlewareSelectorConfig,
+  ElementSize
 } from '@idraw/types';
 import type {
   Point,
@@ -36,7 +38,7 @@ import type {
 } from './types';
 import {
   drawHoverVertexesWrapper,
-  drawLockVertexesWrapper,
+  drawLockedVertexesWrapper,
   drawArea,
   drawListArea,
   drawGroupQueueVertexesWrappers,
@@ -102,6 +104,8 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
   const { viewer, sharer, boardContent, calculator, eventHub } = opts;
   const { overlayContext } = boardContent;
   let prevPoint: Point | null = null;
+  let moveOriginalStartPoint: Point | null = null;
+  let moveOriginalStartElementSize: ElementSize | null = null;
   let inBusyMode: 'resize' | 'drag' | 'drag-list' | 'area' | null = null;
 
   sharer.setSharedStorage(keyActionType, null);
@@ -214,6 +218,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
       // TODO
       needRefresh = true;
     }
+
     if (needRefresh) {
       const elem = elements[0];
       const groupQueue = getGroupQueueFromList(elem.uuid, data?.elements || []);
@@ -369,8 +374,8 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
 
     pointStart: (e: PointWatcherEvent) => {
       prevPoint = e.point;
+      moveOriginalStartPoint = e.point;
 
-      // updateHoverElement(null);
       const groupQueue = sharer.getSharedStorage(keyGroupQueue);
 
       if (groupQueue?.length > 0) {
@@ -383,10 +388,14 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
           })
         ) {
           const target = getPointTarget(e.point, pointTargetBaseOptions());
-          if (target?.elements?.length === 1 && target.elements[0]?.operations?.lock === true) {
+          if (target?.elements?.length === 1 && target.elements[0]?.operations?.locked === true) {
             return;
           } else {
             updateHoverElement(null);
+          }
+
+          if (target?.elements?.length === 1) {
+            moveOriginalStartElementSize = getElementSize(target?.elements[0]);
           }
 
           if (target.type === 'over-element' && target?.elements?.length === 1) {
@@ -417,31 +426,36 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
         areaSize: listAreaSize,
         groupQueue: []
       });
-      if (target?.elements?.length === 1 && target.elements[0]?.operations?.lock === true) {
-        return;
-      } else {
+      const isLockedElement = target?.elements?.length === 1 && target.elements[0]?.operations?.locked === true;
+      if (!isLockedElement) {
         updateHoverElement(null);
       }
 
-      if (target.type === 'list-area') {
-        sharer.setSharedStorage(keyActionType, 'drag-list');
-      } else if (target.type === 'over-element' && target?.elements?.length === 1) {
-        updateSelectedElementList([target.elements[0]], { triggerEvent: true });
-        sharer.setSharedStorage(keyActionType, 'drag');
-      } else if (target.type?.startsWith('resize-')) {
-        sharer.setSharedStorage(keyResizeType, target.type as ResizeType);
-        sharer.setSharedStorage(keyActionType, 'resize');
+      if (target?.elements?.length === 1) {
+        moveOriginalStartElementSize = getElementSize(target?.elements[0]);
+      }
+
+      if (!isLockedElement) {
+        if (target.type === 'list-area') {
+          sharer.setSharedStorage(keyActionType, 'drag-list');
+        } else if (target.type === 'over-element' && target?.elements?.length === 1) {
+          updateSelectedElementList([target.elements[0]], { triggerEvent: true });
+          sharer.setSharedStorage(keyActionType, 'drag');
+        } else if (target.type?.startsWith('resize-')) {
+          sharer.setSharedStorage(keyResizeType, target.type as ResizeType);
+          sharer.setSharedStorage(keyActionType, 'resize');
+        } else {
+          clear();
+          sharer.setSharedStorage(keyActionType, 'area');
+          sharer.setSharedStorage(keyAreaStart, e.point);
+          updateSelectedElementList([], { triggerEvent: true });
+        }
       } else {
         clear();
         sharer.setSharedStorage(keyActionType, 'area');
         sharer.setSharedStorage(keyAreaStart, e.point);
         updateSelectedElementList([], { triggerEvent: true });
       }
-      // if (target.type) {
-      //   prevPoint = e.point;
-      // } else {
-      //   prevPoint = null;
-      // }
 
       viewer.drawFrame();
     },
@@ -454,6 +468,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
       const viewScaleInfo: ViewScaleInfo = sharer.getActiveViewScaleInfo() as unknown as ViewScaleInfo;
       const viewSizeInfo: ViewSizeInfo = sharer.getActiveViewSizeInfo() as unknown as ViewSizeInfo;
       const start = prevPoint;
+      const originalStart = moveOriginalStartPoint;
       const end = e.point;
       const resizeType = sharer.getSharedStorage(keyResizeType);
       const actionType = sharer.getSharedStorage(keyActionType);
@@ -463,8 +478,8 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
 
       if (actionType === 'drag') {
         inBusyMode = 'drag';
-        if (data && elems?.length === 1 && start && end && elems[0]?.operations?.lock !== true) {
-          const { moveX, moveY } = calcMoveInGroup(start, end, groupQueue);
+        if (data && elems?.length === 1 && moveOriginalStartElementSize && originalStart && end && elems[0]?.operations?.locked !== true) {
+          const { moveX, moveY } = calcMoveInGroup(originalStart, end, groupQueue);
 
           let totalMoveX = calculator.toGridNum(moveX / scale);
           let totalMoveY = calculator.toGridNum(moveY / scale);
@@ -492,8 +507,8 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
             }
           }
 
-          elems[0].x = calculator.toGridNum(elems[0].x + totalMoveX);
-          elems[0].y = calculator.toGridNum(elems[0].y + totalMoveY);
+          elems[0].x = calculator.toGridNum(moveOriginalStartElementSize.x + totalMoveX);
+          elems[0].y = calculator.toGridNum(moveOriginalStartElementSize.y + totalMoveY);
           updateSelectedElementList([elems[0]]);
           calculator.modifyViewVisibleInfoMap(data, {
             modifyOptions: {
@@ -510,11 +525,11 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
         viewer.drawFrame();
       } else if (actionType === 'drag-list') {
         inBusyMode = 'drag-list';
-        if (data && start && end && elems?.length > 1) {
+        if (data && originalStart && start && end && elems?.length > 1) {
           const moveX = (end.x - start.x) / scale;
           const moveY = (end.y - start.y) / scale;
           elems.forEach((elem: Element<ElementType>) => {
-            if (elem && elem?.operations?.lock !== true) {
+            if (elem && elem?.operations?.locked !== true) {
               elem.x = calculator.toGridNum(elem.x + moveX);
               elem.y = calculator.toGridNum(elem.y + moveY);
 
@@ -536,7 +551,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
         }
         viewer.drawFrame();
       } else if (actionType === 'resize') {
-        if (data && elems?.length === 1 && start && resizeType?.startsWith('resize-')) {
+        if (data && elems?.length === 1 && originalStart && moveOriginalStartElementSize && resizeType?.startsWith('resize-')) {
           inBusyMode = 'resize';
           const pointGroupQueue: Element<'group'>[] = [];
           groupQueue.forEach((group) => {
@@ -550,11 +565,11 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
             } as Element<'group'>);
           });
 
-          let resizeStart: PointSize = start;
+          let resizeStart: PointSize = originalStart;
           let resizeEnd: PointSize = end;
 
           if (groupQueue.length > 0) {
-            resizeStart = rotatePointInGroup(start, pointGroupQueue);
+            resizeStart = rotatePointInGroup(originalStart, pointGroupQueue);
             resizeEnd = rotatePointInGroup(end, pointGroupQueue);
           }
           if (resizeType === 'resize-rotate') {
@@ -567,11 +582,11 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
             ];
 
             const viewCenter: PointSize = calcElementCenterFromVertexes(viewVertexes);
-            const resizedElemSize = rotateElement(elems[0], {
+            const resizedElemSize = rotateElement(moveOriginalStartElementSize, {
               center: viewCenter,
               viewScaleInfo,
               viewSizeInfo,
-              start,
+              start: originalStart,
               end,
               resizeType,
               sharer
@@ -579,8 +594,8 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
 
             elems[0].angle = calculator.toGridNum(resizedElemSize.angle || 0);
           } else {
-            const resizedElemSize = resizeElement(elems[0], { scale, start: resizeStart, end: resizeEnd, resizeType, sharer });
-            const calcOpts = { ignore: !!elems[0].angle };
+            const resizedElemSize = resizeElement(moveOriginalStartElementSize, { scale, start: resizeStart, end: resizeEnd, resizeType, sharer });
+            const calcOpts = { ignore: !!moveOriginalStartElementSize.angle };
             elems[0].x = calculator.toGridNum(resizedElemSize.x, calcOpts);
             elems[0].y = calculator.toGridNum(resizedElemSize.y, calcOpts);
             if (elems[0].type === 'group' && elems[0].operations?.deepResize === true) {
@@ -614,10 +629,6 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
         viewer.drawFrame();
       }
       prevPoint = e.point;
-
-      // if (data && (['drag', 'drag-list', 'drag-list-end', 'resize'] as ActionType[]).includes(actionType)) {
-      //   eventHub.trigger(eventChange, { data });
-      // }
     },
 
     pointEnd(e: PointWatcherEvent) {
@@ -628,11 +639,13 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
       const hoverElement = sharer.getSharedStorage(keyHoverElement);
       const resizeType = sharer.getSharedStorage(keyResizeType);
       const actionType = sharer.getSharedStorage(keyActionType);
-      // const viewScaleInfo = sharer.getActiveViewScaleInfo();
       const viewSizeInfo = sharer.getActiveViewSizeInfo();
-      // const { offsetLeft, offsetTop } = viewScaleInfo;
       let needDrawFrame = false;
+
       prevPoint = null;
+      moveOriginalStartPoint = null;
+      moveOriginalStartElementSize = null;
+
       if (actionType === 'resize' && resizeType) {
         sharer.setSharedStorage(keyResizeType, null);
         needDrawFrame = true;
@@ -703,6 +716,8 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
 
     pointLeave() {
       prevPoint = null;
+      moveOriginalStartPoint = null;
+      moveOriginalStartElementSize = null;
       clear();
       viewer.drawFrame();
     },
@@ -716,7 +731,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
       sharer.setSharedStorage(keySelectedElementController, null);
       sharer.setSharedStorage(keySelectedElementList, []);
 
-      if (target.elements.length === 1 && target.elements[0]?.operations?.lock === true) {
+      if (target.elements.length === 1 && target.elements[0]?.operations?.locked === true) {
         return;
       }
 
@@ -769,14 +784,14 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
           })
         : null;
 
-      const isLock: boolean = !!hoverElement?.operations?.lock;
+      const isLocked: boolean = !!hoverElement?.operations?.locked;
 
       if (groupQueue?.length > 0) {
         // in group
         drawGroupQueueVertexesWrappers(overlayContext, groupQueueVertexesList, drawBaseOpts);
         if (hoverElement && actionType !== 'drag') {
-          if (isLock) {
-            drawLockVertexesWrapper(overlayContext, hoverElementVertexes, {
+          if (isLocked) {
+            drawLockedVertexesWrapper(overlayContext, hoverElementVertexes, {
               ...drawBaseOpts,
               controller: calcElementSizeController(hoverElement, {
                 groupQueue,
@@ -789,7 +804,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
             drawHoverVertexesWrapper(overlayContext, hoverElementVertexes, drawBaseOpts);
           }
         }
-        if (!isLock && elem && (['select', 'drag', 'resize'] as ActionType[]).includes(actionType)) {
+        if (!isLocked && elem && (['select', 'drag', 'resize'] as ActionType[]).includes(actionType)) {
           drawSelectedElementControllersVertexes(overlayContext, selectedElementController, {
             ...drawBaseOpts,
             element: elem,
@@ -822,8 +837,8 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
       } else {
         // in root
         if (hoverElement && actionType !== 'drag') {
-          if (isLock) {
-            drawLockVertexesWrapper(overlayContext, hoverElementVertexes, {
+          if (isLocked) {
+            drawLockedVertexesWrapper(overlayContext, hoverElementVertexes, {
               ...drawBaseOpts,
               controller: calcElementSizeController(hoverElement, {
                 groupQueue,
@@ -836,7 +851,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
             drawHoverVertexesWrapper(overlayContext, hoverElementVertexes, drawBaseOpts);
           }
         }
-        if (!isLock && elem && (['select', 'drag', 'resize'] as ActionType[]).includes(actionType)) {
+        if (!isLocked && elem && (['select', 'drag', 'resize'] as ActionType[]).includes(actionType)) {
           drawSelectedElementControllersVertexes(overlayContext, selectedElementController, {
             ...drawBaseOpts,
             element: elem,
