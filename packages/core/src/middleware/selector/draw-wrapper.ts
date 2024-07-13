@@ -8,10 +8,11 @@ import type {
   ViewScaleInfo,
   ViewSizeInfo,
   ElementSizeController,
-  ViewCalculator
+  ViewCalculator,
+  MiddlewareSelectorStyle
 } from '@idraw/types';
 import { rotateElementVertexes, calcViewPointSize, calcViewVertexes, calcViewElementSize } from '@idraw/util';
-import type { AreaSize, MiddlewareSelectorStyle } from './types';
+import type { AreaSize } from './types';
 import { resizeControllerBorderWidth, areaBorderWidth, selectWrapperBorderWidth, controllerSize } from './config';
 import { drawVertexes, drawLine, drawCircleController, drawCrossVertexes } from './draw-base';
 // import { drawAuxiliaryExperimentBox } from './draw-auxiliary';
@@ -34,7 +35,7 @@ export function drawHoverVertexesWrapper(
   drawVertexes(ctx, calcViewVertexes(vertexes, opts), wrapperOpts);
 }
 
-export function drawLockVertexesWrapper(
+export function drawLockedVertexesWrapper(
   ctx: ViewContext2D,
   vertexes: ViewRectVertexes | null,
   opts: {

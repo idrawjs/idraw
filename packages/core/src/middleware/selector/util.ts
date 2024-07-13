@@ -172,7 +172,7 @@ export function getPointTarget(
 }
 
 export function resizeElement(
-  elem: Element<ElementType>,
+  elem: ElementSize,
   opts: {
     start: PointSize;
     end: PointSize;
@@ -821,7 +821,7 @@ export function resizeElement(
 }
 
 export function rotateElement(
-  elem: Element<ElementType>,
+  elem: ElementSize,
   opts: {
     center: PointSize;
     start: PointSize;
@@ -875,10 +875,10 @@ export function getSelectedListArea(
 
   for (let idx = 0; idx < data.elements.length; idx++) {
     const elem = data.elements[idx];
-    if (elem?.operations?.lock === true) {
+    if (elem?.operations?.locked === true) {
       continue;
     }
-    const elemSize = calcViewElementSize(elem, { viewScaleInfo, viewSizeInfo });
+    const elemSize = calcViewElementSize(elem, { viewScaleInfo });
 
     const center = calcElementCenter(elemSize);
     if (center.x >= startX && center.x <= endX && center.y >= startY && center.y <= endY) {
@@ -914,7 +914,7 @@ export function calcSelectedElementsArea(
     return null;
   }
   const area: AreaSize = { x: 0, y: 0, w: 0, h: 0 };
-  const { viewScaleInfo, viewSizeInfo } = opts;
+  const { viewScaleInfo } = opts;
   let prevElemSize: ElementSize | null = null;
 
   for (let i = 0; i < elements.length; i++) {
@@ -922,7 +922,7 @@ export function calcSelectedElementsArea(
     if (elem?.operations?.invisible) {
       continue;
     }
-    const elemSize = calcViewElementSize(elem, { viewScaleInfo, viewSizeInfo });
+    const elemSize = calcViewElementSize(elem, { viewScaleInfo });
 
     if (elemSize.angle && (elemSize.angle > 0 || elemSize.angle < 0)) {
       const ves = rotateElementVertexes(elemSize);
