@@ -902,7 +902,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
       // const endHorizontal: any = sharer.getSharedStorage(keyDebugEndHorizontal);
       // const end0: any = sharer.getSharedStorage(keyDebugEnd0);
       // if (elemCenter && end0) {
-      //   overlayContext.originalStartPath();
+      //   overlayContext.beginPath();
       //   overlayContext.moveTo(elemCenter.x, elemCenter.y);
       //   overlayContext.lineTo(end0.x, end0.y);
       //   overlayContext.closePath();
@@ -910,7 +910,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
       //   overlayContext.stroke();
       // }
       // if (elemCenter && endVertical) {
-      //   overlayContext.originalStartPath();
+      //   overlayContext.beginPath();
       //   overlayContext.moveTo(elemCenter.x, elemCenter.y);
       //   overlayContext.lineTo(endVertical.x, endVertical.y);
       //   overlayContext.closePath();
@@ -918,7 +918,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
       //   overlayContext.stroke();
       // }
       // if (elemCenter && endHorizontal) {
-      //   overlayContext.originalStartPath();
+      //   overlayContext.beginPath();
       //   overlayContext.moveTo(elemCenter.x, elemCenter.y);
       //   overlayContext.lineTo(endHorizontal.x, endHorizontal.y);
       //   overlayContext.closePath();
