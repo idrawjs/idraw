@@ -3,8 +3,7 @@ import { getViewScaleInfoFromSnapshot, getViewSizeInfoFromSnapshot } from '@idra
 import { drawRulerBackground, drawXRuler, drawYRuler, calcXRulerScaleList, calcYRulerScaleList, drawGrid, drawScrollerSelectedArea } from './util';
 import type { DeepRulerSharedStorage } from './types';
 import { defaultStyle } from './config';
-
-export const middlewareEventRuler = '@middleware/show-ruler';
+import { coreEventKeys } from '../../config';
 
 export const MiddlewareRuler: BoardMiddleware<DeepRulerSharedStorage, CoreEventMap, MiddlewareRulerConfig> = (opts, config) => {
   const { boardContent, viewer, eventHub, calculator } = opts;
@@ -43,10 +42,10 @@ export const MiddlewareRuler: BoardMiddleware<DeepRulerSharedStorage, CoreEventM
   return {
     name: '@middleware/ruler',
     use() {
-      eventHub.on(middlewareEventRuler, rulerCallback);
+      eventHub.on(coreEventKeys.RULER, rulerCallback);
     },
     disuse() {
-      eventHub.off(middlewareEventRuler, rulerCallback);
+      eventHub.off(coreEventKeys.RULER, rulerCallback);
     },
     beforeDrawFrame: ({ snapshot }) => {
       if (show === true) {

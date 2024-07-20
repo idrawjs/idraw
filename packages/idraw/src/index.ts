@@ -1,16 +1,5 @@
 export type * from '@idraw/types';
-export {
-  Core,
-  MiddlewareSelector,
-  middlewareEventSelect,
-  middlewareEventSelectClear,
-  MiddlewareScroller,
-  MiddlewareScaler,
-  middlewareEventScale,
-  MiddlewareRuler,
-  middlewareEventRuler,
-  MiddlewareTextEditor
-} from '@idraw/core';
+export { Core, MiddlewareSelector, MiddlewareScroller, MiddlewareScaler, MiddlewareRuler, MiddlewareTextEditor, coreEventKeys } from '@idraw/core';
 export { Sharer, Calculator } from '@idraw/board';
 export { Renderer } from '@idraw/renderer';
 export {

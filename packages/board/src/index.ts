@@ -129,6 +129,7 @@ export class Board<T extends BoardExtendEventMap = BoardExtendEventMap> {
     this.#watcher.on('scrollY', this.#handleScrollY.bind(this));
     this.#watcher.on('resize', this.#handleResize.bind(this));
     this.#watcher.on('doubleClick', this.#handleDoubleClick.bind(this));
+    this.#watcher.on('contextMenu', this.#handleContextMenu.bind(this));
 
     this.#renderer.on('load', () => {
       this.#eventHub.trigger('loadResource');
@@ -179,6 +180,16 @@ export class Board<T extends BoardExtendEventMap = BoardExtendEventMap> {
     for (let i = 0; i < this.#activeMiddlewareObjs.length; i++) {
       const obj = this.#activeMiddlewareObjs[i];
       const result = obj?.doubleClick?.(e);
+      if (result === false) {
+        return;
+      }
+    }
+  }
+
+  #handleContextMenu(e: BoardWatcherEventMap['contextMenu']) {
+    for (let i = 0; i < this.#activeMiddlewareObjs.length; i++) {
+      const obj = this.#activeMiddlewareObjs[i];
+      const result = obj?.contextMenu?.(e);
       if (result === false) {
         return;
       }

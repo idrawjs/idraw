@@ -17,7 +17,6 @@ import type {
   Data,
   ViewRectVertexes,
   CoreEventMap,
-  ElementPosition,
   ViewScaleInfo,
   ViewSizeInfo,
   ElementSizeController,
@@ -56,10 +55,6 @@ import {
   calcMoveInGroup
 } from './util';
 import {
-  middlewareEventSelect,
-  middlewareEventSelectClear,
-  middlewareEventSelectInGroup,
-  middlewareEventSnapToGrid,
   keyActionType,
   keyResizeType,
   keyAreaStart,
@@ -85,14 +80,11 @@ import {
   // keyDebugStartVertical
 } from './config';
 import { calcReferenceInfo } from './reference';
-import { middlewareEventTextEdit } from '../text-editor';
-import { eventChange } from '../../config';
+import { coreEventKeys } from '../../config';
 import { keyLayoutIsSelected } from '../layout-selector';
 
 export { keySelectedElementList, keyHoverElement, keyActionType, keyResizeType, keyGroupQueue };
 export type { DeepSelectorSharedStorage, ActionType };
-
-export { middlewareEventSelect, middlewareEventSelectClear, middlewareEventSelectInGroup, middlewareEventSnapToGrid };
 
 export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, CoreEventMap, MiddlewareSelectorConfig> = (opts, config) => {
   const innerConfig = {
@@ -162,7 +154,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
     }
 
     if (opts?.triggerEvent === true) {
-      eventHub.trigger(middlewareEventSelect, { uuids: list.map((elem) => elem.uuid) });
+      eventHub.trigger(coreEventKeys.SELECT, { uuids: list.map((elem) => elem.uuid), positions: [] });
     }
   };
 
@@ -199,7 +191,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
 
   clear();
 
-  const selectCallback = ({ uuids, positions }: { uuids: string[]; positions: ElementPosition[] }) => {
+  const selectCallback = ({ uuids = [], positions }: CoreEventMap[typeof coreEventKeys.SELECT]) => {
     let elements: Element[] = [];
     const actionType = sharer.getSharedStorage(keyActionType);
     const data = sharer.getActiveStorage('data');
@@ -244,17 +236,17 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
   return {
     name: '@middleware/selector',
     use() {
-      eventHub.on(middlewareEventSelect, selectCallback);
-      eventHub.on(middlewareEventSelectClear, selectClearCallback);
-      eventHub.on(middlewareEventSelectInGroup, selectInGroupCallback);
-      eventHub.on(middlewareEventSnapToGrid, setSnapToSnapCallback);
+      eventHub.on(coreEventKeys.SELECT, selectCallback);
+      eventHub.on(coreEventKeys.CLEAR_SELECT, selectClearCallback);
+      eventHub.on(coreEventKeys.SELECT_IN_GROUP, selectInGroupCallback);
+      eventHub.on(coreEventKeys.SNAP_TO_GRID, setSnapToSnapCallback);
     },
 
     disuse() {
-      eventHub.off(middlewareEventSelect, selectCallback);
-      eventHub.off(middlewareEventSelectClear, selectClearCallback);
-      eventHub.off(middlewareEventSelectInGroup, selectInGroupCallback);
-      eventHub.off(middlewareEventSnapToGrid, setSnapToSnapCallback);
+      eventHub.off(coreEventKeys.SELECT, selectCallback);
+      eventHub.off(coreEventKeys.CLEAR_SELECT, selectClearCallback);
+      eventHub.off(coreEventKeys.SELECT_IN_GROUP, selectInGroupCallback);
+      eventHub.off(coreEventKeys.SNAP_TO_GRID, setSnapToSnapCallback);
     },
 
     hover: (e: PointWatcherEvent) => {
@@ -269,7 +261,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
         }
         const cursor: string | null = target.type;
         if (inBusyMode === null) {
-          eventHub.trigger('cursor', {
+          eventHub.trigger(coreEventKeys.CURSOR, {
             type: cursor,
             groupQueue: target.groupQueue,
             element: target.elements[0]
@@ -388,17 +380,20 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
           })
         ) {
           const target = getPointTarget(e.point, pointTargetBaseOptions());
-          if (target?.elements?.length === 1 && target.elements[0]?.operations?.locked === true) {
-            return;
-          } else {
-            updateHoverElement(null);
-          }
+          const isLockedElement = target?.elements?.length === 1 && target.elements[0]?.operations?.locked === true;
+
+          // if (target?.elements?.length === 1 && target.elements[0]?.operations?.locked === true) {
+          //   return;
+          // } else {
+          updateHoverElement(null);
+          // }
 
           if (target?.elements?.length === 1) {
             moveOriginalStartElementSize = getElementSize(target?.elements[0]);
           }
-
-          if (target.type === 'over-element' && target?.elements?.length === 1) {
+          if (isLockedElement === true) {
+            clear();
+          } else if (target.type === 'over-element' && target?.elements?.length === 1) {
             updateSelectedElementList([target.elements[0]], { triggerEvent: true });
             sharer.setSharedStorage(keyActionType, 'drag');
           } else if (target.type?.startsWith('resize-')) {
@@ -426,30 +421,29 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
         areaSize: listAreaSize,
         groupQueue: []
       });
+
       const isLockedElement = target?.elements?.length === 1 && target.elements[0]?.operations?.locked === true;
-      if (!isLockedElement) {
-        updateHoverElement(null);
-      }
+      // if (!isLockedElement) {
+      updateHoverElement(null);
+      // }
 
       if (target?.elements?.length === 1) {
         moveOriginalStartElementSize = getElementSize(target?.elements[0]);
       }
 
-      if (!isLockedElement) {
-        if (target.type === 'list-area') {
-          sharer.setSharedStorage(keyActionType, 'drag-list');
-        } else if (target.type === 'over-element' && target?.elements?.length === 1) {
-          updateSelectedElementList([target.elements[0]], { triggerEvent: true });
-          sharer.setSharedStorage(keyActionType, 'drag');
-        } else if (target.type?.startsWith('resize-')) {
-          sharer.setSharedStorage(keyResizeType, target.type as ResizeType);
-          sharer.setSharedStorage(keyActionType, 'resize');
-        } else {
-          clear();
-          sharer.setSharedStorage(keyActionType, 'area');
-          sharer.setSharedStorage(keyAreaStart, e.point);
-          updateSelectedElementList([], { triggerEvent: true });
-        }
+      if (isLockedElement === true) {
+        clear();
+        sharer.setSharedStorage(keyActionType, 'area');
+        sharer.setSharedStorage(keyAreaStart, e.point);
+        updateSelectedElementList([], { triggerEvent: true });
+      } else if (target.type === 'list-area') {
+        sharer.setSharedStorage(keyActionType, 'drag-list');
+      } else if (target.type === 'over-element' && target?.elements?.length === 1) {
+        updateSelectedElementList([target.elements[0]], { triggerEvent: true });
+        sharer.setSharedStorage(keyActionType, 'drag');
+      } else if (target.type?.startsWith('resize-')) {
+        sharer.setSharedStorage(keyResizeType, target.type as ResizeType);
+        sharer.setSharedStorage(keyActionType, 'resize');
       } else {
         clear();
         sharer.setSharedStorage(keyActionType, 'area');
@@ -702,11 +696,11 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
         }
 
         if (data && (['drag', 'drag-list', 'drag-list-end', 'resize'] as ActionType[]).includes(actionType)) {
-          let type = 'dragElement';
+          let type: any = 'dragElement';
           if (type === 'resize') {
             type = 'resizeElement';
           }
-          eventHub.trigger(eventChange, { data, type, selectedElements, hoverElement });
+          eventHub.trigger(coreEventKeys.CHANGE, { data, type, selectedElements, hoverElement });
         }
         viewer.drawFrame();
       };
@@ -743,14 +737,61 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
           return;
         }
       } else if (target.elements.length === 1 && target.elements[0]?.type === 'text' && !target.elements[0]?.operations?.invisible) {
-        eventHub.trigger(middlewareEventTextEdit, {
-          element: target.elements[0],
+        eventHub.trigger(coreEventKeys.TEXT_EDIT, {
+          element: target.elements[0] as Element<'text'>,
           groupQueue: sharer.getSharedStorage(keyGroupQueue) || [],
           position: getElementPositionFromList(target.elements[0]?.uuid, sharer.getActiveStorage('data')?.elements || []),
           viewScaleInfo: sharer.getActiveViewScaleInfo()
         });
       }
       sharer.setSharedStorage(keyActionType, null);
+    },
+
+    contextMenu: (e: PointWatcherEvent) => {
+      const groupQueue = sharer.getSharedStorage(keyGroupQueue);
+
+      if (groupQueue?.length > 0) {
+        if (
+          isPointInViewActiveGroup(e.point, {
+            ctx: overlayContext,
+            viewScaleInfo: sharer.getActiveViewScaleInfo(),
+            viewSizeInfo: sharer.getActiveViewSizeInfo(),
+            groupQueue
+          })
+        ) {
+          const target = getPointTarget(e.point, pointTargetBaseOptions());
+          if (target?.elements?.length === 1 && target.elements[0]?.operations?.locked !== true) {
+            clear();
+            updateSelectedElementList([target.elements[0]], { triggerEvent: true });
+            viewer.drawFrame();
+          } else if (!target?.elements?.length) {
+            clear();
+          }
+        }
+
+        return;
+      }
+
+      // not in group
+      const listAreaSize = calcSelectedElementsArea(getActiveElements(), {
+        viewScaleInfo: sharer.getActiveViewScaleInfo(),
+        viewSizeInfo: sharer.getActiveViewSizeInfo(),
+        calculator
+      });
+      const target = getPointTarget(e.point, {
+        ...pointTargetBaseOptions(),
+        areaSize: listAreaSize,
+        groupQueue: []
+      });
+
+      if (target?.elements?.length === 1 && target.elements[0]?.operations?.locked !== true) {
+        clear();
+        updateSelectedElementList([target.elements[0]], { triggerEvent: true });
+        viewer.drawFrame();
+        return;
+      } else if (!target?.elements?.length) {
+        clear();
+      }
     },
 
     beforeDrawFrame({ snapshot }) {
@@ -784,13 +825,13 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
           })
         : null;
 
-      const isLocked: boolean = !!hoverElement?.operations?.locked;
+      const isHoverLocked: boolean = !!hoverElement?.operations?.locked;
 
       if (groupQueue?.length > 0) {
         // in group
         drawGroupQueueVertexesWrappers(overlayContext, groupQueueVertexesList, drawBaseOpts);
         if (hoverElement && actionType !== 'drag') {
-          if (isLocked) {
+          if (isHoverLocked) {
             drawLockedVertexesWrapper(overlayContext, hoverElementVertexes, {
               ...drawBaseOpts,
               controller: calcElementSizeController(hoverElement, {
@@ -804,7 +845,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
             drawHoverVertexesWrapper(overlayContext, hoverElementVertexes, drawBaseOpts);
           }
         }
-        if (!isLocked && elem && (['select', 'drag', 'resize'] as ActionType[]).includes(actionType)) {
+        if (elem && (['select', 'drag', 'resize'] as ActionType[]).includes(actionType)) {
           drawSelectedElementControllersVertexes(overlayContext, selectedElementController, {
             ...drawBaseOpts,
             element: elem,
@@ -837,7 +878,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
       } else {
         // in root
         if (hoverElement && actionType !== 'drag') {
-          if (isLocked) {
+          if (isHoverLocked) {
             drawLockedVertexesWrapper(overlayContext, hoverElementVertexes, {
               ...drawBaseOpts,
               controller: calcElementSizeController(hoverElement, {
@@ -851,7 +892,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
             drawHoverVertexesWrapper(overlayContext, hoverElementVertexes, drawBaseOpts);
           }
         }
-        if (!isLocked && elem && (['select', 'drag', 'resize'] as ActionType[]).includes(actionType)) {
+        if (elem && (['select', 'drag', 'resize'] as ActionType[]).includes(actionType)) {
           drawSelectedElementControllersVertexes(overlayContext, selectedElementController, {
             ...drawBaseOpts,
             element: elem,

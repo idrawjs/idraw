@@ -1,4 +1,5 @@
 import type { BoardMiddleware, CoreEventMap, Point } from '@idraw/types';
+import { coreEventKeys } from '../../config';
 
 const key = 'DRAG';
 const keyPrevPoint = Symbol(`${key}_prevPoint`);
@@ -17,7 +18,7 @@ export const MiddlewareDragger: BoardMiddleware<DraggerSharedStorage, CoreEventM
       if (isDragging === true) {
         return;
       }
-      eventHub.trigger('cursor', {
+      eventHub.trigger(coreEventKeys.CURSOR, {
         type: 'drag-default'
       });
     },
@@ -26,7 +27,7 @@ export const MiddlewareDragger: BoardMiddleware<DraggerSharedStorage, CoreEventM
       const { point } = e;
       sharer.setSharedStorage(keyPrevPoint, point);
       isDragging = true;
-      eventHub.trigger('cursor', {
+      eventHub.trigger(coreEventKeys.CURSOR, {
         type: 'drag-active'
       });
     },
@@ -46,7 +47,7 @@ export const MiddlewareDragger: BoardMiddleware<DraggerSharedStorage, CoreEventM
     pointEnd() {
       isDragging = false;
       sharer.setSharedStorage(keyPrevPoint, null);
-      eventHub.trigger('cursor', {
+      eventHub.trigger(coreEventKeys.CURSOR, {
         type: 'drag-default'
       });
     }

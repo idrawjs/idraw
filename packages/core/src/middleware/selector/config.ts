@@ -42,11 +42,3 @@ export const defaultStyle: MiddlewareSelectorStyle = {
   lockedColor,
   referenceColor
 };
-
-export const middlewareEventSelect: string = '@middleware/select';
-
-export const middlewareEventSelectClear: string = '@middleware/select-clear';
-
-export const middlewareEventSelectInGroup: string = '@middleware/select-in-group';
-
-export const middlewareEventSnapToGrid: string = '@middleware/snap-to-grid';
