@@ -1,6 +1,6 @@
-import type { BoardMiddleware, ViewRectInfo, Element, MiddlewareInfoConfig } from '@idraw/types';
+import type { BoardMiddleware, ViewRectInfo, Element, MiddlewareInfoConfig, CoreEventMap } from '@idraw/types';
 import { formatNumber, getViewScaleInfoFromSnapshot, getViewSizeInfoFromSnapshot, createUUID, limitAngle, rotatePoint, parseAngleToRadian } from '@idraw/util';
-import { keySelectedElementList, keyHoverElement, keyActionType, keyGroupQueue } from '../selector';
+import { keySelectedElementList, keyActionType, keyGroupQueue } from '../selector';
 import { drawSizeInfoText, drawPositionInfoText, drawAngleInfoText } from './draw-info';
 import type { DeepInfoSharedStorage } from './types';
 import { defaltStyle } from './config';
@@ -8,7 +8,7 @@ import { defaltStyle } from './config';
 const infoFontSize = 10;
 const infoLineHeight = 16;
 
-export const MiddlewareInfo: BoardMiddleware<DeepInfoSharedStorage, any, MiddlewareInfoConfig> = (opts, config) => {
+export const MiddlewareInfo: BoardMiddleware<DeepInfoSharedStorage, CoreEventMap, MiddlewareInfoConfig> = (opts, config) => {
   const { boardContent, calculator } = opts;
   const { overlayContext } = boardContent;
   const innerConfig = {
@@ -28,11 +28,10 @@ export const MiddlewareInfo: BoardMiddleware<DeepInfoSharedStorage, any, Middlew
       const { sharedStore } = snapshot;
 
       const selectedElementList = sharedStore[keySelectedElementList];
-      const hoverElement = sharedStore[keyHoverElement];
       const actionType = sharedStore[keyActionType];
       const groupQueue = sharedStore[keyGroupQueue] || [];
 
-      if (selectedElementList.length === 1 && !hoverElement?.operations?.locked) {
+      if (selectedElementList.length === 1) {
         const elem = selectedElementList[0];
         if (elem && ['select', 'drag', 'resize'].includes(actionType as string)) {
           const viewScaleInfo = getViewScaleInfoFromSnapshot(snapshot);

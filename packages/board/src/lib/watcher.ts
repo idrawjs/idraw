@@ -75,6 +75,9 @@ export class BoardWatcher extends EventEmitter<BoardWatcherEventMap> {
   };
 
   #onContextMenu = (e: MouseEvent) => {
+    if (e.button !== 2) {
+      return;
+    }
     if (!this.#isInTarget(e)) {
       return;
     }
@@ -83,7 +86,7 @@ export class BoardWatcher extends EventEmitter<BoardWatcherEventMap> {
     if (!this.#isVaildPoint(point)) {
       return;
     }
-    // TODO
+    this.trigger('contextMenu', { point });
   };
 
   #onClick = (e: MouseEvent) => {
@@ -146,6 +149,12 @@ export class BoardWatcher extends EventEmitter<BoardWatcherEventMap> {
   };
 
   #onPointStart = (e: MouseEvent) => {
+    // mouse-left-click:  button = 0
+    // mouse-right-click: button = 2
+    // mouse-scroll button = 1
+    if (e.button !== 0) {
+      return;
+    }
     if (!this.#isInTarget(e)) {
       return;
     }

@@ -9,15 +9,16 @@ import {
   MiddlewareRuler,
   MiddlewareTextEditor,
   MiddlewareDragger,
-  MiddlewareInfo
+  MiddlewareInfo,
+  MiddlewarePointer
 } from '@idraw/core';
-import { IDrawEvent } from './event';
+import { InnerEvent } from './event';
 
 function isValidMode(mode: string | IDrawMode) {
   return ['select', 'drag', 'readOnly'].includes(mode);
 }
 
-export function runMiddlewares(core: Core<IDrawEvent>, store: Store<IDrawStorage>) {
+export function runMiddlewares(core: Core<InnerEvent>, store: Store<IDrawStorage>) {
   const { enableRuler, enableScale, enableScroll, enableSelect, enableTextEdit, enableDrag, enableInfo } = store.getSnapshot();
   const styles = store.get('middlewareStyles');
   if (enableScroll === true) {
@@ -63,9 +64,11 @@ export function runMiddlewares(core: Core<IDrawEvent>, store: Store<IDrawStorage
   } else if (enableInfo === false) {
     core.disuse(MiddlewareInfo);
   }
+
+  core.use(MiddlewarePointer);
 }
 
-export function changeMode(mode: IDrawMode, core: Core<IDrawEvent>, store: Store<IDrawStorage>) {
+export function changeMode(mode: IDrawMode, core: Core<InnerEvent>, store: Store<IDrawStorage>) {
   let enableScale: boolean = false;
   let enableScroll: boolean = false;
   let enableSelect: boolean = false;

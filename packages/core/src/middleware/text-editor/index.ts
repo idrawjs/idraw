@@ -1,7 +1,6 @@
 import type { BoardMiddleware, CoreEventMap, Element, ElementSize, ViewScaleInfo, ElementPosition } from '@idraw/types';
 import { limitAngle, getDefaultElementDetailConfig, enhanceFontFamliy } from '@idraw/util';
-export const middlewareEventTextEdit = '@middleware/text-edit';
-export const middlewareEventTextChange = '@middleware/text-change';
+import { coreEventKeys } from '../../config';
 
 type TextEditEvent = {
   element: Element<'text'>;
@@ -20,7 +19,7 @@ type TextChangeEvent = {
   position: ElementPosition;
 };
 
-type ExtendEventMap = Record<typeof middlewareEventTextEdit, TextEditEvent> & Record<typeof middlewareEventTextChange, TextChangeEvent>;
+type ExtendEventMap = Record<typeof coreEventKeys.TEXT_EDIT, TextEditEvent> & Record<typeof coreEventKeys.TEXT_CHANGE, TextChangeEvent>;
 
 const defaultElementDetail = getDefaultElementDetailConfig();
 
@@ -35,7 +34,8 @@ export const MiddlewareTextEditor: BoardMiddleware<ExtendEventMap, CoreEventMap 
   const mask = document.createElement('div');
   let activeElem: Element<'text'> | null = null;
   let activePosition: ElementPosition = [];
-
+  const id = `idraw-middleware-text-editor-${Math.random().toString(26).substring(2)}`;
+  mask.setAttribute('id', id);
   canvasWrapper.appendChild(textarea);
 
   canvasWrapper.style.position = 'absolute';
@@ -211,7 +211,7 @@ export const MiddlewareTextEditor: BoardMiddleware<ExtendEventMap, CoreEventMap 
     if (activeElem && activePosition) {
       // activeElem.detail.text = (e.target as any).value || '';
       activeElem.detail.text = textarea.innerText || '';
-      eventHub.trigger(middlewareEventTextChange, {
+      eventHub.trigger(coreEventKeys.TEXT_CHANGE, {
         element: {
           uuid: activeElem.uuid,
           detail: {
@@ -225,7 +225,7 @@ export const MiddlewareTextEditor: BoardMiddleware<ExtendEventMap, CoreEventMap 
   });
   textarea.addEventListener('blur', () => {
     if (activeElem && activePosition) {
-      eventHub.trigger(middlewareEventTextChange, {
+      eventHub.trigger(coreEventKeys.TEXT_CHANGE, {
         element: {
           uuid: activeElem.uuid,
           detail: {
@@ -263,10 +263,10 @@ export const MiddlewareTextEditor: BoardMiddleware<ExtendEventMap, CoreEventMap 
   return {
     name: '@middleware/text-editor',
     use() {
-      eventHub.on(middlewareEventTextEdit, textEditCallback);
+      eventHub.on(coreEventKeys.TEXT_EDIT, textEditCallback);
     },
     disuse() {
-      eventHub.off(middlewareEventTextEdit, textEditCallback);
+      eventHub.off(coreEventKeys.TEXT_EDIT, textEditCallback);
     }
   };
 };

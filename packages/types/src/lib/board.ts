@@ -49,6 +49,7 @@ export interface BoardWatcherEventMap<S extends Record<any | symbol, any> = any>
   pointEnd: BoardWatcherPointEvent;
   pointLeave: BoardWatcherPointEvent;
   doubleClick: BoardWatcherPointEvent;
+  contextMenu: BoardWatcherPointEvent;
   wheel: BoardWatherWheelEvent;
   wheelScale: BoardWatherWheelScaleEvent;
   scrollX: BoardWatherScrollXEvent;
@@ -70,12 +71,10 @@ export interface BoardMiddlewareObject<S extends Record<any | symbol, any> = any
   pointEnd?: (e: BoardWatcherEventMap<S>['pointEnd']) => void | boolean;
   pointLeave?: (e: BoardWatcherEventMap<S>['pointLeave']) => void | boolean;
   doubleClick?: (e: BoardWatcherEventMap<S>['doubleClick']) => void | boolean;
-  // wheelX?: (e: BoardWatcherEventMap<S>['wheelX']) => void | boolean;
-  // wheelY?: (e: BoardWatcherEventMap<S>['wheelY']) => void | boolean;
+  contextMenu?: (e: BoardWatcherEventMap<S>['contextMenu']) => void | boolean;
   wheel?: (e: BoardWatcherEventMap<S>['wheel']) => void | boolean;
   wheelScale?: (e: BoardWatcherEventMap<S>['wheelScale']) => void | boolean;
 
-  // scale?: (e: BoardWatcherEventMap<S>['scale']) => void | boolean;
   scrollX?: (e: BoardWatcherEventMap<S>['scrollX']) => void | boolean;
   scrollY?: (e: BoardWatcherEventMap<S>['scrollY']) => void | boolean;
   resize?: (e: BoardWatcherEventMap<S>['resize']) => void | boolean;

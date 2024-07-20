@@ -2,23 +2,19 @@ import type { Data, PointSize, CoreOptions, BoardMiddleware, ViewSizeInfo, CoreE
 import { Board } from '@idraw/board';
 import { createBoardContent, validateElements } from '@idraw/util';
 import { Cursor } from './lib/cursor';
-export { eventChange } from './config';
+export { coreEventKeys } from './config';
+export type { CoreEventKeys } from './config';
 
 // export { MiddlewareSelector } from './middleware/selector';
-export {
-  MiddlewareSelector,
-  middlewareEventSelect,
-  middlewareEventSelectClear,
-  middlewareEventSelectInGroup,
-  middlewareEventSnapToGrid
-} from './middleware/selector';
+export { MiddlewareSelector } from './middleware/selector';
 export { MiddlewareScroller } from './middleware/scroller';
-export { MiddlewareScaler, middlewareEventScale } from './middleware/scaler';
-export { MiddlewareRuler, middlewareEventRuler } from './middleware/ruler';
-export { MiddlewareTextEditor, middlewareEventTextEdit, middlewareEventTextChange } from './middleware/text-editor';
+export { MiddlewareScaler } from './middleware/scaler';
+export { MiddlewareRuler } from './middleware/ruler';
+export { MiddlewareTextEditor } from './middleware/text-editor';
 export { MiddlewareDragger } from './middleware/dragger';
 export { MiddlewareInfo } from './middleware/info';
 export { MiddlewareLayoutSelector } from './middleware/layout-selector';
+export { MiddlewarePointer } from './middleware/pointer';
 
 export class Core<E extends CoreEventMap = CoreEventMap> {
   #board: Board<E>;

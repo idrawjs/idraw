@@ -1,6 +1,7 @@
 import type { UtilEventEmitter, CoreEventMap } from '@idraw/types';
 import { limitAngle, loadImage, parseAngleToRadian } from '@idraw/util';
 import { CURSOR, CURSOR_RESIZE, CURSOR_DRAG_DEFAULT, CURSOR_DRAG_ACTIVE, CURSOR_RESIZE_ROTATE } from './cursor-image';
+import { coreEventKeys } from '../config';
 
 export class Cursor {
   #eventHub: UtilEventEmitter<CoreEventMap>;
@@ -29,7 +30,7 @@ export class Cursor {
   #init() {
     const eventHub = this.#eventHub;
     this.#resetCursor('default');
-    eventHub.on('cursor', (e) => {
+    eventHub.on(coreEventKeys.CURSOR, (e) => {
       if (e.type === 'over-element' || !e.type) {
         this.#resetCursor('auto');
       } else if (e.type === 'resize-rotate') {
@@ -78,7 +79,7 @@ export class Cursor {
     }
   }
 
-  #setCursorResize(e: CoreEventMap['cursor']) {
+  #setCursorResize(e: CoreEventMap[typeof coreEventKeys.CURSOR]) {
     let totalAngle = 0;
     if (e.type === 'resize-top') {
       totalAngle += 0;

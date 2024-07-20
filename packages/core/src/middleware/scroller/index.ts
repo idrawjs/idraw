@@ -3,6 +3,7 @@ import { drawScroller, isPointInScrollThumb } from './util';
 // import type { ScrollbarThumbType } from './util';
 import { keyXThumbRect, keyYThumbRect, keyPrevPoint, keyActivePoint, keyActiveThumbType, keyHoverXThumbRect, keyHoverYThumbRect, defaultStyle } from './config';
 import type { DeepScrollerSharedStorage } from './types';
+import { coreEventKeys } from '../../config';
 
 export const MiddlewareScroller: BoardMiddleware<DeepScrollerSharedStorage, any, MiddlewareScrollerConfig> = (opts, config) => {
   const { viewer, boardContent, sharer, eventHub } = opts;
@@ -98,7 +99,7 @@ export const MiddlewareScroller: BoardMiddleware<DeepScrollerSharedStorage, any,
           sharer.setSharedStorage(keyHoverXThumbRect, false);
           sharer.setSharedStorage(keyHoverYThumbRect, true);
         }
-        eventHub.trigger('cursor', { type: 'default' });
+        eventHub.trigger(coreEventKeys.CURSOR, { type: 'default' });
         return false;
       }
 

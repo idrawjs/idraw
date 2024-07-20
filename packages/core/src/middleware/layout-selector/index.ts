@@ -1,14 +1,14 @@
-import type { BoardMiddleware, ElementSize, Point, MiddlewareLayoutSelectorConfig } from '@idraw/types';
+import type { BoardMiddleware, ElementSize, Point, MiddlewareLayoutSelectorConfig, CoreEventMap } from '@idraw/types';
 import { calcLayoutSizeController, isViewPointInVertexes, getViewScaleInfoFromSnapshot, isViewPointInElementSize, calcViewElementSize } from '@idraw/util';
 import type { LayoutSelectorSharedStorage, ControlType } from './types';
 import { keyLayoutActionType, keyLayoutController, keyLayoutControlType, keyLayoutIsHover, keyLayoutIsSelected, controllerSize, defaultStyle } from './config';
-import { keyActionType as keyElementActionType, keyHoverElement, middlewareEventSelectClear } from '../selector';
+import { keyActionType as keyElementActionType, keyHoverElement } from '../selector';
 import { drawLayoutController, drawLayoutHover } from './util';
-import { eventChange } from '../../config';
+import { coreEventKeys } from '../../config';
 
 export { keyLayoutIsSelected };
 
-export const MiddlewareLayoutSelector: BoardMiddleware<LayoutSelectorSharedStorage, any, MiddlewareLayoutSelectorConfig> = (opts, config) => {
+export const MiddlewareLayoutSelector: BoardMiddleware<LayoutSelectorSharedStorage, CoreEventMap, MiddlewareLayoutSelectorConfig> = (opts, config) => {
   const { sharer, boardContent, calculator, viewer, eventHub } = opts;
   const { overlayContext } = boardContent;
   const innerConfig = {
@@ -110,7 +110,7 @@ export const MiddlewareLayoutSelector: BoardMiddleware<LayoutSelectorSharedStora
         }
         if (layoutControlType) {
           sharer.setSharedStorage(keyLayoutControlType, layoutControlType);
-          eventHub.trigger(middlewareEventSelectClear, {});
+          eventHub.trigger(coreEventKeys.CLEAR_SELECT);
           return layoutControlType;
         }
       }
@@ -122,7 +122,7 @@ export const MiddlewareLayoutSelector: BoardMiddleware<LayoutSelectorSharedStora
     if (isBusy === true) {
       return;
     }
-    eventHub.trigger('cursor', {
+    eventHub.trigger(coreEventKeys.CURSOR, {
       type: controlType ? `resize-${controlType}` : controlType,
       groupQueue: [],
       element: getLayoutSize()
@@ -309,7 +309,7 @@ export const MiddlewareLayoutSelector: BoardMiddleware<LayoutSelectorSharedStora
       const layoutControlType = sharer.getSharedStorage(keyLayoutControlType);
       const data = sharer.getActiveStorage('data');
       if (data && layoutActionType === 'resize' && layoutControlType) {
-        eventHub.trigger(eventChange, {
+        eventHub.trigger(coreEventKeys.CHANGE, {
           type: 'changeLayout',
           data
         });
