@@ -465,3 +465,42 @@ export function getElementPositionFromList(uuid: string, elements: Element<Eleme
   _loop(elements);
   return result;
 }
+
+export function getElementPositionMapFromList(
+  uuids: string[],
+  elements: Element<ElementType>[]
+): {
+  [uuid: string]: ElementPosition;
+} {
+  const currentPosition: ElementPosition = [];
+  const positionMap: {
+    [uuid: string]: ElementPosition;
+  } = {};
+
+  let over = false;
+  const _loop = (list: Element<ElementType>[]) => {
+    for (let i = 0; i < list.length; i++) {
+      if (over === true) {
+        break;
+      }
+      currentPosition.push(i);
+      const elem = list[i];
+      if (uuids.includes(elem.uuid)) {
+        positionMap[elem.uuid] = [...currentPosition];
+
+        if (Object.keys(positionMap).length === uuids.length) {
+          over = true;
+          break;
+        }
+      } else if (elem.type === 'group') {
+        _loop((elem as Element<'group'>)?.detail?.children || []);
+      }
+      if (over) {
+        break;
+      }
+      currentPosition.pop();
+    }
+  };
+  _loop(elements);
+  return positionMap;
+}

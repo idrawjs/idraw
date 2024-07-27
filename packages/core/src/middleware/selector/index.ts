@@ -10,6 +10,7 @@ import {
   findElementsFromList,
   findElementsFromListByPositions,
   getElementPositionFromList,
+  getElementPositionMapFromList,
   deepResizeGroupElement,
   getElementSize
 } from '@idraw/util';
@@ -99,6 +100,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
   let moveOriginalStartPoint: Point | null = null;
   let moveOriginalStartElementSize: ElementSize | null = null;
   let inBusyMode: 'resize' | 'drag' | 'drag-list' | 'area' | null = null;
+  let hasChangedData: boolean | null = null;
 
   sharer.setSharedStorage(keyActionType, null);
   sharer.setSharedStorage(keyEnableSnapToGrid, true);
@@ -154,7 +156,10 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
     }
 
     if (opts?.triggerEvent === true) {
-      eventHub.trigger(coreEventKeys.SELECT, { uuids: list.map((elem) => elem.uuid), positions: [] });
+      const uuids = list.map((elem) => elem.uuid);
+      const data = sharer.getActiveStorage('data');
+      const positionMap = getElementPositionMapFromList(uuids, data?.elements || []);
+      eventHub.trigger(coreEventKeys.SELECT, { uuids, positions: list.map((elem) => [...positionMap[elem.uuid]]) });
     }
   };
 
@@ -471,6 +476,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
       const enableSnapToGrid = sharer.getSharedStorage(keyEnableSnapToGrid);
 
       if (actionType === 'drag') {
+        hasChangedData = true;
         inBusyMode = 'drag';
         if (data && elems?.length === 1 && moveOriginalStartElementSize && originalStart && end && elems[0]?.operations?.locked !== true) {
           const { moveX, moveY } = calcMoveInGroup(originalStart, end, groupQueue);
@@ -518,6 +524,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
         }
         viewer.drawFrame();
       } else if (actionType === 'drag-list') {
+        hasChangedData = true;
         inBusyMode = 'drag-list';
         if (data && originalStart && start && end && elems?.length > 1) {
           const moveX = (end.x - start.x) / scale;
@@ -546,6 +553,7 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
         viewer.drawFrame();
       } else if (actionType === 'resize') {
         if (data && elems?.length === 1 && originalStart && moveOriginalStartElementSize && resizeType?.startsWith('resize-')) {
+          hasChangedData = true;
           inBusyMode = 'resize';
           const pointGroupQueue: Element<'group'>[] = [];
           groupQueue.forEach((group) => {
@@ -700,7 +708,10 @@ export const MiddlewareSelector: BoardMiddleware<DeepSelectorSharedStorage, Core
           if (type === 'resize') {
             type = 'resizeElement';
           }
-          eventHub.trigger(coreEventKeys.CHANGE, { data, type, selectedElements, hoverElement });
+          if (hasChangedData) {
+            eventHub.trigger(coreEventKeys.CHANGE, { data, type, selectedElements, hoverElement });
+            hasChangedData = false;
+          }
         }
         viewer.drawFrame();
       };

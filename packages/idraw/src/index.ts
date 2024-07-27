@@ -66,6 +66,7 @@ export {
   findElementsFromListByPositions,
   findElementQueueFromListByPosition,
   getElementPositionFromList,
+  getElementPositionMapFromList,
   updateElementInList,
   getGroupQueueFromList,
   getElementSize,
