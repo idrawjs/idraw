@@ -43,6 +43,7 @@ export {
   filterElementAsset,
   isResourceElement,
   getElementPositionFromList,
+  getElementPositionMapFromList,
   calcElementListSize
 } from './lib/element';
 export { checkRectIntersect } from './lib/rect';
@@ -89,3 +90,4 @@ export { modifyElement, getModifiedElement } from './lib/modify';
 // export { ModifyRecorder } from './lib/modify-recorder';
 export { enhanceFontFamliy } from './lib/text';
 export { flatElementList } from './lib/flat';
+export { groupElementsByPosition, ungroupElementsByPosition } from './lib/group';
