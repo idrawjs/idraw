@@ -72,16 +72,18 @@ export function calcElementCenterFromVertexes(ves: ViewRectVertexes): PointSize 
 }
 
 export function calcRadian(center: PointSize, start: PointSize, end: PointSize): number {
-  const startAngle = calcLineRadian(center, start);
-  const endAngle = calcLineRadian(center, end);
-  if (endAngle !== null && startAngle !== null) {
-    if (startAngle > (Math.PI * 3) / 2 && endAngle < Math.PI / 2) {
-      return endAngle + (Math.PI * 2 - startAngle);
-    } else if (endAngle > (Math.PI * 3) / 2 && startAngle < Math.PI / 2) {
-      return startAngle + (Math.PI * 2 - endAngle);
-    } else {
-      return endAngle - startAngle;
-    }
+  const startRadian = calcLineRadian(center, start);
+  const endRadian = calcLineRadian(center, end);
+
+  if (endRadian !== null && startRadian !== null) {
+    // if (startRadian > (Math.PI * 3) / 2 && endRadian < Math.PI / 2) {
+    //   return endRadian + (Math.PI * 2 - startRadian);
+    // } else if (endRadian > (Math.PI * 3) / 2 && startRadian < Math.PI / 2) {
+    //   return startRadian + (Math.PI * 2 - endRadian);
+    // } else {
+    //   return endRadian - startRadian;
+    // }
+    return endRadian - startRadian;
   } else {
     return 0;
   }
@@ -221,12 +223,14 @@ export function rotateVertexes(center: PointSize, ves: ViewRectVertexes, radian:
 
 // [0, 360], eg. 370 to 10, -10 to 350
 export function limitAngle(angle: number): number {
-  if (!(angle > 0 || angle < 0) || angle === 0) {
+  if (!(angle > 0 || angle < 0) || angle === 0 || angle === 360) {
     return 0;
   }
   let num = angle % 360;
   if (num < 0) {
     num += 360;
+  } else if (angle === 360) {
+    num = 0;
   }
   return num;
 }

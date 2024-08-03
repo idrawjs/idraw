@@ -20,6 +20,7 @@ export interface ElementSizeControllerItem {
   type: ElementSizeControllerType;
   vertexes: ViewRectVertexes;
   center: PointSize;
+  size: number;
 }
 
 export interface ElementSizeController {

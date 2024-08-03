@@ -1,6 +1,6 @@
 import type { PointSize, ViewContext2D } from '@idraw/types';
 import { rotateByCenter } from '@idraw/util';
-import type { MiddlewareInfoStyle } from './types';
+import type { MiddlewareInfoStyle } from '@idraw/types';
 
 const fontFamily = 'monospace';
 

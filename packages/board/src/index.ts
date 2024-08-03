@@ -122,6 +122,8 @@ export class Board<T extends BoardExtendEventMap = BoardExtendEventMap> {
     //   }, throttleTime)
     // );
     this.#watcher.on('pointMove', this.#handlePointMove.bind(this));
+    this.#watcher.on('pointLeave', this.#handlePointLeave.bind(this));
+
     this.#watcher.on('hover', this.#handleHover.bind(this));
     this.#watcher.on('wheel', this.#handleWheel.bind(this));
     this.#watcher.on('wheelScale', this.#handleWheelScale.bind(this));
@@ -160,6 +162,16 @@ export class Board<T extends BoardExtendEventMap = BoardExtendEventMap> {
     for (let i = 0; i < this.#activeMiddlewareObjs.length; i++) {
       const obj = this.#activeMiddlewareObjs[i];
       const result = obj?.pointMove?.(e);
+      if (result === false) {
+        return;
+      }
+    }
+  }
+
+  #handlePointLeave(e: BoardWatcherEventMap['pointLeave']) {
+    for (let i = 0; i < this.#activeMiddlewareObjs.length; i++) {
+      const obj = this.#activeMiddlewareObjs[i];
+      const result = obj?.pointLeave?.(e);
       if (result === false) {
         return;
       }
