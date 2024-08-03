@@ -1,4 +1,4 @@
-import { rotatePoint, parseAngleToRadian } from '@idraw/util';
+import { rotatePoint, parseAngleToRadian, parseRadianToAngle, calcRadian } from '@idraw/util';
 
 describe('@idraw/util: rotate', () => {
   test('rotatePoint', () => {
@@ -210,5 +210,18 @@ describe('@idraw/util: rotate', () => {
     const start4 = rotatePoint(center, start3, 0 - radian15);
     expect(start4.x).toBeCloseTo(start0.x);
     expect(start4.y).toBeCloseTo(start0.y);
+  });
+
+  test('calcRadian 1', () => {
+    const start = { x: 402, y: 328 };
+    const end = { x: 341, y: 414 };
+    const center = { x: 400, y: 400 };
+    expect(parseRadianToAngle(calcRadian(center, start, end))).toBeCloseTo(255.060132615518);
+  });
+  test('calcRadian 2', () => {
+    const start = { x: 402, y: 328 };
+    const end = { x: 340, y: 392 };
+    const center = { x: 400, y: 400 };
+    expect(parseRadianToAngle(calcRadian(center, start, end))).toBeCloseTo(276.00350309739684);
   });
 });
