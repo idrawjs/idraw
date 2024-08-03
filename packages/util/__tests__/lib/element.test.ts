@@ -1,4 +1,4 @@
-import { createUUID, deepClone, getElementPositionFromList } from '@idraw/util';
+import { createUUID, getElementPositionFromList } from '@idraw/util';
 import type { Elements } from '@idraw/types';
 const getElemBase = () => {
   return {

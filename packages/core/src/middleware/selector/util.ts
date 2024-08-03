@@ -839,7 +839,7 @@ export function rotateElement(
   });
   const startAngle = limitAngle(angle);
   const changedRadian = calcRadian(elemCenter, start, end);
-  const endAngle = startAngle + parseRadianToAngle(changedRadian);
+  const endAngle = limitAngle(startAngle + parseRadianToAngle(changedRadian));
 
   return {
     x,

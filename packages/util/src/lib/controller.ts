@@ -21,14 +21,19 @@ export function calcElementSizeController(
   elemSize: ElementSize,
   opts: {
     groupQueue: Element<'group'>[];
-    controllerSize?: number;
+    controllerSize: number;
+    rotateControllerSize: number;
+    rotateControllerPosition: number;
     viewScaleInfo: ViewScaleInfo;
   }
 ): ElementSizeController {
-  const { groupQueue, controllerSize, viewScaleInfo } = opts;
+  const { groupQueue, controllerSize, viewScaleInfo, rotateControllerSize, rotateControllerPosition } = opts;
 
   const ctrlSize = (controllerSize && controllerSize > 0 ? controllerSize : 8) / viewScaleInfo.scale;
   const { x, y, w, h, angle = 0 } = elemSize;
+
+  const rotateCtrlSize = rotateControllerSize;
+  const rotateCtrlPos = rotateControllerPosition;
 
   const ctrlGroupQueue = [
     ...[
@@ -53,10 +58,10 @@ export function calcElementSizeController(
   const vertexes = calcElementVertexesInGroup(elemSize, { groupQueue }) as ViewRectVertexes;
   const rotateElemVertexes = calcElementVertexesInGroup(
     {
-      x: x - ctrlSize * 2,
-      y: y - ctrlSize * 2,
-      h: h + ctrlSize * 4,
-      w: w + ctrlSize * 4,
+      x: x,
+      y: y - (rotateCtrlPos + rotateCtrlSize / 2) / viewScaleInfo.scale,
+      h: h + (rotateCtrlPos * 2 + rotateCtrlSize) / viewScaleInfo.scale,
+      w: w,
       angle
     },
     { groupQueue: [...groupQueue] }
@@ -97,92 +102,94 @@ export function calcElementSizeController(
   const bottomMiddleVertexes = calcElementVertexes(bottomMiddleSize);
   const leftMiddleVertexes = calcElementVertexes(leftMiddleSize);
 
-  // const originRotateCenter: PointSize = {
-  //   x: x + w / 2,
-  //   y: y - ctrlSize * 4
-  // };
-
-  // const rotateCenter = topCenter;
   const rotateCenter = getCenterFromTwoPoints(rotateElemVertexes[0], rotateElemVertexes[1]);
-  const rotateSize = createControllerElementSizeFromCenter(rotateCenter, { size: ctrlSize, angle: totalAngle });
+  // TODO
+  const tempRotateSizeRepairRatio = 1.1;
+  const rotateSize = createControllerElementSizeFromCenter(rotateCenter, {
+    size: (rotateControllerSize * tempRotateSizeRepairRatio) / viewScaleInfo.scale,
+    angle: totalAngle
+  });
   const rotateVertexes = calcElementVertexes(rotateSize);
-
-  // const rotateCtrlElem: ElementSize = {
-  //   x: originRotateCenter.x - ctrlSize / 2,
-  //   y: originRotateCenter.x - ctrlSize / 2,
-  //   w: ctrlSize,
-  //   h: ctrlSize,
-  //   angle
-  // };
-  // const rotateVertexes = calcElementVertexesInGroup(rotateCtrlElem, { groupQueue }) as ViewRectVertexes;
-  // const rotateCenter = getCenterFromTwoPoints(rotateVertexes[0], rotateVertexes[2]);
 
   const sizeController: ElementSizeController = {
     elementWrapper: vertexes,
     left: {
       type: 'left',
       vertexes: leftVertexes,
-      center: leftCenter
+      center: leftCenter,
+      size: ctrlSize
     },
     right: {
       type: 'right',
       vertexes: rightVertexes,
-      center: rightCenter
+      center: rightCenter,
+      size: ctrlSize
     },
     top: {
       type: 'top',
       vertexes: topVertexes,
-      center: topCenter
+      center: topCenter,
+      size: ctrlSize
     },
     bottom: {
       type: 'bottom',
       vertexes: bottomVertexes,
-      center: bottomCenter
+      center: bottomCenter,
+      size: ctrlSize
     },
     topLeft: {
       type: 'top-left',
       vertexes: topLeftVertexes,
-      center: topLeftCenter
+      center: topLeftCenter,
+      size: ctrlSize
     },
     topRight: {
       type: 'top-right',
       vertexes: topRightVertexes,
-      center: topRightCenter
+      center: topRightCenter,
+      size: ctrlSize
     },
     bottomLeft: {
       type: 'bottom-left',
       vertexes: bottomLeftVertexes,
-      center: bottomLeftCenter
+      center: bottomLeftCenter,
+      size: ctrlSize
     },
     bottomRight: {
       type: 'bottom-right',
       vertexes: bottomRightVertexes,
-      center: bottomRightCenter
+      center: bottomRightCenter,
+      size: ctrlSize
     },
     leftMiddle: {
       type: 'left-middle',
       vertexes: leftMiddleVertexes,
-      center: leftCenter
+      center: leftCenter,
+      size: ctrlSize
     },
     rightMiddle: {
       type: 'right-middle',
       vertexes: rightMiddleVertexes,
-      center: rightCenter
+      center: rightCenter,
+      size: ctrlSize
     },
     topMiddle: {
       type: 'top-middle',
       vertexes: topMiddleVertexes,
-      center: topCenter
+      center: topCenter,
+      size: ctrlSize
     },
     bottomMiddle: {
       type: 'bottom-middle',
       vertexes: bottomMiddleVertexes,
-      center: bottomCenter
+      center: bottomCenter,
+      size: ctrlSize
     },
     rotate: {
       type: 'rotate',
       vertexes: rotateVertexes,
-      center: rotateCenter
+      center: rotateCenter,
+      size: rotateControllerSize
     }
   };
   return sizeController;
@@ -241,62 +248,74 @@ export function calcLayoutSizeController(
     left: {
       type: 'left',
       vertexes: leftVertexes,
-      center: leftCenter
+      center: leftCenter,
+      size: ctrlSize
     },
     right: {
       type: 'right',
       vertexes: rightVertexes,
-      center: rightCenter
+      center: rightCenter,
+      size: ctrlSize
     },
     top: {
       type: 'top',
       vertexes: topVertexes,
-      center: topCenter
+      center: topCenter,
+      size: ctrlSize
     },
     bottom: {
       type: 'bottom',
       vertexes: bottomVertexes,
-      center: bottomCenter
+      center: bottomCenter,
+      size: ctrlSize
     },
     topLeft: {
       type: 'top-left',
       vertexes: topLeftVertexes,
-      center: topLeftCenter
+      center: topLeftCenter,
+      size: ctrlSize
     },
     topRight: {
       type: 'top-right',
       vertexes: topRightVertexes,
-      center: topRightCenter
+      center: topRightCenter,
+      size: ctrlSize
     },
     bottomLeft: {
       type: 'bottom-left',
       vertexes: bottomLeftVertexes,
-      center: bottomLeftCenter
+      center: bottomLeftCenter,
+      size: ctrlSize
     },
     bottomRight: {
       type: 'bottom-right',
       vertexes: bottomRightVertexes,
-      center: bottomRightCenter
+      center: bottomRightCenter,
+      size: ctrlSize
     },
     leftMiddle: {
       type: 'left-middle',
       vertexes: leftMiddleVertexes,
-      center: leftCenter
+      center: leftCenter,
+      size: ctrlSize
     },
     rightMiddle: {
       type: 'right-middle',
       vertexes: rightMiddleVertexes,
-      center: rightCenter
+      center: rightCenter,
+      size: ctrlSize
     },
     topMiddle: {
       type: 'top-middle',
       vertexes: topMiddleVertexes,
-      center: topCenter
+      center: topCenter,
+      size: ctrlSize
     },
     bottomMiddle: {
       type: 'bottom-middle',
       vertexes: bottomMiddleVertexes,
-      center: bottomCenter
+      center: bottomCenter,
+      size: ctrlSize
     }
   };
   return sizeController;

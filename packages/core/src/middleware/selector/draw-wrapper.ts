@@ -13,8 +13,8 @@ import type {
 } from '@idraw/types';
 import { rotateElementVertexes, calcViewPointSize, calcViewVertexes, calcViewElementSize } from '@idraw/util';
 import type { AreaSize } from './types';
-import { resizeControllerBorderWidth, areaBorderWidth, selectWrapperBorderWidth, controllerSize } from './config';
-import { drawVertexes, drawLine, drawCircleController, drawCrossVertexes } from './draw-base';
+import { resizeControllerBorderWidth, areaBorderWidth, selectWrapperBorderWidth } from './config';
+import { drawVertexes, drawCircleController, drawCrossVertexes } from './draw-base';
 // import { drawAuxiliaryExperimentBox } from './draw-auxiliary';
 
 export function drawHoverVertexesWrapper(
@@ -81,6 +81,7 @@ export function drawSelectedElementControllersVertexes(
     element: Element | null;
     calculator: ViewCalculator;
     style: MiddlewareSelectorStyle;
+    rotateControllerPattern: ViewContext2D;
   }
 ) {
   if (!controller) {
@@ -88,12 +89,15 @@ export function drawSelectedElementControllersVertexes(
   }
   const {
     hideControllers,
-    style
+    style,
+    rotateControllerPattern,
+    viewSizeInfo
     // calculator, element, viewScaleInfo, viewSizeInfo
   } = opts;
 
+  const { devicePixelRatio = 1 } = viewSizeInfo;
   const { activeColor } = style;
-  const { elementWrapper, topLeft, topRight, bottomLeft, bottomRight, top, rotate } = controller;
+  const { elementWrapper, topLeft, topRight, bottomLeft, bottomRight, rotate } = controller;
   const wrapperOpts = { borderColor: activeColor, borderWidth: selectWrapperBorderWidth, background: 'transparent', lineDash: [] };
   const ctrlOpts = { ...wrapperOpts, borderWidth: resizeControllerBorderWidth, background: '#FFFFFF' };
 
@@ -103,12 +107,26 @@ export function drawSelectedElementControllersVertexes(
   // drawVertexes(ctx, calcViewVertexes(top.vertexes, opts), ctrlOpts);
   // drawVertexes(ctx, calcViewVertexes(bottom.vertexes, opts), ctrlOpts);
   if (!hideControllers) {
-    drawLine(ctx, calcViewPointSize(top.center, opts), calcViewPointSize(rotate.center, opts), { ...ctrlOpts, borderWidth: 2 });
+    // drawLine(ctx, calcViewPointSize(top.center, opts), calcViewPointSize(rotate.center, opts), { ...ctrlOpts, borderWidth: 2 });
     drawVertexes(ctx, calcViewVertexes(topLeft.vertexes, opts), ctrlOpts);
     drawVertexes(ctx, calcViewVertexes(topRight.vertexes, opts), ctrlOpts);
     drawVertexes(ctx, calcViewVertexes(bottomLeft.vertexes, opts), ctrlOpts);
     drawVertexes(ctx, calcViewVertexes(bottomRight.vertexes, opts), ctrlOpts);
-    drawCircleController(ctx, calcViewPointSize(rotate.center, opts), { ...ctrlOpts, size: controllerSize, borderWidth: 2 });
+
+    // TODO
+    drawCircleController(ctx, calcViewPointSize(rotate.center, opts), { ...ctrlOpts, size: rotate.size, borderWidth: 0 });
+    const rotateCenter = calcViewPointSize(rotate.center, opts);
+    ctx.drawImage(
+      rotateControllerPattern.canvas,
+      0,
+      0,
+      rotateControllerPattern.canvas.width / devicePixelRatio,
+      rotateControllerPattern.canvas.height / devicePixelRatio,
+      rotateCenter.x - rotate.size / 2,
+      rotateCenter.y - rotate.size / 2,
+      rotate.size,
+      rotate.size
+    );
   }
 
   // drawAuxiliaryExperimentBox(ctx, {

@@ -123,4 +123,16 @@ export class Renderer extends EventEmitter<RendererEventMap> implements BoardRen
   }
 }
 
-export { drawRect } from './draw';
+export {
+  drawCircle,
+  drawRect,
+  drawImage,
+  drawSVG,
+  drawHTML,
+  drawText,
+  drawGroup,
+  drawElement,
+  drawElementList,
+  drawLayout,
+  drawGlobalBackground
+} from './draw';

@@ -31,6 +31,11 @@ export const resizeControllerBorderWidth = 4;
 export const areaBorderWidth = 1;
 export const controllerSize = 10;
 
+// export const rotateControllerSize = 16;
+
+export const rotateControllerSize = 20;
+export const rotateControllerPosition = 22;
+
 const activeColor = '#1973ba';
 const activeAreaColor = '#1976d21c';
 const lockedColor = '#5b5959b5';

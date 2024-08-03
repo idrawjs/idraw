@@ -3,13 +3,21 @@ import { formatNumber, getViewScaleInfoFromSnapshot, getViewSizeInfoFromSnapshot
 import { keySelectedElementList, keyActionType, keyGroupQueue } from '../selector';
 import { drawSizeInfoText, drawPositionInfoText, drawAngleInfoText } from './draw-info';
 import type { DeepInfoSharedStorage } from './types';
-import { defaltStyle } from './config';
+import { defaltStyle, MIDDLEWARE_INTERNAL_EVENT_SHOW_INFO_ANGLE } from './config';
+
+export { MIDDLEWARE_INTERNAL_EVENT_SHOW_INFO_ANGLE };
 
 const infoFontSize = 10;
 const infoLineHeight = 16;
 
-export const MiddlewareInfo: BoardMiddleware<DeepInfoSharedStorage, CoreEventMap, MiddlewareInfoConfig> = (opts, config) => {
-  const { boardContent, calculator } = opts;
+export const MiddlewareInfo: BoardMiddleware<
+  DeepInfoSharedStorage,
+  CoreEventMap & {
+    [MIDDLEWARE_INTERNAL_EVENT_SHOW_INFO_ANGLE]: { show: boolean };
+  },
+  MiddlewareInfoConfig
+> = (opts, config) => {
+  const { boardContent, calculator, eventHub } = opts;
   const { overlayContext } = boardContent;
   const innerConfig = {
     ...defaltStyle,
@@ -21,8 +29,22 @@ export const MiddlewareInfo: BoardMiddleware<DeepInfoSharedStorage, CoreEventMap
     textColor
   };
 
+  let showAngleInfo = true;
+
+  const showInfoAngleCallback = ({ show }: { show: boolean }) => {
+    showAngleInfo = show;
+  };
+
   return {
     name: '@middleware/info',
+
+    use() {
+      eventHub.on(MIDDLEWARE_INTERNAL_EVENT_SHOW_INFO_ANGLE, showInfoAngleCallback);
+    },
+
+    disuse() {
+      eventHub.off(MIDDLEWARE_INTERNAL_EVENT_SHOW_INFO_ANGLE, showInfoAngleCallback);
+    },
 
     beforeDrawFrame({ snapshot }) {
       const { sharedStore } = snapshot;
@@ -123,18 +145,20 @@ export const MiddlewareInfo: BoardMiddleware<DeepInfoSharedStorage, CoreEventMap
               style
             });
 
-            drawAngleInfoText(overlayContext, {
-              point: {
-                x: rectInfo.top.x + infoFontSize,
-                y: rectInfo.top.y - infoFontSize * 2
-              },
-              rotateCenter: rectInfo.center,
-              angle: totalAngle,
-              text: angleText,
-              fontSize: infoFontSize,
-              lineHeight: infoLineHeight,
-              style
-            });
+            if (showAngleInfo) {
+              drawAngleInfoText(overlayContext, {
+                point: {
+                  x: rectInfo.top.x + infoFontSize + 4,
+                  y: rectInfo.top.y - infoFontSize * 2 - 18
+                },
+                rotateCenter: rectInfo.center,
+                angle: totalAngle,
+                text: angleText,
+                fontSize: infoFontSize,
+                lineHeight: infoLineHeight,
+                style
+              });
+            }
           }
         }
       }

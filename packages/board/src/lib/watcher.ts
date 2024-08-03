@@ -11,7 +11,7 @@ export class BoardWatcher extends EventEmitter<BoardWatcherEventMap> {
   #hasDestroyed: boolean = false;
   constructor(opts: BoardWatcherOptions) {
     super();
-    const store = new Store<BoardWatcherStore>({ defaultStorage: { hasPointDown: false, prevClickPoint: null } });
+    const store = new Store<BoardWatcherStore>({ defaultStorage: { hasPointDown: false, prevClickPoint: null, inCanvas: true } });
     this.#store = store;
     this.#opts = opts;
     this.#init();
@@ -30,7 +30,7 @@ export class BoardWatcher extends EventEmitter<BoardWatcherEventMap> {
     container.addEventListener('mousedown', this.#onPointStart);
     container.addEventListener('mousemove', this.#onPointMove);
     container.addEventListener('mouseup', this.#onPointEnd);
-    container.addEventListener('mouseleave', this.#onPointLeave);
+    // container.addEventListener('mouseleave', this.#onPointLeave);
     container.addEventListener('wheel', this.#onWheel, { passive: false });
     container.addEventListener('click', this.#onClick);
     container.addEventListener('contextmenu', this.#onContextMenu);
@@ -110,9 +110,6 @@ export class BoardWatcher extends EventEmitter<BoardWatcherEventMap> {
 
   #onPointLeave = (e: MouseEvent) => {
     this.#store.set('hasPointDown', false);
-    if (!this.#isInTarget(e)) {
-      return;
-    }
     e.preventDefault();
     const point = this.#getPoint(e);
     this.trigger('pointLeave', { point });
@@ -169,8 +166,13 @@ export class BoardWatcher extends EventEmitter<BoardWatcherEventMap> {
 
   #onHover = (e: MouseEvent) => {
     if (!this.#isInTarget(e)) {
+      if (this.#store.get('inCanvas') === true) {
+        this.#store.set('inCanvas', false);
+        this.#onPointLeave(e);
+      }
       return;
     }
+    this.#store.set('inCanvas', true);
     // if (!this.#store.get('hasPointDown')) {
     //   return;
     // }

@@ -169,5 +169,6 @@ export interface BoardWatcherOptions {
 
 export interface BoardWatcherStore {
   hasPointDown: boolean;
+  inCanvas: boolean;
   prevClickPoint: Point | null;
 }
