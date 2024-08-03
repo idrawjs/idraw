@@ -5,7 +5,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: github.repository == 'github/idraw'
+    if: github.repository == 'idrawjs/idraw'
     permissions:
       contents: read
       id-token: write
