@@ -40,7 +40,7 @@ import {
   keyDebugStartHorizontal,
   keyDebugStartVertical
 } from './config';
-import { keyLayoutIsSelected } from '../layout-selector';
+import { keyLayoutIsSelected, keyLayoutIsBusyMoving } from '../layout-selector';
 
 export {
   Data,
@@ -116,4 +116,5 @@ export type DeepSelectorSharedStorage = {
 
   // layout-selector
   [keyLayoutIsSelected]: boolean | null;
+  [keyLayoutIsBusyMoving]: boolean | null;
 };

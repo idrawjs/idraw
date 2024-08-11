@@ -84,7 +84,7 @@ import {
 } from './config';
 import { calcReferenceInfo } from './reference';
 import { coreEventKeys } from '../../config';
-import { keyLayoutIsSelected } from '../layout-selector';
+import { keyLayoutIsSelected, keyLayoutIsBusyMoving } from '../layout-selector';
 import { createRotateControllerPattern } from './pattern';
 import { MIDDLEWARE_INTERNAL_EVENT_SHOW_INFO_ANGLE } from '../info';
 // import { drawDebugStoreSelectedElementController } from './draw-debug';
@@ -281,6 +281,10 @@ export const MiddlewareSelector: BoardMiddleware<
 
     hover: (e: PointWatcherEvent) => {
       const layoutIsSelected = sharer.getSharedStorage(keyLayoutIsSelected);
+      const layoutIsBusyMoving = sharer.getSharedStorage(keyLayoutIsBusyMoving);
+      if (layoutIsBusyMoving === true) {
+        return;
+      }
 
       const resizeType = sharer.getSharedStorage(keyResizeType);
       const actionType = sharer.getSharedStorage(keyActionType);

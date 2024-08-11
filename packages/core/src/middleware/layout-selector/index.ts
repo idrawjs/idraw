@@ -1,12 +1,25 @@
 import type { BoardMiddleware, ElementSize, Point, MiddlewareLayoutSelectorConfig, CoreEventMap } from '@idraw/types';
 import { calcLayoutSizeController, isViewPointInVertexes, getViewScaleInfoFromSnapshot, isViewPointInElementSize, calcViewElementSize } from '@idraw/util';
 import type { LayoutSelectorSharedStorage, ControlType } from './types';
-import { keyLayoutActionType, keyLayoutController, keyLayoutControlType, keyLayoutIsHover, keyLayoutIsSelected, controllerSize, defaultStyle } from './config';
-import { keyActionType as keyElementActionType, keyHoverElement } from '../selector';
+import {
+  keyLayoutActionType,
+  keyLayoutController,
+  keyLayoutControlType,
+  keyLayoutIsHoverContent,
+  keyLayoutIsHoverController,
+  keyLayoutIsSelected,
+  keyLayoutIsBusyMoving,
+  controllerSize,
+  defaultStyle
+} from './config';
+import {
+  keyActionType as keyElementActionType
+  // keyHoverElement
+} from '../selector';
 import { drawLayoutController, drawLayoutHover } from './util';
 import { coreEventKeys } from '../../config';
 
-export { keyLayoutIsSelected };
+export { keyLayoutIsSelected, keyLayoutIsBusyMoving };
 
 export const MiddlewareLayoutSelector: BoardMiddleware<LayoutSelectorSharedStorage, CoreEventMap, MiddlewareLayoutSelectorConfig> = (opts, config) => {
   const { sharer, boardContent, calculator, viewer, eventHub } = opts;
@@ -19,30 +32,30 @@ export const MiddlewareLayoutSelector: BoardMiddleware<LayoutSelectorSharedStora
   const style = { activeColor };
 
   let prevPoint: Point | null = null;
-  let prevIsHover: boolean | null = null;
+  let prevIsHoverContent: boolean | null = null;
   let prevIsSelected: boolean | null = null;
-  let isBusy: boolean | null = null;
 
   const clear = () => {
     prevPoint = null;
     sharer.setSharedStorage(keyLayoutActionType, null);
     sharer.setSharedStorage(keyLayoutControlType, null);
     sharer.setSharedStorage(keyLayoutController, null);
-    sharer.setSharedStorage(keyLayoutIsHover, null);
+    sharer.setSharedStorage(keyLayoutIsHoverContent, null);
+    sharer.setSharedStorage(keyLayoutIsHoverController, null);
     sharer.setSharedStorage(keyLayoutIsSelected, null);
-    prevIsHover = null;
+    sharer.setSharedStorage(keyLayoutIsBusyMoving, null);
+    prevIsHoverContent = null;
     prevIsSelected = null;
-    isBusy = null;
   };
 
-  const isInElementHover = () => {
-    const hoverElement = sharer.getSharedStorage(keyHoverElement);
-    if (hoverElement) {
-      clear();
-      return true;
-    }
-    return false;
-  };
+  // const isInElementHover = () => {
+  //   const hoverElement = sharer.getSharedStorage(keyHoverElement);
+  //   if (hoverElement) {
+  //     clear();
+  //     return true;
+  //   }
+  //   return false;
+  // };
 
   const isInElementAction = () => {
     const elementActionType = sharer.getSharedStorage(keyElementActionType);
@@ -95,6 +108,7 @@ export const MiddlewareLayoutSelector: BoardMiddleware<LayoutSelectorSharedStora
   const resetControlType = (e?: { point: Point }) => {
     const data = sharer.getActiveStorage('data');
     const controller = sharer.getSharedStorage(keyLayoutController);
+    let controllerType: ControlType | null = null;
     if (controller && data?.layout && e?.point) {
       // sharer.setSharedStorage(keyLayoutControlType, null);
       let layoutControlType: ControlType | null = null;
@@ -111,15 +125,22 @@ export const MiddlewareLayoutSelector: BoardMiddleware<LayoutSelectorSharedStora
         if (layoutControlType) {
           sharer.setSharedStorage(keyLayoutControlType, layoutControlType);
           eventHub.trigger(coreEventKeys.CLEAR_SELECT);
-          return layoutControlType;
+          controllerType = layoutControlType;
         }
       }
     }
-    return null;
+
+    if (controllerType) {
+      sharer.setSharedStorage(keyLayoutIsHoverController, true);
+    } else {
+      sharer.setSharedStorage(keyLayoutIsHoverController, false);
+    }
+
+    return controllerType;
   };
 
   const updateCursor = (controlType?: ControlType | null) => {
-    if (isBusy === true) {
+    if (sharer.getSharedStorage(keyLayoutIsBusyMoving) === true) {
       return;
     }
     eventHub.trigger(coreEventKeys.CURSOR, {
@@ -131,34 +152,37 @@ export const MiddlewareLayoutSelector: BoardMiddleware<LayoutSelectorSharedStora
 
   return {
     name: '@middleware/layout-selector',
+
     use: () => {
       clear();
       resetController();
     },
+
     hover: (e) => {
-      if (isBusy === true) {
+      if (sharer.getSharedStorage(keyLayoutIsBusyMoving) === true) {
         return;
       }
       if (isInElementAction()) {
         return;
       }
-      if (isInElementHover()) {
-        return;
-      }
+      // if (isInElementHover()) {
+      //   return;
+      // }
 
       if (isInLayout(e.point)) {
-        sharer.setSharedStorage(keyLayoutIsHover, true);
+        sharer.setSharedStorage(keyLayoutIsHoverContent, true);
       } else {
-        sharer.setSharedStorage(keyLayoutIsHover, false);
-        if (prevIsHover === true) {
+        sharer.setSharedStorage(keyLayoutIsHoverContent, false);
+        if (prevIsHoverContent === true) {
           viewer.drawFrame();
-          prevIsHover = false;
+          prevIsHoverContent = false;
         }
       }
 
       if (sharer.getSharedStorage(keyLayoutIsSelected) === true) {
         const prevLayoutActionType = sharer.getSharedStorage(keyLayoutActionType);
         const data = sharer.getActiveStorage('data');
+
         if (data?.layout) {
           if (prevLayoutActionType !== 'resize') {
             resetController();
@@ -175,13 +199,20 @@ export const MiddlewareLayoutSelector: BoardMiddleware<LayoutSelectorSharedStora
             updateCursor(layoutControlType);
           }
         }
+        if (sharer.getSharedStorage(keyLayoutIsHoverController) === true) {
+          return false;
+        }
         return;
       }
 
-      if (sharer.getSharedStorage(keyLayoutIsHover) && !prevIsHover) {
+      if (sharer.getSharedStorage(keyLayoutIsHoverContent) && !prevIsHoverContent) {
         viewer.drawFrame();
       }
-      prevIsHover = sharer.getSharedStorage(keyLayoutIsHover);
+      prevIsHoverContent = sharer.getSharedStorage(keyLayoutIsHoverContent);
+
+      if (sharer.getSharedStorage(keyLayoutIsHoverController) === true) {
+        return false;
+      }
     },
 
     pointStart: (e) => {
@@ -211,20 +242,26 @@ export const MiddlewareLayoutSelector: BoardMiddleware<LayoutSelectorSharedStora
         viewer.drawFrame();
       }
       prevIsSelected = sharer.getSharedStorage(keyLayoutIsSelected);
+
+      if (sharer.getSharedStorage(keyLayoutIsHoverController) === true) {
+        return false;
+      }
     },
+
     pointMove: (e) => {
       if (!sharer.getSharedStorage(keyLayoutIsSelected)) {
         if (isInElementAction()) {
           return;
         }
       }
+
       const layoutActionType = sharer.getSharedStorage(keyLayoutActionType);
       const layoutControlType = sharer.getSharedStorage(keyLayoutControlType);
       const data = sharer.getActiveStorage('data');
 
       if (layoutActionType === 'resize' && layoutControlType && data?.layout) {
         if (prevPoint) {
-          isBusy = true;
+          sharer.setSharedStorage(keyLayoutIsBusyMoving, true);
           const scale = sharer.getActiveStorage('scale');
           const viewMoveX = e.point.x - prevPoint.x;
           const viewMoveY = e.point.y - prevPoint.y;
@@ -295,7 +332,6 @@ export const MiddlewareLayoutSelector: BoardMiddleware<LayoutSelectorSharedStora
         prevPoint = e.point;
         resetController();
         viewer.drawFrame();
-
         return false;
       }
 
@@ -303,8 +339,9 @@ export const MiddlewareLayoutSelector: BoardMiddleware<LayoutSelectorSharedStora
         return false;
       }
     },
+
     pointEnd: () => {
-      isBusy = false;
+      sharer.setSharedStorage(keyLayoutIsBusyMoving, false);
       const layoutActionType = sharer.getSharedStorage(keyLayoutActionType);
       const layoutControlType = sharer.getSharedStorage(keyLayoutControlType);
       const data = sharer.getActiveStorage('data');
@@ -314,7 +351,12 @@ export const MiddlewareLayoutSelector: BoardMiddleware<LayoutSelectorSharedStora
           data
         });
       }
+
+      if (sharer.getSharedStorage(keyLayoutIsHoverController) === true) {
+        return false;
+      }
     },
+
     beforeDrawFrame: ({ snapshot }) => {
       if (isInElementAction()) {
         return;
@@ -322,7 +364,7 @@ export const MiddlewareLayoutSelector: BoardMiddleware<LayoutSelectorSharedStora
 
       const { sharedStore, activeStore } = snapshot;
       const layoutActionType = sharedStore[keyLayoutActionType];
-      const layoutIsHover = sharedStore[keyLayoutIsHover];
+      const layoutIsHover = sharedStore[keyLayoutIsHoverContent];
       const layoutIsSelected = sharedStore[keyLayoutIsSelected];
 
       if (activeStore.data?.layout) {
