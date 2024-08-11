@@ -1,5 +1,13 @@
 import type { LayoutSizeController, Element } from '@idraw/types';
-import { keyLayoutActionType, keyLayoutControlType, keyLayoutController, keyLayoutIsHover, keyLayoutIsSelected } from './config';
+import {
+  keyLayoutActionType,
+  keyLayoutControlType,
+  keyLayoutController,
+  keyLayoutIsHoverContent,
+  keyLayoutIsHoverController,
+  keyLayoutIsSelected,
+  keyLayoutIsBusyMoving
+} from './config';
 import { keyActionType as keyElementActionType, keyHoverElement } from '../selector';
 import type { ActionType as ElementActionType } from '../selector';
 
@@ -13,6 +21,8 @@ export type LayoutSelectorSharedStorage = {
   [keyLayoutController]: LayoutSizeController | null;
   [keyElementActionType]: ElementActionType | null;
   [keyHoverElement]: Element | null;
-  [keyLayoutIsHover]: boolean | null;
+  [keyLayoutIsHoverContent]: boolean | null;
+  [keyLayoutIsHoverController]: boolean | null;
   [keyLayoutIsSelected]: boolean | null;
+  [keyLayoutIsBusyMoving]: boolean | null;
 };

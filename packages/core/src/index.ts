@@ -28,6 +28,7 @@ export class Core<E extends CoreEventMap = CoreEventMap> {
     // this.#opts = opts;
     this.#container = container;
     const canvas = document.createElement('canvas');
+    canvas.setAttribute('tabindex', '0');
     this.#canvas = canvas;
     this.#initContainer();
     container.appendChild(canvas);
