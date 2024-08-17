@@ -1,5 +1,6 @@
 import { ViewRectVertexes } from './view';
 import { PointSize } from './point';
+import { ElementSize } from './element';
 
 export type ElementSizeControllerType =
   | 'left'
@@ -24,6 +25,8 @@ export interface ElementSizeControllerItem {
 }
 
 export interface ElementSizeController {
+  originalElementCenter: PointSize;
+  originalElementSize: ElementSize;
   elementWrapper: ViewRectVertexes;
   top: ElementSizeControllerItem;
   bottom: ElementSizeControllerItem;
@@ -40,4 +43,4 @@ export interface ElementSizeController {
   rotate: ElementSizeControllerItem;
 }
 
-export type LayoutSizeController = Omit<ElementSizeController, 'rotate' | 'elementWrapper'>;
+export type LayoutSizeController = Omit<ElementSizeController, 'rotate' | 'elementWrapper' | 'originalElementCenter' | 'originalElementSize'>;

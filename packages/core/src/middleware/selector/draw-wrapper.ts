@@ -91,8 +91,9 @@ export function drawSelectedElementControllersVertexes(
     hideControllers,
     style,
     rotateControllerPattern,
-    viewSizeInfo
-    // calculator, element, viewScaleInfo, viewSizeInfo
+    viewSizeInfo,
+    element
+    // calculator, viewScaleInfo, viewSizeInfo
   } = opts;
 
   const { devicePixelRatio = 1 } = viewSizeInfo;
@@ -113,20 +114,21 @@ export function drawSelectedElementControllersVertexes(
     drawVertexes(ctx, calcViewVertexes(bottomLeft.vertexes, opts), ctrlOpts);
     drawVertexes(ctx, calcViewVertexes(bottomRight.vertexes, opts), ctrlOpts);
 
-    // TODO
-    drawCircleController(ctx, calcViewPointSize(rotate.center, opts), { ...ctrlOpts, size: rotate.size, borderWidth: 0 });
-    const rotateCenter = calcViewPointSize(rotate.center, opts);
-    ctx.drawImage(
-      rotateControllerPattern.canvas,
-      0,
-      0,
-      rotateControllerPattern.canvas.width / devicePixelRatio,
-      rotateControllerPattern.canvas.height / devicePixelRatio,
-      rotateCenter.x - rotate.size / 2,
-      rotateCenter.y - rotate.size / 2,
-      rotate.size,
-      rotate.size
-    );
+    if (element?.operations?.rotatable !== false) {
+      drawCircleController(ctx, calcViewPointSize(rotate.center, opts), { ...ctrlOpts, size: rotate.size, borderWidth: 0 });
+      const rotateCenter = calcViewPointSize(rotate.center, opts);
+      ctx.drawImage(
+        rotateControllerPattern.canvas,
+        0,
+        0,
+        rotateControllerPattern.canvas.width / devicePixelRatio,
+        rotateControllerPattern.canvas.height / devicePixelRatio,
+        rotateCenter.x - rotate.size / 2,
+        rotateCenter.y - rotate.size / 2,
+        rotate.size,
+        rotate.size
+      );
+    }
   }
 
   // drawAuxiliaryExperimentBox(ctx, {

@@ -146,18 +146,20 @@ export const MiddlewareInfo: BoardMiddleware<
             });
 
             if (showAngleInfo) {
-              drawAngleInfoText(overlayContext, {
-                point: {
-                  x: rectInfo.top.x + infoFontSize + 4,
-                  y: rectInfo.top.y - infoFontSize * 2 - 18
-                },
-                rotateCenter: rectInfo.center,
-                angle: totalAngle,
-                text: angleText,
-                fontSize: infoFontSize,
-                lineHeight: infoLineHeight,
-                style
-              });
+              if (elem.operations?.rotatable !== false) {
+                drawAngleInfoText(overlayContext, {
+                  point: {
+                    x: rectInfo.top.x + infoFontSize + 4,
+                    y: rectInfo.top.y - infoFontSize * 2 - 18
+                  },
+                  rotateCenter: rectInfo.center,
+                  angle: totalAngle,
+                  text: angleText,
+                  fontSize: infoFontSize,
+                  lineHeight: infoLineHeight,
+                  style
+                });
+              }
             }
           }
         }

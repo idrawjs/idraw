@@ -113,7 +113,8 @@ export {
   calcElementOriginRectInfo,
   calcElementViewRectInfoMap,
   sortElementsViewVisiableInfoMap,
-  flatElementList
+  flatElementList,
+  calcPointMoveElementInGroup
 } from '@idraw/util';
 export { iDraw } from './idraw';
 export { eventKeys } from './event';

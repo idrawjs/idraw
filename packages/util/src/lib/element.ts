@@ -11,7 +11,7 @@ import type {
   LoadElementType,
   ElementPosition
 } from '@idraw/types';
-import { rotateElementVertexes } from './rotate';
+import { limitAngle, rotateElementVertexes } from './rotate';
 import { isAssetId, createAssetId } from './uuid';
 
 function getGroupUUIDs(elements: Array<Element<ElementType>>, index: string): string[] {
@@ -503,4 +503,10 @@ export function getElementPositionMapFromList(
   };
   _loop(elements);
   return positionMap;
+}
+
+export function isSameElementSize(elem1: ElementSize, elem2: ElementSize) {
+  return (
+    elem1.x === elem2.x && elem1.y === elem2.y && elem1.h === elem2.h && elem1.w === elem2.w && limitAngle(elem1.angle || 0) === limitAngle(elem2.angle || 0)
+  );
 }
