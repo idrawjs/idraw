@@ -112,6 +112,8 @@ export function calcElementSizeController(
   const rotateVertexes = calcElementVertexes(rotateSize);
 
   const sizeController: ElementSizeController = {
+    originalElementCenter: calcElementCenter(elemSize),
+    originalElementSize: { ...elemSize },
     elementWrapper: vertexes,
     left: {
       type: 'left',

@@ -172,11 +172,10 @@ export type ElementType = keyof ElementDetailMap;
 export interface ElementOperations {
   locked?: boolean;
   invisible?: boolean;
-  disableScale?: boolean;
-  disableRotate?: boolean;
+  rotatable?: boolean;
   limitRatio?: boolean;
-  lastModified?: number;
   deepResize?: boolean;
+  lastModified?: number;
 }
 
 export interface ElementGlobalDetail {

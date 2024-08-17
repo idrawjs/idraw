@@ -30,13 +30,12 @@ jobs:
       - run: pnpm i
       - run: npm run beforetest
       - run: npm run cover
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
-          files: /home/runner/work/idraw/idraw/reports/clover.xml # optional
-          flags: unittests # optional
-          name: codecov-umbrella # optional
-          fail_ci_if_error: true # optional (default = false)
-          verbose: true # optional (default = false)
-
+      # - name: Upload coverage to Codecov
+      #   uses: codecov/codecov-action@v2
+      #   with:
+      #     token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+      #     files: /home/runner/work/idraw/idraw/reports/clover.xml # optional
+      #     flags: unittests # optional
+      #     name: codecov-umbrella # optional
+      #     fail_ci_if_error: true # optional (default = false)
+      #     verbose: true # optional (default = false)

@@ -12,7 +12,9 @@ import {
   getElementPositionFromList,
   getElementPositionMapFromList,
   deepResizeGroupElement,
-  getElementSize
+  getElementSize,
+  calcPointMoveElementInGroup,
+  isSameElementSize
 } from '@idraw/util';
 import type {
   Data,
@@ -52,8 +54,7 @@ import {
   getSelectedListArea,
   calcSelectedElementsArea,
   isElementInGroup,
-  isPointInViewActiveGroup,
-  calcMoveInGroup
+  isPointInViewActiveGroup
 } from './util';
 import {
   keyActionType,
@@ -513,7 +514,7 @@ export const MiddlewareSelector: BoardMiddleware<
         eventHub.trigger(MIDDLEWARE_INTERNAL_EVENT_SHOW_INFO_ANGLE, { show: false });
 
         if (data && elems?.length === 1 && moveOriginalStartElementSize && originalStart && end && elems[0]?.operations?.locked !== true) {
-          const { moveX, moveY } = calcMoveInGroup(originalStart, end, groupQueue);
+          const { moveX, moveY } = calcPointMoveElementInGroup(originalStart, end, groupQueue);
 
           let totalMoveX = calculator.toGridNum(moveX / scale);
           let totalMoveY = calculator.toGridNum(moveY / scale);
@@ -871,7 +872,19 @@ export const MiddlewareSelector: BoardMiddleware<
 
       const drawBaseOpts = { calculator, viewScaleInfo, viewSizeInfo, style };
 
-      const selectedElementController = sharedStore[keySelectedElementController];
+      let selectedElementController = sharedStore[keySelectedElementController];
+      if (selectedElementController && selectedElements.length === 1 && elem) {
+        if (!isSameElementSize(elem, selectedElementController.originalElementSize)) {
+          selectedElementController = calcElementSizeController(elem, {
+            groupQueue: groupQueue || [],
+            controllerSize,
+            viewScaleInfo,
+            rotateControllerPosition,
+            rotateControllerSize
+          });
+          sharer.setSharedStorage(keySelectedElementController, selectedElementController);
+        }
+      }
 
       const isHoverLocked: boolean = !!hoverElement?.operations?.locked;
 

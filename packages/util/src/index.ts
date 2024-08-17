@@ -44,7 +44,8 @@ export {
   isResourceElement,
   getElementPositionFromList,
   getElementPositionMapFromList,
-  calcElementListSize
+  calcElementListSize,
+  isSameElementSize
 } from './lib/element';
 export { checkRectIntersect } from './lib/rect';
 export {
@@ -91,3 +92,4 @@ export { modifyElement, getModifiedElement } from './lib/modify';
 export { enhanceFontFamliy } from './lib/text';
 export { flatElementList } from './lib/flat';
 export { groupElementsByPosition, ungroupElementsByPosition } from './lib/group';
+export { calcPointMoveElementInGroup } from './lib/point-move-element';
