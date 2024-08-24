@@ -27,5 +27,5 @@ export interface IDrawStorage {
   enableTextEdit: boolean;
   enableDrag: boolean;
   enableInfo: boolean;
-  middlewareStyles: Required<IDrawSettings['styles']>;
+  middlewareStyles: Required<Required<IDrawSettings>['styles']>;
 }

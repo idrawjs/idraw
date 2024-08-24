@@ -24,12 +24,10 @@ export { keyLayoutIsSelected, keyLayoutIsBusyMoving };
 export const MiddlewareLayoutSelector: BoardMiddleware<LayoutSelectorSharedStorage, CoreEventMap, MiddlewareLayoutSelectorConfig> = (opts, config) => {
   const { sharer, boardContent, calculator, viewer, eventHub } = opts;
   const { overlayContext } = boardContent;
-  const innerConfig = {
+  let innerConfig = {
     ...defaultStyle,
     ...config
   };
-  const { activeColor } = innerConfig;
-  const style = { activeColor };
 
   let prevPoint: Point | null = null;
   let prevIsHoverContent: boolean | null = null;
@@ -156,6 +154,10 @@ export const MiddlewareLayoutSelector: BoardMiddleware<LayoutSelectorSharedStora
     use: () => {
       clear();
       resetController();
+    },
+
+    resetConfig(config) {
+      innerConfig = { ...innerConfig, ...config };
     },
 
     hover: (e) => {
@@ -361,6 +363,9 @@ export const MiddlewareLayoutSelector: BoardMiddleware<LayoutSelectorSharedStora
       if (isInElementAction()) {
         return;
       }
+
+      const { activeColor } = innerConfig;
+      const style = { activeColor };
 
       const { sharedStore, activeStore } = snapshot;
       const layoutActionType = sharedStore[keyLayoutActionType];

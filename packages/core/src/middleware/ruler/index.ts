@@ -8,19 +8,9 @@ import { coreEventKeys } from '../../config';
 export const MiddlewareRuler: BoardMiddleware<DeepRulerSharedStorage, CoreEventMap, MiddlewareRulerConfig> = (opts, config) => {
   const { boardContent, viewer, eventHub, calculator } = opts;
   const { overlayContext, underlayContext } = boardContent;
-  const innerConfig = {
+  let innerConfig = {
     ...defaultStyle,
     ...config
-  };
-  const { background, borderColor, scaleColor, textColor, gridColor, gridPrimaryColor, selectedAreaColor } = innerConfig;
-  const style = {
-    background,
-    borderColor,
-    scaleColor,
-    textColor,
-    gridColor,
-    gridPrimaryColor,
-    selectedAreaColor
   };
 
   let show: boolean = true;
@@ -41,13 +31,31 @@ export const MiddlewareRuler: BoardMiddleware<DeepRulerSharedStorage, CoreEventM
 
   return {
     name: '@middleware/ruler',
+
     use() {
       eventHub.on(coreEventKeys.RULER, rulerCallback);
     },
+
     disuse() {
       eventHub.off(coreEventKeys.RULER, rulerCallback);
     },
+
+    resetConfig(config) {
+      innerConfig = { ...innerConfig, ...config };
+    },
+
     beforeDrawFrame: ({ snapshot }) => {
+      const { background, borderColor, scaleColor, textColor, gridColor, gridPrimaryColor, selectedAreaColor } = innerConfig;
+
+      const style = {
+        background,
+        borderColor,
+        scaleColor,
+        textColor,
+        gridColor,
+        gridPrimaryColor,
+        selectedAreaColor
+      };
       if (show === true) {
         const viewScaleInfo = getViewScaleInfoFromSnapshot(snapshot);
         const viewSizeInfo = getViewSizeInfoFromSnapshot(snapshot);

@@ -12,20 +12,9 @@ export const MiddlewareScroller: BoardMiddleware<DeepScrollerSharedStorage, any,
   sharer.setSharedStorage(keyYThumbRect, null); // null | ElementSize
   let isBusy: boolean = false;
 
-  const innerConfig = {
+  let innerConfig = {
     ...defaultStyle,
     ...config
-  };
-
-  const { thumbBackground, thumbBorderColor, hoverThumbBackground, hoverThumbBorderColor, activeThumbBackground, activeThumbBorderColor } = innerConfig;
-
-  const style = {
-    thumbBackground,
-    thumbBorderColor,
-    hoverThumbBackground,
-    hoverThumbBorderColor,
-    activeThumbBackground,
-    activeThumbBorderColor
   };
 
   // viewer.drawFrame();
@@ -77,6 +66,11 @@ export const MiddlewareScroller: BoardMiddleware<DeepScrollerSharedStorage, any,
 
   return {
     name: '@middleware/scroller',
+
+    resetConfig(config) {
+      innerConfig = { ...innerConfig, ...config };
+    },
+
     wheel: (e: BoardWatherWheelEvent) => {
       viewer.scroll({
         moveX: 0 - e.deltaX,
@@ -142,6 +136,16 @@ export const MiddlewareScroller: BoardMiddleware<DeepScrollerSharedStorage, any,
       }
     },
     beforeDrawFrame({ snapshot }) {
+      const { thumbBackground, thumbBorderColor, hoverThumbBackground, hoverThumbBorderColor, activeThumbBackground, activeThumbBorderColor } = innerConfig;
+
+      const style = {
+        thumbBackground,
+        thumbBorderColor,
+        hoverThumbBackground,
+        hoverThumbBorderColor,
+        activeThumbBackground,
+        activeThumbBorderColor
+      };
       const { xThumbRect, yThumbRect } = drawScroller(overlayContext, { snapshot, style });
       sharer.setSharedStorage(keyXThumbRect, xThumbRect);
       sharer.setSharedStorage(keyYThumbRect, yThumbRect);

@@ -1,6 +1,15 @@
-import type { Element, ViewScaleInfo, ViewSizeInfo, ViewContext2D, BoardViewerFrameSnapshot, ViewRectInfo, ViewCalculator } from '@idraw/types';
+import type {
+  Element,
+  ViewScaleInfo,
+  ViewSizeInfo,
+  ViewContext2D,
+  BoardViewerFrameSnapshot,
+  ViewRectInfo,
+  ViewCalculator,
+  MiddlewareRulerStyle
+} from '@idraw/types';
 import { formatNumber, rotateByCenter, getViewScaleInfoFromSnapshot, getViewSizeInfoFromSnapshot } from '@idraw/util';
-import type { DeepRulerSharedStorage, MiddlewareRulerStyle } from './types';
+import type { DeepRulerSharedStorage } from './types';
 import { keySelectedElementList, keyActionType } from '../selector';
 import { rulerSize, fontSize, fontWeight, lineSize, fontFamily } from './config';
 
@@ -201,14 +210,17 @@ export function drawRulerBackground(
   const { background, borderColor } = style;
 
   ctx.beginPath();
-  ctx.moveTo(0, 0);
-  ctx.lineTo(width + 1, 0);
+  // const basePosition = 0;
+  const basePosition = -1;
+  ctx.moveTo(basePosition, basePosition);
+  ctx.lineTo(width + 1, basePosition);
   ctx.lineTo(width + 1, rulerSize);
   ctx.lineTo(rulerSize, rulerSize);
   ctx.lineTo(rulerSize, height + 1);
-  ctx.lineTo(0, height + 1);
-  ctx.lineTo(0, 0);
+  ctx.lineTo(basePosition, height + 1);
+  ctx.lineTo(basePosition, basePosition);
   ctx.closePath();
+
   ctx.fillStyle = background;
   ctx.fill();
   ctx.lineWidth = lineSize;

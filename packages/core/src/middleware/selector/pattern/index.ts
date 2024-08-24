@@ -3,7 +3,7 @@ import { createOffscreenContext2D } from '@idraw/util';
 import { drawElement } from '@idraw/renderer';
 import { createIconRotate } from './icon-rotate';
 
-export function createRotateControllerPattern(opts: { fill: string; devicePixelRatio: number }): ViewContext2D {
+export function createRotateControllerPattern(opts: { fill: string; devicePixelRatio: number }): { context2d: ViewContext2D; fill: string } {
   const { fill, devicePixelRatio } = opts;
   const iconRotate = createIconRotate({ fill });
   const { w, h } = iconRotate;
@@ -41,5 +41,7 @@ export function createRotateControllerPattern(opts: { fill: string; devicePixelR
     parentOpacity: 1
   });
 
-  return context2d;
+  // context2d.fill = fill;
+
+  return { context2d, fill };
 }
