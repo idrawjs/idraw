@@ -28,7 +28,45 @@ export function getDefaultStorage(): IDrawStorage {
   return storage;
 }
 
-export function parseStyles(opts: IDrawSettings) {
+export function parseSettings(opts: IDrawSettings) {
+  const { mode, styles } = opts;
+  const settings: IDrawSettings = {};
+  if (istype.string(mode)) {
+    settings.mode = mode;
+  }
+  if (styles) {
+    settings.styles = parseStrictStyles(opts);
+  }
+
+  return settings;
+}
+
+export function parseStrictStyles(settings: IDrawSettings): IDrawSettings['styles'] {
+  const styles = parseStyles(settings);
+  const strictStyles: IDrawSettings['styles'] = {};
+
+  const { selector, info, ruler, scroller, layoutSelector } = styles;
+  if (Object.keys(selector).length > 0) {
+    strictStyles.selector = selector;
+  }
+  if (Object.keys(info).length > 0) {
+    strictStyles.info = info;
+  }
+
+  if (Object.keys(ruler).length > 0) {
+    strictStyles.ruler = ruler;
+  }
+  if (Object.keys(scroller).length > 0) {
+    strictStyles.scroller = scroller;
+  }
+  if (Object.keys(layoutSelector).length > 0) {
+    strictStyles.layoutSelector = layoutSelector;
+  }
+
+  return strictStyles;
+}
+
+export function parseStyles(settings: IDrawSettings): Required<Required<IDrawSettings>['styles']> {
   const styles: Required<IDrawSettings['styles']> = {
     selector: {},
     ruler: {},
@@ -36,9 +74,9 @@ export function parseStyles(opts: IDrawSettings) {
     scroller: {},
     layoutSelector: {}
   };
-  if (opts.styles) {
+  if (settings.styles) {
     // selector
-    const { selector, info, ruler, scroller, layoutSelector } = opts.styles;
+    const { selector, info, ruler, scroller, layoutSelector } = settings.styles;
     if (istype.string(selector?.activeColor)) {
       styles.selector.activeColor = selector?.activeColor;
     }
@@ -108,5 +146,6 @@ export function parseStyles(opts: IDrawSettings) {
       styles.layoutSelector.activeColor = layoutSelector?.activeColor;
     }
   }
+
   return styles;
 }

@@ -397,6 +397,15 @@ export class Board<T extends BoardExtendEventMap = BoardExtendEventMap> {
     }
   }
 
+  resetMiddlewareConfig<C extends any = any>(middleware: BoardMiddleware<any, any, any>, config?: Partial<C>) {
+    if (this.#middlewareMap.has(middleware)) {
+      const item = this.#middlewareMap.get(middleware);
+      if (item) {
+        item.middlewareObject.resetConfig?.(config as any);
+      }
+    }
+  }
+
   scale(opts: { scale: number; point: PointSize; ignoreUpdateVisibleStatus?: boolean }) {
     const viewer = this.#viewer;
     const { ignoreUpdateVisibleStatus } = opts;

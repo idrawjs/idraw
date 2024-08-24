@@ -60,10 +60,12 @@ export interface BoardWatcherEventMap<S extends Record<any | symbol, any> = any>
   clear: void;
 }
 
-export interface BoardMiddlewareObject<S extends Record<any | symbol, any> = any> {
+export interface BoardMiddlewareObject<S extends Record<any | symbol, any> = any, C extends any = undefined> {
   name?: string;
   use?: () => void;
   disuse?: () => void;
+  resetConfig?: (config?: Partial<C>) => void;
+
   // action
   hover?: (e: BoardWatcherEventMap<S>['hover']) => void | boolean;
   pointStart?: (e: BoardWatcherEventMap<S>['pointStart']) => void | boolean;
@@ -99,7 +101,7 @@ export interface BoardMiddlewareOptions<S extends Record<any | symbol, any> = Re
 export type BoardMiddleware<S extends Record<any | symbol, any> = any, E extends BoardExtendEventMap = BoardExtendEventMap, C extends any = undefined> = (
   opts: BoardMiddlewareOptions<S, E>,
   config?: C
-) => BoardMiddlewareObject<S>;
+) => BoardMiddlewareObject<S, C>;
 
 export interface BoardOptions {
   boardContent: BoardContent;

@@ -12,7 +12,7 @@ import {
   MiddlewareInfo,
   MiddlewarePointer
 } from '@idraw/core';
-import { IDrawEvent } from './event';
+import { IDrawEvent } from '../event';
 
 function isValidMode(mode: string | IDrawMode) {
   return ['select', 'drag', 'readOnly'].includes(mode);

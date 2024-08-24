@@ -2,42 +2,44 @@
 import { iDraw } from '../src/index';
 import { getData } from './data';
 
+const styles = {
+  selector: {
+    activeColor: 'red',
+    activeAreaColor: '#FF00001C',
+    lockedColor: 'black',
+    referenceColor: 'green'
+  },
+  info: {
+    textBackground: 'yellow',
+    textColor: 'red'
+  },
+  ruler: {
+    background: '#0000FF1A',
+    borderColor: '#0000FF',
+    scaleColor: '#FF0000',
+    textColor: '#000000',
+    gridColor: '#0000FF1C',
+    gridPrimaryColor: '#0000FFAC',
+    selectedAreaColor: '#FF0000CC'
+  },
+  scroller: {
+    thumbBackground: '#FF00003A',
+    thumbBorderColor: '#FF00008A',
+    hoverThumbBackground: '#FF00006E',
+    hoverThumbBorderColor: '#FF0000EE',
+    activeThumbBackground: '#FF00005E',
+    activeThumbBorderColor: '#FF0000F0'
+  },
+  layoutSelector: {
+    activeColor: '#00FF00'
+  }
+};
+
 const opts = {
   width: 800,
   height: 500,
-  devicePixelRatio: 2,
-  styles: {
-    selector: {
-      activeColor: 'red',
-      activeAreaColor: '#FF00001C',
-      lockedColor: 'black',
-      referenceColor: 'green'
-    },
-    info: {
-      textBackground: 'yellow',
-      textColor: 'red'
-    },
-    ruler: {
-      background: '#0000FF1A',
-      borderColor: '#0000FF',
-      scaleColor: '#FF0000',
-      textColor: '#000000',
-      gridColor: '#0000FF1C',
-      gridPrimaryColor: '#0000FFAC',
-      selectedAreaColor: '#FF0000CC'
-    },
-    scroller: {
-      thumbBackground: '#FF00003A',
-      thumbBorderColor: '#FF00008A',
-      hoverThumbBackground: '#FF00006E',
-      hoverThumbBorderColor: '#FF0000EE',
-      activeThumbBackground: '#FF00005E',
-      activeThumbBorderColor: '#FF0000F0'
-    },
-    layoutSelector: {
-      activeColor: '#00FF00'
-    }
-  }
+  devicePixelRatio: 2
+  // styles,
 };
 
 const mount = document.querySelector('#mount') as HTMLDivElement;
@@ -45,6 +47,10 @@ const data = getData();
 const idraw = new iDraw(mount, opts);
 idraw.setData(data);
 idraw.centerContent();
+
+setTimeout(() => {
+  idraw.reset({ styles });
+}, 2000);
 // idraw.scale(0.5);
 // idraw.scale(2);
 // idraw.scrollX(-80);

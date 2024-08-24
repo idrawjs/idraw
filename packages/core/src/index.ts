@@ -73,6 +73,10 @@ export class Core<E extends CoreEventMap = CoreEventMap> {
     this.#board.disuse(middleware);
   }
 
+  resetMiddlewareConfig<C extends any = any>(middleware: BoardMiddleware<any, any, any>, config?: Partial<C>) {
+    this.#board.resetMiddlewareConfig(middleware, config);
+  }
+
   setData(
     data: Data,
     opts?: {

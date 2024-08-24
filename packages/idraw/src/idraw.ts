@@ -27,11 +27,12 @@ import {
   calcViewCenter,
   Store
 } from '@idraw/util';
-import { defaultSettings, getDefaultStorage, defaultMode, parseStyles } from './config';
+import { defaultSettings, getDefaultStorage, defaultMode, parseStyles, parseSettings } from './setting/config';
 import { exportImageFileBlobURL } from './file';
 import type { ExportImageFileBaseOptions, ExportImageFileResult } from './file';
 import type { IDrawEvent } from './event';
-import { changeMode, runMiddlewares } from './mode';
+import { changeMode, runMiddlewares } from './setting/mode';
+import { changeStyles } from './setting/style';
 
 export class iDraw {
   #core: Core<IDrawEvent>;
@@ -82,12 +83,28 @@ export class iDraw {
   reset(opts: IDrawSettings) {
     const core = this.#core;
     const store = this.#store;
+    const { mode, styles } = parseSettings(opts);
+    let needFresh = false;
+    let newOpts: IDrawSettings = {};
     store.clear();
-    changeMode(opts.mode || defaultMode, core, store);
-    core.refresh();
+    if (mode) {
+      changeMode(mode, core, store);
+      newOpts.mode = mode;
+      needFresh = true;
+    }
+    if (styles) {
+      changeStyles(styles, core, store);
+      newOpts.styles = styles;
+      needFresh = true;
+    }
+
+    if (needFresh === true) {
+      core.refresh();
+    }
+
     this.#opts = {
       ...this.#opts,
-      ...opts
+      ...newOpts
     };
   }
 

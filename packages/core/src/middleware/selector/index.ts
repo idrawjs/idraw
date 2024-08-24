@@ -100,12 +100,10 @@ export const MiddlewareSelector: BoardMiddleware<
   },
   MiddlewareSelectorConfig
 > = (opts, config) => {
-  const innerConfig = {
+  let innerConfig = {
     ...defaultStyle,
     ...config
   };
-  const { activeColor, activeAreaColor, lockedColor, referenceColor } = innerConfig;
-  const style = { activeColor, activeAreaColor, lockedColor, referenceColor };
   const { viewer, sharer, boardContent, calculator, eventHub } = opts;
   const { overlayContext } = boardContent;
   let prevPoint: Point | null = null;
@@ -114,8 +112,8 @@ export const MiddlewareSelector: BoardMiddleware<
   let inBusyMode: 'resize' | 'drag' | 'drag-list' | 'area' | null = null;
   let hasChangedData: boolean | null = null;
 
-  const rotateControllerPattern = createRotateControllerPattern({
-    fill: style.activeColor,
+  let rotateControllerPattern = createRotateControllerPattern({
+    fill: innerConfig.activeColor,
     devicePixelRatio: sharer.getActiveViewSizeInfo().devicePixelRatio
   });
 
@@ -278,6 +276,10 @@ export const MiddlewareSelector: BoardMiddleware<
       eventHub.off(coreEventKeys.CLEAR_SELECT, selectClearCallback);
       eventHub.off(coreEventKeys.SELECT_IN_GROUP, selectInGroupCallback);
       eventHub.off(coreEventKeys.SNAP_TO_GRID, setSnapToSnapCallback);
+    },
+
+    resetConfig(config) {
+      innerConfig = { ...innerConfig, ...config };
     },
 
     hover: (e: PointWatcherEvent) => {
@@ -852,8 +854,17 @@ export const MiddlewareSelector: BoardMiddleware<
     },
 
     beforeDrawFrame({ snapshot }) {
+      const { activeColor, activeAreaColor, lockedColor, referenceColor } = innerConfig;
+      const style = { activeColor, activeAreaColor, lockedColor, referenceColor };
+
       const { activeStore, sharedStore } = snapshot;
       const { scale, offsetLeft, offsetTop, offsetRight, offsetBottom, width, height, contextHeight, contextWidth, devicePixelRatio } = activeStore;
+      if (rotateControllerPattern.fill !== activeColor) {
+        rotateControllerPattern = createRotateControllerPattern({
+          fill: innerConfig.activeColor,
+          devicePixelRatio
+        });
+      }
 
       const sharer = opts.sharer;
       const viewScaleInfo = { scale, offsetLeft, offsetTop, offsetRight, offsetBottom };
@@ -908,7 +919,7 @@ export const MiddlewareSelector: BoardMiddleware<
             element: elem,
             calculator,
             hideControllers: !!isMoving && actionType === 'drag',
-            rotateControllerPattern,
+            rotateControllerPattern: rotateControllerPattern.context2d,
             style
           });
           if (actionType === 'drag') {
@@ -952,7 +963,7 @@ export const MiddlewareSelector: BoardMiddleware<
             element: elem,
             calculator,
             hideControllers: !!isMoving && actionType === 'drag',
-            rotateControllerPattern,
+            rotateControllerPattern: rotateControllerPattern.context2d,
             style
           });
           if (actionType === 'drag') {

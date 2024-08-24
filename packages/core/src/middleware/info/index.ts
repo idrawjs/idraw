@@ -19,14 +19,9 @@ export const MiddlewareInfo: BoardMiddleware<
 > = (opts, config) => {
   const { boardContent, calculator, eventHub } = opts;
   const { overlayContext } = boardContent;
-  const innerConfig = {
+  let innerConfig = {
     ...defaltStyle,
     ...config
-  };
-  const { textBackground, textColor } = innerConfig;
-  const style = {
-    textBackground,
-    textColor
   };
 
   let showAngleInfo = true;
@@ -46,7 +41,16 @@ export const MiddlewareInfo: BoardMiddleware<
       eventHub.off(MIDDLEWARE_INTERNAL_EVENT_SHOW_INFO_ANGLE, showInfoAngleCallback);
     },
 
+    resetConfig(config) {
+      innerConfig = { ...innerConfig, ...config };
+    },
+
     beforeDrawFrame({ snapshot }) {
+      const { textBackground, textColor } = innerConfig;
+      const style = {
+        textBackground,
+        textColor
+      };
       const { sharedStore } = snapshot;
 
       const selectedElementList = sharedStore[keySelectedElementList];
