@@ -138,23 +138,23 @@ importers:
   packages/core:
     dependencies:
       '@idraw/renderer':
-        specifier: workspace:^0.4.0-beta.39
+        specifier: workspace:^0.4.0-beta.40
         version: link:../renderer
       '@idraw/util':
-        specifier: workspace:^0.4.0-beta.39
+        specifier: workspace:^0.4.0-beta.40
         version: link:../util
     devDependencies:
       '@idraw/types':
-        specifier: workspace:^0.4.0-beta.39
+        specifier: workspace:^0.4.0-beta.40
         version: link:../types
 
   packages/figma:
     dependencies:
       '@idraw/types':
-        specifier: workspace:^0.4.0-beta.39
+        specifier: workspace:^0.4.0-beta.40
         version: link:../types
       '@idraw/util':
-        specifier: workspace:^0.4.0-beta.39
+        specifier: workspace:^0.4.0-beta.40
         version: link:../util
       kiwi-schema:
         specifier: ^0.5.0
@@ -176,26 +176,26 @@ importers:
   packages/idraw:
     dependencies:
       '@idraw/core':
-        specifier: workspace:^0.4.0-beta.39
+        specifier: workspace:^0.4.0-beta.40
         version: link:../core
       '@idraw/renderer':
-        specifier: workspace:^0.4.0-beta.39
+        specifier: workspace:^0.4.0-beta.40
         version: link:../renderer
       '@idraw/types':
-        specifier: workspace:^0.4.0-beta.39
+        specifier: workspace:^0.4.0-beta.40
         version: link:../types
       '@idraw/util':
-        specifier: workspace:^0.4.0-beta.39
+        specifier: workspace:^0.4.0-beta.40
         version: link:../util
 
   packages/renderer:
     dependencies:
       '@idraw/util':
-        specifier: workspace:^0.4.0-beta.39
+        specifier: workspace:^0.4.0-beta.40
         version: link:../util
     devDependencies:
       '@idraw/types':
-        specifier: workspace:^0.4.0-beta.39
+        specifier: workspace:^0.4.0-beta.40
         version: link:../types
 
   packages/types: {}
