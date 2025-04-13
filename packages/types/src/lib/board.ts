@@ -88,7 +88,10 @@ export interface BoardMiddlewareObject<S extends Record<any | symbol, any> = any
   clear?(e: BoardWatcherEventMap<S>['clear']): void | boolean;
 }
 
-export interface BoardMiddlewareOptions<S extends Record<any | symbol, any> = Record<any | symbol, any>, E extends BoardExtendEventMap = BoardExtendEventMap> {
+export interface BoardMiddlewareOptions<
+  S extends Record<any | symbol, any> = Record<any | symbol, any>,
+  E extends BoardExtendEventMap = BoardExtendEventMap
+> {
   boardContent: BoardContent;
   sharer: StoreSharer<S>;
   viewer: BoardViewer;
@@ -98,10 +101,11 @@ export interface BoardMiddlewareOptions<S extends Record<any | symbol, any> = Re
   canvas?: HTMLCanvasElement;
 }
 
-export type BoardMiddleware<S extends Record<any | symbol, any> = any, E extends BoardExtendEventMap = BoardExtendEventMap, C extends any = undefined> = (
-  opts: BoardMiddlewareOptions<S, E>,
-  config?: C
-) => BoardMiddlewareObject<S, C>;
+export type BoardMiddleware<
+  S extends Record<any | symbol, any> = any,
+  E extends BoardExtendEventMap = BoardExtendEventMap,
+  C extends any = undefined
+> = (opts: BoardMiddlewareOptions<S, E>, config?: C) => BoardMiddlewareObject<S, C>;
 
 export interface BoardOptions {
   boardContent: BoardContent;
@@ -114,8 +118,7 @@ export interface BoardViewerFrameSnapshot<S extends Record<any | symbol, any> = 
 }
 
 export interface BoardViewerEventMap {
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  drawFrame: {};
+  drawFrame: object;
 }
 
 export interface BoardViewerOptions {
@@ -128,24 +131,27 @@ export interface BoardViewerOptions {
 }
 
 // export interface BoardViewerStorage {
-//   viewVisibleInfoMap: ViewVisibleInfoMap;
+//   virtualFlatItemMap: VirtualFlatItemMap;
 // }
 
 export interface BoardViewer extends UtilEventEmitter<BoardViewerEventMap> {
   drawFrame(): void;
-  scale(opts: { scale: number; point: PointSize; ignoreUpdateVisibleStatus?: boolean }): { moveX: number; moveY: number };
+  scale(opts: { scale: number; point: PointSize; ignoreUpdateVisibleStatus?: boolean }): {
+    moveX: number;
+    moveY: number;
+  };
   scroll(opts: { moveX?: number; moveY?: number; ignoreUpdateVisibleStatus?: boolean }): ViewScaleInfo;
   resize(viewSize: Partial<ViewSizeInfo>, opts?: { ignoreUpdateVisibleStatus?: boolean }): ViewSizeInfo;
   updateViewScaleInfo(opts: { scale: number; offsetX: number; offsetY: number }): ViewScaleInfo;
 
-  // resetViewVisibleInfoMap(
+  // resetVirtualFlatItemMap(
   //   data: Data,
   //   opts: {
   //     viewScaleInfo: ViewScaleInfo;
   //     viewSizeInfo: ViewSizeInfo;
   //   }
   // ): void;
-  // modifyViewVisibleInfoMap(
+  // modifyVirtualFlatItemMap(
   //   data: Data,
   //   opts: {
   //     modifyOptions: ModifyOptions;

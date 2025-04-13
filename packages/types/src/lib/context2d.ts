@@ -31,6 +31,8 @@ export interface ViewContext2D {
   moveTo(x: number, y: number): void;
   lineTo(x: number, y: number): void;
   arcTo(x1: number, y1: number, x2: number, y2: number, radius: number): void;
+  bezierCurveTo(cp1x: number, cp1y: number, cp2x: number, cp2y: number, x: number, y: number): void;
+  quadraticCurveTo(cpx: number, cpy: number, x: number, y: number): void;
   lineWidth: number;
   getLineDash(): number[];
   setLineDash(segments: number[]): void;
@@ -49,7 +51,17 @@ export interface ViewContext2D {
   scale(x: number, y: number): void;
   drawImage(image: CanvasImageSource, dx: number, dy: number): void;
   drawImage(image: CanvasImageSource, dx: number, dy: number, dw: number, dh: number): void;
-  drawImage(image: CanvasImageSource, sx: number, sy: number, sw: number, sh: number, dx: number, dy: number, dw: number, dh: number): void;
+  drawImage(
+    image: CanvasImageSource,
+    sx: number,
+    sy: number,
+    sw: number,
+    sh: number,
+    dx: number,
+    dy: number,
+    dw: number,
+    dh: number
+  ): void;
   createPattern(image: CanvasImageSource, repetition: string | null): CanvasPattern | null;
   globalAlpha: number;
   globalCompositeOperation: GlobalCompositeOperation;
@@ -57,7 +69,16 @@ export interface ViewContext2D {
   shadowColor: string;
   shadowOffsetX: number;
   shadowOffsetY: number;
-  circle(x: number, y: number, radiusX: number, radiusY: number, rotation: number, startAngle: number, endAngle: number, counterclockwise?: boolean): void;
+  circle(
+    x: number,
+    y: number,
+    radiusX: number,
+    radiusY: number,
+    rotation: number,
+    startAngle: number,
+    endAngle: number,
+    counterclockwise?: boolean
+  ): void;
   isPointInPath(x: number, y: number, fillRule?: CanvasFillRule): boolean;
   clip(fillRule?: CanvasFillRule): void;
   clip(path: Path2D, fillRule?: CanvasFillRule): void;

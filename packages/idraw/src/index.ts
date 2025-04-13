@@ -1,6 +1,15 @@
 export type * from '@idraw/types';
-export { Core, MiddlewareSelector, MiddlewareScroller, MiddlewareScaler, MiddlewareRuler, MiddlewareTextEditor, coreEventKeys } from '@idraw/core';
-export { Sharer, Calculator } from '@idraw/board';
+export {
+  Sharer,
+  Calculator,
+  Core,
+  MiddlewareSelector,
+  MiddlewareScroller,
+  MiddlewareScaler,
+  MiddlewareRuler,
+  MiddlewareTextEditor,
+  coreEventKeys
+} from '@idraw/core';
 export { Renderer } from '@idraw/renderer';
 export {
   delay,
@@ -23,6 +32,7 @@ export {
   isAssetId,
   createAssetId,
   deepClone,
+  deepCloneData,
   sortDataAsserts,
   istype,
   loadImage,
@@ -111,10 +121,10 @@ export {
   modifyElement,
   calcElementViewRectInfo,
   calcElementOriginRectInfo,
-  calcElementViewRectInfoMap,
-  sortElementsViewVisiableInfoMap,
   flatElementList,
-  calcPointMoveElementInGroup
+  calcPointMoveElementInGroup,
+  merge,
+  omit
 } from '@idraw/util';
 export { iDraw } from './idraw';
 export { eventKeys } from './event';

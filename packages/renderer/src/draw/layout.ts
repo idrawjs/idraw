@@ -2,7 +2,12 @@ import type { RendererDrawElementOptions, ViewContext2D, DataLayout, Element } f
 import { calcViewElementSize, calcViewBoxSize } from '@idraw/util';
 import { drawBoxShadow, drawBoxBackground, drawBoxBorder } from './box';
 
-export function drawLayout(ctx: ViewContext2D, layout: DataLayout, opts: RendererDrawElementOptions, renderContent: (ctx: ViewContext2D) => void) {
+export function drawLayout(
+  ctx: ViewContext2D,
+  layout: DataLayout,
+  opts: RendererDrawElementOptions,
+  renderContent: (ctx: ViewContext2D) => void
+) {
   const { viewScaleInfo, viewSizeInfo, parentOpacity } = opts;
   const elem: Element = { uuid: 'layout', type: 'group', ...layout } as Element;
   const { x, y, w, h } = calcViewElementSize(elem, { viewScaleInfo }) || elem;
@@ -46,6 +51,6 @@ export function drawLayout(ctx: ViewContext2D, layout: DataLayout, opts: Rendere
     ctx.restore();
   }
 
-  drawBoxBorder(ctx, viewElem, { viewScaleInfo, viewSizeInfo });
+  drawBoxBorder(ctx, viewElem, { originElem: elem, viewScaleInfo, viewSizeInfo });
   ctx.globalAlpha = parentOpacity;
 }

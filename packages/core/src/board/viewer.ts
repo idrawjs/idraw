@@ -45,7 +45,18 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
     const { renderer, boardContent, beforeDrawFrame, afterDrawFrame } = this.#opts;
 
     if (snapshot) {
-      const { scale, offsetTop, offsetBottom, offsetLeft, offsetRight, width, height, contextHeight, contextWidth, devicePixelRatio } = snapshot.activeStore;
+      const {
+        scale,
+        offsetTop,
+        offsetBottom,
+        offsetLeft,
+        offsetRight,
+        width,
+        height,
+        contextHeight,
+        contextWidth,
+        devicePixelRatio
+      } = snapshot.activeStore;
 
       const viewScaleInfo: ViewScaleInfo = {
         scale,
@@ -86,7 +97,7 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
     }
   }
 
-  resetViewVisibleInfoMap(
+  resetVirtualFlatItemMap(
     data: Data,
     opts: {
       viewScaleInfo: ViewScaleInfo;
@@ -94,7 +105,7 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
     }
   ): void {
     if (data) {
-      this.#opts.calculator.resetViewVisibleInfoMap(data, opts);
+      this.#opts.calculator.resetVirtualFlatItemMap(data, opts);
     }
   }
 
@@ -111,7 +122,10 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
     this.#drawAnimationFrame();
   }
 
-  scale(opts: { scale: number; point: PointSize; ignoreUpdateVisibleStatus?: boolean }): { moveX: number; moveY: number } {
+  scale(opts: { scale: number; point: PointSize; ignoreUpdateVisibleStatus?: boolean }): {
+    moveX: number;
+    moveY: number;
+  } {
     const { scale, point, ignoreUpdateVisibleStatus } = opts;
     const { sharer } = this.#opts;
     const { moveX, moveY } = viewScale({

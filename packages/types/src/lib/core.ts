@@ -1,14 +1,12 @@
 import type { Element, ElementSize, ElementType, ElementPosition } from './element';
 import type { ViewScaleInfo } from './view';
 import type { Data } from './data';
-import type { ViewContext2D } from './context2d';
 import type { BoardBaseEventMap } from './board';
 
 export interface CoreOptions {
   width: number;
   height: number;
   devicePixelRatio?: number;
-  createCustomContext2D?: (opts: { width: number; height: number; devicePixelRatio: number }) => ViewContext2D;
 }
 
 export type CursorType =
@@ -46,7 +44,9 @@ export interface CoreEventChange {
     | 'setData'
     | 'undo'
     | 'redo'
-    | 'changeLayout' // TODO
+    | 'dragLayout'
+    | 'updateLayout'
+    | 'updateElementName'
     | 'other';
   selectedElements?: Element[] | null;
   hoverElement?: Element | null;
@@ -82,7 +82,19 @@ export type CoreEventMap = BoardBaseEventMap & {
   change: CoreEventChange;
   ruler: { show: boolean; showGrid: boolean };
   scale: { scale: number };
-  select: { uuids?: string[]; positions?: ElementPosition[] };
+  select: {
+    uuids?: string[];
+    positions?: ElementPosition[];
+    type?:
+      | 'clickCanvas'
+      | 'selectElement'
+      | 'selectElements'
+      | 'selectElementByPosition'
+      | 'selectElementsByPositions'
+      | 'other'
+      | string;
+  };
+  selectLayout: void; // TODO
   clearSelect: { uuids?: string[] } | void;
   textEdit: CoreEventTextEdit;
   textChange: CoreEventTextChange;

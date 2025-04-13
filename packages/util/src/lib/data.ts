@@ -42,11 +42,24 @@ export function deepCloneElement<T extends Element = Element>(element: T): T {
   return elem;
 }
 
+export function deepCloneData(data: Data): Data {
+  const { elements, ...restData } = data;
+  return {
+    ...deepClone(restData),
+    ...{
+      elements: elements.map((elem) => deepCloneElement(elem))
+    }
+  };
+}
+
 function is(target: any): string {
-  return Object.prototype.toString
-    .call(target)
-    .replace(/[\]|\[]{1,1}/gi, '')
-    .split(' ')[1];
+  return (
+    Object.prototype.toString
+      .call(target)
+      // eslint-disable-next-line no-useless-escape
+      .replace(/[\]|\[]{1,1}/gi, '')
+      .split(' ')[1]
+  );
 }
 
 export function sortDataAsserts(data: Data, opts?: { clone?: boolean }): Data {

@@ -33,8 +33,8 @@ export function drawCircle(ctx: ViewContext2D, elem: Element<'circle'>, opts: Re
         const radiusB = b;
         if (bw > 0) {
           if (boxSizing === 'content-box') {
-            a = a;
-            b = b;
+            // a = a;
+            // b = b;
           } else if (boxSizing === 'center-line') {
             a = a - bw / 2;
             b = b - bw / 2;

@@ -1,8 +1,10 @@
-import type { Element, ElementType, ElementPosition } from './element';
+import type { Element, ElementType } from './element';
 import type { Point, PointSize } from './point';
 import type { Data } from './data';
 import type { ViewContext2D } from './context2d';
 import type { ModifyOptions } from './modify';
+import { VirtualFlatItem } from './virtual-flat';
+// import type { BoxInfo } from './box';
 
 export interface ViewScaleInfo {
   scale: number;
@@ -28,31 +30,22 @@ export interface BoardContent {
   viewContext: ViewContext2D;
   overlayContext: ViewContext2D;
   underlayContext: ViewContext2D;
+  tempContext: ViewContext2D;
   drawView: () => void;
 }
 
 export interface ViewCalculatorOptions {
   // boardContent?: BoardContent;
-  viewContext: ViewContext2D;
-}
-
-export interface ViewCalculatorStorage {
-  viewVisibleInfoMap: ViewVisibleInfoMap;
-  visibleCount: number;
-  invisibleCount: number;
+  tempContext: ViewContext2D;
 }
 
 export interface ViewCalculator {
-  /**
-   * @deprecated
-   */
-  isPointInElement(p: Point, elem: Element<ElementType>, viewScaleInfo: ViewScaleInfo, viewSize: ViewSizeInfo): boolean;
   needRender(elem: Element<ElementType>): boolean;
   getPointElement(
     p: Point,
     opts: { data: Data; viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo; groupQueue?: Element<'group'>[] }
   ): { index: number; element: null | Element<ElementType>; groupQueueIndex: number };
-  resetViewVisibleInfoMap(
+  resetVirtualFlatItemMap(
     data: Data,
     opts: {
       viewScaleInfo: ViewScaleInfo;
@@ -76,7 +69,7 @@ export interface ViewCalculator {
       viewSizeInfo: ViewSizeInfo;
     }
   ): ViewRectInfo | null;
-  modifyViewVisibleInfoMap(
+  modifyVirtualFlatItemMap(
     data: Data,
     opts: {
       modifyOptions: ModifyOptions;
@@ -86,6 +79,7 @@ export interface ViewCalculator {
   ): void;
 
   toGridNum(num: number, opts?: { ignore?: boolean }): number;
+  getVirtualFlatItem: (uuid: string) => VirtualFlatItem | null;
 }
 
 export type ViewRectVertexes = [PointSize, PointSize, PointSize, PointSize];
@@ -108,19 +102,4 @@ export type ViewRectInfo = {
   bottom: PointSize;
   left: PointSize;
   center: PointSize;
-};
-
-export type ViewRectInfoMap = {
-  originRectInfo: ViewRectInfo;
-  rangeRectInfo: ViewRectInfo;
-};
-
-export type ViewVisibleInfo = ViewRectInfoMap & {
-  isVisibleInView: boolean;
-  isGroup: boolean;
-  position: ElementPosition;
-};
-
-export type ViewVisibleInfoMap = {
-  [uuid: string]: ViewVisibleInfo;
 };

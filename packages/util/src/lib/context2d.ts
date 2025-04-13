@@ -175,8 +175,22 @@ export class Context2D implements ViewContext2D {
     return this.#ctx.fill(...(args as [path: Path2D, fillRule?: CanvasFillRule | undefined]));
   }
 
-  arc(x: number, y: number, radius: number, startAngle: number, endAngle: number, anticlockwise?: boolean | undefined): void {
-    return this.#ctx.arc(this.$doPixelRatio(x), this.$doPixelRatio(y), this.$doPixelRatio(radius), startAngle, endAngle, anticlockwise);
+  arc(
+    x: number,
+    y: number,
+    radius: number,
+    startAngle: number,
+    endAngle: number,
+    anticlockwise?: boolean | undefined
+  ): void {
+    return this.#ctx.arc(
+      this.$doPixelRatio(x),
+      this.$doPixelRatio(y),
+      this.$doPixelRatio(radius),
+      startAngle,
+      endAngle,
+      anticlockwise
+    );
   }
 
   rect(x: number, y: number, w: number, h: number) {
@@ -184,11 +198,21 @@ export class Context2D implements ViewContext2D {
   }
 
   fillRect(x: number, y: number, w: number, h: number) {
-    return this.#ctx.fillRect(this.$doPixelRatio(x), this.$doPixelRatio(y), this.$doPixelRatio(w), this.$doPixelRatio(h));
+    return this.#ctx.fillRect(
+      this.$doPixelRatio(x),
+      this.$doPixelRatio(y),
+      this.$doPixelRatio(w),
+      this.$doPixelRatio(h)
+    );
   }
 
   clearRect(x: number, y: number, w: number, h: number) {
-    return this.#ctx.clearRect(this.$doPixelRatio(x), this.$doPixelRatio(y), this.$doPixelRatio(w), this.$doPixelRatio(h));
+    return this.#ctx.clearRect(
+      this.$doPixelRatio(x),
+      this.$doPixelRatio(y),
+      this.$doPixelRatio(w),
+      this.$doPixelRatio(h)
+    );
   }
 
   beginPath() {
@@ -208,7 +232,32 @@ export class Context2D implements ViewContext2D {
   }
 
   arcTo(x1: number, y1: number, x2: number, y2: number, radius: number): void {
-    return this.#ctx.arcTo(this.$doPixelRatio(x1), this.$doPixelRatio(y1), this.$doPixelRatio(x2), this.$doPixelRatio(y2), this.$doPixelRatio(radius));
+    return this.#ctx.arcTo(
+      this.$doPixelRatio(x1),
+      this.$doPixelRatio(y1),
+      this.$doPixelRatio(x2),
+      this.$doPixelRatio(y2),
+      this.$doPixelRatio(radius)
+    );
+  }
+
+  bezierCurveTo(cp1x: number, cp1y: number, cp2x: number, cp2y: number, x: number, y: number): void {
+    return this.#ctx.bezierCurveTo(
+      this.$doPixelRatio(cp1x),
+      this.$doPixelRatio(cp1y),
+      this.$doPixelRatio(cp2x),
+      this.$doPixelRatio(cp2y),
+      this.$doPixelRatio(x),
+      this.$doPixelRatio(y)
+    );
+  }
+  quadraticCurveTo(cpx: number, cpy: number, x: number, y: number): void {
+    return this.#ctx.quadraticCurveTo(
+      this.$doPixelRatio(cpx),
+      this.$doPixelRatio(cpy),
+      this.$doPixelRatio(x),
+      this.$doPixelRatio(y)
+    );
   }
 
   getLineDash() {
@@ -257,7 +306,13 @@ export class Context2D implements ViewContext2D {
         this.$doPixelRatio(dh)
       );
     } else {
-      return this.#ctx.drawImage(image, this.$doPixelRatio(dx), this.$doPixelRatio(dy), this.$doPixelRatio(dw), this.$doPixelRatio(dh));
+      return this.#ctx.drawImage(
+        image,
+        this.$doPixelRatio(dx),
+        this.$doPixelRatio(dy),
+        this.$doPixelRatio(dw),
+        this.$doPixelRatio(dh)
+      );
     }
   }
 
@@ -338,7 +393,12 @@ export class Context2D implements ViewContext2D {
   }
 
   createLinearGradient(x0: number, y0: number, x1: number, y1: number): CanvasGradient {
-    return this.#ctx.createLinearGradient(this.$doPixelRatio(x0), this.$doPixelRatio(y0), this.$doPixelRatio(x1), this.$doPixelRatio(y1));
+    return this.#ctx.createLinearGradient(
+      this.$doPixelRatio(x0),
+      this.$doPixelRatio(y0),
+      this.$doPixelRatio(x1),
+      this.$doPixelRatio(y1)
+    );
   }
   createRadialGradient(x0: number, y0: number, r0: number, x1: number, y1: number, r1: number): CanvasGradient {
     return this.#ctx.createRadialGradient(

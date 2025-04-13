@@ -1,61 +1,22 @@
-import { Element, ElementPosition, Elements, ViewScaleInfo, ViewSizeInfo, ViewRectInfo, ViewVisibleInfoMap, ViewVisibleInfo } from '@idraw/types';
-import { calcElementOriginRectInfo, originRectInfoToRangeRectInfo } from './view-calc';
-import { getGroupQueueByElementPosition } from './element';
-import { calcElementCenter } from './rotate';
-import { is } from './is';
+import { Elements, ViewScaleInfo, ViewSizeInfo, ViewRectInfo, VirtualFlatItemMap, ViewContext2D } from '@idraw/types';
+import { calcElementCenter } from '@idraw/util';
+import { elementsToVirtualFlatMap } from '../virtual-flat';
 
 export function sortElementsViewVisiableInfoMap(
   elements: Elements,
   opts: {
     viewScaleInfo: ViewScaleInfo;
     viewSizeInfo: ViewSizeInfo;
+    tempContext: ViewContext2D;
   }
 ): {
-  viewVisibleInfoMap: ViewVisibleInfoMap;
+  virtualFlatItemMap: VirtualFlatItemMap;
   visibleCount: number;
   invisibleCount: number;
 } {
-  const visibleInfoMap: ViewVisibleInfoMap = {};
-  const currentPosition: ElementPosition = [];
-
-  const _walk = (elem: Element) => {
-    const baseInfo: Omit<ViewVisibleInfo, 'originRectInfo' | 'rangeRectInfo'> = {
-      isVisibleInView: true,
-      isGroup: elem.type === 'group',
-      position: [...currentPosition]
-    };
-    let originRectInfo: ViewRectInfo | null = null;
-
-    const groupQueue = getGroupQueueByElementPosition(elements, currentPosition);
-
-    originRectInfo = calcElementOriginRectInfo(elem, {
-      groupQueue: groupQueue || []
-    });
-
-    visibleInfoMap[elem.uuid] = {
-      ...baseInfo,
-      ...{
-        originRectInfo: originRectInfo as ViewRectInfo,
-        rangeRectInfo: is.angle(elem.angle) ? originRectInfoToRangeRectInfo(originRectInfo as ViewRectInfo) : originRectInfo
-      }
-    };
-
-    if (elem.type === 'group') {
-      (elem as Element<'group'>).detail.children.forEach((ele, i) => {
-        currentPosition.push(i);
-        _walk(ele);
-        currentPosition.pop();
-      });
-    }
-  };
-
-  elements.forEach((elem, index) => {
-    currentPosition.push(index);
-    _walk(elem);
-    currentPosition.pop();
-  });
-
-  return updateViewVisibleInfoMapStatus(visibleInfoMap, opts);
+  const { viewScaleInfo, viewSizeInfo, tempContext } = opts;
+  const visibleInfoMap: VirtualFlatItemMap = elementsToVirtualFlatMap(elements, { tempContext });
+  return updateVirtualFlatItemMapStatus(visibleInfoMap, { viewScaleInfo, viewSizeInfo });
 }
 
 function isRangeRectInfoCollide(info1: ViewRectInfo, info2: ViewRectInfo): boolean {
@@ -79,10 +40,10 @@ function isRangeRectInfoCollide(info1: ViewRectInfo, info2: ViewRectInfo): boole
   return false;
 }
 
-// function logViewVisibleInfoMapStatus(viewVisibleInfoMap: ViewVisibleInfoMap) {
+// function logVirtualFlatItemMapStatus(virtualFlatItemMap: VirtualFlatItemMap) {
 //   console.log('------------------------------------------------');
-//   Object.keys(viewVisibleInfoMap).forEach((uuid) => {
-//     const item = viewVisibleInfoMap[uuid];
+//   Object.keys(virtualFlatItemMap).forEach((uuid) => {
+//     const item = virtualFlatItemMap[uuid];
 //     const info = item.originRectInfo;
 //     const rect = {
 //       x: info.topLeft.x,
@@ -94,31 +55,34 @@ function isRangeRectInfoCollide(info1: ViewRectInfo, info2: ViewRectInfo): boole
 //   });
 // }
 
-export function updateViewVisibleInfoMapStatus(
-  viewVisibleInfoMap: ViewVisibleInfoMap,
+export function updateVirtualFlatItemMapStatus(
+  virtualFlatItemMap: VirtualFlatItemMap,
   opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }
 ): {
-  viewVisibleInfoMap: ViewVisibleInfoMap;
+  virtualFlatItemMap: VirtualFlatItemMap;
   visibleCount: number;
   invisibleCount: number;
 } {
   const canvasRectInfo = calcVisibleOriginCanvasRectInfo(opts);
   let visibleCount = 0;
   let invisibleCount = 0;
-  Object.keys(viewVisibleInfoMap).forEach((uuid) => {
-    const info = viewVisibleInfoMap[uuid];
+  Object.keys(virtualFlatItemMap).forEach((uuid) => {
+    const info = virtualFlatItemMap[uuid];
     info.isVisibleInView = isRangeRectInfoCollide(info.rangeRectInfo, canvasRectInfo);
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     info.isVisibleInView ? visibleCount++ : invisibleCount++;
   });
 
-  // logViewVisibleInfoMapStatus(viewVisibleInfoMap);
+  // logVirtualFlatItemMapStatus(virtualFlatItemMap);
 
-  return { viewVisibleInfoMap, visibleCount, invisibleCount };
+  return { virtualFlatItemMap, visibleCount, invisibleCount };
 }
 
-export function calcVisibleOriginCanvasRectInfo(opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }): ViewRectInfo {
+export function calcVisibleOriginCanvasRectInfo(opts: {
+  viewScaleInfo: ViewScaleInfo;
+  viewSizeInfo: ViewSizeInfo;
+}): ViewRectInfo {
   const { viewScaleInfo, viewSizeInfo } = opts;
-  // console.log('xxx ===== ', viewScaleInfo, viewSizeInfo);
   const { scale, offsetTop, offsetLeft } = viewScaleInfo;
   const { width, height } = viewSizeInfo;
 

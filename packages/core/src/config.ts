@@ -3,6 +3,7 @@ export const EVENT_KEY_CURSOR = 'cursor';
 export const EVENT_KEY_RULER = 'ruler';
 export const EVENT_KEY_SCALE = 'scale';
 export const EVENT_KEY_SELECT = 'select';
+export const EVENT_KEY_SELECT_LAYOUT = 'selectLayout';
 export const EVENT_KEY_CLEAR_SELECT = 'clearSelect';
 export const EVENT_KEY_TEXT_EDIT = 'textEdit';
 export const EVENT_KEY_TEXT_CHANGE = 'textChange';
@@ -16,6 +17,7 @@ export type CoreEventKeys = {
   RULER: typeof EVENT_KEY_RULER;
   SCALE: typeof EVENT_KEY_SCALE;
   SELECT: typeof EVENT_KEY_SELECT;
+  SELECT_LAYOUT: typeof EVENT_KEY_SELECT_LAYOUT;
   CLEAR_SELECT: typeof EVENT_KEY_CLEAR_SELECT;
   TEXT_EDIT: typeof EVENT_KEY_TEXT_EDIT;
   TEXT_CHANGE: typeof EVENT_KEY_TEXT_CHANGE;
@@ -29,6 +31,7 @@ const innerEventKeys: CoreEventKeys = {
   CHANGE: EVENT_KEY_CHANGE,
   RULER: EVENT_KEY_RULER,
   SCALE: EVENT_KEY_SCALE,
+  SELECT_LAYOUT: EVENT_KEY_SELECT_LAYOUT,
   SELECT: EVENT_KEY_SELECT,
   CLEAR_SELECT: EVENT_KEY_CLEAR_SELECT,
   TEXT_EDIT: EVENT_KEY_TEXT_EDIT,

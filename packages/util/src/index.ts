@@ -1,15 +1,37 @@
 export { delay, compose, throttle, debounce } from './lib/time';
-export { downloadImageFromCanvas, parseFileToBase64, pickFile, parseFileToText, downloadFileFromText } from './lib/file';
-export { toColorHexStr, toColorHexNum, isColorStr, colorNameToHex, colorToCSS, colorToLinearGradientCSS, mergeHexColorAlpha } from './lib/color';
+export {
+  downloadImageFromCanvas,
+  parseFileToBase64,
+  pickFile,
+  parseFileToText,
+  downloadFileFromText
+} from './lib/file';
+export {
+  toColorHexStr,
+  toColorHexNum,
+  isColorStr,
+  colorNameToHex,
+  colorToCSS,
+  colorToLinearGradientCSS,
+  mergeHexColorAlpha
+} from './lib/color';
 export { createUUID, isAssetId, createAssetId } from './lib/uuid';
-export { deepClone, sortDataAsserts, deepCloneElement, filterCompactData } from './lib/data';
+export { deepClone, sortDataAsserts, deepCloneElement, deepCloneData, filterCompactData } from './lib/data';
 export { istype } from './lib/istype';
 export { loadImage, loadSVG, loadHTML } from './lib/load';
 export { is } from './lib/is';
 export { check } from './lib/check';
 export { createBoardContent, createContext2D, createOffscreenContext2D } from './lib/canvas';
 export { EventEmitter } from './lib/event';
-export { calcDistance, calcSpeed, equalPoint, equalTouchPoint, vaildPoint, vaildTouchPoint, getCenterFromTwoPoints } from './lib/point';
+export {
+  calcDistance,
+  calcSpeed,
+  equalPoint,
+  equalTouchPoint,
+  vaildPoint,
+  vaildTouchPoint,
+  getCenterFromTwoPoints
+} from './lib/point';
 export { Store } from './lib/store';
 export { getViewScaleInfoFromSnapshot, getViewSizeInfoFromSnapshot } from './lib/middleware';
 export { Context2D } from './lib/context2d';
@@ -60,14 +82,17 @@ export {
   calcViewScaleInfo,
   calcElementViewRectInfo,
   calcElementOriginRectInfo,
-  calcElementViewRectInfoMap,
   originRectInfoToRangeRectInfo,
   isViewPointInElementSize,
   isViewPointInVertexes
 } from './lib/view-calc';
-export { sortElementsViewVisiableInfoMap, calcVisibleOriginCanvasRectInfo, updateViewVisibleInfoMapStatus } from './lib/view-visible';
 export { rotatePoint, rotateVertexes, rotateByCenter } from './lib/rotate';
-export { getElementVertexes, calcElementVertexesInGroup, calcElementVertexesQueueInGroup, calcElementQueueVertexesQueueInGroup } from './lib/vertex';
+export {
+  getElementVertexes,
+  calcElementVertexesInGroup,
+  calcElementVertexesQueueInGroup,
+  calcElementQueueVertexesQueueInGroup
+} from './lib/vertex';
 export { calcElementSizeController, calcLayoutSizeController } from './lib/controller';
 export { generateSVGPath, parseSVGPath } from './lib/svg-path';
 export { generateHTML, parseHTML } from './lib/html';
@@ -93,3 +118,6 @@ export { enhanceFontFamliy } from './lib/text';
 export { flatElementList } from './lib/flat';
 export { groupElementsByPosition, ungroupElementsByPosition } from './lib/group';
 export { calcPointMoveElementInGroup } from './lib/point-move-element';
+export { merge } from './lib/merge';
+export { omit } from './lib/omit';
+export { elementToBoxInfo } from './lib/box';

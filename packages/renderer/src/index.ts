@@ -3,15 +3,21 @@ import type { DataLayout, LoadItemMap } from '@idraw/types';
 import { drawElementList, drawLayout, drawGlobalBackground } from './draw/index';
 import { Loader } from './loader';
 import type { Data, BoardRenderer, RendererOptions, RendererEventMap, RendererDrawOptions } from '@idraw/types';
+import { Calculator } from './calculator';
 
+export { Calculator };
 export class Renderer extends EventEmitter<RendererEventMap> implements BoardRenderer {
   #opts: RendererOptions;
   #loader: Loader = new Loader();
+  #calculator: Calculator;
   #hasDestroyed: boolean = false;
 
   constructor(opts: RendererOptions) {
     super();
     this.#opts = opts;
+    this.#calculator = new Calculator({
+      tempContext: opts.tempContext
+    });
     this.#init();
   }
 
@@ -45,7 +51,8 @@ export class Renderer extends EventEmitter<RendererEventMap> implements BoardRen
 
   drawData(data: Data, opts: RendererDrawOptions) {
     const loader = this.#loader;
-    const { calculator, sharer } = this.#opts;
+    const calculator = this.#calculator;
+    const { sharer } = this.#opts;
     const viewContext = this.#opts.viewContext;
     viewContext.clearRect(0, 0, viewContext.canvas.width, viewContext.canvas.height);
     const parentElementSize = {
@@ -88,8 +95,18 @@ export class Renderer extends EventEmitter<RendererEventMap> implements BoardRen
       // TODO
       return;
     }
-    const { data, offsetTop, offsetBottom, offsetLeft, offsetRight, width, height, contextHeight, contextWidth, devicePixelRatio } =
-      sharer.getActiveStoreSnapshot();
+    const {
+      data,
+      offsetTop,
+      offsetBottom,
+      offsetLeft,
+      offsetRight,
+      width,
+      height,
+      contextHeight,
+      contextWidth,
+      devicePixelRatio
+    } = sharer.getActiveStoreSnapshot();
     if (data) {
       this.drawData(data, {
         viewScaleInfo: {
@@ -120,6 +137,10 @@ export class Renderer extends EventEmitter<RendererEventMap> implements BoardRen
 
   getLoader(): Loader {
     return this.#loader;
+  }
+
+  getCalculator(): Calculator {
+    return this.#calculator;
   }
 }
 

@@ -1,5 +1,11 @@
 import type { BoardMiddleware, ElementSize, Point, MiddlewareLayoutSelectorConfig, CoreEventMap } from '@idraw/types';
-import { calcLayoutSizeController, isViewPointInVertexes, getViewScaleInfoFromSnapshot, isViewPointInElementSize, calcViewElementSize } from '@idraw/util';
+import {
+  calcLayoutSizeController,
+  isViewPointInVertexes,
+  getViewScaleInfoFromSnapshot,
+  isViewPointInElementSize,
+  calcViewElementSize
+} from '@idraw/util';
 import type { LayoutSelectorSharedStorage, ControlType } from './types';
 import {
   keyLayoutActionType,
@@ -21,7 +27,11 @@ import { coreEventKeys } from '../../config';
 
 export { keyLayoutIsSelected, keyLayoutIsBusyMoving };
 
-export const MiddlewareLayoutSelector: BoardMiddleware<LayoutSelectorSharedStorage, CoreEventMap, MiddlewareLayoutSelectorConfig> = (opts, config) => {
+export const MiddlewareLayoutSelector: BoardMiddleware<
+  LayoutSelectorSharedStorage,
+  CoreEventMap,
+  MiddlewareLayoutSelectorConfig
+> = (opts, config) => {
   const { sharer, boardContent, calculator, viewer, eventHub } = opts;
   const { overlayContext } = boardContent;
   let innerConfig = {
@@ -242,6 +252,7 @@ export const MiddlewareLayoutSelector: BoardMiddleware<LayoutSelectorSharedStora
 
       if (sharer.getSharedStorage(keyLayoutIsSelected) === true && !prevIsSelected) {
         viewer.drawFrame();
+        eventHub.trigger(coreEventKeys.SELECT_LAYOUT);
       }
       prevIsSelected = sharer.getSharedStorage(keyLayoutIsSelected);
 
@@ -349,10 +360,13 @@ export const MiddlewareLayoutSelector: BoardMiddleware<LayoutSelectorSharedStora
       const data = sharer.getActiveStorage('data');
       if (data && layoutActionType === 'resize' && layoutControlType) {
         eventHub.trigger(coreEventKeys.CHANGE, {
-          type: 'changeLayout',
+          type: 'dragLayout',
           data
         });
       }
+
+      sharer.setSharedStorage(keyLayoutActionType, null);
+      sharer.setSharedStorage(keyLayoutControlType, null);
 
       if (sharer.getSharedStorage(keyLayoutIsHoverController) === true) {
         return false;

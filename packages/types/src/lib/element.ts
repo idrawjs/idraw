@@ -44,7 +44,7 @@ export interface TransformScale {
 export type TransformAction = TransformMatrix | TransformTranslate | TransformRotate | TransformScale;
 
 export interface GradientStop {
-  offset: number;
+  offset: number; // [0, 1] eg. 0.5
   color: string;
 }
 
@@ -92,7 +92,7 @@ export interface ElementBaseDetail {
 //   // background?: string;
 // }
 
-export interface ElementRectDetail extends ElementBaseDetail {}
+export type ElementRectDetail = ElementBaseDetail;
 
 export interface ElementTextDetail extends ElementBaseDetail {
   text: string;
@@ -182,14 +182,15 @@ export interface ElementGlobalDetail {
   background?: string;
 }
 
-export interface Element<T extends ElementType = ElementType, E extends Record<string, any> = Record<string, any>> extends ElementSize {
+export interface Element<T extends ElementType = ElementType, E extends Record<string, any> = Record<string, any>>
+  extends ElementSize {
   uuid: string;
   name?: string;
   type: T;
   detail: ElementDetailMap[T];
   operations?: ElementOperations;
   extends?: E;
-  global?: ElementGlobalDetail;
+  // global?: ElementGlobalDetail;
 }
 
 export type Elements = Element<ElementType>[];

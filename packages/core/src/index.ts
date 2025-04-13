@@ -1,9 +1,21 @@
-import type { Data, PointSize, CoreOptions, BoardMiddleware, ViewSizeInfo, CoreEventMap, ViewScaleInfo, LoadItemMap, ModifyOptions } from '@idraw/types';
-import { Board } from '@idraw/board';
+import type {
+  Data,
+  PointSize,
+  CoreOptions,
+  BoardMiddleware,
+  ViewSizeInfo,
+  CoreEventMap,
+  ViewScaleInfo,
+  LoadItemMap,
+  ModifyOptions
+} from '@idraw/types';
+import { Board, Sharer, Calculator } from './board';
 import { createBoardContent, validateElements } from '@idraw/util';
 import { Cursor } from './lib/cursor';
 export { coreEventKeys } from './config';
 export type { CoreEventKeys } from './config';
+
+export { Board, Sharer, Calculator };
 
 // export { MiddlewareSelector } from './middleware/selector';
 export { MiddlewareSelector } from './middleware/selector';
@@ -23,7 +35,7 @@ export class Core<E extends CoreEventMap = CoreEventMap> {
   #container: HTMLDivElement;
 
   constructor(container: HTMLDivElement, opts: CoreOptions) {
-    const { devicePixelRatio = 1, width, height, createCustomContext2D } = opts;
+    const { devicePixelRatio = 1, width, height } = opts;
 
     // this.#opts = opts;
     this.#container = container;
@@ -33,7 +45,7 @@ export class Core<E extends CoreEventMap = CoreEventMap> {
     this.#initContainer();
     container.appendChild(canvas);
 
-    const boardContent = createBoardContent(canvas, { width, height, devicePixelRatio, offscreen: true, createCustomContext2D });
+    const boardContent = createBoardContent(canvas, { width, height, devicePixelRatio });
     const board = new Board<E>({ boardContent, container });
     const sharer = board.getSharer();
     sharer.setActiveViewSizeInfo({
