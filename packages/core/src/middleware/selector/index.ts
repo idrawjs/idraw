@@ -173,7 +173,10 @@ export const MiddlewareSelector: BoardMiddleware<
     sharer.setSharedStorage(keySelectedElementList, list);
     if (list.length === 1) {
       updateSelectedElemenetController();
-      sharer.setSharedStorage(keySelectedElementPosition, getElementPositionFromList(list[0].uuid, sharer.getActiveStorage('data')?.elements || []));
+      sharer.setSharedStorage(
+        keySelectedElementPosition,
+        getElementPositionFromList(list[0].uuid, sharer.getActiveStorage('data')?.elements || [])
+      );
     } else {
       sharer.setSharedStorage(keySelectedElementController, null);
       sharer.setSharedStorage(keySelectedElementPosition, []);
@@ -183,7 +186,11 @@ export const MiddlewareSelector: BoardMiddleware<
       const uuids = list.map((elem) => elem.uuid);
       const data = sharer.getActiveStorage('data');
       const positionMap = getElementPositionMapFromList(uuids, data?.elements || []);
-      eventHub.trigger(coreEventKeys.SELECT, { uuids, positions: list.map((elem) => [...positionMap[elem.uuid]]) });
+      eventHub.trigger(coreEventKeys.SELECT, {
+        type: 'clickCanvas',
+        uuids,
+        positions: list.map((elem) => [...positionMap[elem.uuid]])
+      });
     }
   };
 
@@ -515,7 +522,14 @@ export const MiddlewareSelector: BoardMiddleware<
 
         eventHub.trigger(MIDDLEWARE_INTERNAL_EVENT_SHOW_INFO_ANGLE, { show: false });
 
-        if (data && elems?.length === 1 && moveOriginalStartElementSize && originalStart && end && elems[0]?.operations?.locked !== true) {
+        if (
+          data &&
+          elems?.length === 1 &&
+          moveOriginalStartElementSize &&
+          originalStart &&
+          end &&
+          elems[0]?.operations?.locked !== true
+        ) {
           const { moveX, moveY } = calcPointMoveElementInGroup(originalStart, end, groupQueue);
 
           let totalMoveX = calculator.toGridNum(moveX / scale);
@@ -547,7 +561,7 @@ export const MiddlewareSelector: BoardMiddleware<
           elems[0].x = calculator.toGridNum(moveOriginalStartElementSize.x + totalMoveX);
           elems[0].y = calculator.toGridNum(moveOriginalStartElementSize.y + totalMoveY);
           updateSelectedElementList([elems[0]]);
-          calculator.modifyViewVisibleInfoMap(data, {
+          calculator.modifyVirtualFlatItemMap(data, {
             modifyOptions: {
               type: 'updateElement',
               content: {
@@ -571,7 +585,7 @@ export const MiddlewareSelector: BoardMiddleware<
               elem.x = calculator.toGridNum(elem.x + moveX);
               elem.y = calculator.toGridNum(elem.y + moveY);
 
-              calculator.modifyViewVisibleInfoMap(data, {
+              calculator.modifyVirtualFlatItemMap(data, {
                 modifyOptions: {
                   type: 'updateElement',
                   content: {
@@ -589,7 +603,13 @@ export const MiddlewareSelector: BoardMiddleware<
         }
         viewer.drawFrame();
       } else if (actionType === 'resize') {
-        if (data && elems?.length === 1 && originalStart && moveOriginalStartElementSize && resizeType?.startsWith('resize-')) {
+        if (
+          data &&
+          elems?.length === 1 &&
+          originalStart &&
+          moveOriginalStartElementSize &&
+          resizeType?.startsWith('resize-')
+        ) {
           hasChangedData = true;
           inBusyMode = 'resize';
           const pointGroupQueue: Element<'group'>[] = [];
@@ -612,7 +632,9 @@ export const MiddlewareSelector: BoardMiddleware<
             resizeEnd = rotatePointInGroup(end, pointGroupQueue);
           }
           if (resizeType === 'resize-rotate') {
-            const controller: ElementSizeController = sharer.getSharedStorage(keySelectedElementController) as ElementSizeController;
+            const controller: ElementSizeController = sharer.getSharedStorage(
+              keySelectedElementController
+            ) as ElementSizeController;
             const viewVertexes: ViewRectVertexes = [
               controller.topLeft.center,
               controller.topRight.center,
@@ -633,7 +655,10 @@ export const MiddlewareSelector: BoardMiddleware<
 
             elems[0].angle = calculator.toGridNum(resizedElemSize.angle || 0);
           } else {
-            const resizedElemSize = resizeElement(moveOriginalStartElementSize, { scale, start: resizeStart, end: resizeEnd, resizeType, sharer });
+            const resizedElemSize = resizeElement(
+              { ...moveOriginalStartElementSize, operations: elems[0].operations },
+              { scale, start: resizeStart, end: resizeEnd, resizeType, sharer }
+            );
             const calcOpts = { ignore: !!moveOriginalStartElementSize.angle };
             elems[0].x = calculator.toGridNum(resizedElemSize.x, calcOpts);
             elems[0].y = calculator.toGridNum(resizedElemSize.y, calcOpts);
@@ -649,7 +674,7 @@ export const MiddlewareSelector: BoardMiddleware<
           }
 
           updateSelectedElementList([elems[0]]);
-          calculator.modifyViewVisibleInfoMap(data, {
+          calculator.modifyVirtualFlatItemMap(data, {
             modifyOptions: {
               type: 'updateElement',
               content: {
@@ -788,11 +813,18 @@ export const MiddlewareSelector: BoardMiddleware<
           viewer.drawFrame();
           return;
         }
-      } else if (target.elements.length === 1 && target.elements[0]?.type === 'text' && !target.elements[0]?.operations?.invisible) {
+      } else if (
+        target.elements.length === 1 &&
+        target.elements[0]?.type === 'text' &&
+        !target.elements[0]?.operations?.invisible
+      ) {
         eventHub.trigger(coreEventKeys.TEXT_EDIT, {
           element: target.elements[0] as Element<'text'>,
           groupQueue: sharer.getSharedStorage(keyGroupQueue) || [],
-          position: getElementPositionFromList(target.elements[0]?.uuid, sharer.getActiveStorage('data')?.elements || []),
+          position: getElementPositionFromList(
+            target.elements[0]?.uuid,
+            sharer.getActiveStorage('data')?.elements || []
+          ),
           viewScaleInfo: sharer.getActiveViewScaleInfo()
         });
       }
@@ -858,7 +890,18 @@ export const MiddlewareSelector: BoardMiddleware<
       const style = { activeColor, activeAreaColor, lockedColor, referenceColor };
 
       const { activeStore, sharedStore } = snapshot;
-      const { scale, offsetLeft, offsetTop, offsetRight, offsetBottom, width, height, contextHeight, contextWidth, devicePixelRatio } = activeStore;
+      const {
+        scale,
+        offsetLeft,
+        offsetTop,
+        offsetRight,
+        offsetBottom,
+        width,
+        height,
+        contextHeight,
+        contextWidth,
+        devicePixelRatio
+      } = activeStore;
       if (rotateControllerPattern.fill !== activeColor) {
         rotateControllerPattern = createRotateControllerPattern({
           fill: innerConfig.activeColor,

@@ -1,5 +1,25 @@
-import { ViewContext2D, Element, ElementType, ElementSize, ViewScaleInfo, ViewSizeInfo, TransformAction } from '@idraw/types';
-import { istype, isColorStr, generateSVGPath, rotateElement, is, getDefaultElementDetailConfig, calcViewBoxSize } from '@idraw/util';
+import {
+  ViewContext2D,
+  Element,
+  ElementType,
+  ElementSize,
+  ViewScaleInfo,
+  ViewSizeInfo,
+  TransformAction
+  // PointSize
+} from '@idraw/types';
+import {
+  istype,
+  isColorStr,
+  generateSVGPath,
+  rotateElement,
+  is,
+  getDefaultElementDetailConfig,
+  calcViewBoxSize
+  // elementToBoxInfo,
+  // calcViewPointSize
+} from '@idraw/util';
+import { Calculator } from '../calculator';
 import { createColorStyle } from './color';
 
 const defaultElemConfig = getDefaultElementDetailConfig();
@@ -35,7 +55,7 @@ export function drawBox(
     ctx.globalAlpha = opacity;
     drawBoxBackground(ctx, viewElem, { pattern, viewScaleInfo, viewSizeInfo });
     renderContent?.();
-    drawBoxBorder(ctx, viewElem, { viewScaleInfo, viewSizeInfo });
+    drawBoxBorder(ctx, viewElem, { originElem, viewScaleInfo, viewSizeInfo });
     ctx.globalAlpha = parentOpacity;
   };
   if (clipPath) {
@@ -122,7 +142,14 @@ function drawClipPathStroke(
   const { renderContent, originElem, calcElemSize, viewSizeInfo, parentOpacity } = opts;
   const totalScale = viewSizeInfo.devicePixelRatio;
   const { clipPath, clipPathStrokeColor, clipPathStrokeWidth } = originElem?.detail || {};
-  if (clipPath && calcElemSize && clipPath.commands && typeof clipPathStrokeWidth === 'number' && clipPathStrokeWidth > 0 && clipPathStrokeColor) {
+  if (
+    clipPath &&
+    calcElemSize &&
+    clipPath.commands &&
+    typeof clipPathStrokeWidth === 'number' &&
+    clipPathStrokeWidth > 0 &&
+    clipPathStrokeColor
+  ) {
     const { x, y, w, h } = calcElemSize;
     const { originW, originH, originX, originY } = clipPath;
     const scaleW = w / originW;
@@ -217,7 +244,11 @@ export function drawBoxBackground(
   }
 }
 
-export function drawBoxBorder(ctx: ViewContext2D, viewElem: Element<ElementType>, opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }): void {
+export function drawBoxBorder(
+  ctx: ViewContext2D,
+  viewElem: Element<ElementType>,
+  opts: { originElem: Element; viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo; calculator?: Calculator }
+): void {
   if (viewElem.detail.borderWidth === 0) {
     return;
   }
@@ -230,12 +261,18 @@ export function drawBoxBorder(ctx: ViewContext2D, viewElem: Element<ElementType>
   if (isColorStr(viewElem.detail.borderColor) === true) {
     borderColor = viewElem.detail.borderColor as string;
   }
-  const { borderWidth, borderRadius, borderDash, boxSizing = defaultElemConfig.boxSizing } = viewElem.detail;
-  let bw: number = 0;
-  if (typeof borderWidth === 'number') {
-    bw = borderWidth || 1;
+
+  const { borderDash, borderWidth, borderRadius, boxSizing = defaultElemConfig.boxSizing } = viewElem.detail;
+  let viewBorderDash: number[] = [];
+  if (Array.isArray(borderDash) && borderDash.length > 0) {
+    viewBorderDash = borderDash.map((num) => Math.ceil(num * scale));
   }
-  bw = bw * scale;
+  if (viewBorderDash.length > 0) {
+    ctx.lineCap = 'butt';
+  } else {
+    ctx.lineCap = 'square';
+  }
+
   let radiusList: [number, number, number, number] = [0, 0, 0, 0];
   if (typeof borderRadius === 'number') {
     const br = borderRadius * scale;
@@ -243,11 +280,75 @@ export function drawBoxBorder(ctx: ViewContext2D, viewElem: Element<ElementType>
   } else if (Array.isArray(borderRadius) && borderRadius?.length === 4) {
     radiusList = [borderRadius[0] * scale, borderRadius[1] * scale, borderRadius[2] * scale, borderRadius[3] * scale];
   }
-  ctx.strokeStyle = borderColor;
-  let viewBorderDash: number[] = [];
-  if (Array.isArray(borderDash) && borderDash.length > 0) {
-    viewBorderDash = borderDash.map((num) => Math.ceil(num * scale));
+
+  // // TODO
+  // const boxInfo = elementToBoxInfo(opts.originElem);
+  // const calcViewOpts = { viewScaleInfo, viewSizeInfo: opts.viewSizeInfo };
+  // const op0: PointSize = calcViewPointSize(boxInfo.op0, calcViewOpts);
+  // const op1: PointSize = calcViewPointSize(boxInfo.op1, calcViewOpts);
+  // const op2: PointSize = calcViewPointSize(boxInfo.op2, calcViewOpts);
+  // const op3: PointSize = calcViewPointSize(boxInfo.op3, calcViewOpts);
+  // const op0s: PointSize = calcViewPointSize(boxInfo.op0s, calcViewOpts);
+  // const op0e: PointSize = calcViewPointSize(boxInfo.op0e, calcViewOpts);
+  // const op1s: PointSize = calcViewPointSize(boxInfo.op1s, calcViewOpts);
+  // const op1e: PointSize = calcViewPointSize(boxInfo.op1e, calcViewOpts);
+  // const op2s: PointSize = calcViewPointSize(boxInfo.op2s, calcViewOpts);
+  // const op2e: PointSize = calcViewPointSize(boxInfo.op2e, calcViewOpts);
+  // const op3s: PointSize = calcViewPointSize(boxInfo.op3s, calcViewOpts);
+  // const op3e: PointSize = calcViewPointSize(boxInfo.op3e, calcViewOpts);
+
+  // const ip0: PointSize = calcViewPointSize(boxInfo.ip0, calcViewOpts);
+  // const ip1: PointSize = calcViewPointSize(boxInfo.ip1, calcViewOpts);
+  // const ip2: PointSize = calcViewPointSize(boxInfo.ip2, calcViewOpts);
+  // const ip3: PointSize = calcViewPointSize(boxInfo.ip3, calcViewOpts);
+  // const ip0s: PointSize = calcViewPointSize(boxInfo.ip0s, calcViewOpts);
+  // const ip0e: PointSize = calcViewPointSize(boxInfo.ip0e, calcViewOpts);
+  // const ip1s: PointSize = calcViewPointSize(boxInfo.ip1s, calcViewOpts);
+  // const ip1e: PointSize = calcViewPointSize(boxInfo.ip1e, calcViewOpts);
+  // const ip2s: PointSize = calcViewPointSize(boxInfo.ip2s, calcViewOpts);
+  // const ip2e: PointSize = calcViewPointSize(boxInfo.ip2e, calcViewOpts);
+  // const ip3s: PointSize = calcViewPointSize(boxInfo.ip3s, calcViewOpts);
+  // const ip3e: PointSize = calcViewPointSize(boxInfo.ip3e, calcViewOpts);
+
+  // ctx.fillStyle = borderColor;
+  // ctx.beginPath();
+  // ctx.moveTo(op0s.x, op0s.y);
+  // ctx.quadraticCurveTo(op0.x, op0.y, op0e.x, op0e.y);
+  // ctx.lineTo(op1s.x, op1s.y);
+  // ctx.quadraticCurveTo(op1.x, op1.y, op1e.x, op1e.y);
+  // ctx.lineTo(op2s.x, op2s.y);
+  // ctx.quadraticCurveTo(op2.x, op2.y, op2e.x, op2e.y);
+  // ctx.lineTo(op3s.x, op3s.y);
+  // ctx.quadraticCurveTo(op3.x, op3.y, op3e.x, op3e.y);
+  // ctx.lineTo(op0s.x, op0s.y);
+  // ctx.closePath();
+  // ctx.fill();
+
+  // ctx.fillStyle = '#000000';
+  // ctx.globalCompositeOperation = 'destination-out';
+  // ctx.beginPath();
+  // ctx.moveTo(ip0s.x, ip0s.y);
+  // ctx.quadraticCurveTo(ip0.x, ip0.y, ip0e.x, ip0e.y);
+  // ctx.lineTo(ip1s.x, ip1s.y);
+  // ctx.quadraticCurveTo(ip1.x, ip1.y, ip1e.x, ip1e.y);
+  // ctx.lineTo(ip2s.x, ip2s.y);
+  // ctx.quadraticCurveTo(ip2.x, ip2.y, ip2e.x, ip2e.y);
+  // ctx.lineTo(ip3s.x, ip3s.y);
+  // ctx.quadraticCurveTo(ip3.x, ip3.y, ip3e.x, ip3e.y);
+  // ctx.lineTo(ip0s.x, ip0s.y);
+  // ctx.closePath();
+  // ctx.fill();
+  // ctx.globalCompositeOperation = 'source-over';
+  // return;
+  // // TODO
+
+  let bw: number = 0;
+  if (typeof borderWidth === 'number') {
+    bw = borderWidth || 1;
   }
+  bw = bw * scale;
+
+  ctx.strokeStyle = borderColor;
 
   let borderTop = 0;
   let borderRight = 0;
@@ -338,11 +439,6 @@ export function drawBoxBorder(ctx: ViewContext2D, viewElem: Element<ElementType>
     // if (r < w / 2 && r < h / 2) {
     //   r = r + bw / 2;
     // }
-    if (viewBorderDash.length > 0) {
-      ctx.lineCap = 'butt';
-    } else {
-      ctx.lineCap = 'square';
-    }
 
     // TODO
     w = Math.max(w, 1);

@@ -1,5 +1,9 @@
 import { isColorStr } from './color';
 
+function positiveNum(value: any) {
+  return typeof value === 'number' && value >= 0;
+}
+
 function number(value: any) {
   return typeof value === 'number' && (value > 0 || value <= 0);
 }
@@ -13,11 +17,11 @@ function y(value: any) {
 }
 
 function w(value: any) {
-  return typeof value === 'number' && value >= 0;
+  return positiveNum(value);
 }
 
 function h(value: any) {
-  return typeof value === 'number' && value >= 0;
+  return positiveNum(value);
 }
 
 function angle(value: any) {
@@ -25,11 +29,25 @@ function angle(value: any) {
 }
 
 function borderWidth(value: any) {
-  return w(value);
+  return (
+    positiveNum(value) ||
+    (Array.isArray(value) &&
+      positiveNum(value[0]) &&
+      positiveNum(value[1]) &&
+      positiveNum(value[2]) &&
+      positiveNum(value[3]))
+  );
 }
 
 function borderRadius(value: any) {
-  return number(value) && value >= 0;
+  return (
+    positiveNum(value) ||
+    (Array.isArray(value) &&
+      positiveNum(value[0]) &&
+      positiveNum(value[1]) &&
+      positiveNum(value[2]) &&
+      positiveNum(value[3]))
+  );
 }
 
 function color(value: any) {
@@ -49,7 +67,11 @@ function imageSrc(value: any) {
 }
 
 function svg(value: any) {
-  return typeof value === 'string' && /^(<svg[\s]{1,}|<svg>)/i.test(`${value}`.trim()) && /<\/[\s]{0,}svg>$/i.test(`${value}`.trim());
+  return (
+    typeof value === 'string' &&
+    /^(<svg[\s]{1,}|<svg>)/i.test(`${value}`.trim()) &&
+    /<\/[\s]{0,}svg>$/i.test(`${value}`.trim())
+  );
 }
 
 function html(value: any) {
@@ -98,6 +120,7 @@ function numberStr(value: any): boolean {
 }
 
 export const is = {
+  positiveNum,
   x,
   y,
   w,

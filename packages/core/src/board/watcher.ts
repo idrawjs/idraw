@@ -1,4 +1,12 @@
-import type { Point, BoardWatcherEventMap, Data, Element, ElementType, BoardWatcherOptions, BoardWatcherStore } from '@idraw/types';
+import type {
+  Point,
+  BoardWatcherEventMap,
+  Data,
+  Element,
+  ElementType,
+  BoardWatcherOptions,
+  BoardWatcherStore
+} from '@idraw/types';
 import { EventEmitter, Store } from '@idraw/util';
 
 function isBoardAvailableNum(num: any): boolean {
@@ -11,7 +19,9 @@ export class BoardWatcher extends EventEmitter<BoardWatcherEventMap> {
   #hasDestroyed: boolean = false;
   constructor(opts: BoardWatcherOptions) {
     super();
-    const store = new Store<BoardWatcherStore>({ defaultStorage: { hasPointDown: false, prevClickPoint: null, inCanvas: true } });
+    const store = new Store<BoardWatcherStore>({
+      defaultStorage: { hasPointDown: false, prevClickPoint: null, inCanvas: true }
+    });
     this.#store = store;
     this.#opts = opts;
     this.#init();
@@ -25,25 +35,27 @@ export class BoardWatcher extends EventEmitter<BoardWatcherEventMap> {
     if (this.#hasDestroyed) {
       return;
     }
+    const canvas = this.#opts.boardContent.boardContext.canvas;
     const container = window;
     container.addEventListener('mousemove', this.#onHover);
     container.addEventListener('mousedown', this.#onPointStart);
     container.addEventListener('mousemove', this.#onPointMove);
     container.addEventListener('mouseup', this.#onPointEnd);
     // container.addEventListener('mouseleave', this.#onPointLeave);
-    container.addEventListener('wheel', this.#onWheel, { passive: false });
+    canvas.addEventListener('wheel', this.#onWheel, { passive: false });
     container.addEventListener('click', this.#onClick);
     container.addEventListener('contextmenu', this.#onContextMenu);
   }
 
   offEvents() {
     const container = window;
+    const canvas = this.#opts.boardContent.boardContext.canvas;
     container.removeEventListener('mousemove', this.#onHover);
     container.removeEventListener('mousedown', this.#onPointStart);
     container.removeEventListener('mousemove', this.#onPointMove);
     container.removeEventListener('mouseup', this.#onPointEnd);
     container.removeEventListener('mouseleave', this.#onPointLeave);
-    container.removeEventListener('wheel', this.#onWheel);
+    canvas.removeEventListener('wheel', this.#onWheel);
     container.removeEventListener('click', this.#onClick);
     container.removeEventListener('contextmenu', this.#onContextMenu);
   }
@@ -101,7 +113,12 @@ export class BoardWatcher extends EventEmitter<BoardWatcherEventMap> {
     const maxLimitTime = 500;
     const t = Date.now();
     const preClickPoint = this.#store.get('prevClickPoint');
-    if (preClickPoint && t - preClickPoint.t <= maxLimitTime && Math.abs(preClickPoint.x - point.x) <= 5 && Math.abs(preClickPoint.y - point.y) <= 5) {
+    if (
+      preClickPoint &&
+      t - preClickPoint.t <= maxLimitTime &&
+      Math.abs(preClickPoint.x - point.x) <= 5 &&
+      Math.abs(preClickPoint.y - point.y) <= 5
+    ) {
       this.trigger('doubleClick', { point });
     } else {
       this.#store.set('prevClickPoint', point);

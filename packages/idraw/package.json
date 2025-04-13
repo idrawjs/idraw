@@ -22,7 +22,6 @@
   "license": "MIT",
   "devDependencies": {},
   "dependencies": {
-    "@idraw/board": "workspace:^0.4.0-beta.39",
     "@idraw/core": "workspace:^0.4.0-beta.39",
     "@idraw/renderer": "workspace:^0.4.0-beta.39",
     "@idraw/types": "workspace:^0.4.0-beta.39",

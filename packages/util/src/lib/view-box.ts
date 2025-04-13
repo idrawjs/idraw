@@ -2,10 +2,14 @@ import type { Element, ViewScaleInfo, ViewSizeInfo, ViewBoxSize } from '@idraw/t
 import { getDefaultElementDetailConfig } from './config';
 const defaultElemConfig = getDefaultElementDetailConfig();
 
-export function calcViewBoxSize(viewElem: Element, opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }): ViewBoxSize {
+export function calcViewBoxSize(
+  viewElem: Element,
+  opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }
+): ViewBoxSize {
   const { viewScaleInfo } = opts;
   const { scale } = viewScaleInfo;
-  let { borderRadius, borderDash } = viewElem.detail;
+  let { borderRadius } = viewElem.detail;
+  const { borderDash } = viewElem.detail;
   const hasBorderDash = Array.isArray(borderDash) && borderDash.length > 0;
 
   const { boxSizing = defaultElemConfig.boxSizing, borderWidth } = viewElem.detail;

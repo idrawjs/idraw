@@ -7,34 +7,34 @@ import type {
   ViewCalculatorOptions,
   ViewScaleInfo,
   ViewSizeInfo,
-  ViewCalculatorStorage,
+  VirtualFlatStorage,
   ViewRectInfo,
   ModifyOptions,
-  ViewVisibleInfo
+  VirtualFlatItem
 } from '@idraw/types';
 import {
   is,
-  isViewPointInElement,
   getViewPointAtElement,
   Store,
-  sortElementsViewVisiableInfoMap,
-  updateViewVisibleInfoMapStatus,
   calcViewPointSize,
   findElementFromListByPosition,
   getGroupQueueByElementPosition,
   calcElementOriginRectInfo,
   originRectInfoToRangeRectInfo
+  // elementToBoxInfo
 } from '@idraw/util';
+import { sortElementsViewVisiableInfoMap, updateVirtualFlatItemMapStatus } from './view-visible';
+import { calcVirtualFlatDetail } from './virtual-flat';
 
 export class Calculator implements ViewCalculator {
   #opts: ViewCalculatorOptions;
-  #store: Store<ViewCalculatorStorage>;
+  #store: Store<VirtualFlatStorage>;
 
   constructor(opts: ViewCalculatorOptions) {
     this.#opts = opts;
-    this.#store = new Store<ViewCalculatorStorage>({
+    this.#store = new Store<VirtualFlatStorage>({
       defaultStorage: {
-        viewVisibleInfoMap: {},
+        virtualFlatItemMap: {},
         visibleCount: 0,
         invisibleCount: 0
       }
@@ -55,36 +55,23 @@ export class Calculator implements ViewCalculator {
   }
 
   needRender(elem: Element<ElementType>): boolean {
-    const viewVisibleInfoMap = this.#store.get('viewVisibleInfoMap');
-    const info = viewVisibleInfoMap[elem.uuid];
+    const virtualFlatItemMap = this.#store.get('virtualFlatItemMap');
+    const info = virtualFlatItemMap[elem.uuid];
     if (!info) {
       return true;
     }
     return info.isVisibleInView;
   }
 
-  /**
-   * @deprecated
-   */
-  isPointInElement(p: Point, elem: Element<ElementType>, viewScaleInfo: ViewScaleInfo, viewSizeInfo: ViewSizeInfo): boolean {
-    const context2d = this.#opts.viewContext;
-    return isViewPointInElement(p, {
-      context2d,
-      element: elem,
-      viewScaleInfo,
-      viewSizeInfo
-    });
-  }
-
   getPointElement(
     p: Point,
     opts: { data: Data; viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }
   ): { index: number; element: null | Element<ElementType>; groupQueueIndex: number } {
-    const context2d = this.#opts.viewContext;
+    const context2d = this.#opts.tempContext;
     return getViewPointAtElement(p, { ...opts, ...{ context2d } });
   }
 
-  resetViewVisibleInfoMap(
+  resetVirtualFlatItemMap(
     data: Data,
     opts: {
       viewScaleInfo: ViewScaleInfo;
@@ -92,16 +79,24 @@ export class Calculator implements ViewCalculator {
     }
   ): void {
     if (data) {
-      const { viewVisibleInfoMap, invisibleCount, visibleCount } = sortElementsViewVisiableInfoMap(data.elements, opts);
-      this.#store.set('viewVisibleInfoMap', viewVisibleInfoMap);
+      const { virtualFlatItemMap, invisibleCount, visibleCount } = sortElementsViewVisiableInfoMap(data.elements, {
+        ...opts,
+        ...{
+          tempContext: this.#opts.tempContext
+        }
+      });
+      this.#store.set('virtualFlatItemMap', virtualFlatItemMap);
       this.#store.set('invisibleCount', invisibleCount);
       this.#store.set('visibleCount', visibleCount);
     }
   }
 
   updateVisiableStatus(opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }) {
-    const { viewVisibleInfoMap, invisibleCount, visibleCount } = updateViewVisibleInfoMapStatus(this.#store.get('viewVisibleInfoMap'), opts);
-    this.#store.set('viewVisibleInfoMap', viewVisibleInfoMap);
+    const { virtualFlatItemMap, invisibleCount, visibleCount } = updateVirtualFlatItemMapStatus(
+      this.#store.get('virtualFlatItemMap'),
+      opts
+    );
+    this.#store.set('virtualFlatItemMap', virtualFlatItemMap);
     this.#store.set('invisibleCount', invisibleCount);
     this.#store.set('visibleCount', visibleCount);
   }
@@ -114,7 +109,7 @@ export class Calculator implements ViewCalculator {
       viewSizeInfo: ViewSizeInfo;
     }
   ): ViewRectInfo | null {
-    const infoData = this.#store.get('viewVisibleInfoMap')[uuid];
+    const infoData = this.#store.get('virtualFlatItemMap')[uuid];
     if (!infoData?.originRectInfo) {
       return null;
     }
@@ -148,7 +143,7 @@ export class Calculator implements ViewCalculator {
       viewSizeInfo: ViewSizeInfo;
     }
   ): ViewRectInfo | null {
-    const infoData = this.#store.get('viewVisibleInfoMap')[uuid];
+    const infoData = this.#store.get('virtualFlatItemMap')[uuid];
     if (!infoData?.originRectInfo) {
       return null;
     }
@@ -174,7 +169,7 @@ export class Calculator implements ViewCalculator {
     return viewRectInfo;
   }
 
-  modifyViewVisibleInfoMap(
+  modifyVirtualFlatItemMap(
     data: Data,
     opts: {
       modifyOptions: ModifyOptions; // TODO
@@ -185,7 +180,7 @@ export class Calculator implements ViewCalculator {
     const { modifyOptions, viewScaleInfo, viewSizeInfo } = opts;
     const { type, content } = modifyOptions;
     const list = data.elements;
-    const viewVisibleInfoMap = this.#store.get('viewVisibleInfoMap');
+    const virtualFlatItemMap = this.#store.get('virtualFlatItemMap');
     if (type === 'deleteElement') {
       const { element } = content as ModifyOptions<'deleteElement'>['content'];
       const uuids: string[] = [];
@@ -199,13 +194,13 @@ export class Calculator implements ViewCalculator {
       };
       _walk(element);
       uuids.forEach((uuid) => {
-        delete viewVisibleInfoMap[uuid];
+        delete virtualFlatItemMap[uuid];
       });
-      this.#store.set('viewVisibleInfoMap', viewVisibleInfoMap);
+      this.#store.set('virtualFlatItemMap', virtualFlatItemMap);
     }
     // else if (type === 'updateElement') {
     //   // TODO
-    //   this.resetViewVisibleInfoMap(data, { viewScaleInfo, viewSizeInfo });
+    //   this.resetVirtualFlatItemMap(data, { viewScaleInfo, viewSizeInfo });
     // }
     else if (type === 'addElement' || type === 'updateElement') {
       const { position } = content as ModifyOptions<'addElement'>['content'];
@@ -214,27 +209,35 @@ export class Calculator implements ViewCalculator {
       if (element) {
         if (type === 'updateElement' && element.type === 'group') {
           // TODO
-          this.resetViewVisibleInfoMap(data, { viewScaleInfo, viewSizeInfo });
+          this.resetVirtualFlatItemMap(data, { viewScaleInfo, viewSizeInfo });
         } else {
           const originRectInfo = calcElementOriginRectInfo(element, {
             groupQueue: groupQueue || []
           });
-          const newViewVisibleInfo: ViewVisibleInfo = {
+          const newVirtualFlatItem: VirtualFlatItem = {
+            type: element.type,
             originRectInfo,
             rangeRectInfo: is.angle(element.angle) ? originRectInfoToRangeRectInfo(originRectInfo) : originRectInfo,
             isVisibleInView: true,
-            isGroup: element?.type === 'group',
-            position: [...position]
+            position: [...position],
+            ...calcVirtualFlatDetail(element, {
+              tempContext: this.#opts.tempContext
+            })
           };
-          viewVisibleInfoMap[element.uuid] = newViewVisibleInfo;
-          this.#store.set('viewVisibleInfoMap', viewVisibleInfoMap);
+          virtualFlatItemMap[element.uuid] = newVirtualFlatItem;
+          this.#store.set('virtualFlatItemMap', virtualFlatItemMap);
           if (type === 'updateElement') {
             this.updateVisiableStatus({ viewScaleInfo, viewSizeInfo });
           }
         }
       }
     } else if (type === 'moveElement') {
-      this.resetViewVisibleInfoMap(data, { viewScaleInfo, viewSizeInfo });
+      this.resetVirtualFlatItemMap(data, { viewScaleInfo, viewSizeInfo });
     }
+  }
+
+  getVirtualFlatItem(uuid: string): VirtualFlatItem | null {
+    const itemMap = this.#store.get('virtualFlatItemMap');
+    return itemMap[uuid] || null;
   }
 }

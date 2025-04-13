@@ -1,5 +1,6 @@
 export * from './lib/util';
 export * from './lib/point';
+export * from './lib/box';
 export * from './lib/data';
 export * from './lib/element';
 export * from './lib/view';
@@ -17,3 +18,4 @@ export * from './lib/html';
 export * from './lib/svg-path';
 export * from './lib/config';
 export * from './lib/modify';
+export * from './lib/virtual-flat';

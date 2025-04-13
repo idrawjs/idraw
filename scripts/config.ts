@@ -6,10 +6,6 @@ const packages = [
     globalName: 'iDrawUtil'
   },
   {
-    dirName: 'board',
-    globalName: 'iDrawBoard'
-  },
-  {
     dirName: 'renderer',
     globalName: 'iDrawRenderer'
   },

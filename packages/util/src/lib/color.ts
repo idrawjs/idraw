@@ -1,7 +1,7 @@
 import type { LinearGradientColor, RadialGradientColor } from '@idraw/types';
 
 export function toColorHexNum(color: string): number {
-  return parseInt(color.replace(/^\#/, '0x'));
+  return parseInt(color.replace(/^#/, '0x'));
 }
 
 export function toColorHexStr(color: number): string {
@@ -9,7 +9,9 @@ export function toColorHexStr(color: number): string {
 }
 
 export function isColorStr(color?: string): boolean {
-  return typeof color === 'string' && (/^\#([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(color) || /^[a-z]{1,}$/i.test(color));
+  return (
+    typeof color === 'string' && (/^#([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(color) || /^[a-z]{1,}$/i.test(color))
+  );
 }
 
 // https://stackoverflow.com/questions/1573053/javascript-function-to-convert-color-names-to-hex-codes
@@ -170,6 +172,8 @@ export function colorToCSS(color?: string | LinearGradientColor | RadialGradient
   let css = 'transparent';
   if (typeof color === 'string') {
     css = color;
+  } else if (color?.stops.length === 1) {
+    css = color.stops[0].color;
   } else if (color?.type === 'linear-gradient') {
     const items: string[] = [];
     if (typeof color.angle === 'number') {
@@ -220,13 +224,13 @@ export function mergeHexColorAlpha(hex: string, alpha: number): string {
     return hex;
   }
   let hexAlpha = 1;
-  const regHex1 = /^\#[0-9a-f]{6,6}$/i;
-  const regHex2 = /^\#[0-9a-f]{8,8}$/i;
+  const regHex1 = /^#[0-9a-f]{6,6}$/i;
+  const regHex2 = /^#[0-9a-f]{8,8}$/i;
   let result = hex;
   if (regHex1.test(hex)) {
-    hexAlpha = parseInt(hex.substring(5, 7).replace(/^\#/, '0x'));
+    hexAlpha = parseInt(hex.substring(5, 7).replace(/^#/, '0x'));
   } else if (regHex2.test(hex)) {
-    hexAlpha = parseInt(hex.substring(7, 9).replace(/^\#/, '0x'));
+    hexAlpha = parseInt(hex.substring(7, 9).replace(/^#/, '0x'));
     result = hex.substring(0, 7);
   }
   hexAlpha = hexAlpha * alpha;

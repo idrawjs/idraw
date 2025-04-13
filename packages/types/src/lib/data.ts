@@ -1,20 +1,34 @@
-import type { Element, ElementType, ElementAssets, ElementSize, ElementGroupDetail, ElementGlobalDetail } from './element';
+import type { Element, ElementType, ElementAssets, ElementSize, ElementGroupDetail } from './element';
 
 export type DataLayout = Pick<ElementSize, 'x' | 'y' | 'w' | 'h'> & {
   detail: Pick<
     ElementGroupDetail,
-    'background' | 'borderWidth' | 'overflow' | 'borderColor' | 'borderDash' | 'borderRadius' | 'shadowBlur' | 'shadowColor' | 'shadowOffsetX' | 'shadowOffsetY'
+    | 'background'
+    | 'borderWidth'
+    | 'overflow'
+    | 'borderColor'
+    | 'borderDash'
+    | 'borderRadius'
+    | 'shadowBlur'
+    | 'shadowColor'
+    | 'shadowOffsetX'
+    | 'shadowOffsetY'
   >;
   operations?: {
     position?: 'absolute' | 'relative';
   };
 };
 
+export interface DataGlobalDetail {
+  background?: string;
+}
+
 export type Data<E extends Record<string, any> = Record<string, any>> = {
+  name?: string;
   elements: Element<ElementType, E>[];
   assets?: ElementAssets;
   layout?: DataLayout;
-  global?: ElementGlobalDetail;
+  global?: DataGlobalDetail;
 };
 
 export type Matrix = [

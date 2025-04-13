@@ -1,10 +1,14 @@
-import type { IDrawSettings, IDrawStorage, IDrawMode } from '@idraw/types';
+import type { IDrawSettings, IDrawOptions, IDrawStorage, IDrawMode } from '@idraw/types';
 import { istype } from '@idraw/util';
 
 export const defaultMode: IDrawMode = 'select';
 
 export const defaultSettings: Required<Pick<IDrawSettings, 'mode'>> = {
   mode: defaultMode
+};
+
+export const defaultOptions: Required<Pick<IDrawOptions, 'devicePixelRatio'>> = {
+  devicePixelRatio: window.devicePixelRatio
 };
 
 export function getDefaultStorage(): IDrawStorage {

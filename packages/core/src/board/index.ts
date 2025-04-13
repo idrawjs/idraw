@@ -1,4 +1,4 @@
-import { Renderer } from '@idraw/renderer';
+import { Renderer, Calculator } from '@idraw/renderer';
 import {
   // throttle,
   calcElementsContextSize,
@@ -16,10 +16,9 @@ import type {
   UtilEventEmitter,
   ModifyOptions
 } from '@idraw/types';
-import { Calculator } from './lib/calculator';
-import { BoardWatcher } from './lib/watcher';
-import { Sharer } from './lib/sharer';
-import { Viewer } from './lib/viewer';
+import { BoardWatcher } from './watcher';
+import { Sharer } from './sharer';
+import { Viewer } from './viewer';
 
 // const throttleTime = 10; // ms
 
@@ -44,16 +43,17 @@ export class Board<T extends BoardExtendEventMap = BoardExtendEventMap> {
   constructor(opts: BoardOptions) {
     const { boardContent } = opts;
     const sharer = new Sharer();
-    const calculator = new Calculator({ viewContext: boardContent.viewContext });
+
     const watcher = new BoardWatcher({
       boardContent,
       sharer
     });
     const renderer = new Renderer({
       viewContext: boardContent.viewContext,
-      sharer,
-      calculator
+      tempContext: boardContent.tempContext,
+      sharer
     });
+    const calculator = renderer.getCalculator();
 
     this.#opts = opts;
     this.#sharer = sharer;
@@ -331,12 +331,12 @@ export class Board<T extends BoardExtendEventMap = BoardExtendEventMap> {
       extend: true
     });
     if (modifiedOptions) {
-      this.#viewer.resetViewVisibleInfoMap(data, {
+      this.#viewer.resetVirtualFlatItemMap(data, {
         viewSizeInfo,
         viewScaleInfo
       });
     } else {
-      this.#viewer.resetViewVisibleInfoMap(data, {
+      this.#viewer.resetVirtualFlatItemMap(data, {
         viewSizeInfo,
         viewScaleInfo
       });
@@ -374,7 +374,10 @@ export class Board<T extends BoardExtendEventMap = BoardExtendEventMap> {
     const calculator = this.#calculator;
     const eventHub = this.#eventHub;
 
-    const obj = middleware({ boardContent, sharer, viewer, calculator, eventHub: eventHub as UtilEventEmitter<any>, container }, config);
+    const obj = middleware(
+      { boardContent, sharer, viewer, calculator, eventHub: eventHub as UtilEventEmitter<any>, container },
+      config
+    );
     obj.use?.();
     this.#middlewares.push(middleware);
     this.#activeMiddlewareObjs.push(obj);

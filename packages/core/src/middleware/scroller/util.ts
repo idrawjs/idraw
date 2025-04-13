@@ -1,6 +1,22 @@
-import type { Point, BoardViewerFrameSnapshot, ViewScaleInfo, ViewSizeInfo, ViewContext2D, ElementSize, MiddlewareScrollerStyle } from '@idraw/types';
+import type {
+  Point,
+  BoardViewerFrameSnapshot,
+  ViewScaleInfo,
+  ViewSizeInfo,
+  ViewContext2D,
+  ElementSize,
+  MiddlewareScrollerStyle
+} from '@idraw/types';
 import { getViewScaleInfoFromSnapshot, getViewSizeInfoFromSnapshot } from '@idraw/util';
-import { keyActivePoint, keyActiveThumbType, keyPrevPoint, keyXThumbRect, keyYThumbRect, keyHoverXThumbRect, keyHoverYThumbRect } from './config';
+import {
+  keyActivePoint,
+  keyActiveThumbType,
+  keyPrevPoint,
+  keyXThumbRect,
+  keyYThumbRect,
+  keyHoverXThumbRect,
+  keyHoverYThumbRect
+} from './config';
 
 const scrollerLineWidth = 16;
 const minThumbLength = scrollerLineWidth * 2.5;
@@ -153,7 +169,8 @@ function drawScrollerThumb(
     borderColor: string;
   }
 ): void {
-  let { x, y, h, w, background, borderColor } = opts;
+  let { x, y, h, w } = opts;
+  const { background, borderColor } = opts;
 
   ctx.save();
   ctx.shadowColor = '#FFFFFF';
@@ -203,7 +220,12 @@ function drawScrollerThumb(
 
 function drawScrollerInfo(
   overlayContext: ViewContext2D,
-  opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo; scrollInfo: ScrollInfo; style: MiddlewareScrollerStyle }
+  opts: {
+    viewScaleInfo: ViewScaleInfo;
+    viewSizeInfo: ViewSizeInfo;
+    scrollInfo: ScrollInfo;
+    style: MiddlewareScrollerStyle;
+  }
 ) {
   const ctx = overlayContext;
   const { viewScaleInfo, viewSizeInfo, scrollInfo, style } = opts;
@@ -261,7 +283,10 @@ function drawScrollerInfo(
   };
 }
 
-export function drawScroller(ctx: ViewContext2D, opts: { snapshot: BoardViewerFrameSnapshot; style: MiddlewareScrollerStyle }) {
+export function drawScroller(
+  ctx: ViewContext2D,
+  opts: { snapshot: BoardViewerFrameSnapshot; style: MiddlewareScrollerStyle }
+) {
   const { snapshot, style } = opts;
   const viewSizeInfo = getViewSizeInfoFromSnapshot(snapshot);
   const viewScaleInfo = getViewScaleInfoFromSnapshot(snapshot);

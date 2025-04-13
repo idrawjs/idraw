@@ -1,5 +1,4 @@
 import { Renderer } from '@idraw/renderer';
-import { Calculator } from '@idraw/board';
 import { createOffscreenContext2D } from '@idraw/util';
 import type { Data, LoadItemMap, ViewContext2D, ViewScaleInfo, ViewSizeInfo } from '@idraw/types';
 
@@ -26,10 +25,9 @@ export type ExportImageFileResult = {
 export async function exportImageFileBlobURL(opts: ExportImageFileOptions): Promise<ExportImageFileResult> {
   const { data, width, height, devicePixelRatio, viewScaleInfo, viewSizeInfo, loadItemMap } = opts;
   let viewContext: ViewContext2D | null = createOffscreenContext2D({ width, height, devicePixelRatio });
-  let calculator: Calculator | null = new Calculator({ viewContext });
+  // let calculator: Calculator | null = new Calculator({ viewContext });
   let renderer: Renderer | null = new Renderer({
-    viewContext,
-    calculator
+    viewContext
   });
   renderer.setLoadItemMap(loadItemMap);
   renderer.drawData(data, {
@@ -46,7 +44,6 @@ export async function exportImageFileBlobURL(opts: ExportImageFileOptions): Prom
 
   offScreenCanvas = null;
   viewContext = null;
-  calculator = null;
   renderer = null;
 
   return {

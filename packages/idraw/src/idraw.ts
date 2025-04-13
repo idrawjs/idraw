@@ -12,7 +12,8 @@ import type {
   Element,
   RecursivePartial,
   ElementPosition,
-  IDrawStorage
+  IDrawStorage,
+  DataLayout
 } from '@idraw/types';
 import {
   createElement,
@@ -25,9 +26,17 @@ import {
   filterCompactData,
   calcViewCenterContent,
   calcViewCenter,
-  Store
+  Store,
+  merge
 } from '@idraw/util';
-import { defaultSettings, getDefaultStorage, defaultMode, parseStyles, parseSettings } from './setting/config';
+import {
+  defaultSettings,
+  defaultOptions,
+  getDefaultStorage,
+  defaultMode,
+  parseStyles,
+  parseSettings
+} from './setting/config';
 import { exportImageFileBlobURL } from './file';
 import type { ExportImageFileBaseOptions, ExportImageFileResult } from './file';
 import type { IDrawEvent } from './event';
@@ -42,10 +51,10 @@ export class iDraw {
   });
 
   constructor(mount: HTMLDivElement, options: IDrawOptions) {
-    const opts = { ...defaultSettings, ...options };
+    const opts = { ...defaultSettings, ...defaultOptions, ...options };
     this.#store.set('middlewareStyles', parseStyles(opts));
-    const { width, height, devicePixelRatio, createCustomContext2D } = opts;
-    const core = new Core<IDrawEvent>(mount, { width, height, devicePixelRatio, createCustomContext2D });
+    const { width, height, devicePixelRatio } = opts;
+    const core = new Core<IDrawEvent>(mount, { width, height, devicePixelRatio });
     this.#core = core;
     this.#opts = opts;
     this.#init();
@@ -85,7 +94,7 @@ export class iDraw {
     const store = this.#store;
     const { mode, styles } = parseSettings(opts);
     let needFresh = false;
-    let newOpts: IDrawSettings = {};
+    const newOpts: IDrawSettings = {};
     store.clear();
     if (mode) {
       changeMode(mode, core, store);
@@ -181,20 +190,20 @@ export class iDraw {
     this.#core.trigger(name, e as IDrawEvent[T]);
   }
 
-  selectElement(uuid: string) {
-    this.selectElements([uuid]);
+  selectElement(uuid: string, opts?: { type?: string }) {
+    this.trigger(coreEventKeys.SELECT, { uuids: [uuid], type: opts?.type || 'selectElement' });
   }
 
-  selectElements(uuids: string[]) {
-    this.trigger(coreEventKeys.SELECT, { uuids });
+  selectElements(uuids: string[], opts?: { type?: string }) {
+    this.trigger(coreEventKeys.SELECT, { uuids, type: opts?.type || 'selectElements' });
   }
 
-  selectElementByPosition(position: ElementPosition) {
-    this.selectElementsByPositions([position]);
+  selectElementByPosition(position: ElementPosition, opts?: { type?: string }) {
+    this.trigger(coreEventKeys.SELECT, { positions: [position], type: opts?.type || 'selectElementByPosition' });
   }
 
-  selectElementsByPositions(positions: ElementPosition[]) {
-    this.trigger(coreEventKeys.SELECT, { positions });
+  selectElementsByPositions(positions: ElementPosition[], opts?: { type?: string }) {
+    this.trigger(coreEventKeys.SELECT, { positions, type: opts?.type || 'selectElementsByPositions' });
   }
 
   cancelElements() {
@@ -230,6 +239,14 @@ export class iDraw {
     core.trigger(coreEventKeys.CHANGE, { data, type: 'updateElement' });
   }
 
+  updateElementName(uuid: string, name: string) {
+    const core = this.#core;
+    const data: Data = core.getData() || { elements: [] };
+    updateElementInList(uuid, { name }, data.elements);
+    core.setData(data);
+    core.trigger(coreEventKeys.CHANGE, { data, type: 'updateElementName' });
+  }
+
   addElement(
     element: Element,
     opts?: {
@@ -241,7 +258,7 @@ export class iDraw {
     if (!opts || !opts?.position?.length) {
       data.elements.push(element);
     } else if (opts?.position) {
-      const position = [...opts?.position];
+      const position = [...(opts?.position || [])];
       insertElementToListByPosition(element, position, data.elements);
     }
     core.setData(data);
@@ -268,6 +285,15 @@ export class iDraw {
     core.setData(data);
     core.refresh();
     core.trigger(coreEventKeys.CHANGE, { data, type: 'moveElement' });
+  }
+
+  updateLayout(layout: Partial<DataLayout>) {
+    const core = this.#core;
+    const data: Data = core.getData() || { elements: [] };
+    data.layout = merge(data.layout || {}, layout) as DataLayout;
+    core.setData(data);
+    core.refresh();
+    core.trigger(coreEventKeys.CHANGE, { data, type: 'updateLayout' });
   }
 
   async getImageBlobURL(opts?: ExportImageFileBaseOptions): Promise<ExportImageFileResult> {

@@ -7,8 +7,8 @@ import { ViewContext2D } from '@idraw/types';
 
 export interface RendererOptions {
   viewContext: ViewContext2D;
+  tempContext: ViewContext2D;
   sharer?: StoreSharer;
-  calculator?: ViewCalculator;
 }
 
 export interface RendererEvent {
@@ -37,7 +37,7 @@ export interface RendererDrawOptions {
 
 export interface RendererDrawElementOptions extends RendererDrawOptions {
   loader: RendererLoader;
-  calculator?: ViewCalculator;
+  calculator: ViewCalculator;
   viewScaleInfo: ViewScaleInfo;
   viewSizeInfo: ViewSizeInfo;
   parentElementSize: ElementSize;
