@@ -13,35 +13,21 @@ import type {
   RecursivePartial,
   ElementPosition,
   IDrawStorage,
-  DataLayout
+  DataLayout,
+  DataGlobal,
+  Middleware
 } from '@idraw/types';
-import {
-  createElement,
-  insertElementToListByPosition,
-  updateElementInList,
-  deleteElementInList,
-  moveElementPosition,
-  getElementPositionFromList,
-  calcElementListSize,
-  filterCompactData,
-  calcViewCenterContent,
-  calcViewCenter,
-  Store,
-  merge
-} from '@idraw/util';
-import {
-  defaultSettings,
-  defaultOptions,
-  getDefaultStorage,
-  defaultMode,
-  parseStyles,
-  parseSettings
-} from './setting/config';
-import { exportImageFileBlobURL } from './file';
+import { filterCompactData, calcViewCenterContent, calcViewCenter, Store } from '@idraw/util';
+import { defaultSettings, defaultOptions, getDefaultStorage, defaultMode, parseStyles } from './setting/config';
 import type { ExportImageFileBaseOptions, ExportImageFileResult } from './file';
 import type { IDrawEvent } from './event';
-import { changeMode, runMiddlewares } from './setting/mode';
-import { changeStyles } from './setting/style';
+import { changeMode } from './setting/mode';
+import { createElement, updateElement, modifyElement, addElement, deleteElement, moveElement } from './methods/element';
+import { modifyLayout } from './methods/layout';
+import { modifyGlobal } from './methods/global';
+import { reset } from './methods/reset';
+import { setFeature } from './methods/feature';
+import { getImageBlobURL } from './methods/image';
 
 export class iDraw {
   #core: Core<IDrawEvent>;
@@ -67,54 +53,20 @@ export class iDraw {
   }
 
   #setFeature(feat: IDrawFeature, status: boolean) {
-    const store = this.#store;
-    if (['ruler', 'scroll', 'scale', 'info'].includes(feat)) {
-      const map: Record<IDrawFeature | string, keyof Omit<IDrawStorage, 'mode'>> = {
-        ruler: 'enableRuler',
-        scroll: 'enableScroll',
-        scale: 'enableScale',
-        info: 'enableInfo'
-      };
-      store.set(map[feat], !!status);
-      runMiddlewares(this.#core, store);
-      this.#core.refresh();
-    } else if (feat === 'selectInGroup') {
-      this.#core.trigger(coreEventKeys.SELECT_IN_GROUP, {
-        enable: !!status
-      });
-    } else if (feat === 'snapToGrid') {
-      this.#core.trigger(coreEventKeys.SNAP_TO_GRID, {
-        enable: !!status
-      });
-    }
+    return setFeature({ core: this.#core, store: this.#store }, feat, status);
+  }
+
+  use<C extends any = any>(middleware: Middleware<any, any, any>, config?: C) {
+    this.#core.use<C>(middleware, config);
+  }
+
+  disuse(middleware: Middleware<any, any, any>) {
+    this.#core.disuse(middleware);
   }
 
   reset(opts: IDrawSettings) {
-    const core = this.#core;
-    const store = this.#store;
-    const { mode, styles } = parseSettings(opts);
-    let needFresh = false;
-    const newOpts: IDrawSettings = {};
-    store.clear();
-    if (mode) {
-      changeMode(mode, core, store);
-      newOpts.mode = mode;
-      needFresh = true;
-    }
-    if (styles) {
-      changeStyles(styles, core, store);
-      newOpts.styles = styles;
-      needFresh = true;
-    }
-
-    if (needFresh === true) {
-      core.refresh();
-    }
-
-    this.#opts = {
-      ...this.#opts,
-      ...newOpts
-    };
+    const newOpts = reset({ core: this.#core, store: this.#store }, opts);
+    this.#opts = { ...this.#opts, ...newOpts };
   }
 
   setMode(mode: IDrawMode) {
@@ -148,10 +100,7 @@ export class iDraw {
     return data;
   }
 
-  getViewInfo(): {
-    viewSizeInfo: ViewSizeInfo;
-    viewScaleInfo: ViewScaleInfo;
-  } {
+  getViewInfo(): { viewSizeInfo: ViewSizeInfo; viewScaleInfo: ViewScaleInfo } {
     return this.#core.getViewInfo();
   }
 
@@ -212,108 +161,44 @@ export class iDraw {
 
   createElement<T extends ElementType>(
     type: T,
-    opts?: {
-      element?: RecursivePartial<Element<T>>;
-      viewCenter?: boolean;
-    }
+    element: RecursivePartial<Element<T>>,
+    opts?: { viewCenter?: boolean }
   ): Element<T> {
-    const { viewScaleInfo, viewSizeInfo } = this.#core.getViewInfo();
-    return createElement<T>(
-      type,
-      opts?.element || {},
-      opts?.viewCenter === true
-        ? {
-            viewScaleInfo,
-            viewSizeInfo
-          }
-        : undefined
-    );
+    return createElement<T>({ core: this.#core }, type, element, opts);
   }
 
   updateElement(element: Element) {
-    const core = this.#core;
-    const data: Data = core.getData() || { elements: [] };
-    updateElementInList(element.uuid, element, data.elements);
-    core.setData(data);
-    core.refresh();
-    core.trigger(coreEventKeys.CHANGE, { data, type: 'updateElement' });
+    return updateElement({ core: this.#core }, element);
   }
 
-  updateElementName(uuid: string, name: string) {
-    const core = this.#core;
-    const data: Data = core.getData() || { elements: [] };
-    updateElementInList(uuid, { name }, data.elements);
-    core.setData(data);
-    core.trigger(coreEventKeys.CHANGE, { data, type: 'updateElementName' });
+  modifyElement(element: RecursivePartial<Omit<Element, 'uuid'>> & Pick<Element, 'uuid'>) {
+    return modifyElement({ core: this.#core }, element);
   }
 
-  addElement(
-    element: Element,
-    opts?: {
-      position: ElementPosition;
-    }
-  ): Data {
-    const core = this.#core;
-    const data: Data = core.getData() || { elements: [] };
-    if (!opts || !opts?.position?.length) {
-      data.elements.push(element);
-    } else if (opts?.position) {
-      const position = [...(opts?.position || [])];
-      insertElementToListByPosition(element, position, data.elements);
-    }
-    core.setData(data);
-    core.refresh();
-    core.trigger(coreEventKeys.CHANGE, { data, type: 'addElement' });
-    return data;
+  addElement(element: Element, opts?: { position: ElementPosition }): Data {
+    return addElement({ core: this.#core }, element, opts);
   }
 
   deleteElement(uuid: string) {
-    const core = this.#core;
-    const data: Data = core.getData() || { elements: [] };
-    deleteElementInList(uuid, data.elements);
-    core.setData(data);
-    core.refresh();
-    core.trigger(coreEventKeys.CHANGE, { data, type: 'deleteElement' });
+    return deleteElement({ core: this.#core }, uuid);
   }
 
   moveElement(uuid: string, to: ElementPosition) {
-    const core = this.#core;
-    const data: Data = core.getData() || { elements: [] };
-    const from = getElementPositionFromList(uuid, data.elements);
-    const { elements: list } = moveElementPosition(data.elements, { from, to });
-    data.elements = list;
-    core.setData(data);
-    core.refresh();
-    core.trigger(coreEventKeys.CHANGE, { data, type: 'moveElement' });
+    return moveElement({ core: this.#core }, uuid, to);
   }
 
-  updateLayout(layout: Partial<DataLayout>) {
-    const core = this.#core;
-    const data: Data = core.getData() || { elements: [] };
-    data.layout = merge(data.layout || {}, layout) as DataLayout;
-    core.setData(data);
-    core.refresh();
-    core.trigger(coreEventKeys.CHANGE, { data, type: 'updateLayout' });
+  modifyLayout(layout: RecursivePartial<DataLayout> | null) {
+    return modifyLayout({ core: this.#core }, layout);
+  }
+
+  modifyGlobal(global: RecursivePartial<DataGlobal> | null) {
+    return modifyGlobal({ core: this.#core }, global);
   }
 
   async getImageBlobURL(opts?: ExportImageFileBaseOptions): Promise<ExportImageFileResult> {
     const data = this.getData() || { elements: [] };
-    const { devicePixelRatio } = opts || { devicePixelRatio: 1 };
-
-    const outputSize = calcElementListSize(data.elements);
     const { viewSizeInfo } = this.getViewInfo();
-    return await exportImageFileBlobURL({
-      width: outputSize.w,
-      height: outputSize.h,
-      devicePixelRatio,
-      data,
-      viewScaleInfo: { scale: 1, offsetLeft: -outputSize.x, offsetTop: -outputSize.y, offsetBottom: 0, offsetRight: 0 },
-      viewSizeInfo: {
-        ...viewSizeInfo,
-        ...{ devicePixelRatio }
-      },
-      loadItemMap: this.#core.getLoadItemMap()
-    });
+    return await getImageBlobURL({ data, viewSizeInfo, core: this.#core }, opts);
   }
 
   isDestroyed() {
@@ -321,10 +206,8 @@ export class iDraw {
   }
 
   destroy() {
-    const core = this.#core;
-    const store = this.#store;
-    core.destroy();
-    store.destroy();
+    this.#core.destroy();
+    this.#store.destroy();
   }
 
   getViewCenter(): PointSize {
@@ -333,11 +216,15 @@ export class iDraw {
     return pointSize;
   }
 
-  $onBoardWatcherEvents() {
-    this.#core.onBoardWatcherEvents();
-  }
+  // $onBoardWatcherEvents() {
+  //   this.#core.onBoardWatcherEvents();
+  // }
 
-  $offBoardWatcherEvents() {
-    this.#core.offBoardWatcherEvents();
+  // $offBoardWatcherEvents() {
+  //   this.#core.offBoardWatcherEvents();
+  // }
+
+  getCore() {
+    return this.#core;
   }
 }

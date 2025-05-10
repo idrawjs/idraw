@@ -1,4 +1,4 @@
-import { isColorStr } from './color';
+import { isColorStr } from '../tool/color';
 
 function positiveNum(value: any) {
   return typeof value === 'number' && value >= 0;

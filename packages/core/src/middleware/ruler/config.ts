@@ -12,7 +12,7 @@ const scaleColor = '#000000';
 const textColor = '#00000080';
 const gridColor = '#AAAAAA20';
 const gridPrimaryColor = '#AAAAAA40';
-const selectedAreaColor = '#196097';
+const selectedAreaColor = '#19609780';
 
 export const defaultStyle: MiddlewareRulerStyle = {
   background,

@@ -3,6 +3,7 @@ export {
   Sharer,
   Calculator,
   Core,
+  Board,
   MiddlewareSelector,
   MiddlewareScroller,
   MiddlewareScaler,
@@ -118,15 +119,25 @@ export {
   deepCloneElement,
   calcViewCenterContent,
   calcViewCenter,
-  modifyElement,
   calcElementViewRectInfo,
   calcElementOriginRectInfo,
   flatElementList,
   calcPointMoveElementInGroup,
   merge,
-  omit
+  omit,
+  toFlattenElement,
+  toFlattenGlobal,
+  toFlattenLayout,
+  flatObject,
+  unflatObject,
+  set,
+  get,
+  mergeElement,
+  calcResultMovePosition,
+  calcRevertMovePosition
 } from '@idraw/util';
 export { iDraw } from './idraw';
 export { eventKeys } from './event';
 export type { IDrawEvent, IDrawEventKeys } from './event';
 export type { ExportImageFileResult, ExportImageFileBaseOptions } from './file';
+export { useHistory } from './middlewares/use-history';

@@ -1,11 +1,22 @@
-import type { BoardMiddleware, CoreEventMap, MiddlewareRulerConfig } from '@idraw/types';
+import type { Middleware, CoreEventMap, MiddlewareRulerConfig } from '@idraw/types';
 import { getViewScaleInfoFromSnapshot, getViewSizeInfoFromSnapshot } from '@idraw/util';
-import { drawRulerBackground, drawXRuler, drawYRuler, calcXRulerScaleList, calcYRulerScaleList, drawGrid, drawScrollerSelectedArea } from './util';
+import {
+  drawRulerBackground,
+  drawXRuler,
+  drawYRuler,
+  calcXRulerScaleList,
+  calcYRulerScaleList,
+  drawGrid,
+  drawScrollerSelectedArea
+} from './util';
 import type { DeepRulerSharedStorage } from './types';
 import { defaultStyle } from './config';
 import { coreEventKeys } from '../../config';
 
-export const MiddlewareRuler: BoardMiddleware<DeepRulerSharedStorage, CoreEventMap, MiddlewareRulerConfig> = (opts, config) => {
+export const MiddlewareRuler: Middleware<DeepRulerSharedStorage, CoreEventMap, MiddlewareRulerConfig> = (
+  opts,
+  config
+) => {
   const { boardContent, viewer, eventHub, calculator } = opts;
   const { overlayContext, underlayContext } = boardContent;
   let innerConfig = {
@@ -45,7 +56,8 @@ export const MiddlewareRuler: BoardMiddleware<DeepRulerSharedStorage, CoreEventM
     },
 
     beforeDrawFrame: ({ snapshot }) => {
-      const { background, borderColor, scaleColor, textColor, gridColor, gridPrimaryColor, selectedAreaColor } = innerConfig;
+      const { background, borderColor, scaleColor, textColor, gridColor, gridPrimaryColor, selectedAreaColor } =
+        innerConfig;
 
       const style = {
         background,
@@ -60,9 +72,9 @@ export const MiddlewareRuler: BoardMiddleware<DeepRulerSharedStorage, CoreEventM
         const viewScaleInfo = getViewScaleInfoFromSnapshot(snapshot);
         const viewSizeInfo = getViewSizeInfoFromSnapshot(snapshot);
 
-        drawScrollerSelectedArea(overlayContext, { snapshot, calculator, style });
-
         drawRulerBackground(overlayContext, { viewScaleInfo, viewSizeInfo, style });
+
+        drawScrollerSelectedArea(overlayContext, { snapshot, calculator, style });
 
         const { list: xList, rulerUnit } = calcXRulerScaleList({ viewScaleInfo, viewSizeInfo });
         drawXRuler(overlayContext, { scaleList: xList, style });

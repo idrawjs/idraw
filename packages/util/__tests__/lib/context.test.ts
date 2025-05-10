@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { Context2D } from './../../src/lib/context2d';
-import { deepClone } from './../../src/index';
+import { Context2D, deepClone } from '@idraw/util';
 import { getData } from './data';
 
 describe('@idraw/board: src/lib/context', () => {

@@ -1,5 +1,5 @@
-import type { BoardMiddleware, CoreEventMap, Element, ElementSize, ViewScaleInfo, ElementPosition } from '@idraw/types';
-import { limitAngle, getDefaultElementDetailConfig, enhanceFontFamliy } from '@idraw/util';
+import type { Middleware, CoreEventMap, Element, ElementSize, ViewScaleInfo, ElementPosition } from '@idraw/types';
+import { limitAngle, getDefaultElementDetailConfig, enhanceFontFamliy, updateElementInList } from '@idraw/util';
 import { coreEventKeys } from '../../config';
 
 type TextEditEvent = {
@@ -19,21 +19,23 @@ type TextChangeEvent = {
   position: ElementPosition;
 };
 
-type ExtendEventMap = Record<typeof coreEventKeys.TEXT_EDIT, TextEditEvent> & Record<typeof coreEventKeys.TEXT_CHANGE, TextChangeEvent>;
+type ExtendEventMap = Record<typeof coreEventKeys.TEXT_EDIT, TextEditEvent> &
+  Record<typeof coreEventKeys.TEXT_CHANGE, TextChangeEvent>;
 
 const defaultElementDetail = getDefaultElementDetailConfig();
 
-export const MiddlewareTextEditor: BoardMiddleware<ExtendEventMap, CoreEventMap & ExtendEventMap> = (opts) => {
-  const { eventHub, boardContent, viewer, sharer } = opts;
+export const MiddlewareTextEditor: Middleware<ExtendEventMap, CoreEventMap & ExtendEventMap> = (opts) => {
+  const { eventHub, boardContent, viewer, sharer, calculator } = opts;
   const canvas = boardContent.boardContext.canvas;
-  // const textarea = document.createElement('textarea');
-  const textarea = document.createElement('div');
-  textarea.setAttribute('contenteditable', 'true');
-  const canvasWrapper = document.createElement('div');
   const container = opts.container || document.body;
-  const mask = document.createElement('div');
+  let textarea = document.createElement('div');
+  textarea.setAttribute('contenteditable', 'true');
+  let canvasWrapper = document.createElement('div');
+  let mask = document.createElement('div');
   let activeElem: Element<'text'> | null = null;
   let activePosition: ElementPosition = [];
+  let originText: string = '';
+
   const id = `idraw-middleware-text-editor-${Math.random().toString(26).substring(2)}`;
   mask.setAttribute('id', id);
   canvasWrapper.appendChild(textarea);
@@ -53,12 +55,14 @@ export const MiddlewareTextEditor: BoardMiddleware<ExtendEventMap, CoreEventMap 
     resetCanvasWrapper();
     resetTextArea(e);
     mask.style.display = 'block';
+    originText = '';
     if (activeElem?.uuid) {
       sharer.setActiveOverrideElemenentMap({
         [activeElem.uuid]: {
           operations: { invisible: true }
         }
       });
+      originText = activeElem.detail.text || '';
       viewer.drawFrame();
     }
   };
@@ -201,13 +205,15 @@ export const MiddlewareTextEditor: BoardMiddleware<ExtendEventMap, CoreEventMap 
     // canvasWrapper.style.background = '#000000';
   };
 
-  mask.addEventListener('click', () => {
+  const maskClickEvent = () => {
     hideTextArea();
-  });
-  textarea.addEventListener('click', (e) => {
+  };
+
+  const textareaClickEvent = (e: MouseEvent) => {
     e.stopPropagation();
-  });
-  textarea.addEventListener('input', () => {
+  };
+
+  const textareaInputEvent = () => {
     if (activeElem && activePosition) {
       // activeElem.detail.text = (e.target as any).value || '';
       activeElem.detail.text = textarea.innerText || '';
@@ -220,11 +226,14 @@ export const MiddlewareTextEditor: BoardMiddleware<ExtendEventMap, CoreEventMap 
         },
         position: [...(activePosition || [])]
       });
+      calculator.modifyText(activeElem);
       viewer.drawFrame();
     }
-  });
-  textarea.addEventListener('blur', () => {
+  };
+
+  const textareaBlurEvent = () => {
     if (activeElem && activePosition) {
+      activeElem.detail.text = textarea.innerText || '';
       eventHub.trigger(coreEventKeys.TEXT_CHANGE, {
         element: {
           uuid: activeElem.uuid,
@@ -234,23 +243,75 @@ export const MiddlewareTextEditor: BoardMiddleware<ExtendEventMap, CoreEventMap 
         },
         position: [...activePosition]
       });
+
+      const data = sharer.getActiveStorage('data') || { elements: [] };
+      const updateContent = {
+        detail: {
+          text: activeElem.detail.text
+        }
+      };
+      updateElementInList(activeElem.uuid, updateContent, data.elements);
+
+      eventHub.trigger(coreEventKeys.CHANGE, {
+        selectedElements: [
+          {
+            ...activeElem,
+            detail: {
+              ...activeElem.detail,
+              ...updateContent.detail
+            }
+          }
+        ],
+        data,
+        type: 'modifyElement',
+        modifyRecord: {
+          type: 'modifyElement',
+          time: Date.now(),
+          content: {
+            method: 'modifyElement',
+            uuid: activeElem.uuid as string,
+            before: {
+              'detail.text': originText
+            },
+            after: {
+              'detail.text': activeElem.detail.text
+            }
+          }
+        }
+      });
+
+      calculator.modifyText(activeElem);
+      viewer.drawFrame();
     }
 
     hideTextArea();
-  });
-  textarea.addEventListener('keydown', (e) => {
+  };
+
+  const textareaKeyDownEvent = (e: KeyboardEvent) => {
     e.stopPropagation();
-  });
-  textarea.addEventListener('keypress', (e) => {
+  };
+
+  const textareaKeyPressEvent = (e: KeyboardEvent) => {
     e.stopPropagation();
-  });
-  textarea.addEventListener('keyup', (e) => {
+  };
+
+  const textareaKeyUpEvent = (e: KeyboardEvent) => {
     e.stopPropagation();
-  });
-  textarea.addEventListener('wheel', (e) => {
+  };
+
+  const textareaWheelEvent = (e: WheelEvent) => {
     e.stopPropagation();
     e.preventDefault();
-  });
+  };
+
+  mask.addEventListener('click', maskClickEvent);
+  textarea.addEventListener('click', textareaClickEvent);
+  textarea.addEventListener('input', textareaInputEvent);
+  textarea.addEventListener('blur', textareaBlurEvent);
+  textarea.addEventListener('keydown', textareaKeyDownEvent);
+  textarea.addEventListener('keypress', textareaKeyPressEvent);
+  textarea.addEventListener('keyup', textareaKeyUpEvent);
+  textarea.addEventListener('wheel', textareaWheelEvent);
 
   const textEditCallback = (e: TextEditEvent) => {
     if (e?.position && e?.element && e?.element?.type === 'text') {
@@ -267,6 +328,27 @@ export const MiddlewareTextEditor: BoardMiddleware<ExtendEventMap, CoreEventMap 
     },
     disuse() {
       eventHub.off(coreEventKeys.TEXT_EDIT, textEditCallback);
+      mask.removeEventListener('click', maskClickEvent);
+      textarea.removeEventListener('click', textareaClickEvent);
+      textarea.removeEventListener('input', textareaInputEvent);
+      textarea.removeEventListener('blur', textareaBlurEvent);
+      textarea.removeEventListener('keydown', textareaKeyDownEvent);
+      textarea.removeEventListener('keypress', textareaKeyPressEvent);
+      textarea.removeEventListener('keyup', textareaKeyUpEvent);
+      textarea.removeEventListener('wheel', textareaWheelEvent);
+      canvasWrapper.removeChild(textarea);
+      mask.removeChild(canvasWrapper);
+      container.removeChild(mask);
+
+      textarea.remove();
+      canvasWrapper.remove();
+      mask = null as any;
+      textarea = null as any;
+      canvasWrapper = null as any;
+      mask = null as any;
+      activeElem = null;
+      activePosition = null as any;
+      originText = null as any;
     }
   };
 };

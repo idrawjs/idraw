@@ -1,5 +1,5 @@
 import type { RecursivePartial } from '@idraw/types';
-import { deepClone } from './data';
+import { deepClone } from '../view/data';
 
 export class Store<
   T extends Record<string | symbol, any> = Record<string | symbol, any>,

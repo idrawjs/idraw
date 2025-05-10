@@ -1,5 +1,13 @@
-import type { BoardMiddleware, ViewRectInfo, Element, MiddlewareInfoConfig, CoreEventMap } from '@idraw/types';
-import { formatNumber, getViewScaleInfoFromSnapshot, getViewSizeInfoFromSnapshot, createUUID, limitAngle, rotatePoint, parseAngleToRadian } from '@idraw/util';
+import type { Middleware, ViewRectInfo, Element, MiddlewareInfoConfig, CoreEventMap } from '@idraw/types';
+import {
+  formatNumber,
+  getViewScaleInfoFromSnapshot,
+  getViewSizeInfoFromSnapshot,
+  createUUID,
+  limitAngle,
+  rotatePoint,
+  parseAngleToRadian
+} from '@idraw/util';
 import { keySelectedElementList, keyActionType, keyGroupQueue } from '../selector';
 import { drawSizeInfoText, drawPositionInfoText, drawAngleInfoText } from './draw-info';
 import type { DeepInfoSharedStorage } from './types';
@@ -10,7 +18,7 @@ export { MIDDLEWARE_INTERNAL_EVENT_SHOW_INFO_ANGLE };
 const infoFontSize = 10;
 const infoLineHeight = 16;
 
-export const MiddlewareInfo: BoardMiddleware<
+export const MiddlewareInfo: Middleware<
   DeepInfoSharedStorage,
   CoreEventMap & {
     [MIDDLEWARE_INTERNAL_EVENT_SHOW_INFO_ANGLE]: { show: boolean };

@@ -18,4 +18,5 @@ export * from './lib/html';
 export * from './lib/svg-path';
 export * from './lib/config';
 export * from './lib/modify';
+export * from './lib/modify-info';
 export * from './lib/virtual-flat';

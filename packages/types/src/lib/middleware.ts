@@ -1,6 +1,10 @@
-import type { BoardMiddlewareObject, BoardMiddleware } from './board';
+import type { BoardExtendEventMap, BoardMiddlewareObject, BoardMiddleware } from './board';
 
-export type Middleware = BoardMiddleware;
+export type Middleware<
+  S extends Record<any | symbol, any> = any,
+  E extends BoardExtendEventMap = BoardExtendEventMap,
+  C extends any = undefined
+> = BoardMiddleware<S, E, C>;
 
 export type MiddlewareObject = BoardMiddlewareObject;
 

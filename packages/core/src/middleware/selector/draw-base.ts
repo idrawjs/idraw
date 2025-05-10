@@ -19,10 +19,15 @@ export function drawVertexes(
   ctx.lineTo(vertexes[0].x, vertexes[0].y);
   ctx.closePath();
   ctx.stroke();
-  ctx.fill();
+  ctx.fill('nonzero');
 }
 
-export function drawLine(ctx: ViewContext2D, start: PointSize, end: PointSize, opts: { borderColor: string; borderWidth: number; lineDash: number[] }) {
+export function drawLine(
+  ctx: ViewContext2D,
+  start: PointSize,
+  end: PointSize,
+  opts: { borderColor: string; borderWidth: number; lineDash: number[] }
+) {
   const { borderColor, borderWidth, lineDash } = opts;
   ctx.setLineDash([]);
   ctx.lineWidth = borderWidth;
@@ -66,7 +71,7 @@ export function drawCircleController(
     ctx.fillStyle = background;
     ctx.circle(center.x, center.y, a, b, 0, 0, 2 * Math.PI);
     ctx.closePath();
-    ctx.fill();
+    ctx.fill('nonzero');
   }
 
   // ctx.setLineDash([]);
@@ -82,10 +87,14 @@ export function drawCircleController(
   // ctx.lineTo(vertexes[0].x, vertexes[0].y);
   // ctx.closePath();
   // ctx.stroke();
-  // ctx.fill();
+  // ctx.fill('nonzero');
 }
 
-export function drawCrossVertexes(ctx: ViewContext2D, vertexes: ViewRectVertexes, opts: { borderColor: string; borderWidth: number; lineDash: number[] }) {
+export function drawCrossVertexes(
+  ctx: ViewContext2D,
+  vertexes: ViewRectVertexes,
+  opts: { borderColor: string; borderWidth: number; lineDash: number[] }
+) {
   const { borderColor, borderWidth, lineDash } = opts;
   ctx.setLineDash([]);
   ctx.lineWidth = borderWidth;
@@ -104,7 +113,11 @@ export function drawCrossVertexes(ctx: ViewContext2D, vertexes: ViewRectVertexes
   ctx.stroke();
 }
 
-export function drawCrossByCenter(ctx: ViewContext2D, center: PointSize, opts: { size: number; borderColor: string; borderWidth: number; lineDash: number[] }) {
+export function drawCrossByCenter(
+  ctx: ViewContext2D,
+  center: PointSize,
+  opts: { size: number; borderColor: string; borderWidth: number; lineDash: number[] }
+) {
   const { size, borderColor, borderWidth, lineDash } = opts;
   const minX = center.x - size / 2;
   const maxX = center.x + size / 2;

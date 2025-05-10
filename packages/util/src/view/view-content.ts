@@ -1,7 +1,7 @@
 import type { Data, ViewSizeInfo, Element, ElementSize, ViewScaleInfo, PointSize } from '@idraw/types';
 import { rotateElementVertexes } from './rotate';
 import {} from './view-calc';
-import { formatNumber } from './number';
+import { formatNumber } from '../tool/number';
 import { is } from './is';
 
 interface ViewCenterContentResult {

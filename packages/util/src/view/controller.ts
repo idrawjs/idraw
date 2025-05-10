@@ -1,5 +1,13 @@
-import type { Element, ElementSize, ElementSizeController, ViewRectVertexes, PointSize, ViewScaleInfo, LayoutSizeController } from '@idraw/types';
-import { createUUID } from './uuid';
+import type {
+  Element,
+  ElementSize,
+  ElementSizeController,
+  ViewRectVertexes,
+  PointSize,
+  ViewScaleInfo,
+  LayoutSizeController
+} from '@idraw/types';
+import { createUUID } from '../tool/uuid';
 import { getCenterFromTwoPoints } from './point';
 import { calcElementVertexesInGroup, calcElementVertexes } from './vertex';
 import { calcViewElementSize } from './view-calc';
@@ -85,17 +93,40 @@ export function calcElementSizeController(
   const topLeftSize = createControllerElementSizeFromCenter(topLeftCenter, { size: ctrlSize, angle: totalAngle });
   const topRightSize = createControllerElementSizeFromCenter(topRightCenter, { size: ctrlSize, angle: totalAngle });
   const bottomLeftSize = createControllerElementSizeFromCenter(bottomLeftCenter, { size: ctrlSize, angle: totalAngle });
-  const bottomRightSize = createControllerElementSizeFromCenter(bottomRightCenter, { size: ctrlSize, angle: totalAngle });
+  const bottomRightSize = createControllerElementSizeFromCenter(bottomRightCenter, {
+    size: ctrlSize,
+    angle: totalAngle
+  });
 
   const topLeftVertexes = calcElementVertexes(topLeftSize);
   const topRightVertexes = calcElementVertexes(topRightSize);
   const bottomLeftVertexes = calcElementVertexes(bottomLeftSize);
   const bottomRightVertexes = calcElementVertexes(bottomRightSize);
 
-  const topVertexes: ViewRectVertexes = [topLeftVertexes[1], topRightVertexes[0], topRightVertexes[3], topLeftVertexes[2]];
-  const rightVertexes: ViewRectVertexes = [topRightVertexes[3], topRightVertexes[2], bottomRightVertexes[1], bottomRightVertexes[0]];
-  const bottomVertexes: ViewRectVertexes = [bottomLeftVertexes[1], bottomRightVertexes[0], bottomRightVertexes[3], bottomLeftVertexes[2]];
-  const leftVertexes: ViewRectVertexes = [topLeftVertexes[3], topLeftVertexes[2], bottomLeftVertexes[1], bottomLeftVertexes[0]];
+  const topVertexes: ViewRectVertexes = [
+    topLeftVertexes[1],
+    topRightVertexes[0],
+    topRightVertexes[3],
+    topLeftVertexes[2]
+  ];
+  const rightVertexes: ViewRectVertexes = [
+    topRightVertexes[3],
+    topRightVertexes[2],
+    bottomRightVertexes[1],
+    bottomRightVertexes[0]
+  ];
+  const bottomVertexes: ViewRectVertexes = [
+    bottomLeftVertexes[1],
+    bottomRightVertexes[0],
+    bottomRightVertexes[3],
+    bottomLeftVertexes[2]
+  ];
+  const leftVertexes: ViewRectVertexes = [
+    topLeftVertexes[3],
+    topLeftVertexes[2],
+    bottomLeftVertexes[1],
+    bottomLeftVertexes[0]
+  ];
 
   const topMiddleVertexes = calcElementVertexes(topMiddleSize);
   const rightMiddleVertexes = calcElementVertexes(rightMiddleSize);
@@ -236,10 +267,30 @@ export function calcLayoutSizeController(
   const bottomLeftVertexes = calcElementVertexes(bottomLeftSize);
   const bottomRightVertexes = calcElementVertexes(bottomRightSize);
 
-  const topVertexes: ViewRectVertexes = [topLeftVertexes[1], topRightVertexes[0], topRightVertexes[3], topLeftVertexes[2]];
-  const rightVertexes: ViewRectVertexes = [topRightVertexes[3], topRightVertexes[2], bottomRightVertexes[1], bottomRightVertexes[0]];
-  const bottomVertexes: ViewRectVertexes = [bottomLeftVertexes[1], bottomRightVertexes[0], bottomRightVertexes[3], bottomLeftVertexes[2]];
-  const leftVertexes: ViewRectVertexes = [topLeftVertexes[3], topLeftVertexes[2], bottomLeftVertexes[1], bottomLeftVertexes[0]];
+  const topVertexes: ViewRectVertexes = [
+    topLeftVertexes[1],
+    topRightVertexes[0],
+    topRightVertexes[3],
+    topLeftVertexes[2]
+  ];
+  const rightVertexes: ViewRectVertexes = [
+    topRightVertexes[3],
+    topRightVertexes[2],
+    bottomRightVertexes[1],
+    bottomRightVertexes[0]
+  ];
+  const bottomVertexes: ViewRectVertexes = [
+    bottomLeftVertexes[1],
+    bottomRightVertexes[0],
+    bottomRightVertexes[3],
+    bottomLeftVertexes[2]
+  ];
+  const leftVertexes: ViewRectVertexes = [
+    topLeftVertexes[3],
+    topLeftVertexes[2],
+    bottomLeftVertexes[1],
+    bottomLeftVertexes[0]
+  ];
 
   const topMiddleVertexes = calcElementVertexes(topMiddleSize);
   const rightMiddleVertexes = calcElementVertexes(rightMiddleSize);

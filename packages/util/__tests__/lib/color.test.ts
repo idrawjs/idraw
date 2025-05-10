@@ -1,9 +1,4 @@
-import {
-  toColorHexNum,
-  toColorHexStr,
-  isColorStr
-} from '../../src/lib/color';
-
+import { toColorHexNum, toColorHexStr, isColorStr } from '@idraw/util';
 
 describe('@idraw/util: lib/color', () => {
   const hex = '#f0f0f0';
@@ -23,6 +18,4 @@ describe('@idraw/util: lib/color', () => {
     const result = isColorStr(hex);
     expect(result).toStrictEqual(true);
   });
-
 });
-

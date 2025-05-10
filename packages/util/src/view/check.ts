@@ -14,13 +14,13 @@ function attrs(attrs: any): boolean {
 
 function box(detail: any = {}): boolean {
   const { borderColor, borderRadius, borderWidth } = detail;
-  if (detail.hasOwnProperty('borderColor') && !is.color(borderColor)) {
+  if (Object.prototype.hasOwnProperty.call(detail, 'borderColor') && !is.color(borderColor)) {
     return false;
   }
-  if (detail.hasOwnProperty('borderRadius') && !is.number(borderRadius)) {
+  if (Object.prototype.hasOwnProperty.call(detail, 'borderRadius') && !is.number(borderRadius)) {
     return false;
   }
-  if (detail.hasOwnProperty('borderWidth') && !is.number(borderWidth)) {
+  if (Object.prototype.hasOwnProperty.call(detail, 'borderWidth') && !is.number(borderWidth)) {
     return false;
   }
   return true;
@@ -28,7 +28,7 @@ function box(detail: any = {}): boolean {
 
 function rectDesc(detail: any): boolean {
   const { background } = detail;
-  if (detail.hasOwnProperty('background') && !is.color(background)) {
+  if (Object.prototype.hasOwnProperty.call(detail, 'background') && !is.color(background)) {
     return false;
   }
   if (!box(detail)) {
@@ -39,13 +39,13 @@ function rectDesc(detail: any): boolean {
 
 function circleDesc(detail: any): boolean {
   const { background, borderColor, borderWidth } = detail;
-  if (detail.hasOwnProperty('background') && !is.color(background)) {
+  if (Object.prototype.hasOwnProperty.call(detail, 'background') && !is.color(background)) {
     return false;
   }
-  if (detail.hasOwnProperty('borderColor') && !is.color(borderColor)) {
+  if (Object.prototype.hasOwnProperty.call(detail, 'borderColor') && !is.color(borderColor)) {
     return false;
   }
-  if (detail.hasOwnProperty('borderWidth') && !is.number(borderWidth)) {
+  if (Object.prototype.hasOwnProperty.call(detail, 'borderWidth') && !is.number(borderWidth)) {
     return false;
   }
   return true;
@@ -76,7 +76,8 @@ function htmlDesc(detail: any): boolean {
 }
 
 function textDesc(detail: any): boolean {
-  const { text, color, fontSize, lineHeight, fontFamily, textAlign, fontWeight, background, strokeWidth, strokeColor } = detail;
+  const { text, color, fontSize, lineHeight, fontFamily, textAlign, fontWeight, background, strokeWidth, strokeColor } =
+    detail;
   if (!is.text(text)) {
     return false;
   }
@@ -86,25 +87,25 @@ function textDesc(detail: any): boolean {
   if (!is.fontSize(fontSize)) {
     return false;
   }
-  if (detail.hasOwnProperty('background') && !is.color(background)) {
+  if (Object.prototype.hasOwnProperty.call(detail, 'background') && !is.color(background)) {
     return false;
   }
-  if (detail.hasOwnProperty('fontWeight') && !is.fontWeight(fontWeight)) {
+  if (Object.prototype.hasOwnProperty.call(detail, 'fontWeight') && !is.fontWeight(fontWeight)) {
     return false;
   }
-  if (detail.hasOwnProperty('lineHeight') && !is.lineHeight(lineHeight)) {
+  if (Object.prototype.hasOwnProperty.call(detail, 'lineHeight') && !is.lineHeight(lineHeight)) {
     return false;
   }
-  if (detail.hasOwnProperty('fontFamily') && !is.fontFamily(fontFamily)) {
+  if (Object.prototype.hasOwnProperty.call(detail, 'fontFamily') && !is.fontFamily(fontFamily)) {
     return false;
   }
-  if (detail.hasOwnProperty('textAlign') && !is.textAlign(textAlign)) {
+  if (Object.prototype.hasOwnProperty.call(detail, 'textAlign') && !is.textAlign(textAlign)) {
     return false;
   }
-  if (detail.hasOwnProperty('strokeWidth') && !is.strokeWidth(strokeWidth)) {
+  if (Object.prototype.hasOwnProperty.call(detail, 'strokeWidth') && !is.strokeWidth(strokeWidth)) {
     return false;
   }
-  if (detail.hasOwnProperty('strokeColor') && !is.color(strokeColor)) {
+  if (Object.prototype.hasOwnProperty.call(detail, 'strokeColor') && !is.color(strokeColor)) {
     return false;
   }
 

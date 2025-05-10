@@ -1,5 +1,5 @@
 import type { Data, ElementAssets, Elements, ElementType, Element, LoadItemMap } from '@idraw/types';
-import { createAssetId, createUUID, isAssetId } from './uuid';
+import { createAssetId, createUUID, isAssetId } from '../tool/uuid';
 
 export function deepClone<T = any>(target: T): T {
   function _clone(t: T) {

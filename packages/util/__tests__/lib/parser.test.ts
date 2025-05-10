@@ -1,4 +1,4 @@
-import { parseHTMLToDataURL, parseSVGToDataURL } from '../../src/lib/parser';
+import { parseHTMLToDataURL, parseSVGToDataURL } from '../../src/view/parser';
 
 describe('@idraw/util: lib/parser', () => {
   test('parseHTMLToDataURL', async () => {

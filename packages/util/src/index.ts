@@ -1,11 +1,11 @@
-export { delay, compose, throttle, debounce } from './lib/time';
+export { delay, compose, throttle, debounce } from './tool/time';
 export {
   downloadImageFromCanvas,
   parseFileToBase64,
   pickFile,
   parseFileToText,
   downloadFileFromText
-} from './lib/file';
+} from './tool/file';
 export {
   toColorHexStr,
   toColorHexNum,
@@ -14,15 +14,15 @@ export {
   colorToCSS,
   colorToLinearGradientCSS,
   mergeHexColorAlpha
-} from './lib/color';
-export { createUUID, isAssetId, createAssetId } from './lib/uuid';
-export { deepClone, sortDataAsserts, deepCloneElement, deepCloneData, filterCompactData } from './lib/data';
-export { istype } from './lib/istype';
-export { loadImage, loadSVG, loadHTML } from './lib/load';
-export { is } from './lib/is';
-export { check } from './lib/check';
-export { createBoardContent, createContext2D, createOffscreenContext2D } from './lib/canvas';
-export { EventEmitter } from './lib/event';
+} from './tool/color';
+export { createUUID, isAssetId, createAssetId } from './tool/uuid';
+export { deepClone, sortDataAsserts, deepCloneElement, deepCloneData, filterCompactData } from './view/data';
+export { istype } from './tool/istype';
+export { loadImage, loadSVG, loadHTML } from './view/load';
+export { is } from './view/is';
+export { check } from './view/check';
+export { createBoardContent, createContext2D, createOffscreenContext2D } from './view/canvas';
+export { EventEmitter } from './tool/event';
 export {
   calcDistance,
   calcSpeed,
@@ -31,10 +31,10 @@ export {
   vaildPoint,
   vaildTouchPoint,
   getCenterFromTwoPoints
-} from './lib/point';
-export { Store } from './lib/store';
-export { getViewScaleInfoFromSnapshot, getViewSizeInfoFromSnapshot } from './lib/middleware';
-export { Context2D } from './lib/context2d';
+} from './view/point';
+export { Store } from './tool/store';
+export { getViewScaleInfoFromSnapshot, getViewSizeInfoFromSnapshot } from './view/middleware';
+export { Context2D } from './view/context2d';
 export {
   rotateElement,
   parseRadianToAngle,
@@ -46,7 +46,7 @@ export {
   rotatePointInGroup,
   limitAngle,
   calcRadian
-} from './lib/rotate';
+} from './view/rotate';
 export {
   getSelectedElementUUIDs,
   validateElements,
@@ -68,8 +68,8 @@ export {
   getElementPositionMapFromList,
   calcElementListSize,
   isSameElementSize
-} from './lib/element';
-export { checkRectIntersect } from './lib/rect';
+} from './view/element';
+export { checkRectIntersect } from './view/rect';
 export {
   viewScale,
   viewScroll,
@@ -85,23 +85,24 @@ export {
   originRectInfoToRangeRectInfo,
   isViewPointInElementSize,
   isViewPointInVertexes
-} from './lib/view-calc';
-export { rotatePoint, rotateVertexes, rotateByCenter } from './lib/rotate';
+} from './view/view-calc';
+export { rotatePoint, rotateVertexes, rotateByCenter } from './view/rotate';
 export {
   getElementVertexes,
   calcElementVertexesInGroup,
   calcElementVertexesQueueInGroup,
   calcElementQueueVertexesQueueInGroup
-} from './lib/vertex';
-export { calcElementSizeController, calcLayoutSizeController } from './lib/controller';
-export { generateSVGPath, parseSVGPath } from './lib/svg-path';
-export { generateHTML, parseHTML } from './lib/html';
-export { compressImage } from './lib/image';
-export { formatNumber } from './lib/number';
-export { matrixToAngle, matrixToRadian } from './lib/matrix';
-export { getDefaultElementDetailConfig, getDefaultElementRectDetail } from './lib/config';
-export { calcViewBoxSize } from './lib/view-box';
+} from './view/vertex';
+export { calcElementSizeController, calcLayoutSizeController } from './view/controller';
+export { generateSVGPath, parseSVGPath } from './view/svg-path';
+export { generateHTML, parseHTML } from './tool/html';
+export { compressImage } from './tool/image';
+export { formatNumber } from './tool/number';
+export { matrixToAngle, matrixToRadian } from './view/matrix';
+export { getDefaultElementDetailConfig, getDefaultElementRectDetail } from './view/config';
+export { calcViewBoxSize } from './view/view-box';
 export {
+  mergeElement,
   createElement,
   insertElementToListByPosition,
   deleteElementInListByPosition,
@@ -109,15 +110,21 @@ export {
   moveElementPosition,
   updateElementInList,
   updateElementInListByPosition
-} from './lib/handle-element';
-export { deepResizeGroupElement } from './lib/resize-element';
-export { calcViewCenterContent, calcViewCenter } from './lib/view-content';
-export { modifyElement, getModifiedElement } from './lib/modify';
-// export { ModifyRecorder } from './lib/modify-recorder';
-export { enhanceFontFamliy } from './lib/text';
-export { flatElementList } from './lib/flat';
-export { groupElementsByPosition, ungroupElementsByPosition } from './lib/group';
-export { calcPointMoveElementInGroup } from './lib/point-move-element';
-export { merge } from './lib/merge';
-export { omit } from './lib/omit';
-export { elementToBoxInfo } from './lib/box';
+} from './view/handle-element';
+export { deepResizeGroupElement } from './view/resize-element';
+export { calcViewCenterContent, calcViewCenter } from './view/view-content';
+export { toFlattenElement, toFlattenLayout, toFlattenGlobal } from './view/modify-record';
+export { enhanceFontFamliy } from './view/text';
+export { flatElementList } from './view/flat';
+export { groupElementsByPosition, ungroupElementsByPosition } from './view/group';
+export { calcPointMoveElementInGroup } from './view/point-move-element';
+export { mergeLayout } from './view/handle-layout';
+export { mergeGlobal } from './view/handle-global';
+export { calcRevertMovePosition, calcResultMovePosition } from './view/position';
+
+export { merge } from './tool/merge';
+export { omit } from './tool/omit';
+export { elementToBoxInfo } from './view/box';
+export { get, set, toPath } from './tool/get-set-del';
+export { flatObject } from './tool/flat-object';
+export { unflatObject } from './tool/unflat-object';

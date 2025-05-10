@@ -9,7 +9,8 @@ function flatElementSize(
   }
 ): ElementSize {
   const { groupQueue } = opts;
-  let { x, y, w, h, angle = 0 } = elemSize;
+  let { x, y } = elemSize;
+  const { w, h, angle = 0 } = elemSize;
   let totalAngle = 0;
   groupQueue.forEach((group) => {
     x += group.x;

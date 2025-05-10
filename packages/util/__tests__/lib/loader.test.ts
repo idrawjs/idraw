@@ -1,6 +1,6 @@
 import '../../../../__tests__/polyfill/image';
-import { loadHTML, loadImage, loadSVG } from '../../src/lib/load';
-import { parseHTMLToDataURL, parseSVGToDataURL } from '../../src/lib/parser';
+import { loadHTML, loadImage, loadSVG } from '@idraw/util';
+import { parseHTMLToDataURL, parseSVGToDataURL } from '../../src/view/parser';
 
 describe('@idraw/util: lib/loader', () => {
   test('loadHTML', async () => {
