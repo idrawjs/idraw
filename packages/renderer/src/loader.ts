@@ -1,4 +1,14 @@
-import type { RendererLoader, LoaderEventMap, LoadFunc, LoadContent, LoadItem, LoadItemMap, LoadElementType, Element, ElementAssets } from '@idraw/types';
+import type {
+  RendererLoader,
+  LoaderEventMap,
+  LoadFunc,
+  LoadContent,
+  LoadItem,
+  LoadItemMap,
+  LoadElementType,
+  Element,
+  ElementAssets
+} from '@idraw/types';
 import { loadImage, loadHTML, loadSVG, EventEmitter, createAssetId, isAssetId, createUUID } from '@idraw/util';
 
 const supportElementTypes: LoadElementType[] = ['image', 'svg', 'html'];
@@ -16,9 +26,9 @@ const getAssetIdFromElement = (element: Element<'image' | 'svg' | 'html'>) => {
     if (isAssetId(source)) {
       return source;
     }
-    return createAssetId(source);
+    return createAssetId(source, element.uuid);
   }
-  return createAssetId(`${createUUID()}-${element.uuid}-${createUUID()}-${createUUID()}`);
+  return createAssetId(`${createUUID()}-${element.uuid}-${createUUID()}-${createUUID()}`, element.uuid);
 };
 
 export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoader {
@@ -169,7 +179,12 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
   #isExistingErrorStorage(element: Element<LoadElementType>) {
     const assetId = getAssetIdFromElement(element);
     const existItem = this.#currentLoadItemMap?.[assetId];
-    if (existItem && existItem.status === 'error' && existItem.source && existItem.source === this.#getLoadElementSource(element)) {
+    if (
+      existItem &&
+      existItem.status === 'error' &&
+      existItem.source &&
+      existItem.source === this.#getLoadElementSource(element)
+    ) {
       return true;
     }
     return false;

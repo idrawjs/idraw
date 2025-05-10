@@ -72,7 +72,7 @@ export function sortDataAsserts(data: Data, opts?: { clone?: boolean }): Data {
     elems.forEach((elem: Element<ElementType>) => {
       if (elem.type === 'image' && (elem as Element<'image'>).detail.src) {
         const src = (elem as Element<'image'>).detail.src;
-        const assetUUID = createAssetId(src);
+        const assetUUID = createAssetId(src, elem.uuid);
         if (!assets[assetUUID]) {
           assets[assetUUID] = {
             type: 'image',
@@ -82,7 +82,7 @@ export function sortDataAsserts(data: Data, opts?: { clone?: boolean }): Data {
         (elem as Element<'image'>).detail.src = assetUUID;
       } else if (elem.type === 'svg') {
         const svg = (elem as Element<'svg'>).detail.svg;
-        const assetUUID = createAssetId(svg);
+        const assetUUID = createAssetId(svg, elem.uuid);
         if (!assets[assetUUID]) {
           assets[assetUUID] = {
             type: 'svg',
@@ -92,7 +92,7 @@ export function sortDataAsserts(data: Data, opts?: { clone?: boolean }): Data {
         (elem as Element<'svg'>).detail.svg = assetUUID;
       } else if (elem.type === 'html') {
         const html = (elem as Element<'html'>).detail.html;
-        const assetUUID = createAssetId(html);
+        const assetUUID = createAssetId(html, elem.uuid);
         if (!assets[assetUUID]) {
           assets[assetUUID] = {
             type: 'html',
@@ -133,7 +133,7 @@ export function filterCompactData(data: Data, opts?: { loadItemMap?: LoadItemMap
             value: loadItemMap[src].source as string
           };
         } else if (!assets[src]) {
-          const assetUUID = createAssetId(src);
+          const assetUUID = createAssetId(src, elem.uuid);
           if (!assets[assetUUID]) {
             assets[assetUUID] = {
               type: 'image',
@@ -151,7 +151,7 @@ export function filterCompactData(data: Data, opts?: { loadItemMap?: LoadItemMap
             value: loadItemMap[svg].source as string
           };
         } else if (!assets[svg]) {
-          const assetUUID = createAssetId(svg);
+          const assetUUID = createAssetId(svg, elem.uuid);
           if (!assets[assetUUID]) {
             assets[assetUUID] = {
               type: 'svg',
@@ -169,7 +169,7 @@ export function filterCompactData(data: Data, opts?: { loadItemMap?: LoadItemMap
             value: loadItemMap[html].source as string
           };
         } else if (!assets[html]) {
-          const assetUUID = createAssetId(html);
+          const assetUUID = createAssetId(html, elem.uuid);
           if (!assets[assetUUID]) {
             assets[assetUUID] = {
               type: 'html',
