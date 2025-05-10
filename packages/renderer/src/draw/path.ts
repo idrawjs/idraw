@@ -1,4 +1,10 @@
-import type { Element, RendererDrawElementOptions, ViewContext2D, LinearGradientColor, RadialGradientColor } from '@idraw/types';
+import type {
+  Element,
+  RendererDrawElementOptions,
+  ViewContext2D,
+  LinearGradientColor,
+  RadialGradientColor
+} from '@idraw/types';
 import { rotateElement, generateSVGPath, calcViewElementSize } from '@idraw/util';
 import { drawBox, drawBoxShadow } from './box';
 
@@ -23,7 +29,11 @@ export function drawPath(ctx: ViewContext2D, elem: Element<'path'>, opts: Render
   let boxOriginElem = { ...elem };
   boxOriginElem.detail = restDetail;
 
-  if (detail.fill && detail.fill !== 'string' && (detail.fill as LinearGradientColor | RadialGradientColor)?.type?.includes('gradient')) {
+  if (
+    detail.fill &&
+    detail.fill !== 'string' &&
+    (detail.fill as LinearGradientColor | RadialGradientColor)?.type?.includes('gradient')
+  ) {
     boxViewElem = {
       ...viewElem,
       ...{
@@ -65,7 +75,7 @@ export function drawPath(ctx: ViewContext2D, elem: Element<'path'>, opts: Render
             // ctx.lineTo(viewOriginX + w, viewOriginY + h);
             // ctx.lineTo(viewOriginX, viewOriginY + h);
             // ctx.closePath();
-            // ctx.clip();
+            // ctx.clip('nonzero');
             ctx.scale((scaleNum * scaleW) / viewScaleInfo.scale, (scaleNum * scaleH) / viewScaleInfo.scale);
             const pathStr = generateSVGPath(detail.commands || []);
             const path2d = new Path2D(pathStr);
@@ -79,7 +89,7 @@ export function drawPath(ctx: ViewContext2D, elem: Element<'path'>, opts: Render
             }
 
             if (detail.fill) {
-              ctx.fill(path2d, fillRule as CanvasFillRule);
+              ctx.fill(path2d, (fillRule as CanvasFillRule) || 'nonzero');
             }
 
             if (detail.stroke && detail.strokeWidth !== 0) {

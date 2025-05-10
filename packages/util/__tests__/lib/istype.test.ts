@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import { istype } from '../../src/lib/istype';
+import { istype } from '@idraw/util';
 
 describe('@idraw/util: lib/istype', () => {
   const _num = 123;

@@ -2,6 +2,7 @@ import type { Element, ElementSize, ElementType, ElementPosition } from './eleme
 import type { ViewScaleInfo } from './view';
 import type { Data } from './data';
 import type { BoardBaseEventMap } from './board';
+import type { ModifyType, ModifyRecord } from './modify';
 
 export interface CoreOptions {
   width: number;
@@ -32,24 +33,12 @@ export interface CoreEventCursor {
 //   uuids: string[];
 //   positions?: Array<Array<number>>;
 // }
-export interface CoreEventChange {
+export interface CoreEventChange<T extends ModifyType = ModifyType> {
   data: Data;
-  type:
-    | 'updateElement'
-    | 'deleteElement'
-    | 'moveElement'
-    | 'addElement'
-    | 'dragElement'
-    | 'resizeElement'
-    | 'setData'
-    | 'undo'
-    | 'redo'
-    | 'dragLayout'
-    | 'updateLayout'
-    | 'updateElementName'
-    | 'other';
+  type: T | 'setData' | 'other' | string;
   selectedElements?: Element[] | null;
   hoverElement?: Element | null;
+  modifyRecord?: ModifyRecord<T>;
 }
 export interface CoreEventScale {
   scale: number;

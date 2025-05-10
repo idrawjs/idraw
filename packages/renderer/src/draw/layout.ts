@@ -41,8 +41,8 @@ export function drawLayout(
     ctx.arcTo(x, y + h, x, y, radiusList[3]);
     ctx.arcTo(x, y, x + w, y, radiusList[0]);
     ctx.closePath();
-    ctx.fill();
-    ctx.clip();
+    ctx.fill('nonzero');
+    ctx.clip('nonzero');
   }
 
   renderContent(ctx);

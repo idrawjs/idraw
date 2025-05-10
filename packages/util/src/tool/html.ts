@@ -2,6 +2,7 @@
 import { HTMLNode } from '@idraw/types';
 
 const attrRegExp = /\s([^'"/\s><]+?)[\s/>]|([^\s=]+)=\s?(".*?"|'.*?')/g;
+// eslint-disable-next-line no-useless-escape
 const elemRegExp = /<[a-zA-Z0-9\-\!\/](?:"[^"]*"|'[^']*'|[^'">])*>/g;
 const whitespaceReg = /^\s*$/;
 
@@ -163,7 +164,7 @@ export function parseHTML(html: string) {
 
 function attrString(attrs: HTMLNode['attributes']) {
   const buff = [];
-  for (let key in attrs) {
+  for (const key in attrs) {
     buff.push(key + '="' + attrs[key] + '"');
   }
   if (!buff.length) {
@@ -177,7 +178,11 @@ function stringify(buff: string, htmlNode: HTMLNode): string {
     case 'text':
       return buff + htmlNode.textContent;
     case 'element':
-      buff += '<' + htmlNode.name + (htmlNode.attributes ? attrString(htmlNode.attributes) : '') + (htmlNode.isVoid ? '/>' : '>');
+      buff +=
+        '<' +
+        htmlNode.name +
+        (htmlNode.attributes ? attrString(htmlNode.attributes) : '') +
+        (htmlNode.isVoid ? '/>' : '>');
       if (htmlNode.isVoid) {
         return buff;
       }

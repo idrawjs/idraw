@@ -20,15 +20,19 @@ module.exports = {
   modulePaths: ['<rootDir>'],
   testRegex: '(/packages/([^/]{1,})/__tests__/.*)\\.test.ts$',
   testPathIgnorePatterns: [
-    '(/packages/board/__tests__/.*)\\.test.ts$',
+    // TODO
     '(/packages/core/__tests__/.*)\\.test.ts$',
-    '(/packages/idraw/__tests__/.*)\\.test.ts$',
+    // '(/packages/idraw/__tests__/.*)\\.test.ts$',
     '(/packages/renderer/__tests__/.*)\\.test.ts$',
     '(/packages/types/__tests__/.*)\\.test.ts$'
   ],
   moduleNameMapper: {
-    '@idraw/util': '<rootDir>/packages/util/src/index.ts'
+    '@idraw/types': '<rootDir>/packages/types/src/index.ts',
+    '@idraw/util': '<rootDir>/packages/util/src/index.ts',
+    '@idraw/renderer': '<rootDir>/packages/renderer/src/index.ts',
+    '@idraw/core': '<rootDir>/packages/core/src/index.ts',
+    '^idraw$': '<rootDir>/packages/idraw/src/index.ts'
   },
   // "testRegex": "(/packages/idraw/__tests__/.*)\\.test.ts$",
-  setupFiles: ['jest-canvas-mock']
+  setupFiles: ['jest-canvas-mock', './jest.setup.js']
 };

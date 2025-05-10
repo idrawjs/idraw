@@ -1,6 +1,10 @@
-import type { RendererDrawElementOptions, ViewContext2D, ElementGlobalDetail } from '@idraw/types';
+import type { RendererDrawElementOptions, ViewContext2D, ElementGlobal } from '@idraw/types';
 
-export function drawGlobalBackground(ctx: ViewContext2D, global: ElementGlobalDetail | undefined, opts: RendererDrawElementOptions) {
+export function drawGlobalBackground(
+  ctx: ViewContext2D,
+  global: ElementGlobal | undefined,
+  opts: RendererDrawElementOptions
+) {
   if (typeof global?.background === 'string') {
     const { viewSizeInfo } = opts;
     const { width, height } = viewSizeInfo;

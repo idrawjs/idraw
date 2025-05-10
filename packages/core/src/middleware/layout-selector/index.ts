@@ -1,10 +1,21 @@
-import type { BoardMiddleware, ElementSize, Point, MiddlewareLayoutSelectorConfig, CoreEventMap } from '@idraw/types';
+import type {
+  Middleware,
+  ElementSize,
+  Point,
+  MiddlewareLayoutSelectorConfig,
+  CoreEventMap,
+  RecursivePartial,
+  ModifyRecord,
+  DataLayout
+} from '@idraw/types';
 import {
   calcLayoutSizeController,
   isViewPointInVertexes,
   getViewScaleInfoFromSnapshot,
   isViewPointInElementSize,
-  calcViewElementSize
+  calcViewElementSize,
+  getElementSize,
+  toFlattenLayout
 } from '@idraw/util';
 import type { LayoutSelectorSharedStorage, ControlType } from './types';
 import {
@@ -27,7 +38,7 @@ import { coreEventKeys } from '../../config';
 
 export { keyLayoutIsSelected, keyLayoutIsBusyMoving };
 
-export const MiddlewareLayoutSelector: BoardMiddleware<
+export const MiddlewareLayoutSelector: Middleware<
   LayoutSelectorSharedStorage,
   CoreEventMap,
   MiddlewareLayoutSelectorConfig
@@ -42,6 +53,8 @@ export const MiddlewareLayoutSelector: BoardMiddleware<
   let prevPoint: Point | null = null;
   let prevIsHoverContent: boolean | null = null;
   let prevIsSelected: boolean | null = null;
+
+  let pointStartLayoutSize: RecursivePartial<ElementSize> | null = null;
 
   const clear = () => {
     prevPoint = null;
@@ -241,6 +254,12 @@ export const MiddlewareLayoutSelector: BoardMiddleware<
         }
         sharer.setSharedStorage(keyLayoutIsSelected, false);
       }
+      const data = sharer.getActiveStorage('data');
+      if (data?.layout) {
+        pointStartLayoutSize = getElementSize(data.layout as any);
+      } else {
+        pointStartLayoutSize = null;
+      }
 
       resetController();
       const layoutControlType = resetControlType(e);
@@ -359,11 +378,25 @@ export const MiddlewareLayoutSelector: BoardMiddleware<
       const layoutControlType = sharer.getSharedStorage(keyLayoutControlType);
       const data = sharer.getActiveStorage('data');
       if (data && layoutActionType === 'resize' && layoutControlType) {
+        let modifyRecord: ModifyRecord<'modifyLayout'> | undefined = undefined;
+        if (pointStartLayoutSize) {
+          modifyRecord = {
+            type: 'modifyLayout',
+            time: Date.now(),
+            content: {
+              method: 'modifyLayout',
+              before: toFlattenLayout(pointStartLayoutSize as DataLayout),
+              after: toFlattenLayout(getElementSize(data.layout as any) as DataLayout)
+            }
+          };
+        }
         eventHub.trigger(coreEventKeys.CHANGE, {
           type: 'dragLayout',
-          data
+          data,
+          modifyRecord
         });
       }
+      pointStartLayoutSize = null;
 
       sharer.setSharedStorage(keyLayoutActionType, null);
       sharer.setSharedStorage(keyLayoutControlType, null);

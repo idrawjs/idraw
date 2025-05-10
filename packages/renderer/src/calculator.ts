@@ -9,7 +9,7 @@ import type {
   ViewSizeInfo,
   VirtualFlatStorage,
   ViewRectInfo,
-  ModifyOptions,
+  ModifyInfo,
   VirtualFlatItem
 } from '@idraw/types';
 import {
@@ -25,6 +25,7 @@ import {
 } from '@idraw/util';
 import { sortElementsViewVisiableInfoMap, updateVirtualFlatItemMapStatus } from './view-visible';
 import { calcVirtualFlatDetail } from './virtual-flat';
+import { calcVirtualTextDetail } from './virtual-flat/text';
 
 export class Calculator implements ViewCalculator {
   #opts: ViewCalculatorOptions;
@@ -169,20 +170,35 @@ export class Calculator implements ViewCalculator {
     return viewRectInfo;
   }
 
+  modifyText(element: Element<'text'>): void {
+    const virtualFlatItemMap = this.#store.get('virtualFlatItemMap');
+    const flatItem = virtualFlatItemMap[element.uuid];
+    if (element && element.type === 'text') {
+      const newVirtualFlatItem: VirtualFlatItem = {
+        ...flatItem,
+        ...calcVirtualTextDetail(element, {
+          tempContext: this.#opts.tempContext
+        })
+      };
+      virtualFlatItemMap[element.uuid] = newVirtualFlatItem;
+      this.#store.set('virtualFlatItemMap', virtualFlatItemMap);
+    }
+  }
+
   modifyVirtualFlatItemMap(
     data: Data,
     opts: {
-      modifyOptions: ModifyOptions; // TODO
+      modifyInfo: ModifyInfo; // TODO
       viewScaleInfo: ViewScaleInfo;
       viewSizeInfo: ViewSizeInfo;
     }
   ): void {
-    const { modifyOptions, viewScaleInfo, viewSizeInfo } = opts;
-    const { type, content } = modifyOptions;
+    const { modifyInfo, viewScaleInfo, viewSizeInfo } = opts;
+    const { type, content } = modifyInfo;
     const list = data.elements;
     const virtualFlatItemMap = this.#store.get('virtualFlatItemMap');
     if (type === 'deleteElement') {
-      const { element } = content as ModifyOptions<'deleteElement'>['content'];
+      const { element } = content as ModifyInfo<'deleteElement'>['content'];
       const uuids: string[] = [];
       const _walk = (e: Element) => {
         uuids.push(e.uuid);
@@ -203,7 +219,7 @@ export class Calculator implements ViewCalculator {
     //   this.resetVirtualFlatItemMap(data, { viewScaleInfo, viewSizeInfo });
     // }
     else if (type === 'addElement' || type === 'updateElement') {
-      const { position } = content as ModifyOptions<'addElement'>['content'];
+      const { position } = content as ModifyInfo<'addElement'>['content'];
       const element = findElementFromListByPosition(position, data.elements);
       const groupQueue = getGroupQueueByElementPosition(list, position);
       if (element) {

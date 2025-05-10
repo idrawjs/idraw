@@ -22,7 +22,7 @@ function drawDebugControllerVertexes(opts: {
   ctx.lineTo(v3.x, v3.y);
   ctx.lineTo(v0.x, v0.y);
   ctx.closePath();
-  ctx.fill();
+  ctx.fill('nonzero');
 
   return false;
 }

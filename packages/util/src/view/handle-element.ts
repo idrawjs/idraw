@@ -1,6 +1,14 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-import type { RecursivePartial, Element, Elements, ElementPosition, ElementSize, ElementType, ViewScaleInfo, ViewSizeInfo } from '@idraw/types';
-import { createUUID } from './uuid';
+import type {
+  RecursivePartial,
+  Element,
+  Elements,
+  ElementPosition,
+  ElementSize,
+  ElementType,
+  ViewScaleInfo,
+  ViewSizeInfo
+} from '@idraw/types';
+import { createUUID } from '../tool/uuid';
 import {
   defaultText,
   getDefaultElementRectDetail,
@@ -10,7 +18,8 @@ import {
   getDefaultElementImageDetail,
   getDefaultElementGroupDetail
 } from './config';
-import { istype } from './istype';
+import { toFlattenElement } from './modify-record';
+import { set, del } from '../tool/get-set-del';
 import { findElementFromListByPosition, getElementPositionFromList } from './element';
 import { deepResizeGroupElement } from './resize-element';
 
@@ -18,7 +27,10 @@ const defaultViewWidth = 200;
 const defaultViewHeight = 200;
 // const defaultDetail = getDefaultElementDetailConfig();
 
-function createElementSize(type: ElementType, opts?: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }): ElementSize {
+function createElementSize(
+  type: ElementType,
+  opts?: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }
+): ElementSize {
   let x = 0;
   let y = 0;
   let w = defaultViewWidth;
@@ -87,9 +99,9 @@ export function createElement<T extends ElementType>(
     detail = getDefaultElementGroupDetail();
   }
   const elem: Element<T> = {
+    uuid: createUUID(),
     ...elementSize,
     ...baseElem,
-    uuid: createUUID(),
     type,
     detail: {
       ...detail,
@@ -170,7 +182,7 @@ export function moveElementPosition(
     return { elements, from, to };
   }
 
-  // [1] -> [1, 2, 3]
+  // invalid [1] -> [1, 2, 3]
   if (from.length <= to.length) {
     for (let i = 0; i < from.length; i++) {
       if (to[i] === from[i]) {
@@ -273,47 +285,47 @@ export function moveElementPosition(
   return { elements, from, to };
 }
 
-function mergeElement<T extends Element<ElementType> = Element<ElementType>>(originElem: T, updateContent: RecursivePartial<T>): T {
-  const commonKeys = Object.keys(updateContent);
-  for (let i = 0; i < commonKeys.length; i++) {
-    const commonKey = commonKeys[i];
-    if (['x', 'y', 'w', 'h', 'angle', 'name'].includes(commonKey)) {
-      // @ts-ignore
-      originElem[commonKey] = updateContent[commonKey];
-    } else if (['detail', 'operations'].includes(commonKey)) {
-      // @ts-ignore
-      if (istype.json(updateContent[commonKey] as any)) {
-        if (!(originElem as unknown)?.hasOwnProperty(commonKey)) {
-          // @ts-ignore
-          originElem[commonKey] = {};
-        }
-        // @ts-ignore
-        if (istype.json(originElem[commonKey])) {
-          // @ts-ignore
-          originElem[commonKey] = { ...originElem[commonKey], ...updateContent[commonKey] };
-        }
-        // @ts-ignore
-      } else if (istype.array(updateContent[commonKey] as any)) {
-        if (!(originElem as unknown)?.hasOwnProperty(commonKey)) {
-          // @ts-ignore
-          originElem[commonKey] = [];
-        }
-        // @ts-ignore
-        if (istype.array(originElem[commonKey])) {
-          ((updateContent as any)?.[commonKey] as Array<any>)?.forEach((item, i) => {
-            // @ts-ignore
-            originElem[commonKey][i] = item;
-          });
-          // @ts-ignore
-          originElem[commonKey] = [...originElem[commonKey], ...updateContent[commonKey]];
-        }
+export function mergeElement<T extends Element<ElementType> = Element<ElementType>>(
+  originElem: T,
+  updateContent: RecursivePartial<T>,
+  opts?: {
+    strict?: boolean;
+  }
+): T {
+  const updatedFlatten = toFlattenElement(updateContent);
+  const ignoreKeys = ['uuid', 'type'];
+
+  const updatedKeys = Object.keys(updatedFlatten);
+  updatedKeys.forEach((key) => {
+    if (!ignoreKeys.includes(key)) {
+      const value = updatedFlatten[key];
+      del(originElem, key);
+      if (value !== undefined) {
+        set(originElem, key, value);
       }
     }
+  });
+
+  if (opts?.strict === true) {
+    const originFlatten = toFlattenElement(originElem);
+    const originKeys = Object.keys(originFlatten);
+    originKeys.forEach((key) => {
+      if (!ignoreKeys.includes(key)) {
+        if (!updatedKeys.includes(key)) {
+          del(originElem, key);
+        }
+      }
+    });
   }
+
   return originElem;
 }
 
-export function updateElementInList(uuid: string, updateContent: RecursivePartial<Element<ElementType>>, elements: Element[]): Element | null {
+export function updateElementInList(
+  uuid: string,
+  updateContent: RecursivePartial<Element<ElementType>>,
+  elements: Element[]
+): Element | null {
   let targetElement: Element | null = null;
   for (let i = 0; i < elements.length; i++) {
     const elem = elements[i];
@@ -340,7 +352,8 @@ export function updateElementInList(uuid: string, updateContent: RecursivePartia
 export function updateElementInListByPosition(
   position: ElementPosition,
   updateContent: RecursivePartial<Element<ElementType>>,
-  elements: Element[]
+  elements: Element[],
+  opts?: { strict?: boolean }
 ): Element | null {
   const elem: Element | null = findElementFromListByPosition(position, elements);
   if (elem) {
@@ -352,7 +365,7 @@ export function updateElementInListByPosition(
         });
       }
     }
-    mergeElement(elem, updateContent);
+    mergeElement(elem, updateContent, opts);
   }
   return elem;
 }

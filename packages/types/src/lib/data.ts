@@ -19,7 +19,7 @@ export type DataLayout = Pick<ElementSize, 'x' | 'y' | 'w' | 'h'> & {
   };
 };
 
-export interface DataGlobalDetail {
+export interface DataGlobal {
   background?: string;
 }
 
@@ -28,7 +28,7 @@ export type Data<E extends Record<string, any> = Record<string, any>> = {
   elements: Element<ElementType, E>[];
   assets?: ElementAssets;
   layout?: DataLayout;
-  global?: DataGlobalDetail;
+  global?: DataGlobal;
 };
 
 export type Matrix = [

@@ -1,5 +1,5 @@
 import type { Element, ElementSize } from '@idraw/types';
-import { formatNumber } from './number';
+import { formatNumber } from '../tool/number';
 
 const doNum = (n: number) => {
   return formatNumber(n, { decimalPlaces: 4 });
@@ -97,7 +97,10 @@ function resizeElement(elem: Element, opts: ResizeOptions) {
   }
 }
 
-export function deepResizeGroupElement(elem: Element<'group'>, size: Pick<Partial<ElementSize>, 'w' | 'h'>): Element<'group'> {
+export function deepResizeGroupElement(
+  elem: Element<'group'>,
+  size: Pick<Partial<ElementSize>, 'w' | 'h'>
+): Element<'group'> {
   const resizeW: number = size.w && size.w > 0 ? size.w : elem.w;
   const resizeH: number = size.h && size.h > 0 ? size.h : elem.h;
   const xRatio = resizeW / elem.w;

@@ -14,7 +14,8 @@ import {
   deepResizeGroupElement,
   getElementSize,
   calcPointMoveElementInGroup,
-  isSameElementSize
+  isSameElementSize,
+  toFlattenElement
 } from '@idraw/util';
 import type {
   Data,
@@ -24,13 +25,14 @@ import type {
   ViewSizeInfo,
   ElementSizeController,
   MiddlewareSelectorConfig,
-  ElementSize
+  ElementSize,
+  ModifyRecord
 } from '@idraw/types';
 import type {
   Point,
   PointSize,
   PointWatcherEvent,
-  BoardMiddleware,
+  Middleware,
   Element,
   ActionType,
   ResizeType,
@@ -93,7 +95,7 @@ import { MIDDLEWARE_INTERNAL_EVENT_SHOW_INFO_ANGLE } from '../info';
 export { keySelectedElementList, keyHoverElement, keyActionType, keyResizeType, keyGroupQueue };
 export type { DeepSelectorSharedStorage, ActionType };
 
-export const MiddlewareSelector: BoardMiddleware<
+export const MiddlewareSelector: Middleware<
   DeepSelectorSharedStorage,
   CoreEventMap & {
     [MIDDLEWARE_INTERNAL_EVENT_SHOW_INFO_ANGLE]: { show: boolean };
@@ -107,6 +109,7 @@ export const MiddlewareSelector: BoardMiddleware<
   const { viewer, sharer, boardContent, calculator, eventHub } = opts;
   const { overlayContext } = boardContent;
   let prevPoint: Point | null = null;
+  let pointStartElementSizeList: Array<Partial<ElementSize> & { uuid: string }> = [];
   let moveOriginalStartPoint: Point | null = null;
   let moveOriginalStartElementSize: ElementSize | null = null;
   let inBusyMode: 'resize' | 'drag' | 'drag-list' | 'area' | null = null;
@@ -283,6 +286,8 @@ export const MiddlewareSelector: BoardMiddleware<
       eventHub.off(coreEventKeys.CLEAR_SELECT, selectClearCallback);
       eventHub.off(coreEventKeys.SELECT_IN_GROUP, selectInGroupCallback);
       eventHub.off(coreEventKeys.SNAP_TO_GRID, setSnapToSnapCallback);
+      clear();
+      innerConfig = null as any;
     },
 
     resetConfig(config) {
@@ -428,11 +433,7 @@ export const MiddlewareSelector: BoardMiddleware<
           const target = getPointTarget(e.point, pointTargetBaseOptions());
           const isLockedElement = target?.elements?.length === 1 && target.elements[0]?.operations?.locked === true;
 
-          // if (target?.elements?.length === 1 && target.elements[0]?.operations?.locked === true) {
-          //   return;
-          // } else {
           updateHoverElement(null);
-          // }
 
           if (target?.elements?.length === 1) {
             moveOriginalStartElementSize = getElementSize(target?.elements[0]);
@@ -442,6 +443,7 @@ export const MiddlewareSelector: BoardMiddleware<
           } else if (target.type === 'over-element' && target?.elements?.length === 1) {
             updateSelectedElementList([target.elements[0]], { triggerEvent: true });
             sharer.setSharedStorage(keyActionType, 'drag');
+            pointStartElementSizeList = [{ ...getElementSize(target?.elements[0]), uuid: target?.elements[0].uuid }];
           } else if (target.type?.startsWith('resize-')) {
             sharer.setSharedStorage(keyResizeType, target.type as ResizeType);
             sharer.setSharedStorage(keyActionType, 'resize');
@@ -487,6 +489,7 @@ export const MiddlewareSelector: BoardMiddleware<
       } else if (target.type === 'over-element' && target?.elements?.length === 1) {
         updateSelectedElementList([target.elements[0]], { triggerEvent: true });
         sharer.setSharedStorage(keyActionType, 'drag');
+        pointStartElementSizeList = [{ ...getElementSize(target?.elements[0]), uuid: target?.elements[0].uuid }];
       } else if (target.type?.startsWith('resize-')) {
         sharer.setSharedStorage(keyResizeType, target.type as ResizeType);
         sharer.setSharedStorage(keyActionType, 'resize');
@@ -562,7 +565,7 @@ export const MiddlewareSelector: BoardMiddleware<
           elems[0].y = calculator.toGridNum(moveOriginalStartElementSize.y + totalMoveY);
           updateSelectedElementList([elems[0]]);
           calculator.modifyVirtualFlatItemMap(data, {
-            modifyOptions: {
+            modifyInfo: {
               type: 'updateElement',
               content: {
                 element: elems[0],
@@ -586,7 +589,7 @@ export const MiddlewareSelector: BoardMiddleware<
               elem.y = calculator.toGridNum(elem.y + moveY);
 
               calculator.modifyVirtualFlatItemMap(data, {
-                modifyOptions: {
+                modifyInfo: {
                   type: 'updateElement',
                   content: {
                     element: elem,
@@ -675,7 +678,7 @@ export const MiddlewareSelector: BoardMiddleware<
 
           updateSelectedElementList([elems[0]]);
           calculator.modifyVirtualFlatItemMap(data, {
-            modifyOptions: {
+            modifyInfo: {
               type: 'updateElement',
               content: {
                 element: elems[0],
@@ -775,7 +778,37 @@ export const MiddlewareSelector: BoardMiddleware<
             type = 'resizeElement';
           }
           if (hasChangedData) {
-            eventHub.trigger(coreEventKeys.CHANGE, { data, type, selectedElements, hoverElement });
+            const startSize = pointStartElementSizeList[0] as ElementSize & { uuid: string };
+            let modifyRecord: ModifyRecord | undefined = undefined;
+            if (selectedElements.length === 1) {
+              modifyRecord = {
+                type: 'dragElement',
+                time: 0,
+                content: {
+                  method: 'modifyElement',
+                  uuid: startSize.uuid,
+                  before: toFlattenElement(startSize),
+                  after: toFlattenElement(getElementSize(selectedElements[0]))
+                }
+              };
+            } else if (selectedElements.length > 1) {
+              modifyRecord = {
+                type: 'dragElements',
+                time: 0,
+                content: {
+                  method: 'modifyElements',
+                  before: pointStartElementSizeList.map((item) => ({
+                    ...toFlattenElement(item),
+                    uuid: item.uuid
+                  })),
+                  after: selectedElements.map((item) => ({
+                    ...toFlattenElement(getElementSize(item)),
+                    uuid: item.uuid
+                  }))
+                }
+              };
+            }
+            eventHub.trigger(coreEventKeys.CHANGE, { data, type, selectedElements, hoverElement, modifyRecord });
             hasChangedData = false;
           }
         }

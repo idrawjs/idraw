@@ -1,7 +1,7 @@
 import type { Elements, Element, ElementPosition } from '@idraw/types';
 import { findElementFromListByPosition, calcElementListSize } from './element';
 import { deleteElementInListByPosition, insertElementToListByPosition } from './handle-element';
-import { createUUID } from './uuid';
+import { createUUID } from '../tool/uuid';
 
 export function groupElementsByPosition(list: Elements, positions: ElementPosition[]): Elements {
   if (positions.length > 1) {

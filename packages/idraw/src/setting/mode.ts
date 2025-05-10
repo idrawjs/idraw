@@ -19,7 +19,8 @@ function isValidMode(mode: string | IDrawMode) {
 }
 
 export function runMiddlewares(core: Core<IDrawEvent>, store: Store<IDrawStorage>) {
-  const { enableRuler, enableScale, enableScroll, enableSelect, enableTextEdit, enableDrag, enableInfo } = store.getSnapshot();
+  const { enableRuler, enableScale, enableScroll, enableSelect, enableTextEdit, enableDrag, enableInfo } =
+    store.getSnapshot();
   const styles = store.get('middlewareStyles');
   if (enableScroll === true) {
     core.use(MiddlewareScroller, styles?.scroller);

@@ -178,19 +178,19 @@ export interface ElementOperations {
   lastModified?: number;
 }
 
-export interface ElementGlobalDetail {
+export interface ElementGlobal {
   background?: string;
 }
 
 export interface Element<T extends ElementType = ElementType, E extends Record<string, any> = Record<string, any>>
   extends ElementSize {
   uuid: string;
-  name?: string;
+  name?: string | null;
   type: T;
   detail: ElementDetailMap[T];
   operations?: ElementOperations;
   extends?: E;
-  // global?: ElementGlobalDetail;
+  // global?: ElementGlobal;
 }
 
 export type Elements = Element<ElementType>[];

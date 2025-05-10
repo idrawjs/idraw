@@ -201,7 +201,7 @@ function drawScrollerThumb(
     ctx.arcTo(x, y, x + w, y, r);
     ctx.closePath();
     ctx.fillStyle = background;
-    ctx.fill();
+    ctx.fill('nonzero');
 
     ctx.beginPath();
     ctx.lineWidth = 1;

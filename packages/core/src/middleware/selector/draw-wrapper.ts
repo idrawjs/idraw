@@ -99,7 +99,12 @@ export function drawSelectedElementControllersVertexes(
   const { devicePixelRatio = 1 } = viewSizeInfo;
   const { activeColor } = style;
   const { elementWrapper, topLeft, topRight, bottomLeft, bottomRight, rotate } = controller;
-  const wrapperOpts = { borderColor: activeColor, borderWidth: selectWrapperBorderWidth, background: 'transparent', lineDash: [] };
+  const wrapperOpts = {
+    borderColor: activeColor,
+    borderWidth: selectWrapperBorderWidth,
+    background: 'transparent',
+    lineDash: []
+  };
   const ctrlOpts = { ...wrapperOpts, borderWidth: resizeControllerBorderWidth, background: '#FFFFFF' };
 
   drawVertexes(ctx, calcViewVertexes(elementWrapper, opts), wrapperOpts);
@@ -115,7 +120,11 @@ export function drawSelectedElementControllersVertexes(
     drawVertexes(ctx, calcViewVertexes(bottomRight.vertexes, opts), ctrlOpts);
 
     if (element?.operations?.rotatable !== false) {
-      drawCircleController(ctx, calcViewPointSize(rotate.center, opts), { ...ctrlOpts, size: rotate.size, borderWidth: 0 });
+      drawCircleController(ctx, calcViewPointSize(rotate.center, opts), {
+        ...ctrlOpts,
+        size: rotate.size,
+        borderWidth: 0
+      });
       const rotateCenter = calcViewPointSize(rotate.center, opts);
       ctx.drawImage(
         rotateControllerPattern.canvas,
@@ -139,7 +148,11 @@ export function drawSelectedElementControllersVertexes(
   // });
 }
 
-export function drawElementListShadows(ctx: ViewContext2D, elements: Element<ElementType>[], opts?: Omit<RendererDrawElementOptions, 'loader'>) {
+export function drawElementListShadows(
+  ctx: ViewContext2D,
+  elements: Element<ElementType>[],
+  opts?: Omit<RendererDrawElementOptions, 'loader'>
+) {
   elements.forEach((elem) => {
     let { x, y, w, h } = elem;
     const { angle = 0 } = elem;
@@ -164,12 +177,15 @@ export function drawElementListShadows(ctx: ViewContext2D, elements: Element<Ele
       }
       ctx.closePath();
       ctx.stroke();
-      ctx.fill();
+      ctx.fill('nonzero');
     }
   });
 }
 
-export function drawArea(ctx: ViewContext2D, opts: { start: PointSize; end: PointSize; style: MiddlewareSelectorStyle }) {
+export function drawArea(
+  ctx: ViewContext2D,
+  opts: { start: PointSize; end: PointSize; style: MiddlewareSelectorStyle }
+) {
   const { start, end, style } = opts;
   const { activeColor, activeAreaColor } = style;
   ctx.setLineDash([]);
@@ -183,7 +199,7 @@ export function drawArea(ctx: ViewContext2D, opts: { start: PointSize; end: Poin
   ctx.lineTo(start.x, end.y);
   ctx.closePath();
   ctx.stroke();
-  ctx.fill();
+  ctx.fill('nonzero');
 }
 
 export function drawListArea(ctx: ViewContext2D, opts: { areaSize: AreaSize; style: MiddlewareSelectorStyle }) {
@@ -201,7 +217,7 @@ export function drawListArea(ctx: ViewContext2D, opts: { areaSize: AreaSize; sty
   ctx.lineTo(x, y + h);
   ctx.closePath();
   ctx.stroke();
-  ctx.fill();
+  ctx.fill('nonzero');
 }
 
 export function drawGroupQueueVertexesWrappers(
@@ -217,7 +233,12 @@ export function drawGroupQueueVertexesWrappers(
   const { activeColor } = style;
   for (let i = 0; i < vertexesList.length; i++) {
     const vertexes = vertexesList[i];
-    const wrapperOpts = { borderColor: activeColor, borderWidth: selectWrapperBorderWidth, background: 'transparent', lineDash: [4, 4] };
+    const wrapperOpts = {
+      borderColor: activeColor,
+      borderWidth: selectWrapperBorderWidth,
+      background: 'transparent',
+      lineDash: [4, 4]
+    };
     drawVertexes(ctx, calcViewVertexes(vertexes, opts), wrapperOpts);
   }
 }

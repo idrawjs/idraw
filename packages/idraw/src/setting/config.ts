@@ -3,8 +3,9 @@ import { istype } from '@idraw/util';
 
 export const defaultMode: IDrawMode = 'select';
 
-export const defaultSettings: Required<Pick<IDrawSettings, 'mode'>> = {
-  mode: defaultMode
+export const defaultSettings: Required<Pick<IDrawSettings, 'mode' | 'history'>> = {
+  mode: defaultMode,
+  history: false
 };
 
 export const defaultOptions: Required<Pick<IDrawOptions, 'devicePixelRatio'>> = {

@@ -112,7 +112,7 @@ function drawClipPath(
     ctx.scale(totalScale * scaleW, totalScale * scaleH);
     const pathStr = generateSVGPath(clipPath.commands || []);
     const path2d = new Path2D(pathStr);
-    ctx.clip(path2d);
+    ctx.clip(path2d, 'nonzero');
 
     ctx.translate(0 - (internalX as number), 0 - (internalY as number));
     ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -236,7 +236,7 @@ export function drawBoxBackground(
         }
       }
     }
-    ctx.fill();
+    ctx.fill('nonzero');
 
     if (transform && transform.length > 0) {
       ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -322,7 +322,7 @@ export function drawBoxBorder(
   // ctx.quadraticCurveTo(op3.x, op3.y, op3e.x, op3e.y);
   // ctx.lineTo(op0s.x, op0s.y);
   // ctx.closePath();
-  // ctx.fill();
+  // ctx.fill('nonzero');
 
   // ctx.fillStyle = '#000000';
   // ctx.globalCompositeOperation = 'destination-out';
@@ -337,7 +337,7 @@ export function drawBoxBorder(
   // ctx.quadraticCurveTo(ip3.x, ip3.y, ip3e.x, ip3e.y);
   // ctx.lineTo(ip0s.x, ip0s.y);
   // ctx.closePath();
-  // ctx.fill();
+  // ctx.fill('nonzero');
   // ctx.globalCompositeOperation = 'source-over';
   // return;
   // // TODO

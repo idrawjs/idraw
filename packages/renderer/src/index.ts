@@ -70,6 +70,14 @@ export class Renderer extends EventEmitter<RendererEventMap> implements BoardRen
     //     ...opts
     //   });
     // }
+
+    if (opts.forceDrawAll === true) {
+      this.#calculator.resetVirtualFlatItemMap(data, {
+        viewScaleInfo: opts.viewScaleInfo,
+        viewSizeInfo: opts.viewSizeInfo
+      });
+    }
+
     const drawOpts = {
       loader,
       calculator,

@@ -143,22 +143,6 @@ export interface BoardViewer extends UtilEventEmitter<BoardViewerEventMap> {
   scroll(opts: { moveX?: number; moveY?: number; ignoreUpdateVisibleStatus?: boolean }): ViewScaleInfo;
   resize(viewSize: Partial<ViewSizeInfo>, opts?: { ignoreUpdateVisibleStatus?: boolean }): ViewSizeInfo;
   updateViewScaleInfo(opts: { scale: number; offsetX: number; offsetY: number }): ViewScaleInfo;
-
-  // resetVirtualFlatItemMap(
-  //   data: Data,
-  //   opts: {
-  //     viewScaleInfo: ViewScaleInfo;
-  //     viewSizeInfo: ViewSizeInfo;
-  //   }
-  // ): void;
-  // modifyVirtualFlatItemMap(
-  //   data: Data,
-  //   opts: {
-  //     modifyOptions: ModifyOptions;
-  //     viewScaleInfo: ViewScaleInfo;
-  //     viewSizeInfo: ViewSizeInfo;
-  //   }
-  // ): void;
 }
 
 export interface BoardRenderer extends UtilEventEmitter<RendererEventMap> {

@@ -2,7 +2,7 @@ import type { Element, ElementType } from './element';
 import type { Point, PointSize } from './point';
 import type { Data } from './data';
 import type { ViewContext2D } from './context2d';
-import type { ModifyOptions } from './modify';
+import type { ModifyInfo } from './modify-info';
 import { VirtualFlatItem } from './virtual-flat';
 // import type { BoxInfo } from './box';
 
@@ -72,7 +72,7 @@ export interface ViewCalculator {
   modifyVirtualFlatItemMap(
     data: Data,
     opts: {
-      modifyOptions: ModifyOptions;
+      modifyInfo: ModifyInfo;
       viewScaleInfo: ViewScaleInfo;
       viewSizeInfo: ViewSizeInfo;
     }
@@ -80,6 +80,7 @@ export interface ViewCalculator {
 
   toGridNum(num: number, opts?: { ignore?: boolean }): number;
   getVirtualFlatItem: (uuid: string) => VirtualFlatItem | null;
+  modifyText(element: Element<'text'>): void;
 }
 
 export type ViewRectVertexes = [PointSize, PointSize, PointSize, PointSize];

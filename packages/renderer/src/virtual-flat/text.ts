@@ -131,9 +131,9 @@ export function calcVirtualTextDetail(elem: Element<'text'>, opts: CalcVirtualDe
     eachLineStartY = (fontHeight - fontSize) / 2;
   }
   if (lines.length * fontHeight < h) {
-    if (elem.detail.verticalAlign === 'top') {
+    if (detail.verticalAlign === 'top') {
       startY = 0;
-    } else if (elem.detail.verticalAlign === 'bottom') {
+    } else if (detail.verticalAlign === 'bottom') {
       startY += h - lines.length * fontHeight;
     } else {
       // middle and default

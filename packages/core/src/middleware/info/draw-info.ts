@@ -6,7 +6,15 @@ const fontFamily = 'monospace';
 
 export function drawSizeInfoText(
   ctx: ViewContext2D,
-  opts: { point: PointSize; rotateCenter: PointSize; angle: number; text: string; fontSize: number; lineHeight: number; style: MiddlewareInfoStyle }
+  opts: {
+    point: PointSize;
+    rotateCenter: PointSize;
+    angle: number;
+    text: string;
+    fontSize: number;
+    lineHeight: number;
+    style: MiddlewareInfoStyle;
+  }
 ) {
   const { point, rotateCenter, angle, text, style, fontSize, lineHeight } = opts;
   const { textColor, textBackground } = style;
@@ -39,7 +47,7 @@ export function drawSizeInfoText(
     ctx.lineTo(bgEnd.x, bgEnd.y);
     ctx.lineTo(bgStart.x, bgEnd.y);
     ctx.closePath();
-    ctx.fill();
+    ctx.fill('nonzero');
 
     ctx.fillStyle = textColor;
     ctx.textBaseline = 'top';
@@ -49,7 +57,15 @@ export function drawSizeInfoText(
 
 export function drawPositionInfoText(
   ctx: ViewContext2D,
-  opts: { point: PointSize; rotateCenter: PointSize; angle: number; text: string; fontSize: number; lineHeight: number; style: MiddlewareInfoStyle }
+  opts: {
+    point: PointSize;
+    rotateCenter: PointSize;
+    angle: number;
+    text: string;
+    fontSize: number;
+    lineHeight: number;
+    style: MiddlewareInfoStyle;
+  }
 ) {
   const { point, rotateCenter, angle, text, style, fontSize, lineHeight } = opts;
   const { textBackground, textColor } = style;
@@ -82,7 +98,7 @@ export function drawPositionInfoText(
     ctx.lineTo(bgEnd.x, bgEnd.y);
     ctx.lineTo(bgStart.x, bgEnd.y);
     ctx.closePath();
-    ctx.fill();
+    ctx.fill('nonzero');
 
     ctx.fillStyle = textColor;
     ctx.textBaseline = 'top';
@@ -92,7 +108,15 @@ export function drawPositionInfoText(
 
 export function drawAngleInfoText(
   ctx: ViewContext2D,
-  opts: { point: PointSize; rotateCenter: PointSize; angle: number; text: string; fontSize: number; lineHeight: number; style: MiddlewareInfoStyle }
+  opts: {
+    point: PointSize;
+    rotateCenter: PointSize;
+    angle: number;
+    text: string;
+    fontSize: number;
+    lineHeight: number;
+    style: MiddlewareInfoStyle;
+  }
 ) {
   const { point, rotateCenter, angle, text, style, fontSize, lineHeight } = opts;
   const { textBackground, textColor } = style;
@@ -125,7 +149,7 @@ export function drawAngleInfoText(
     ctx.lineTo(bgEnd.x, bgEnd.y);
     ctx.lineTo(bgStart.x, bgEnd.y);
     ctx.closePath();
-    ctx.fill();
+    ctx.fill('nonzero');
 
     ctx.fillStyle = textColor;
     ctx.textBaseline = 'top';

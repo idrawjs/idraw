@@ -1,4 +1,11 @@
-import type { ViewContext2D, LayoutSizeController, ViewRectVertexes, PointSize, ElementSize, MiddlewareLayoutSelectorStyle } from '@idraw/types';
+import type {
+  ViewContext2D,
+  LayoutSizeController,
+  ViewRectVertexes,
+  PointSize,
+  ElementSize,
+  MiddlewareLayoutSelectorStyle
+} from '@idraw/types';
 
 function drawControllerBox(ctx: ViewContext2D, boxVertexes: ViewRectVertexes, style: MiddlewareLayoutSelectorStyle) {
   const { activeColor } = style;
@@ -10,7 +17,7 @@ function drawControllerBox(ctx: ViewContext2D, boxVertexes: ViewRectVertexes, st
   ctx.lineTo(boxVertexes[2].x, boxVertexes[2].y);
   ctx.lineTo(boxVertexes[3].x, boxVertexes[3].y);
   ctx.closePath();
-  ctx.fill();
+  ctx.fill('nonzero');
 
   ctx.strokeStyle = activeColor;
   ctx.lineWidth = 2;
@@ -52,9 +59,24 @@ export function drawLayoutController(
   const { topLeft, topRight, bottomLeft, bottomRight, topMiddle, rightMiddle, bottomMiddle, leftMiddle } = controller;
 
   drawControllerLine(ctx, { start: topLeft.center, end: topRight.center, centerVertexes: topMiddle.vertexes, style });
-  drawControllerLine(ctx, { start: topRight.center, end: bottomRight.center, centerVertexes: rightMiddle.vertexes, style });
-  drawControllerLine(ctx, { start: bottomRight.center, end: bottomLeft.center, centerVertexes: bottomMiddle.vertexes, style });
-  drawControllerLine(ctx, { start: bottomLeft.center, end: topLeft.center, centerVertexes: leftMiddle.vertexes, style });
+  drawControllerLine(ctx, {
+    start: topRight.center,
+    end: bottomRight.center,
+    centerVertexes: rightMiddle.vertexes,
+    style
+  });
+  drawControllerLine(ctx, {
+    start: bottomRight.center,
+    end: bottomLeft.center,
+    centerVertexes: bottomMiddle.vertexes,
+    style
+  });
+  drawControllerLine(ctx, {
+    start: bottomLeft.center,
+    end: topLeft.center,
+    centerVertexes: leftMiddle.vertexes,
+    style
+  });
 
   drawControllerBox(ctx, topLeft.vertexes, style);
   drawControllerBox(ctx, topRight.vertexes, style);

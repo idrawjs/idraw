@@ -10,7 +10,7 @@ import {
   ViewSizeInfo,
   ViewCalculator,
   PointWatcherEvent,
-  BoardMiddleware,
+  Middleware,
   ViewRectVertexes,
   ElementSizeController,
   ElementPosition
@@ -54,7 +54,7 @@ export {
   ViewSizeInfo,
   ViewCalculator,
   PointWatcherEvent,
-  BoardMiddleware
+  Middleware
 };
 
 export type ControllerStyle = ElementSize & {

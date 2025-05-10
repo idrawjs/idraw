@@ -13,8 +13,7 @@ import type {
   ViewSizeInfo,
   PointSize,
   BoardExtendEventMap,
-  UtilEventEmitter,
-  ModifyOptions
+  UtilEventEmitter
 } from '@idraw/types';
 import { BoardWatcher } from './watcher';
 import { Sharer } from './sharer';
@@ -30,8 +29,8 @@ interface BoardMiddlewareMapItem {
 
 export class Board<T extends BoardExtendEventMap = BoardExtendEventMap> {
   #opts: BoardOptions;
-  #middlewareMap: WeakMap<BoardMiddleware, BoardMiddlewareMapItem> = new WeakMap();
-  #middlewares: BoardMiddleware[] = [];
+  #middlewareMap: Map<BoardMiddleware, BoardMiddlewareMapItem> = new Map();
+  // #middlewares: BoardMiddleware[] = [];
   #activeMiddlewareObjs: BoardMiddlewareObject[] = [];
   #watcher: BoardWatcher;
   #renderer: Renderer;
@@ -291,13 +290,12 @@ export class Board<T extends BoardExtendEventMap = BoardExtendEventMap> {
 
   #resetActiveMiddlewareObjs() {
     const activeMiddlewareObjs: BoardMiddlewareObject[] = [];
-    const middlewareMap = this.#middlewareMap;
-    this.#middlewares.forEach((middleware: BoardMiddleware) => {
-      const item = middlewareMap.get(middleware);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    for (const [_, item] of this.#middlewareMap) {
       if (item?.status === 'enable' && item?.middlewareObject) {
         activeMiddlewareObjs.push(item.middlewareObject);
       }
-    });
+    }
     this.#activeMiddlewareObjs = activeMiddlewareObjs;
   }
 
@@ -313,13 +311,7 @@ export class Board<T extends BoardExtendEventMap = BoardExtendEventMap> {
     return this.#renderer;
   }
 
-  setData(
-    data: Data,
-    opts?: {
-      modifiedOptions?: ModifyOptions; // TODO
-    }
-  ): { viewSizeInfo: ViewSizeInfo } {
-    const { modifiedOptions } = opts || {};
+  setData(data: Data): { viewSizeInfo: ViewSizeInfo } {
     const sharer = this.#sharer;
     this.#sharer.setActiveStorage('data', data);
     const viewSizeInfo = sharer.getActiveViewSizeInfo();
@@ -330,17 +322,11 @@ export class Board<T extends BoardExtendEventMap = BoardExtendEventMap> {
       viewHeight: viewSizeInfo.height,
       extend: true
     });
-    if (modifiedOptions) {
-      this.#viewer.resetVirtualFlatItemMap(data, {
-        viewSizeInfo,
-        viewScaleInfo
-      });
-    } else {
-      this.#viewer.resetVirtualFlatItemMap(data, {
-        viewSizeInfo,
-        viewScaleInfo
-      });
-    }
+
+    this.#viewer.resetVirtualFlatItemMap(data, {
+      viewSizeInfo,
+      viewScaleInfo
+    });
 
     this.#viewer.drawFrame();
     const newViewSizeInfo = {
@@ -360,14 +346,14 @@ export class Board<T extends BoardExtendEventMap = BoardExtendEventMap> {
   use<C extends any = any>(middleware: BoardMiddleware<any, any, any>, config?: Partial<C>) {
     if (this.#middlewareMap.has(middleware)) {
       const item = this.#middlewareMap.get(middleware);
-      if (item) {
-        item.middlewareObject.use?.();
+      if (item && item.status !== 'enable') {
         item.status = 'enable';
-        this.#middlewareMap.set(middleware, item);
+        item.middlewareObject.use?.();
         this.#resetActiveMiddlewareObjs();
-        return;
       }
+      return;
     }
+
     const { boardContent, container } = this.#opts;
     const sharer = this.#sharer;
     const viewer = this.#viewer;
@@ -379,8 +365,6 @@ export class Board<T extends BoardExtendEventMap = BoardExtendEventMap> {
       config
     );
     obj.use?.();
-    this.#middlewares.push(middleware);
-    this.#activeMiddlewareObjs.push(obj);
 
     this.#middlewareMap.set(middleware, {
       status: 'enable',
@@ -391,11 +375,13 @@ export class Board<T extends BoardExtendEventMap = BoardExtendEventMap> {
   }
 
   disuse(middleware: BoardMiddleware<any, any>) {
-    const item = this.#middlewareMap.get(middleware);
-    if (item) {
-      item.middlewareObject.disuse?.();
-      item.status = 'disable';
-      this.#middlewareMap.set(middleware, item);
+    if (this.#middlewareMap.has(middleware)) {
+      const item = this.#middlewareMap.get(middleware);
+      if (item) {
+        item.middlewareObject.disuse?.();
+        item.status = 'disable';
+      }
+      this.#middlewareMap.delete(middleware);
       this.#resetActiveMiddlewareObjs();
     }
   }

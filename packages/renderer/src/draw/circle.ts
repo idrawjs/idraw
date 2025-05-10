@@ -59,7 +59,7 @@ export function drawCircle(ctx: ViewContext2D, elem: Element<'circle'>, opts: Re
           ctx.fillStyle = fillStyle;
           ctx.circle(centerX, centerY, radiusA, radiusB, 0, 0, 2 * Math.PI);
           ctx.closePath();
-          ctx.fill();
+          ctx.fill('nonzero');
           ctx.globalAlpha = parentOpacity;
 
           // draw border

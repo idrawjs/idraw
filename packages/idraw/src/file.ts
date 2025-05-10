@@ -25,9 +25,12 @@ export type ExportImageFileResult = {
 export async function exportImageFileBlobURL(opts: ExportImageFileOptions): Promise<ExportImageFileResult> {
   const { data, width, height, devicePixelRatio, viewScaleInfo, viewSizeInfo, loadItemMap } = opts;
   let viewContext: ViewContext2D | null = createOffscreenContext2D({ width, height, devicePixelRatio });
+  let tempContext: ViewContext2D | null = createOffscreenContext2D({ width, height, devicePixelRatio });
+
   // let calculator: Calculator | null = new Calculator({ viewContext });
   let renderer: Renderer | null = new Renderer({
-    viewContext
+    viewContext,
+    tempContext
   });
   renderer.setLoadItemMap(loadItemMap);
   renderer.drawData(data, {
@@ -35,6 +38,7 @@ export async function exportImageFileBlobURL(opts: ExportImageFileOptions): Prom
     viewSizeInfo,
     forceDrawAll: true
   });
+
   let blobURL: string | null = null;
   let offScreenCanvas = viewContext.$getOffscreenCanvas();
   if (offScreenCanvas) {
@@ -44,6 +48,7 @@ export async function exportImageFileBlobURL(opts: ExportImageFileOptions): Prom
 
   offScreenCanvas = null;
   viewContext = null;
+  tempContext = null;
   renderer = null;
 
   return {

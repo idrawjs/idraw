@@ -43,8 +43,8 @@ export function drawImage(ctx: ViewContext2D, elem: Element<'image'>, opts: Rend
               ctx.arcTo(x, y + h, x, y, radiusList[3]);
               ctx.arcTo(x, y, x + w, y, radiusList[0]);
               ctx.closePath();
-              ctx.fill();
-              ctx.clip();
+              ctx.fill('nonzero');
+              ctx.clip('nonzero');
 
               if (scaleMode && originH && originW) {
                 let sx = 0;

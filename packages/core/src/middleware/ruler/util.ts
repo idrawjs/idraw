@@ -51,7 +51,10 @@ function limitRulerUnit(unit: number): number {
   return unit;
 }
 
-function calcRulerScaleList(opts: { axis: 'X' | 'Y'; scale: number; viewLength: number; viewOffset: number }): { list: RulerScale[]; rulerUnit: number } {
+function calcRulerScaleList(opts: { axis: 'X' | 'Y'; scale: number; viewLength: number; viewOffset: number }): {
+  list: RulerScale[];
+  rulerUnit: number;
+} {
   const { scale, viewLength, viewOffset } = opts;
   const list: RulerScale[] = [];
   let rulerUnit = 10;
@@ -87,7 +90,10 @@ function calcRulerScaleList(opts: { axis: 'X' | 'Y'; scale: number; viewLength: 
   return { list, rulerUnit };
 }
 
-export function calcXRulerScaleList(opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }): { list: RulerScale[]; rulerUnit: number } {
+export function calcXRulerScaleList(opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }): {
+  list: RulerScale[];
+  rulerUnit: number;
+} {
   const { viewScaleInfo, viewSizeInfo } = opts;
   const { scale, offsetLeft } = viewScaleInfo;
   const { width } = viewSizeInfo;
@@ -99,7 +105,10 @@ export function calcXRulerScaleList(opts: { viewScaleInfo: ViewScaleInfo; viewSi
   });
 }
 
-export function calcYRulerScaleList(opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }): { list: RulerScale[]; rulerUnit: number } {
+export function calcYRulerScaleList(opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }): {
+  list: RulerScale[];
+  rulerUnit: number;
+} {
   const { viewScaleInfo, viewSizeInfo } = opts;
   const { scale, offsetTop } = viewScaleInfo;
   const { height } = viewSizeInfo;
@@ -222,7 +231,7 @@ export function drawRulerBackground(
   ctx.closePath();
 
   ctx.fillStyle = background;
-  ctx.fill();
+  ctx.fill('nonzero');
   ctx.lineWidth = lineSize;
   ctx.setLineDash([]);
   ctx.strokeStyle = borderColor;
@@ -277,7 +286,11 @@ export function drawGrid(
 
 export function drawScrollerSelectedArea(
   ctx: ViewContext2D,
-  opts: { snapshot: BoardViewerFrameSnapshot<DeepRulerSharedStorage>; calculator: ViewCalculator; style: MiddlewareRulerStyle }
+  opts: {
+    snapshot: BoardViewerFrameSnapshot<DeepRulerSharedStorage>;
+    calculator: ViewCalculator;
+    style: MiddlewareRulerStyle;
+  }
 ) {
   const { snapshot, calculator, style } = opts;
   const { sharedStore } = snapshot;
@@ -285,7 +298,10 @@ export function drawScrollerSelectedArea(
   const selectedElementList = sharedStore[keySelectedElementList];
   const actionType = sharedStore[keyActionType];
 
-  if (['select', 'drag', 'drag-list', 'drag-list-end'].includes(actionType as string) && selectedElementList.length > 0) {
+  if (
+    ['select', 'drag', 'drag-list', 'drag-list-end'].includes(actionType as string) &&
+    selectedElementList.length > 0
+  ) {
     const viewScaleInfo = getViewScaleInfoFromSnapshot(snapshot);
     const viewSizeInfo = getViewSizeInfoFromSnapshot(snapshot);
     const rangeRectInfoList: ViewRectInfo[] = [];
@@ -325,7 +341,7 @@ export function drawScrollerSelectedArea(
     ctx.lineTo(xAreaStart, rulerSize);
     ctx.fillStyle = selectedAreaColor;
     ctx.closePath();
-    ctx.fill();
+    ctx.fill('nonzero');
 
     ctx.beginPath();
     ctx.moveTo(0, yAreaStart);
@@ -334,6 +350,6 @@ export function drawScrollerSelectedArea(
     ctx.lineTo(0, yAreaEnd);
     ctx.fillStyle = selectedAreaColor;
     ctx.closePath();
-    ctx.fill();
+    ctx.fill('nonzero');
   }
 }

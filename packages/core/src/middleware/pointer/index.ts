@@ -1,9 +1,9 @@
-import type { BoardMiddleware, CoreEventMap } from '@idraw/types';
+import type { Middleware, CoreEventMap } from '@idraw/types';
 import type { DeepPointerSharedStorage } from './types';
 import { keySelectedElementList } from '../selector';
 import { coreEventKeys } from '../../config';
 
-export const MiddlewarePointer: BoardMiddleware<DeepPointerSharedStorage, CoreEventMap> = (opts) => {
+export const MiddlewarePointer: Middleware<DeepPointerSharedStorage, CoreEventMap> = (opts) => {
   const { boardContent, eventHub, sharer } = opts;
   const canvas = boardContent.boardContext.canvas;
   const container = opts.container || document.body;
@@ -15,34 +15,23 @@ export const MiddlewarePointer: BoardMiddleware<DeepPointerSharedStorage, CoreEv
     return { left, top, width, height };
   };
 
-  const contextMenuPointer = document.createElement('div');
-  contextMenuPointer.setAttribute('id', id);
-  contextMenuPointer.style.position = 'fixed';
-  contextMenuPointer.style.top = '0';
-  contextMenuPointer.style.bottom = 'unset';
-  contextMenuPointer.style.left = '0';
-  contextMenuPointer.style.right = 'unset';
-
-  // // TODO
-  // contextMenuPointer.style.width = '10px';
-  // contextMenuPointer.style.height = '10px';
-  // contextMenuPointer.style.background = 'red';
-
-  container.appendChild(contextMenuPointer);
+  let contextMenuPointer = document.createElement('div');
 
   return {
     name: '@middleware/pointer',
     use() {
-      // TODO
+      contextMenuPointer.setAttribute('id', id);
+      contextMenuPointer.style.position = 'fixed';
+      contextMenuPointer.style.top = '0';
+      contextMenuPointer.style.bottom = 'unset';
+      contextMenuPointer.style.left = '0';
+      contextMenuPointer.style.right = 'unset';
+      container.appendChild(contextMenuPointer);
     },
     disuse() {
-      // TODO
-    },
-    pointStart(e) {
-      // TODO
-    },
-    pointEnd() {
-      // TODO
+      container.removeChild(contextMenuPointer);
+      contextMenuPointer.remove();
+      contextMenuPointer = null as any;
     },
     contextMenu(e) {
       const { point } = e;

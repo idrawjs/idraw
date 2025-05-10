@@ -12,7 +12,7 @@ import type {
   ElementPosition
 } from '@idraw/types';
 import { limitAngle, rotateElementVertexes } from './rotate';
-import { isAssetId, createAssetId } from './uuid';
+import { isAssetId, createAssetId } from '../tool/uuid';
 
 function getGroupUUIDs(elements: Array<Element<ElementType>>, index: string): string[] {
   const uuids: string[] = [];
@@ -203,7 +203,11 @@ export function calcElementsViewInfo(
 ): {
   contextSize: ViewContextSize;
 } {
-  const contextSize = calcElementsContextSize(elements, { viewWidth: prevViewSize.width, viewHeight: prevViewSize.height, extend: options?.extend });
+  const contextSize = calcElementsContextSize(elements, {
+    viewWidth: prevViewSize.width,
+    viewHeight: prevViewSize.height,
+    extend: options?.extend
+  });
   if (options?.extend === true) {
     contextSize.contextWidth = Math.max(contextSize.contextWidth, prevViewSize.contextWidth);
     contextSize.contextHeight = Math.max(contextSize.contextHeight, prevViewSize.contextHeight);
@@ -293,7 +297,10 @@ export function getGroupQueueFromList(uuid: string, elements: Element<ElementTyp
   return groupQueue;
 }
 
-export function getGroupQueueByElementPosition(elements: Element<ElementType>[], position: ElementPosition): Element<'group'>[] | null {
+export function getGroupQueueByElementPosition(
+  elements: Element<ElementType>[],
+  position: ElementPosition
+): Element<'group'>[] | null {
   const groupQueue: Element<'group'>[] = [];
   let currentElements: Element[] = elements;
   if (position.length > 1) {
@@ -408,7 +415,7 @@ export function findElementFromListByPosition(position: ElementPosition, list: E
   for (let i = 0; i < position.length; i++) {
     const pos = position[i];
     const item = tempList[pos];
-    if (i < position.length - 1 && item.type === 'group') {
+    if (i < position.length - 1 && item?.type === 'group') {
       tempList = (item as Element<'group'>).detail.children;
     } else if (i === position.length - 1) {
       result = item;
@@ -507,6 +514,10 @@ export function getElementPositionMapFromList(
 
 export function isSameElementSize(elem1: ElementSize, elem2: ElementSize) {
   return (
-    elem1.x === elem2.x && elem1.y === elem2.y && elem1.h === elem2.h && elem1.w === elem2.w && limitAngle(elem1.angle || 0) === limitAngle(elem2.angle || 0)
+    elem1.x === elem2.x &&
+    elem1.y === elem2.y &&
+    elem1.h === elem2.h &&
+    elem1.w === elem2.w &&
+    limitAngle(elem1.angle || 0) === limitAngle(elem2.angle || 0)
   );
 }

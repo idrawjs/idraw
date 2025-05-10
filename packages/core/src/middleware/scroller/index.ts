@@ -1,11 +1,29 @@
-import type { Point, BoardMiddleware, PointWatcherEvent, BoardWatherWheelEvent, MiddlewareScrollerConfig } from '@idraw/types';
+import type {
+  Point,
+  Middleware,
+  PointWatcherEvent,
+  BoardWatherWheelEvent,
+  MiddlewareScrollerConfig
+} from '@idraw/types';
 import { drawScroller, isPointInScrollThumb } from './util';
 // import type { ScrollbarThumbType } from './util';
-import { keyXThumbRect, keyYThumbRect, keyPrevPoint, keyActivePoint, keyActiveThumbType, keyHoverXThumbRect, keyHoverYThumbRect, defaultStyle } from './config';
+import {
+  keyXThumbRect,
+  keyYThumbRect,
+  keyPrevPoint,
+  keyActivePoint,
+  keyActiveThumbType,
+  keyHoverXThumbRect,
+  keyHoverYThumbRect,
+  defaultStyle
+} from './config';
 import type { DeepScrollerSharedStorage } from './types';
 import { coreEventKeys } from '../../config';
 
-export const MiddlewareScroller: BoardMiddleware<DeepScrollerSharedStorage, any, MiddlewareScrollerConfig> = (opts, config) => {
+export const MiddlewareScroller: Middleware<DeepScrollerSharedStorage, any, MiddlewareScrollerConfig> = (
+  opts,
+  config
+) => {
   const { viewer, boardContent, sharer, eventHub } = opts;
   const { overlayContext } = boardContent;
   sharer.setSharedStorage(keyXThumbRect, null); // null | ElementSize
@@ -136,7 +154,14 @@ export const MiddlewareScroller: BoardMiddleware<DeepScrollerSharedStorage, any,
       }
     },
     beforeDrawFrame({ snapshot }) {
-      const { thumbBackground, thumbBorderColor, hoverThumbBackground, hoverThumbBorderColor, activeThumbBackground, activeThumbBorderColor } = innerConfig;
+      const {
+        thumbBackground,
+        thumbBorderColor,
+        hoverThumbBackground,
+        hoverThumbBorderColor,
+        activeThumbBackground,
+        activeThumbBorderColor
+      } = innerConfig;
 
       const style = {
         thumbBackground,

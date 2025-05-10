@@ -110,8 +110,8 @@ export function drawGroup(ctx: ViewContext2D, elem: Element<'group'>, opts: Rend
               ctx.arcTo(x, y + h, x, y, radiusList[3]);
               ctx.arcTo(x, y, x + w, y, radiusList[0]);
               ctx.closePath();
-              ctx.fill();
-              ctx.clip();
+              ctx.fill('nonzero');
+              ctx.clip('nonzero');
             }
 
             if (Array.isArray(elem.detail.children)) {
