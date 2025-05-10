@@ -373,7 +373,7 @@ export function filterElementAsset<T extends Element<LoadElementType>>(
   }
 
   if (typeof resource === 'string' && !isAssetId(resource)) {
-    assetId = createAssetId(resource);
+    assetId = createAssetId(resource, element.uuid);
     assetItem = {
       type: element.type as LoadElementType,
       value: resource
