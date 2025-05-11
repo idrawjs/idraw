@@ -114,9 +114,15 @@ export class Core<E extends CoreEventMap = CoreEventMap> {
     this.#board.resetMiddlewareConfig(middleware, config);
   }
 
-  setData(data: Data) {
+  #resetData(data: Data) {
     validateElements(data?.elements || []);
     this.#board.setData(data);
+  }
+
+  setData(data: Data) {
+    const loader = this.#board.getRenderer().getLoader();
+    loader.reset();
+    this.#resetData(data);
   }
 
   getData(): Data | null {
@@ -220,9 +226,10 @@ export class Core<E extends CoreEventMap = CoreEventMap> {
     const before = toFlattenElement(beforeElem);
     const updatedElement = updateElementInListByPosition(position, element, data.elements, { strict: true }) as Element;
     const after = toFlattenElement(updatedElement);
-    this.setData(data);
+    const loader = this.#board.getRenderer().getLoader();
+    loader.resetElementAsset(element);
+    this.#resetData(data);
     this.refresh();
-
     const modifyRecord: ModifyRecord<'updateElement'> = {
       type: 'updateElement',
       time: Date.now(),
@@ -246,7 +253,9 @@ export class Core<E extends CoreEventMap = CoreEventMap> {
       beforeElement: beforeElem
     });
     updateElementInListByPosition(position, restElement, data.elements) as Element;
-    this.setData(data);
+    const loader = this.#board.getRenderer().getLoader();
+    loader.resetElementAsset({ ...element, type: beforeElem.type });
+    this.#resetData(data);
     this.refresh();
     return modifyRecord;
   }
@@ -292,7 +301,7 @@ export class Core<E extends CoreEventMap = CoreEventMap> {
       }
     };
 
-    this.setData(data);
+    this.#resetData(data);
     this.refresh();
     return modifyRecord;
   }
@@ -317,7 +326,7 @@ export class Core<E extends CoreEventMap = CoreEventMap> {
       time: Date.now(),
       content: { method: 'addElement', uuid: element.uuid, position, element: deepClone(element) }
     };
-    this.setData(data);
+    this.#resetData(data);
     this.refresh();
     return modifyRecord;
   }
@@ -331,8 +340,12 @@ export class Core<E extends CoreEventMap = CoreEventMap> {
       time: Date.now(),
       content: { method: 'deleteElement', uuid, position, element: element ? deepClone(element) : null }
     };
+    if (element) {
+      const loader = this.#board.getRenderer().getLoader();
+      loader.resetElementAsset(element);
+    }
     deleteElementInList(uuid, data.elements);
-    this.setData(data);
+    this.#resetData(data);
     this.refresh();
     return modifyRecord;
   }
@@ -348,7 +361,7 @@ export class Core<E extends CoreEventMap = CoreEventMap> {
     };
     const { elements: list } = moveElementPosition(data.elements, { from, to });
     data.elements = list;
-    this.setData(data);
+    this.#resetData(data);
     this.refresh();
     return modifyRecord;
   }
@@ -369,7 +382,7 @@ export class Core<E extends CoreEventMap = CoreEventMap> {
       if (data.layout) {
         modifyRecord.content.before = toFlattenLayout(data.layout);
         delete data['layout'];
-        this.setData(data);
+        this.#resetData(data);
         this.refresh();
         return modifyRecord;
       } else {
@@ -399,7 +412,7 @@ export class Core<E extends CoreEventMap = CoreEventMap> {
     modifyRecord.content.after = after;
     mergeLayout(data.layout as DataLayout, layout) as DataLayout;
 
-    this.setData(data);
+    this.#resetData(data);
     this.refresh();
     return modifyRecord;
   }
@@ -420,7 +433,7 @@ export class Core<E extends CoreEventMap = CoreEventMap> {
       if (data.global) {
         modifyRecord.content.before = toFlattenGlobal(data.global);
         delete data['global'];
-        this.setData(data);
+        this.#resetData(data);
         this.refresh();
         return modifyRecord;
       } else {
@@ -445,7 +458,7 @@ export class Core<E extends CoreEventMap = CoreEventMap> {
     modifyRecord.content.after = after;
     mergeGlobal(data.global as DataGlobal, global) as DataGlobal;
 
-    this.setData(data);
+    this.#resetData(data);
     this.refresh();
     return modifyRecord;
   }

@@ -7,7 +7,8 @@ import type {
   LoadItemMap,
   LoadElementType,
   Element,
-  ElementAssets
+  ElementAssets,
+  RecursivePartial
 } from '@idraw/types';
 import { loadImage, loadHTML, loadSVG, EventEmitter, createAssetId, isAssetId, createUUID } from '@idraw/util';
 
@@ -73,6 +74,40 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
 
   isDestroyed() {
     return this.#hasDestroyed;
+  }
+
+  reset() {
+    if (this.#hasDestroyed === true) {
+      return;
+    }
+    this.#currentLoadItemMap = {};
+    this.#storageLoadItemMap = {};
+  }
+
+  resetElementAsset(element: Element<LoadElementType> | RecursivePartial<Element>) {
+    if (supportElementTypes.includes((element as Element<LoadElementType>).type)) {
+      let assetId: string | null = null;
+      let resource: string | null = null;
+      if (element.type === 'image' && typeof (element as Element<'image'>).detail.src === 'string') {
+        resource = (element as Element<'image'>).detail.src;
+      } else if (element.type === 'svg' && typeof (element as Element<'svg'>).detail.svg === 'string') {
+        resource = (element as Element<'svg'>).detail.svg;
+      } else if (element.type === 'html' && typeof (element as Element<'html'>).detail.html === 'string') {
+        resource = (element as Element<'html'>).detail.html;
+      }
+      if (typeof resource === 'string') {
+        this.load(element as Element<LoadElementType>, {});
+        if (isAssetId(resource)) {
+          assetId = resource;
+        } else if (element.uuid) {
+          assetId = createAssetId(resource, element.uuid);
+        }
+      }
+      if (assetId && isAssetId(assetId)) {
+        delete this.#storageLoadItemMap[assetId];
+        delete this.#currentLoadItemMap[assetId];
+      }
+    }
   }
 
   destroy() {

@@ -50,7 +50,7 @@ export function modifyElement(
   if (!data) {
     return;
   }
-  core.trigger(coreEventKeys.CHANGE, { data, type: 'updateElement', modifyRecord });
+  core.trigger(coreEventKeys.CHANGE, { data, type: 'modifyElement', modifyRecord });
 }
 
 export function addElement(
