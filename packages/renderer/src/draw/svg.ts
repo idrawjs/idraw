@@ -4,8 +4,8 @@ import { getOpacity } from './box';
 
 export function drawSVG(ctx: ViewContext2D, elem: Element<'svg'>, opts: RendererDrawElementOptions) {
   const content = opts.loader.getContent(elem);
-  const { viewScaleInfo, viewSizeInfo, parentOpacity } = opts;
-  const { x, y, w, h, angle } = calcViewElementSize(elem, { viewScaleInfo, viewSizeInfo }) || elem;
+  const { viewScaleInfo, parentOpacity } = opts;
+  const { x, y, w, h, angle } = calcViewElementSize(elem, { viewScaleInfo }) || elem;
   rotateElement(ctx, { x, y, w, h, angle }, () => {
     if (!content && !opts.loader.isDestroyed()) {
       opts.loader.load(elem as Element<'svg'>, opts.elementAssets || {});
