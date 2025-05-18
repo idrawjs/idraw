@@ -227,4 +227,8 @@ export class iDraw {
   getCore() {
     return this.#core;
   }
+
+  forceRender() {
+    return this.#core.forceRender();
+  }
 }

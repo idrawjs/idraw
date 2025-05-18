@@ -419,6 +419,12 @@ export const MiddlewareSelector: Middleware<
       prevPoint = e.point;
       moveOriginalStartPoint = e.point;
 
+      sharer.setSharedStorage(keyActionType, null);
+      sharer.setSharedStorage(keyResizeType, null);
+      sharer.setSharedStorage(keyAreaStart, null);
+      sharer.setSharedStorage(keyAreaEnd, null);
+      sharer.setSharedStorage(keyHoverElement, null);
+
       const groupQueue = sharer.getSharedStorage(keyGroupQueue);
 
       if (groupQueue?.length > 0) {
