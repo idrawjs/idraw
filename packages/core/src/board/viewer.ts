@@ -90,7 +90,8 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
       this.#drawFrameStatus = 'COMPLETE';
       return;
     }
-    if ((this.#drawFrameStatus = 'DRAWING')) {
+
+    if (this.#drawFrameStatus === 'DRAWING') {
       requestAnimationFrame(() => {
         this.#drawAnimationFrame();
       });

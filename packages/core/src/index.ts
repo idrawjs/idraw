@@ -179,6 +179,22 @@ export class Core<E extends CoreEventMap = CoreEventMap> {
     this.#board.getViewer().drawFrame();
   }
 
+  forceRender() {
+    const renderer = this.#board.getRenderer();
+    const calculator = renderer.getCalculator();
+    const loader = renderer.getLoader();
+    const data = this.getData();
+    if (data) {
+      const { viewScaleInfo, viewSizeInfo } = this.getViewInfo();
+      calculator.resetVirtualFlatItemMap(data, {
+        viewScaleInfo,
+        viewSizeInfo
+      });
+    }
+    loader.reset();
+    this.refresh();
+  }
+
   setViewScale(opts: { scale: number; offsetX: number; offsetY: number }) {
     this.#board.updateViewScaleInfo(opts);
   }
