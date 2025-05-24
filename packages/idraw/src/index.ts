@@ -115,7 +115,6 @@ export {
   insertElementToListByPosition,
   deleteElementInListByPosition,
   deleteElementInList,
-  deepResizeGroupElement,
   deepCloneElement,
   calcViewCenterContent,
   calcViewCenter,

@@ -111,7 +111,7 @@ export {
   updateElementInList,
   updateElementInListByPosition
 } from './view/handle-element';
-export { deepResizeGroupElement } from './view/resize-element';
+export { resizeEffectGroupElement } from './view/resize-element';
 export { calcViewCenterContent, calcViewCenter } from './view/view-content';
 export { toFlattenElement, toFlattenLayout, toFlattenGlobal } from './view/modify-record';
 export { enhanceFontFamliy } from './view/text';

@@ -110,6 +110,7 @@ export type BoardMiddleware<
 export interface BoardOptions {
   boardContent: BoardContent;
   container?: HTMLDivElement;
+  disableWatcher?: boolean;
 }
 
 export interface BoardViewerFrameSnapshot<S extends Record<any | symbol, any> = any> {

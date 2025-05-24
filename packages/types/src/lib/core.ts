@@ -8,6 +8,7 @@ export interface CoreOptions {
   width: number;
   height: number;
   devicePixelRatio?: number;
+  disableWatcher?: boolean;
 }
 
 export type CursorType =

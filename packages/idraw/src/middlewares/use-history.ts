@@ -5,12 +5,12 @@ import type {
   DataLayout,
   RecursivePartial,
   DataGlobal,
-  IDrawHistory
+  HistoryHandler
 } from '@idraw/types';
 import { unflatObject, calcResultMovePosition } from '@idraw/util';
+import { Core } from '@idraw/core';
 import type { IDrawEvent } from '../event';
 import { eventKeys } from '../event';
-import type { iDraw } from '../idraw';
 
 const supportRecordTypes = [
   'updateElement',
@@ -25,9 +25,12 @@ const supportRecordTypes = [
   'modifyGlobal'
 ];
 
-export const useHistory = (opts: { instance: iDraw }) => {
-  const { instance } = opts;
-  const core = instance.getCore();
+const LIMIT = 100;
+
+export const useHistory = (opts: { core: Core; limit?: number }) => {
+  const { core, limit } = opts;
+  const historyLimit = limit && limit > 0 ? limit : LIMIT;
+
   let doRecords: ModifyRecord[] = [];
   let undoRecords: ModifyRecord[] = [];
 
@@ -95,6 +98,9 @@ export const useHistory = (opts: { instance: iDraw }) => {
 
       undoRecord = { ...undoRecord, type: 'undo' } as ModifyRecord<'undo'>;
       undoRecords.push(undoRecord);
+      if (undoRecords.length > historyLimit) {
+        undoRecords.splice(historyLimit - undoRecords.length, undoRecords.length);
+      }
     }
   };
 
@@ -154,6 +160,9 @@ export const useHistory = (opts: { instance: iDraw }) => {
       }
       redoRecord = { ...redoRecord, type: 'redo' } as ModifyRecord<'redo'>;
       doRecords.push(redoRecord);
+      if (doRecords.length > historyLimit) {
+        doRecords.splice(historyLimit - doRecords.length, doRecords.length);
+      }
     }
   };
 
@@ -203,7 +212,7 @@ export const useHistory = (opts: { instance: iDraw }) => {
   const getDoRecords = () => doRecords;
   const getUndoRecords = () => undoRecords;
 
-  const history: IDrawHistory = {
+  const historyHandler: HistoryHandler = {
     undo: undoAction,
     redo: redoAction,
     destroy,
@@ -216,6 +225,6 @@ export const useHistory = (opts: { instance: iDraw }) => {
 
   return {
     MiddlewareHistory,
-    history
+    historyHandler
   } as const;
 };

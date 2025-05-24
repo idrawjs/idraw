@@ -15,7 +15,8 @@ import type {
   IDrawStorage,
   DataLayout,
   DataGlobal,
-  Middleware
+  Middleware,
+  HistoryHandler
 } from '@idraw/types';
 import { filterCompactData, calcViewCenterContent, calcViewCenter, Store } from '@idraw/util';
 import { defaultSettings, defaultOptions, getDefaultStorage, defaultMode, parseStyles } from './setting/config';
@@ -28,6 +29,7 @@ import { modifyGlobal } from './methods/global';
 import { reset } from './methods/reset';
 import { setFeature } from './methods/feature';
 import { getImageBlobURL } from './methods/image';
+import { useHistory } from './middlewares/use-history';
 
 export class iDraw {
   #core: Core<IDrawEvent>;
@@ -35,6 +37,7 @@ export class iDraw {
   #store: Store<IDrawStorage> = new Store<IDrawStorage>({
     defaultStorage: getDefaultStorage()
   });
+  #historyHandler: HistoryHandler | null = null;
 
   constructor(mount: HTMLDivElement, options: IDrawOptions) {
     const opts = { ...defaultSettings, ...defaultOptions, ...options };
@@ -49,6 +52,13 @@ export class iDraw {
   #init() {
     const core = this.#core;
     const store = this.#store;
+
+    if (this.#opts.history === true) {
+      const { historyLimit } = this.#opts;
+      const { historyHandler, MiddlewareHistory } = useHistory({ core, limit: historyLimit });
+      this.#historyHandler = historyHandler;
+      core.use(MiddlewareHistory);
+    }
     changeMode('select', core, store);
   }
 
@@ -208,6 +218,10 @@ export class iDraw {
   destroy() {
     this.#core.destroy();
     this.#store.destroy();
+    this.#historyHandler?.destroy();
+    this.#core = null as any;
+    this.#store = null as any;
+    this.#historyHandler = null as any;
   }
 
   getViewCenter(): PointSize {
@@ -216,14 +230,6 @@ export class iDraw {
     return pointSize;
   }
 
-  // $onBoardWatcherEvents() {
-  //   this.#core.onBoardWatcherEvents();
-  // }
-
-  // $offBoardWatcherEvents() {
-  //   this.#core.offBoardWatcherEvents();
-  // }
-
   getCore() {
     return this.#core;
   }
@@ -231,4 +237,16 @@ export class iDraw {
   forceRender() {
     return this.#core.forceRender();
   }
+
+  // getHistoryHandler() {
+  //   return this.#historyHandler;
+  // }
+
+  // redo() {
+  //   this.#historyHandler?.redo();
+  // }
+
+  // undo() {
+  //   this.#historyHandler?.undo();
+  // }
 }

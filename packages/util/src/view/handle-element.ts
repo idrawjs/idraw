@@ -21,7 +21,7 @@ import {
 import { toFlattenElement } from './modify-record';
 import { set, del } from '../tool/get-set-del';
 import { findElementFromListByPosition, getElementPositionFromList } from './element';
-import { deepResizeGroupElement } from './resize-element';
+import { resizeEffectGroupElement } from './resize-element';
 
 const defaultViewWidth = 200;
 const defaultViewHeight = 200;
@@ -330,13 +330,16 @@ export function updateElementInList(
   for (let i = 0; i < elements.length; i++) {
     const elem = elements[i];
     if (elem.uuid === uuid) {
-      if (elem.type === 'group' && elem.operations?.deepResize === true) {
-        if ((updateContent.w && updateContent.w > 0) || (updateContent.h && updateContent.h > 0)) {
-          deepResizeGroupElement(elem as Element<'group'>, {
-            w: updateContent.w,
-            h: updateContent.h
-          });
-        }
+      if (elem.type === 'group' && elem.operations?.resizeEffect) {
+        resizeEffectGroupElement(
+          elem as Element<'group'>,
+          {
+            ...updateContent
+          },
+          {
+            resizeEffect: elem.operations?.resizeEffect
+          }
+        );
       }
 
       mergeElement(elem, updateContent);
@@ -357,13 +360,16 @@ export function updateElementInListByPosition(
 ): Element | null {
   const elem: Element | null = findElementFromListByPosition(position, elements);
   if (elem) {
-    if (elem.type === 'group' && elem.operations?.deepResize === true) {
-      if ((updateContent.w && updateContent.w > 0) || (updateContent.h && updateContent.h > 0)) {
-        deepResizeGroupElement(elem as Element<'group'>, {
-          w: updateContent.w,
-          h: updateContent.h
-        });
-      }
+    if (elem.type === 'group' && elem.operations?.resizeEffect) {
+      resizeEffectGroupElement(
+        elem as Element<'group'>,
+        {
+          ...updateContent
+        },
+        {
+          resizeEffect: elem.operations?.resizeEffect
+        }
+      );
     }
     mergeElement(elem, updateContent, opts);
   }

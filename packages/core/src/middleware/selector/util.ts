@@ -138,6 +138,7 @@ export function getPointTarget(
         if (selectedElements && selectedElements?.length > 0) {
           target.groupQueue = groupQueue || [];
           target.elements = [selectedElements[0]];
+          return target;
         }
         break;
       }

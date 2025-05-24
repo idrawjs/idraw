@@ -60,7 +60,7 @@ export class Core<E extends CoreEventMap = CoreEventMap> {
   #container: HTMLDivElement;
 
   constructor(container: HTMLDivElement, opts: CoreOptions) {
-    const { devicePixelRatio = 1, width, height } = opts;
+    const { devicePixelRatio = 1, width, height, disableWatcher = false } = opts;
 
     // this.#opts = opts;
     this.#container = container;
@@ -71,7 +71,7 @@ export class Core<E extends CoreEventMap = CoreEventMap> {
     container.appendChild(canvas);
 
     const boardContent = createBoardContent(canvas, { width, height, devicePixelRatio });
-    const board = new Board<E>({ boardContent, container });
+    const board = new Board<E>({ boardContent, container, disableWatcher });
     const sharer = board.getSharer();
     sharer.setActiveViewSizeInfo({
       width,

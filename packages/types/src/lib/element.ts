@@ -174,8 +174,8 @@ export interface ElementOperations {
   invisible?: boolean;
   rotatable?: boolean;
   limitRatio?: boolean;
-  deepResize?: boolean;
-  lastModified?: number;
+  resizeEffect?: 'absolute' | 'deepResize' | 'fixed'; // for Group  default "absolute"
+  lastModified?: number; // TODO
 }
 
 export interface ElementGlobal {
