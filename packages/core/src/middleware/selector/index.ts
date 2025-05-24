@@ -11,7 +11,7 @@ import {
   findElementsFromListByPositions,
   getElementPositionFromList,
   getElementPositionMapFromList,
-  deepResizeGroupElement,
+  resizeEffectGroupElement,
   getElementSize,
   calcPointMoveElementInGroup,
   isSameElementSize,
@@ -669,16 +669,28 @@ export const MiddlewareSelector: Middleware<
               { scale, start: resizeStart, end: resizeEnd, resizeType, sharer }
             );
             const calcOpts = { ignore: !!moveOriginalStartElementSize.angle };
-            elems[0].x = calculator.toGridNum(resizedElemSize.x, calcOpts);
-            elems[0].y = calculator.toGridNum(resizedElemSize.y, calcOpts);
-            if (elems[0].type === 'group' && elems[0].operations?.deepResize === true) {
-              deepResizeGroupElement(elems[0] as Element<'group'>, {
-                w: calculator.toGridNum(resizedElemSize.w, calcOpts),
-                h: calculator.toGridNum(resizedElemSize.h, calcOpts)
-              });
+            const gridX = calculator.toGridNum(resizedElemSize.x, calcOpts);
+            const gridY = calculator.toGridNum(resizedElemSize.y, calcOpts);
+            const gridW = calculator.toGridNum(resizedElemSize.w, calcOpts);
+            const gridH = calculator.toGridNum(resizedElemSize.h, calcOpts);
+            if (elems[0].type === 'group') {
+              resizeEffectGroupElement(
+                elems[0] as Element<'group'>,
+                {
+                  x: gridX,
+                  y: gridY,
+                  w: gridW,
+                  h: gridH
+                },
+                { resizeEffect: elems[0].operations?.resizeEffect }
+              );
+              elems[0].x = gridX;
+              elems[0].y = gridY;
             } else {
-              elems[0].w = calculator.toGridNum(resizedElemSize.w, calcOpts);
-              elems[0].h = calculator.toGridNum(resizedElemSize.h, calcOpts);
+              elems[0].x = gridX;
+              elems[0].y = gridY;
+              elems[0].w = gridW;
+              elems[0].h = gridH;
             }
           }
 

@@ -22,11 +22,12 @@ export interface IDrawSettings {
     layoutSelector?: Partial<MiddlewareLayoutSelectorStyle>;
   };
   history?: boolean;
+  historyLimit?: number;
 }
 
 export type IDrawOptions = CoreOptions & IDrawSettings;
 
-export type IDrawHistory = {
+export type HistoryHandler = {
   undo: () => void;
   redo: () => void;
   canUndo: () => void;

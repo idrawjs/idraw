@@ -53,8 +53,8 @@ describe('idraw: useHistory ', () => {
       height: 200,
       width: 200
     });
-    const { MiddlewareHistory, history } = useHistory({ instance: idraw });
-    const { undo, redo, __getDoRecords, __getUndoRecords } = history;
+    const { MiddlewareHistory, historyHandler } = useHistory({ core: idraw.getCore() });
+    const { undo, redo, __getDoRecords, __getUndoRecords } = historyHandler;
     idraw.use(MiddlewareHistory);
     idraw.setData(data);
 

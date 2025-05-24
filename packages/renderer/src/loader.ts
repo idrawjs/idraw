@@ -88,11 +88,11 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
     if (supportElementTypes.includes((element as Element<LoadElementType>).type)) {
       let assetId: string | null = null;
       let resource: string | null = null;
-      if (element.type === 'image' && typeof (element as Element<'image'>).detail.src === 'string') {
+      if (element.type === 'image' && typeof (element as Element<'image'>)?.detail?.src === 'string') {
         resource = (element as Element<'image'>).detail.src;
-      } else if (element.type === 'svg' && typeof (element as Element<'svg'>).detail.svg === 'string') {
+      } else if (element.type === 'svg' && typeof (element as Element<'svg'>)?.detail?.svg === 'string') {
         resource = (element as Element<'svg'>).detail.svg;
-      } else if (element.type === 'html' && typeof (element as Element<'html'>).detail.html === 'string') {
+      } else if (element.type === 'html' && typeof (element as Element<'html'>)?.detail?.html === 'string') {
         resource = (element as Element<'html'>).detail.html;
       }
       if (typeof resource === 'string') {

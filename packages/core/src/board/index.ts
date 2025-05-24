@@ -94,43 +94,45 @@ export class Board<T extends BoardExtendEventMap = BoardExtendEventMap> {
   }
 
   #init() {
-    this.#watcher.on('pointStart', this.#handlePointStart.bind(this));
-    this.#watcher.on('pointEnd', this.#handlePointEnd.bind(this));
-    // this.#watcher.on(
-    //   'pointMove',
-    //   throttle((e) => {
-    //     this.#handlePointMove(e);
-    //   }, throttleTime)
-    // );
-    // this.#watcher.on(
-    //   'hover',
-    //   throttle((e) => {
-    //     this.#handleHover(e);
-    //   }, throttleTime)
-    // );
-    // this.#watcher.on(
-    //   'wheel',
-    //   throttle((e) => {
-    //     this.#handleWheel(e);
-    //   }, throttleTime)
-    // );
-    // this.#watcher.on(
-    //   'wheelScale',
-    //   throttle((e) => {
-    //     this.#handleWheelScale(e);
-    //   }, throttleTime)
-    // );
-    this.#watcher.on('pointMove', this.#handlePointMove.bind(this));
-    this.#watcher.on('pointLeave', this.#handlePointLeave.bind(this));
+    if (this.#opts.disableWatcher !== true) {
+      this.#watcher.on('pointStart', this.#handlePointStart.bind(this));
+      this.#watcher.on('pointEnd', this.#handlePointEnd.bind(this));
+      // this.#watcher.on(
+      //   'pointMove',
+      //   throttle((e) => {
+      //     this.#handlePointMove(e);
+      //   }, throttleTime)
+      // );
+      // this.#watcher.on(
+      //   'hover',
+      //   throttle((e) => {
+      //     this.#handleHover(e);
+      //   }, throttleTime)
+      // );
+      // this.#watcher.on(
+      //   'wheel',
+      //   throttle((e) => {
+      //     this.#handleWheel(e);
+      //   }, throttleTime)
+      // );
+      // this.#watcher.on(
+      //   'wheelScale',
+      //   throttle((e) => {
+      //     this.#handleWheelScale(e);
+      //   }, throttleTime)
+      // );
+      this.#watcher.on('pointMove', this.#handlePointMove.bind(this));
+      this.#watcher.on('pointLeave', this.#handlePointLeave.bind(this));
 
-    this.#watcher.on('hover', this.#handleHover.bind(this));
-    this.#watcher.on('wheel', this.#handleWheel.bind(this));
-    this.#watcher.on('wheelScale', this.#handleWheelScale.bind(this));
-    this.#watcher.on('scrollX', this.#handleScrollX.bind(this));
-    this.#watcher.on('scrollY', this.#handleScrollY.bind(this));
-    this.#watcher.on('resize', this.#handleResize.bind(this));
-    this.#watcher.on('doubleClick', this.#handleDoubleClick.bind(this));
-    this.#watcher.on('contextMenu', this.#handleContextMenu.bind(this));
+      this.#watcher.on('hover', this.#handleHover.bind(this));
+      this.#watcher.on('wheel', this.#handleWheel.bind(this));
+      this.#watcher.on('wheelScale', this.#handleWheelScale.bind(this));
+      this.#watcher.on('scrollX', this.#handleScrollX.bind(this));
+      this.#watcher.on('scrollY', this.#handleScrollY.bind(this));
+      this.#watcher.on('resize', this.#handleResize.bind(this));
+      this.#watcher.on('doubleClick', this.#handleDoubleClick.bind(this));
+      this.#watcher.on('contextMenu', this.#handleContextMenu.bind(this));
+    }
 
     this.#renderer.on('load', () => {
       this.#eventHub.trigger('loadResource');
@@ -445,10 +447,16 @@ export class Board<T extends BoardExtendEventMap = BoardExtendEventMap> {
   }
 
   onWatcherEvents() {
+    if (this.#opts.disableWatcher === true) {
+      return;
+    }
     this.#watcher.onEvents();
   }
 
   offWatcherEvents() {
+    if (this.#opts.disableWatcher === true) {
+      return;
+    }
     this.#watcher.offEvents();
   }
 }
