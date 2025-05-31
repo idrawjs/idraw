@@ -18,9 +18,9 @@ const supportRecordTypes = [
   'deleteElement',
   'moveElement',
   'addElement',
-  'dragElement',
   'resizeElement',
-  'dragLayout',
+  'resizeElements',
+  'resizeLayout',
   'modifyLayout',
   'modifyGlobal'
 ];
@@ -90,7 +90,7 @@ export const useHistory = (opts: { core: Core; limit?: number }) => {
         undoRecord = core.modifyGlobal(info) as ModifyRecord;
       } else if (record.content.method === 'modifyElements') {
         undoRecord = core.modifyElements(
-          record.content.before.forEach((item) => unflatObject(item)) as unknown as Array<
+          record.content.before.map((item) => unflatObject(item)) as unknown as Array<
             RecursivePartial<Omit<Element, 'uuid'>> & Pick<Element, 'uuid'>
           >
         ) as ModifyRecord;
@@ -153,7 +153,7 @@ export const useHistory = (opts: { core: Core; limit?: number }) => {
         redoRecord = core.modifyGlobal(info) as ModifyRecord;
       } else if (record.content.method === 'modifyElements') {
         redoRecord = core.modifyElements(
-          record.content.before.forEach((item) => unflatObject(item)) as unknown as Array<
+          record.content.before.map((item) => unflatObject(item)) as unknown as Array<
             RecursivePartial<Omit<Element, 'uuid'>> & Pick<Element, 'uuid'>
           >
         ) as ModifyRecord;

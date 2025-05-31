@@ -61,7 +61,7 @@ export function getDefaultElementTextDetail(elementSize: ElementSize): ElementTe
     color: detailConfig.color,
     fontFamily: detailConfig.fontFamily,
     fontWeight: detailConfig.fontWeight,
-    lineHeight: elementSize.w / defaultText.length,
+    // lineHeight: elementSize.w / defaultText.length,
     fontSize: elementSize.w / defaultText.length,
     textAlign: 'center',
     verticalAlign: 'middle'

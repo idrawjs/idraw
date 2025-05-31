@@ -120,6 +120,9 @@ export const MiddlewareSelector: Middleware<
     devicePixelRatio: sharer.getActiveViewSizeInfo().devicePixelRatio
   });
 
+  let startResizeGroupRecord: ModifyRecord<'resizeElements'> | null = null;
+  let endResizeGroupRecord: ModifyRecord<'resizeElements'> | null = null;
+
   sharer.setSharedStorage(keyActionType, null);
   sharer.setSharedStorage(keyEnableSnapToGrid, true);
 
@@ -213,6 +216,8 @@ export const MiddlewareSelector: Middleware<
   };
 
   const clear = () => {
+    startResizeGroupRecord = null;
+    endResizeGroupRecord = null;
     sharer.setSharedStorage(keyActionType, null);
     sharer.setSharedStorage(keyResizeType, null);
     sharer.setSharedStorage(keyAreaStart, null);
@@ -419,6 +424,8 @@ export const MiddlewareSelector: Middleware<
       prevPoint = e.point;
       moveOriginalStartPoint = e.point;
 
+      startResizeGroupRecord = null;
+      endResizeGroupRecord = null;
       sharer.setSharedStorage(keyActionType, null);
       sharer.setSharedStorage(keyResizeType, null);
       sharer.setSharedStorage(keyAreaStart, null);
@@ -674,7 +681,7 @@ export const MiddlewareSelector: Middleware<
             const gridW = calculator.toGridNum(resizedElemSize.w, calcOpts);
             const gridH = calculator.toGridNum(resizedElemSize.h, calcOpts);
             if (elems[0].type === 'group') {
-              resizeEffectGroupElement(
+              endResizeGroupRecord = resizeEffectGroupElement(
                 elems[0] as Element<'group'>,
                 {
                   x: gridX,
@@ -684,6 +691,9 @@ export const MiddlewareSelector: Middleware<
                 },
                 { resizeEffect: elems[0].operations?.resizeEffect }
               );
+              if (!startResizeGroupRecord) {
+                startResizeGroupRecord = endResizeGroupRecord;
+              }
               elems[0].x = gridX;
               elems[0].y = gridY;
             } else {
@@ -791,16 +801,16 @@ export const MiddlewareSelector: Middleware<
         }
 
         if (data && (['drag', 'drag-list', 'drag-list-end', 'resize'] as ActionType[]).includes(actionType)) {
-          let type: any = 'dragElement';
+          let type: any = 'resizeElement';
           if (type === 'resize') {
             type = 'resizeElement';
           }
           if (hasChangedData) {
             const startSize = pointStartElementSizeList[0] as ElementSize & { uuid: string };
-            let modifyRecord: ModifyRecord | undefined = undefined;
+            let modifyRecord: ModifyRecord | null | undefined = null;
             if (selectedElements.length === 1) {
               modifyRecord = {
-                type: 'dragElement',
+                type: 'resizeElement',
                 time: 0,
                 content: {
                   method: 'modifyElement',
@@ -809,9 +819,18 @@ export const MiddlewareSelector: Middleware<
                   after: toFlattenElement(getElementSize(selectedElements[0]))
                 }
               };
+              if (selectedElements[0].type === 'group' && startResizeGroupRecord && endResizeGroupRecord) {
+                modifyRecord = {
+                  ...endResizeGroupRecord,
+                  content: {
+                    ...endResizeGroupRecord.content,
+                    before: startResizeGroupRecord.content.before
+                  }
+                };
+              }
             } else if (selectedElements.length > 1) {
               modifyRecord = {
-                type: 'dragElements',
+                type: 'resizeElements',
                 time: 0,
                 content: {
                   method: 'modifyElements',
