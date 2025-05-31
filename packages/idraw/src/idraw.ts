@@ -238,15 +238,15 @@ export class iDraw {
     return this.#core.forceRender();
   }
 
-  // getHistoryHandler() {
-  //   return this.#historyHandler;
-  // }
+  getHistoryHandler() {
+    return this.#historyHandler;
+  }
 
-  // redo() {
-  //   this.#historyHandler?.redo();
-  // }
+  redo() {
+    this.#historyHandler?.redo();
+  }
 
-  // undo() {
-  //   this.#historyHandler?.undo();
-  // }
+  undo() {
+    this.#historyHandler?.undo();
+  }
 }

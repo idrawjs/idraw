@@ -7,10 +7,10 @@ export type ModifyMethod =
   | 'deleteElement'
   | 'moveElement'
   | 'addElement'
-  | 'dragElement'
-  | 'dragElements'
+  | 'resizeElement'
+  | 'resizeElements'
   | 'modifyElements'
-  | 'dragLayout'
+  | 'resizeLayout'
   | 'modifyLayout'
   | 'modifyGlobal';
 
@@ -92,19 +92,19 @@ export interface ModifyContentMap {
     from: ElementPosition;
     to: ElementPosition;
   };
-  dragElement: {
+  resizeElement: {
     method: 'modifyElement';
     uuid: string;
     before: FlattenElement | null;
     after: FlattenElement | null;
   };
-  dragElements: {
+  resizeElements: {
     method: 'modifyElements';
     before: (FlattenLayout & { uuid: string })[];
     after: (FlattenLayout & { uuid: string })[];
   };
-  dragLayout: {
-    method: 'modifyElement';
+  resizeLayout: {
+    method: 'modifyLayout';
     before: FlattenLayout;
     after: FlattenLayout;
   };
@@ -151,13 +151,13 @@ export interface ModifyRecordMap {
     time: number;
     content: ModifyContentMap['moveElement'];
   };
-  dragElement: {
-    type: 'dragElement';
+  resizeElement: {
+    type: 'resizeElement';
     time: number;
     content: ModifyContentMap['modifyElement'];
   };
-  dragElements: {
-    type: 'dragElements';
+  resizeElements: {
+    type: 'resizeElements';
     time: number;
     content: ModifyContentMap['modifyElements'];
   };
@@ -166,10 +166,10 @@ export interface ModifyRecordMap {
     time: number;
     content: ModifyContentMap['modifyElements'];
   };
-  dragLayout: {
-    type: 'dragLayout';
+  resizeLayout: {
+    type: 'resizeLayout';
     time: number;
-    content: ModifyContentMap['dragLayout'];
+    content: ModifyContentMap['resizeLayout'];
   };
   modifyLayout: {
     type: 'modifyLayout';

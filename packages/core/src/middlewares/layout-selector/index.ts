@@ -391,7 +391,7 @@ export const MiddlewareLayoutSelector: Middleware<
           };
         }
         eventHub.trigger(coreEventKeys.CHANGE, {
-          type: 'dragLayout',
+          type: 'resizeLayout',
           data,
           modifyRecord
         });

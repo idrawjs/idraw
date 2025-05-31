@@ -39,7 +39,7 @@ export interface CoreEventChange<T extends ModifyType = ModifyType> {
   type: T | 'setData' | 'other' | string;
   selectedElements?: Element[] | null;
   hoverElement?: Element | null;
-  modifyRecord?: ModifyRecord<T>;
+  modifyRecord?: ModifyRecord<T> | null;
 }
 export interface CoreEventScale {
   scale: number;

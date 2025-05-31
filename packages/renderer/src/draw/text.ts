@@ -1,7 +1,7 @@
 import type { Element, RendererDrawElementOptions, ViewContext2D } from '@idraw/types';
 import { rotateElement, calcViewElementSize, enhanceFontFamliy } from '@idraw/util';
 import { is, isColorStr, getDefaultElementDetailConfig } from '@idraw/util';
-import { drawBox, drawBoxShadow } from './box';
+import { drawBox, drawBoxShadow, getOpacity } from './box';
 
 const detailConfig = getDefaultElementDetailConfig();
 
@@ -35,6 +35,9 @@ export function drawText(ctx: ViewContext2D, elem: Element<'text'>, opts: Render
         return;
       }
 
+      const { parentOpacity } = opts;
+      const opacity = getOpacity(elem) * parentOpacity;
+      ctx.globalAlpha = opacity;
       ctx.fillStyle = elem.detail.color || detailConfig.color;
       ctx.textBaseline = 'top';
       ctx.$setFont({
@@ -64,6 +67,8 @@ export function drawText(ctx: ViewContext2D, elem: Element<'text'>, opts: Render
           });
         }
       }
+
+      ctx.globalAlpha = parentOpacity;
     }
   });
 }

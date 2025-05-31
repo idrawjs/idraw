@@ -34,7 +34,7 @@ import {
 } from '@idraw/util';
 import { Board, Sharer, Calculator } from './board';
 import { createBoardContent, validateElements } from '@idraw/util';
-import { Cursor } from './lib/cursor';
+import { Cursor } from './cursor/cursor';
 import { getModifyElementRecord } from './record';
 
 export { coreEventKeys } from './config';
@@ -43,15 +43,15 @@ export type { CoreEventKeys } from './config';
 export { Board, Sharer, Calculator };
 
 // export { MiddlewareSelector } from './middleware/selector';
-export { MiddlewareSelector } from './middleware/selector';
-export { MiddlewareScroller } from './middleware/scroller';
-export { MiddlewareScaler } from './middleware/scaler';
-export { MiddlewareRuler } from './middleware/ruler';
-export { MiddlewareTextEditor } from './middleware/text-editor';
-export { MiddlewareDragger } from './middleware/dragger';
-export { MiddlewareInfo } from './middleware/info';
-export { MiddlewareLayoutSelector } from './middleware/layout-selector';
-export { MiddlewarePointer } from './middleware/pointer';
+export { MiddlewareSelector } from './middlewares/selector';
+export { MiddlewareScroller } from './middlewares/scroller';
+export { MiddlewareScaler } from './middlewares/scaler';
+export { MiddlewareRuler } from './middlewares/ruler';
+export { MiddlewareTextEditor } from './middlewares/text-editor';
+export { MiddlewareDragger } from './middlewares/dragger';
+export { MiddlewareInfo } from './middlewares/info';
+export { MiddlewareLayoutSelector } from './middlewares/layout-selector';
+export { MiddlewarePointer } from './middlewares/pointer';
 
 export class Core<E extends CoreEventMap = CoreEventMap> {
   #board: Board<E>;

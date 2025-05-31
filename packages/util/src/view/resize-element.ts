@@ -105,6 +105,10 @@ function resizeElementBaseDetailByRatio(elem: Element, opts: DeepResizeRatioOpti
 function resizeElementBaseByRatio(elem: Element, opts: DeepResizeRatioOptions): ModifyRecord<'modifyElement'> {
   const { xRatio, yRatio } = opts;
   const { uuid, x, y, w, h } = elem;
+  elem.x = doNum(x * xRatio);
+  elem.y = doNum(y * yRatio);
+  elem.w = doNum(w * xRatio);
+  elem.h = doNum(h * yRatio);
   const record: ModifyRecord<'modifyElement'> = {
     type: 'modifyElement',
     time: Date.now(),
@@ -112,13 +116,10 @@ function resizeElementBaseByRatio(elem: Element, opts: DeepResizeRatioOptions): 
       method: 'modifyElement',
       uuid: uuid,
       before: { x, y, w, h },
-      after: { x, y, w, h }
+      after: { x: elem.x, y: elem.y, w: elem.w, h: elem.h }
     }
   };
-  elem.x = doNum(x * xRatio);
-  elem.y = doNum(y * yRatio);
-  elem.w = doNum(w * xRatio);
-  elem.h = doNum(h * yRatio);
+
   const detailRecord = resizeElementBaseDetailByRatio(elem, opts);
   record.content.before = {
     ...record.content.before,
@@ -170,7 +171,7 @@ function resizeTextElementDetailByRatio(
 function deepResizeElementByRatio(
   elem: Element,
   opts: DeepResizeRatioOptions,
-  record?: ModifyRecord<'modifyElements'>
+  record?: ModifyRecord<'resizeElements'>
 ) {
   const { type, uuid } = elem;
 
@@ -210,7 +211,7 @@ function deepResizeElementByRatio(
 function fixedResizeGroupElementChildren(
   elem: Element<'group'>,
   opts: FixedResizeOptions,
-  record?: ModifyRecord<'modifyElements'>
+  record?: ModifyRecord<'resizeElements'>
 ) {
   if (!(elem.type === 'group' && Array.isArray(elem.detail.children))) {
     return;
@@ -250,12 +251,9 @@ export function resizeEffectGroupElement(
   opts?: {
     resizeEffect?: ElementOperations['resizeEffect'];
   }
-): ModifyRecord<'modifyElements'> | null {
-  if (!istype.number(size.x) && !istype.number(size.y)) {
-    return null;
-  }
-  const record: ModifyRecord<'modifyElements'> = {
-    type: 'modifyElements',
+): ModifyRecord<'resizeElements'> | null {
+  const record: ModifyRecord<'resizeElements'> = {
+    type: 'resizeElements',
     time: Date.now(),
     content: {
       method: 'modifyElements',
@@ -279,6 +277,8 @@ export function resizeEffectGroupElement(
   const afterGroupElem: FlattenLayout & { uuid: string } = { uuid, x: resizeX, y: resizeY, w: resizeW, h: resizeH };
 
   if (opts?.resizeEffect === 'deepResize') {
+    record.content.before.push(beforeGroupElem);
+    record.content.after.push(afterGroupElem);
     const xRatio = resizeW / elem.w;
     const yRatio = resizeH / elem.h;
     if (xRatio === yRatio && xRatio === 1) {
