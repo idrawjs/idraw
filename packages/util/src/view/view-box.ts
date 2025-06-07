@@ -1,5 +1,7 @@
-import type { Element, ViewScaleInfo, ViewSizeInfo, ViewBoxSize } from '@idraw/types';
+import type { Data, Element, ElementSize, ViewScaleInfo, ViewSizeInfo, ViewBoxSize } from '@idraw/types';
 import { getDefaultElementDetailConfig } from './config';
+import { calcElementListSize } from './element';
+
 const defaultElemConfig = getDefaultElementDetailConfig();
 
 export function calcViewBoxSize(
@@ -62,4 +64,22 @@ export function calcViewBoxSize(
     h,
     radiusList
   };
+}
+
+export function calcVisiableViewSize(data: Data): Omit<ElementSize, 'angle'> {
+  const outputSize = calcElementListSize(data.elements);
+  if (data.layout) {
+    if (data.layout?.detail?.overflow === 'hidden') {
+      outputSize.x = data.layout.x;
+      outputSize.y = data.layout.y;
+      outputSize.w = data.layout.w;
+      outputSize.h = data.layout.h;
+    } else {
+      outputSize.x = Math.min(outputSize.x, data.layout.x);
+      outputSize.y = Math.min(outputSize.y, data.layout.y);
+      outputSize.w = Math.max(outputSize.w, data.layout.w);
+      outputSize.h = Math.max(outputSize.h, data.layout.h);
+    }
+  }
+  return outputSize;
 }

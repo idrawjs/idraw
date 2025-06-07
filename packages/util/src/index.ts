@@ -100,7 +100,7 @@ export { compressImage } from './tool/image';
 export { formatNumber } from './tool/number';
 export { matrixToAngle, matrixToRadian } from './view/matrix';
 export { getDefaultElementDetailConfig, getDefaultElementRectDetail } from './view/config';
-export { calcViewBoxSize } from './view/view-box';
+export { calcViewBoxSize, calcVisiableViewSize } from './view/view-box';
 export {
   mergeElement,
   createElement,

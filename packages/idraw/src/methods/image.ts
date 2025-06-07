@@ -1,6 +1,6 @@
 import type { Data, ViewSizeInfo } from '@idraw/types';
 import { Core } from '@idraw/core';
-import { calcElementListSize } from '@idraw/util';
+import { calcVisiableViewSize } from '@idraw/util';
 import { IDrawEvent } from '../event';
 import { exportImageFileBlobURL } from '../file';
 import type { ExportImageFileBaseOptions, ExportImageFileResult } from '../file';
@@ -12,7 +12,7 @@ export async function getImageBlobURL(
   const { data, viewSizeInfo, core } = depOptions;
   const { devicePixelRatio } = opts || { devicePixelRatio: 1 };
 
-  const outputSize = calcElementListSize(data.elements);
+  const outputSize = calcVisiableViewSize(data);
 
   return await exportImageFileBlobURL({
     width: outputSize.w,
