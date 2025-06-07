@@ -21,9 +21,9 @@ export function calcViewCenterContent(data: Data, opts: { viewSizeInfo: ViewSize
   let contentH: number = data?.elements?.[0]?.h || 0;
   const { width, height } = opts.viewSizeInfo;
 
-  if (data.layout && data.layout?.detail?.overflow === 'hidden') {
-    contentX = 0;
-    contentY = 0;
+  if (is.layout(data.layout) && data.layout?.detail?.overflow === 'hidden') {
+    contentX = data.layout.x;
+    contentY = data.layout.y;
     contentW = data.layout.w || 0;
     contentH = data.layout.h || 0;
   } else {
@@ -59,9 +59,14 @@ export function calcViewCenterContent(data: Data, opts: { viewSizeInfo: ViewSize
     });
   }
 
-  if (data.layout) {
+  if (data?.layout && is.layout(data.layout)) {
     const { x, y, w, h } = data.layout;
-    if (is.x(x) && is.y(y) && is.w(w) && is.h(h)) {
+    if (data.layout?.detail?.overflow === 'hidden') {
+      contentX = Math.min(contentX, x);
+      contentY = Math.min(contentY, y);
+      contentW = Math.min(contentW, w);
+      contentH = Math.min(contentH, h);
+    } else {
       contentX = Math.min(contentX, x);
       contentY = Math.min(contentY, y);
       contentW = Math.max(contentW, w);

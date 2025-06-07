@@ -119,8 +119,37 @@ function numberStr(value: any): boolean {
   return /^(-?\d+(?:\.\d+)?)$/.test(`${value}`);
 }
 
+function type(value: any) {
+  return ['rect', 'circle', 'text', 'image', 'svg', 'html', 'group'].includes(value);
+}
+
+function element(elem: any) {
+  if (!elem) {
+    return false;
+  }
+  return type(elem?.type) && x(elem?.x) && y(elem?.y) && w(elem?.w) && h(elem?.h);
+}
+
+function layout(value: any) {
+  if (!value) {
+    return false;
+  }
+  return x(value?.x) && y(value?.y) && w(value?.w) && h(value?.h);
+}
+
+function data(d: any) {
+  if (Array(d?.elements) && d?.elements.length >= 0) {
+    return true;
+  }
+  return false;
+}
+
 export const is = {
   positiveNum,
+  data,
+  element,
+  layout,
+  type,
   x,
   y,
   w,
