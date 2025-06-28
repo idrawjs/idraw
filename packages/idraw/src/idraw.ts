@@ -42,8 +42,8 @@ export class iDraw {
   constructor(mount: HTMLDivElement, options: IDrawOptions) {
     const opts = { ...defaultSettings, ...defaultOptions, ...options };
     this.#store.set('middlewareStyles', parseStyles(opts));
-    const { width, height, devicePixelRatio } = opts;
-    const core = new Core<IDrawEvent>(mount, { width, height, devicePixelRatio });
+    const { width, height, devicePixelRatio, disableWatcher } = opts;
+    const core = new Core<IDrawEvent>(mount, { width, height, devicePixelRatio, disableWatcher });
     this.#core = core;
     this.#opts = opts;
     this.#init();
@@ -171,7 +171,7 @@ export class iDraw {
 
   createElement<T extends ElementType>(
     type: T,
-    element: RecursivePartial<Element<T>>,
+    element: RecursivePartial<Omit<Element, 'uuid' | 'type'>>,
     opts?: { viewCenter?: boolean }
   ): Element<T> {
     return createElement<T>({ core: this.#core }, type, element, opts);
@@ -248,5 +248,9 @@ export class iDraw {
 
   undo() {
     this.#historyHandler?.undo();
+  }
+
+  clearHistory() {
+    this.#historyHandler?.clear();
   }
 }

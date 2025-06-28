@@ -156,6 +156,7 @@ export interface BoardRenderer extends UtilEventEmitter<RendererEventMap> {
 }
 
 export interface BoardWatcherOptions {
+  disabled?: boolean;
   boardContent: BoardContent;
   sharer: StoreSharer<Record<any | symbol, any>>;
 }

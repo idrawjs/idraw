@@ -45,7 +45,8 @@ export class Board<T extends BoardExtendEventMap = BoardExtendEventMap> {
 
     const watcher = new BoardWatcher({
       boardContent,
-      sharer
+      sharer,
+      disabled: opts?.disableWatcher
     });
     const renderer = new Renderer({
       viewContext: boardContent.viewContext,

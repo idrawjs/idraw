@@ -32,6 +32,9 @@ export class BoardWatcher extends EventEmitter<BoardWatcherEventMap> {
   }
 
   onEvents() {
+    if (this.#opts.disabled === true) {
+      return;
+    }
     if (this.#hasDestroyed) {
       return;
     }
@@ -48,6 +51,9 @@ export class BoardWatcher extends EventEmitter<BoardWatcherEventMap> {
   }
 
   offEvents() {
+    if (this.#opts.disabled === true) {
+      return;
+    }
     const container = window;
     const canvas = this.#opts.boardContent.boardContext.canvas;
     container.removeEventListener('mousemove', this.#onHover);

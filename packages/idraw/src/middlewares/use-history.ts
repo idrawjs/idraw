@@ -204,9 +204,11 @@ export const useHistory = (opts: { core: Core; limit?: number }) => {
     while (doRecords?.length > 0) {
       doRecords.pop();
     }
+    doRecords = [];
     while (undoRecords?.length > 0) {
       undoRecords.pop();
     }
+    undoRecords = [];
   };
 
   const getDoRecords = () => doRecords;
