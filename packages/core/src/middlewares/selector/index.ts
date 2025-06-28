@@ -260,6 +260,7 @@ export const MiddlewareSelector: Middleware<
       const groupQueue = getGroupQueueFromList(elem.uuid, data?.elements || []);
       sharer.setSharedStorage(keyGroupQueue, groupQueue);
       updateSelectedElementList(elements);
+      pointStartElementSizeList = [{ ...getElementSize(elements[0]), uuid: elements[0].uuid }];
       viewer.drawFrame();
     }
   };
@@ -806,44 +807,47 @@ export const MiddlewareSelector: Middleware<
             type = 'resizeElement';
           }
           if (hasChangedData) {
-            const startSize = pointStartElementSizeList[0] as ElementSize & { uuid: string };
             let modifyRecord: ModifyRecord | null | undefined = null;
-            if (selectedElements.length === 1) {
-              modifyRecord = {
-                type: 'resizeElement',
-                time: 0,
-                content: {
-                  method: 'modifyElement',
-                  uuid: startSize.uuid,
-                  before: toFlattenElement(startSize),
-                  after: toFlattenElement(getElementSize(selectedElements[0]))
-                }
-              };
-              if (selectedElements[0].type === 'group' && startResizeGroupRecord && endResizeGroupRecord) {
+            if (Array.isArray(pointStartElementSizeList) && pointStartElementSizeList.length) {
+              const startSize = pointStartElementSizeList[0] as ElementSize & { uuid: string };
+
+              if (selectedElements.length === 1) {
                 modifyRecord = {
-                  ...endResizeGroupRecord,
+                  type: 'resizeElement',
+                  time: 0,
                   content: {
-                    ...endResizeGroupRecord.content,
-                    before: startResizeGroupRecord.content.before
+                    method: 'modifyElement',
+                    uuid: startSize.uuid,
+                    before: toFlattenElement(startSize),
+                    after: toFlattenElement(getElementSize(selectedElements[0]))
+                  }
+                };
+                if (selectedElements[0].type === 'group' && startResizeGroupRecord && endResizeGroupRecord) {
+                  modifyRecord = {
+                    ...endResizeGroupRecord,
+                    content: {
+                      ...endResizeGroupRecord.content,
+                      before: startResizeGroupRecord.content.before
+                    }
+                  };
+                }
+              } else if (selectedElements.length > 1) {
+                modifyRecord = {
+                  type: 'resizeElements',
+                  time: 0,
+                  content: {
+                    method: 'modifyElements',
+                    before: pointStartElementSizeList.map((item) => ({
+                      ...toFlattenElement(item),
+                      uuid: item.uuid
+                    })),
+                    after: selectedElements.map((item) => ({
+                      ...toFlattenElement(getElementSize(item)),
+                      uuid: item.uuid
+                    }))
                   }
                 };
               }
-            } else if (selectedElements.length > 1) {
-              modifyRecord = {
-                type: 'resizeElements',
-                time: 0,
-                content: {
-                  method: 'modifyElements',
-                  before: pointStartElementSizeList.map((item) => ({
-                    ...toFlattenElement(item),
-                    uuid: item.uuid
-                  })),
-                  after: selectedElements.map((item) => ({
-                    ...toFlattenElement(getElementSize(item)),
-                    uuid: item.uuid
-                  }))
-                }
-              };
             }
             eventHub.trigger(coreEventKeys.CHANGE, { data, type, selectedElements, hoverElement, modifyRecord });
             hasChangedData = false;
