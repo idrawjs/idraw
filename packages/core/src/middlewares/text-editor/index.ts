@@ -163,6 +163,7 @@ export const MiddlewareTextEditor: Middleware<ExtendEventMap, CoreEventMap & Ext
     }
 
     textarea.style.display = 'inline-flex';
+    textarea.style.flexDirection = 'column';
     textarea.style.justifyContent = justifyContent;
     textarea.style.alignItems = alignItems;
 
