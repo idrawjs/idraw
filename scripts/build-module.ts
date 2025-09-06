@@ -1,6 +1,7 @@
 import ts from 'typescript';
+import type { CompilerOptions } from 'typescript';
 import { Project } from 'ts-morph';
-import type { CompilerOptions } from 'ts-morph';
+import type { CompilerOptions as TsMorphCompilerOptions } from 'ts-morph';
 import path from 'path';
 import fs from 'fs';
 import * as glob from 'glob';
@@ -54,7 +55,7 @@ function buildPackage(dirName: string) {
   {
     // const tsConfig = getTsConfig();
     // const compilerOptions = tsConfig.compilerOptions;
-    const compilerOptions: CompilerOptions = {
+    const compilerOptions: TsMorphCompilerOptions = {
       noUnusedLocals: true,
       declaration: true,
       sourceMap: false,
@@ -76,7 +77,10 @@ function buildPackage(dirName: string) {
       // tsConfigFilePath: joinProjectPath('tsconfig.web.json')
     });
 
-    const program = ts.createProgram(targetFiles, compilerOptions);
+    const program = ts.createProgram({
+      rootNames: targetFiles,
+      options: compilerOptions as CompilerOptions
+    });
 
     // const diagnostics = ts.getPreEmitDiagnostics(program);
     // if (diagnostics.length) {
