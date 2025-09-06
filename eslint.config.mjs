@@ -16,30 +16,34 @@ export default [
     files: ['scripts/**/*.ts', 'babel.config.js', 'jest.*.js', 'jest.*.*.js'],
     rules: {
       // 'no-console': 'error'
-    }
+    },
   },
   {
-    // files: ['src/**/*.{js,mjs,cjs,ts,jsx,tsx}'],
-    files: ['packages/*/src/**/*.ts'],
+    files: [
+      'packages/types/src/**/*.ts',
+      'packages/util/src/**/*.ts',
+      'packages/renderer/src/**/*.ts',
+      'packages/core/src/**/*.ts',
+      'packages/idraw/src/**/*.ts',
+    ],
     languageOptions: {
       globals: globals.browser,
       parser: tsParser,
       ecmaVersion: 'latest',
       sourceType: 'module',
-      parserOptions: {}
+      parserOptions: {},
     },
     plugins: {
-      '@typescript-eslint': typescriptEslint
+      '@typescript-eslint': typescriptEslint,
     },
-    ignores: ['node_modules'],
+    // ignores: ['node_modules'],
     rules: {
       semi: 'error',
       'no-console': 'error',
-      'comma-dangle': ['always-multiline'],
       '@typescript-eslint/rule-name': 0,
       '@typescript-eslint/no-explicit-any': 0,
       '@typescript-eslint/explicit-module-boundary-types': 0,
-      '@typescript-eslint/no-unnecessary-type-constraint': 0
-    }
-  }
+      '@typescript-eslint/no-unnecessary-type-constraint': 0,
+    },
+  },
 ];

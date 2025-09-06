@@ -4,7 +4,7 @@
   "endOfLine": "auto",
   "singleQuote": true,
   "semi": true,
-  "trailingComma": "none",
+  "trailingComma": "es5",
   "bracketSpacing": true,
-  "printWidth": 160
+  "printWidth": 120
 }
