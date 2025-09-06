@@ -76,7 +76,10 @@ function buildPackage(dirName: string) {
       // tsConfigFilePath: joinProjectPath('tsconfig.web.json')
     });
 
-    const program = ts.createProgram(targetFiles, compilerOptions);
+    const program = ts.createProgram({
+      rootNames: [],
+      options: {}
+    });
 
     // const diagnostics = ts.getPreEmitDiagnostics(program);
     // if (diagnostics.length) {

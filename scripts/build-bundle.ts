@@ -21,6 +21,13 @@ async function buildBundle(opts: { dirName: string; globalName: string }) {
         }
       },
       outDir: distDir
+    },
+    resolve: {
+      alias: {
+        '@idraw/util': joinPackagePath('util', 'src', 'index.ts'),
+        '@idraw/renderer': joinPackagePath('renderer', 'src', 'index.ts'),
+        '@idraw/core': joinPackagePath('core', 'src', 'index.ts')
+      }
     }
   };
   console.log(`Start build bundle [${dirName}] ...`);
