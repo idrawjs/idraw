@@ -10,13 +10,13 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       # Setup .npmrc file to publish to npm
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
-          node-version: '22.x'
+          node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
-      - run: npm install --global pnpm
+      - run: npm install --global pnpm@10
       - run: pnpm i
       - run: npm run test
       - run: npm run build

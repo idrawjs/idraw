@@ -15,18 +15,18 @@ jobs:
     if: github.repository == 'idrawjs/idraw'
     strategy:
       matrix:
-        node-version: [22.x]
+        node-version: [24.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm config set registry https://registry.yarnpkg.com/
       # - run: npm install
-      - run: npm install --global pnpm
+      - run: npm install --global pnpm@10
       - run: pnpm i
       - run: npm run beforetest
       - run: npm run cover
