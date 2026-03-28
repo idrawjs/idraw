@@ -1,9 +1,10 @@
-// import { DataElementAttrs } from '@idraw/types';
+import { MaterialSize } from '@idraw/types';
+
 import { is } from './is';
 
-function attrs(attrs: any): boolean {
-  const { x, y, w, h, angle } = attrs;
-  if (!(is.x(x) && is.y(y) && is.w(w) && is.h(h) && is.angle(angle))) {
+function attrs(attrs: MaterialSize): boolean {
+  const { x, y, width, height, angle = 0 } = attrs;
+  if (!(is.x(x) && is.y(y) && is.width(width) && is.height(height) && is.angle(angle))) {
     return false;
   }
   if (!(angle >= -360 && angle <= 360)) {
@@ -12,72 +13,72 @@ function attrs(attrs: any): boolean {
   return true;
 }
 
-function box(detail: any = {}): boolean {
-  const { borderColor, borderRadius, borderWidth } = detail;
-  if (Object.prototype.hasOwnProperty.call(detail, 'borderColor') && !is.color(borderColor)) {
+function box(attributes: any = {}): boolean {
+  const { stroke, cornerRadius, strokeWidth } = attributes;
+  if (Object.prototype.hasOwnProperty.call(attributes, 'stroke') && !is.color(stroke)) {
     return false;
   }
-  if (Object.prototype.hasOwnProperty.call(detail, 'borderRadius') && !is.number(borderRadius)) {
+  if (Object.prototype.hasOwnProperty.call(attributes, 'cornerRadius') && !is.number(cornerRadius)) {
     return false;
   }
-  if (Object.prototype.hasOwnProperty.call(detail, 'borderWidth') && !is.number(borderWidth)) {
-    return false;
-  }
-  return true;
-}
-
-function rectDesc(detail: any): boolean {
-  const { background } = detail;
-  if (Object.prototype.hasOwnProperty.call(detail, 'background') && !is.color(background)) {
-    return false;
-  }
-  if (!box(detail)) {
+  if (Object.prototype.hasOwnProperty.call(attributes, 'strokeWidth') && !is.number(strokeWidth)) {
     return false;
   }
   return true;
 }
 
-function circleDesc(detail: any): boolean {
-  const { background, borderColor, borderWidth } = detail;
-  if (Object.prototype.hasOwnProperty.call(detail, 'background') && !is.color(background)) {
+function rectDesc(attributes: any): boolean {
+  const { background } = attributes;
+  if (Object.prototype.hasOwnProperty.call(attributes, 'background') && !is.color(background)) {
     return false;
   }
-  if (Object.prototype.hasOwnProperty.call(detail, 'borderColor') && !is.color(borderColor)) {
-    return false;
-  }
-  if (Object.prototype.hasOwnProperty.call(detail, 'borderWidth') && !is.number(borderWidth)) {
+  if (!box(attributes)) {
     return false;
   }
   return true;
 }
 
-function imageDesc(detail: any): boolean {
-  const { src } = detail;
-  if (!is.imageSrc(src)) {
+function circleDesc(attributes: any): boolean {
+  const { background, stroke, strokeWidth } = attributes;
+  if (Object.prototype.hasOwnProperty.call(attributes, 'background') && !is.color(background)) {
+    return false;
+  }
+  if (Object.prototype.hasOwnProperty.call(attributes, 'stroke') && !is.color(stroke)) {
+    return false;
+  }
+  if (Object.prototype.hasOwnProperty.call(attributes, 'strokeWidth') && !is.number(strokeWidth)) {
     return false;
   }
   return true;
 }
 
-function svgDesc(detail: any): boolean {
-  const { svg } = detail;
+function imageDesc(attributes: any): boolean {
+  const { href } = attributes;
+  if (!is.imageSrc(href)) {
+    return false;
+  }
+  return true;
+}
+
+function svgDesc(attributes: any): boolean {
+  const { svg } = attributes;
   if (!is.svg(svg)) {
     return false;
   }
   return true;
 }
 
-function htmlDesc(detail: any): boolean {
-  const { html } = detail;
+function htmlDesc(attributes: any): boolean {
+  const { html } = attributes;
   if (!is.html(html)) {
     return false;
   }
   return true;
 }
 
-function textDesc(detail: any): boolean {
+function textDesc(attributes: any): boolean {
   const { text, color, fontSize, lineHeight, fontFamily, textAlign, fontWeight, background, strokeWidth, strokeColor } =
-    detail;
+    attributes;
   if (!is.text(text)) {
     return false;
   }
@@ -87,29 +88,29 @@ function textDesc(detail: any): boolean {
   if (!is.fontSize(fontSize)) {
     return false;
   }
-  if (Object.prototype.hasOwnProperty.call(detail, 'background') && !is.color(background)) {
+  if (Object.prototype.hasOwnProperty.call(attributes, 'background') && !is.color(background)) {
     return false;
   }
-  if (Object.prototype.hasOwnProperty.call(detail, 'fontWeight') && !is.fontWeight(fontWeight)) {
+  if (Object.prototype.hasOwnProperty.call(attributes, 'fontWeight') && !is.fontWeight(fontWeight)) {
     return false;
   }
-  if (Object.prototype.hasOwnProperty.call(detail, 'lineHeight') && !is.lineHeight(lineHeight)) {
+  if (Object.prototype.hasOwnProperty.call(attributes, 'lineHeight') && !is.lineHeight(lineHeight)) {
     return false;
   }
-  if (Object.prototype.hasOwnProperty.call(detail, 'fontFamily') && !is.fontFamily(fontFamily)) {
+  if (Object.prototype.hasOwnProperty.call(attributes, 'fontFamily') && !is.fontFamily(fontFamily)) {
     return false;
   }
-  if (Object.prototype.hasOwnProperty.call(detail, 'textAlign') && !is.textAlign(textAlign)) {
+  if (Object.prototype.hasOwnProperty.call(attributes, 'textAlign') && !is.textAlign(textAlign)) {
     return false;
   }
-  if (Object.prototype.hasOwnProperty.call(detail, 'strokeWidth') && !is.strokeWidth(strokeWidth)) {
+  if (Object.prototype.hasOwnProperty.call(attributes, 'strokeWidth') && !is.strokeWidth(strokeWidth)) {
     return false;
   }
-  if (Object.prototype.hasOwnProperty.call(detail, 'strokeColor') && !is.color(strokeColor)) {
+  if (Object.prototype.hasOwnProperty.call(attributes, 'strokeColor') && !is.color(strokeColor)) {
     return false;
   }
 
-  if (!box(detail)) {
+  if (!box(attributes)) {
     return false;
   }
   return true;
@@ -122,5 +123,5 @@ export const check = {
   circleDesc,
   imageDesc,
   svgDesc,
-  htmlDesc
+  htmlDesc,
 };

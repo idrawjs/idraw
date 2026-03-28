@@ -1,6 +1,6 @@
 import { EventEmitter } from '@idraw/util';
 import type { DataLayout, LoadItemMap } from '@idraw/types';
-import { drawElementList, drawLayout, drawGlobalBackground } from './draw/index';
+import { drawMaterialList, drawLayout, drawGlobalBackground } from './draw/index';
 import { Loader } from './loader';
 import type { Data, BoardRenderer, RendererOptions, RendererEventMap, RendererDrawOptions } from '@idraw/types';
 import { Calculator } from './calculator';
@@ -16,7 +16,7 @@ export class Renderer extends EventEmitter<RendererEventMap> implements BoardRen
     super();
     this.#opts = opts;
     this.#calculator = new Calculator({
-      tempContext: opts.tempContext
+      tempContext: opts.tempContext,
     });
     this.#init();
   }
@@ -55,45 +55,46 @@ export class Renderer extends EventEmitter<RendererEventMap> implements BoardRen
     const { sharer } = this.#opts;
     const viewContext = this.#opts.viewContext;
     viewContext.clearRect(0, 0, viewContext.canvas.width, viewContext.canvas.height);
-    const parentElementSize = {
+    const parentMaterialSize = {
       x: 0,
       y: 0,
-      w: opts.viewSizeInfo.width,
-      h: opts.viewSizeInfo.height
+      width: opts.viewSizeInfo.width,
+      height: opts.viewSizeInfo.height,
     };
     // if (data.underlay) {
     //   drawUnderlay(viewContext, data.underlay, {
     //     loader,
     //     calculator,
-    //     parentElementSize,
+    //     parentMaterialSize,
     //     parentOpacity: 1,
     //     ...opts
     //   });
     // }
 
     if (opts.forceDrawAll === true) {
-      this.#calculator.resetVirtualFlatItemMap(data, {
+      this.#calculator.resetVirtualItemMap(data, {
         viewScaleInfo: opts.viewScaleInfo,
-        viewSizeInfo: opts.viewSizeInfo
+        viewSizeInfo: opts.viewSizeInfo,
       });
     }
 
     const drawOpts = {
       loader,
       calculator,
-      parentElementSize,
-      elementAssets: data.assets,
+      parentMaterialSize,
+      materialAssets: data.assets,
       parentOpacity: 1,
-      overrideElementMap: sharer?.getActiveOverrideElemenentMap(),
-      ...opts
+      overrideMaterialMap: sharer?.getActiveOverrideMaterialMap(),
+      tempContext: this.#opts.tempContext,
+      ...opts,
     };
     drawGlobalBackground(viewContext, data.global, drawOpts);
     if (data.layout) {
       drawLayout(viewContext, data.layout as DataLayout, drawOpts, () => {
-        drawElementList(viewContext, data, drawOpts);
+        drawMaterialList(viewContext, data, drawOpts);
       });
     } else {
-      drawElementList(viewContext, data, drawOpts);
+      drawMaterialList(viewContext, data, drawOpts);
     }
   }
 
@@ -113,7 +114,7 @@ export class Renderer extends EventEmitter<RendererEventMap> implements BoardRen
       height,
       contextHeight,
       contextWidth,
-      devicePixelRatio
+      devicePixelRatio,
     } = sharer.getActiveStoreSnapshot();
     if (data) {
       this.drawData(data, {
@@ -122,15 +123,15 @@ export class Renderer extends EventEmitter<RendererEventMap> implements BoardRen
           offsetTop,
           offsetBottom,
           offsetLeft,
-          offsetRight
+          offsetRight,
         },
         viewSizeInfo: {
           width,
           height,
           contextHeight,
           contextWidth,
-          devicePixelRatio
-        }
+          devicePixelRatio,
+        },
       });
     }
   }
@@ -156,12 +157,12 @@ export {
   drawCircle,
   drawRect,
   drawImage,
-  drawSVG,
-  drawHTML,
+  drawSVGCode,
+  drawForeignObject,
   drawText,
   drawGroup,
-  drawElement,
-  drawElementList,
+  drawMaterial,
+  drawMaterialList,
   drawLayout,
-  drawGlobalBackground
+  drawGlobalBackground,
 } from './draw';

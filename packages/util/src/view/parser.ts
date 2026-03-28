@@ -1,4 +1,4 @@
-export function parseHTMLToDataURL(html: string, opts: { width: number; height: number }): Promise<string> {
+export function parseXMLToDataURL(xml: string, opts: { width: number; height: number }): Promise<string> {
   const { width, height } = opts;
   return new Promise((resolve, reject) => {
     const _svg = `
@@ -8,7 +8,7 @@ export function parseHTMLToDataURL(html: string, opts: { width: number; height: 
       height = "${height || ''}">
       <foreignObject width="100%" height="100%">
         <div xmlns = "http://www.w3.org/1999/xhtml">
-          ${html}
+          ${xml}
         </div>
       </foreignObject>
     </svg>
@@ -26,7 +26,7 @@ export function parseHTMLToDataURL(html: string, opts: { width: number; height: 
   });
 }
 
-export function parseSVGToDataURL(svg: string): Promise<string> {
+export function parseSVGCodeToDataURL(svg: string): Promise<string> {
   return new Promise((resolve, reject) => {
     const _svg = svg;
     const blob = new Blob([_svg], { type: 'image/svg+xml;charset=utf-8' });

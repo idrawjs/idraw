@@ -3,51 +3,118 @@ import type {
   Middleware,
   PointWatcherEvent,
   BoardWatherWheelEvent,
-  MiddlewareScrollerConfig
+  MiddlewareScrollerConfig,
 } from '@idraw/types';
-import { drawScroller, isPointInScrollThumb } from './util';
-// import type { ScrollbarThumbType } from './util';
+import { coreEventKeys } from '../../static';
 import {
-  keyXThumbRect,
-  keyYThumbRect,
+  keyXThumbStyle,
+  keyYThumbStyle,
   keyPrevPoint,
   keyActivePoint,
   keyActiveThumbType,
-  keyHoverXThumbRect,
-  keyHoverYThumbRect,
-  defaultStyle
-} from './config';
+  defaultStyles,
+  getRootClassName,
+  scrollbarTrackSize,
+  scrollbarThumbLength,
+} from './static';
 import type { DeepScrollerSharedStorage } from './types';
-import { coreEventKeys } from '../../config';
+import { initStyles, destroyStyles, getMiddlewareScrollerStyles } from './styles';
+import { initRoot, isInScrollbar, updateScrollbarStyles, getThumbType } from './dom';
+import { calcScrollbarStyles } from './util';
+
+export { getMiddlewareScrollerStyles };
 
 export const MiddlewareScroller: Middleware<DeepScrollerSharedStorage, any, MiddlewareScrollerConfig> = (
   opts,
   config
 ) => {
-  const { viewer, boardContent, sharer, eventHub } = opts;
-  const { overlayContext } = boardContent;
-  sharer.setSharedStorage(keyXThumbRect, null); // null | ElementSize
-  sharer.setSharedStorage(keyYThumbRect, null); // null | ElementSize
+  const { viewer, sharer, eventHub } = opts;
   let isBusy: boolean = false;
 
   let innerConfig = {
-    ...defaultStyle,
-    ...config
+    ...defaultStyles,
+    ...config,
   };
 
-  // viewer.drawFrame();
+  const styles = getMiddlewareScrollerStyles(innerConfig);
+  const rootClassName = getRootClassName();
+  let $horizontal: HTMLDivElement | null = null;
+  let $vertical: HTMLDivElement | null = null;
+
   const clear = () => {
     sharer.setSharedStorage(keyPrevPoint, null); // null | Point;
     sharer.setSharedStorage(keyActivePoint, null); // null | Point;
     sharer.setSharedStorage(keyActiveThumbType, null); // null | 'X' | 'Y'
-    sharer.setSharedStorage(keyHoverXThumbRect, null); // null | boolean
-    sharer.setSharedStorage(keyHoverYThumbRect, null); // null | boolean
+
     isBusy = false;
   };
 
   clear();
 
-  // let activeThumbType: ScrollbarThumbType | null = null;
+  const updateScrollbar = () => {
+    const { xThumbStyle, yThumbStyle } = calcScrollbarStyles({
+      viewScaleInfo: sharer.getActiveViewScaleInfo(),
+      viewSizeInfo: sharer.getActiveViewSizeInfo(),
+    });
+    sharer.setSharedStorage(keyXThumbStyle, xThumbStyle);
+    sharer.setSharedStorage(keyYThumbStyle, yThumbStyle);
+  };
+
+  const updateMovingScrollbar = (opts: { thumbMoveX: number; thumbMoveY: number }) => {
+    const { thumbMoveX, thumbMoveY } = opts;
+    const xThumbStyle = sharer.getSharedStorage(keyXThumbStyle);
+    const yThumbStyle = sharer.getSharedStorage(keyYThumbStyle);
+    const viewSizeInfo = sharer.getActiveViewSizeInfo();
+    if (xThumbStyle && (thumbMoveX > 0 || thumbMoveX < 0)) {
+      const maxScrollWidth = viewSizeInfo.width - scrollbarTrackSize * 2;
+      const minLeft = scrollbarTrackSize;
+      let left = (xThumbStyle.left as number) - thumbMoveX;
+      left = Math.min(
+        viewSizeInfo.width - scrollbarTrackSize - scrollbarThumbLength,
+        Math.max(scrollbarTrackSize, left)
+      );
+
+      let width = xThumbStyle.width as number;
+      if (left + width >= maxScrollWidth || left <= minLeft) {
+        if (thumbMoveX < 0) {
+          width += thumbMoveX;
+        } else {
+          width -= thumbMoveX;
+        }
+      }
+
+      width = Math.min(maxScrollWidth, Math.max(scrollbarThumbLength, width));
+
+      xThumbStyle.left = left;
+      xThumbStyle.width = width;
+      sharer.setSharedStorage(keyXThumbStyle, xThumbStyle);
+    }
+
+    if (yThumbStyle && (thumbMoveY > 0 || thumbMoveY < 0)) {
+      const maxScrollHeight = viewSizeInfo.height - scrollbarTrackSize * 2;
+      const minTop = scrollbarTrackSize;
+      let top = (yThumbStyle.top as number) - thumbMoveY;
+      top = Math.min(
+        viewSizeInfo.height - scrollbarTrackSize - scrollbarThumbLength,
+        Math.max(scrollbarTrackSize, top)
+      );
+
+      let height = yThumbStyle.height as number;
+      if (top + height >= maxScrollHeight || top <= minTop) {
+        if (thumbMoveY < 0) {
+          height += thumbMoveY;
+        } else {
+          height -= thumbMoveY;
+        }
+      }
+
+      height = Math.min(maxScrollHeight, Math.max(scrollbarThumbLength, height));
+
+      yThumbStyle.top = top;
+      yThumbStyle.height = height;
+      sharer.setSharedStorage(keyYThumbStyle, yThumbStyle);
+    }
+  };
 
   const scrollX = (p: Point) => {
     const prevPoint: null | Point = sharer.getSharedStorage(keyPrevPoint);
@@ -58,6 +125,7 @@ export const MiddlewareScroller: Middleware<DeepScrollerSharedStorage, any, Midd
       const totalWidth = width + Math.abs(offsetLeft) + Math.abs(offsetRight);
       const moveX = (thumbMoveX * totalWidth) / width;
       viewer.scroll({ moveX });
+      updateMovingScrollbar({ thumbMoveX, thumbMoveY: 0 });
       viewer.drawFrame();
     }
   };
@@ -71,19 +139,38 @@ export const MiddlewareScroller: Middleware<DeepScrollerSharedStorage, any, Midd
       const totalHeight = height + Math.abs(offsetTop) + Math.abs(offsetBottom);
       const moveY = (thumbMoveY * totalHeight) / height;
       viewer.scroll({ moveY });
+      updateMovingScrollbar({ thumbMoveX: 0, thumbMoveY });
       viewer.drawFrame();
     }
   };
 
-  const getThumbType = (p: Point) => {
-    return isPointInScrollThumb(overlayContext, p, {
-      xThumbRect: sharer.getSharedStorage(keyXThumbRect),
-      yThumbRect: sharer.getSharedStorage(keyYThumbRect)
-    });
-  };
-
   return {
     name: '@middleware/scroller',
+
+    use() {
+      initStyles(rootClassName, styles);
+      const initedResult = initRoot({ rootClassName, $container: opts.container as HTMLElement });
+      $horizontal = initedResult.$horizontal;
+      $vertical = initedResult.$vertical;
+
+      // init styles
+      updateScrollbar();
+      updateScrollbarStyles({
+        xThumbStyle: sharer.getSharedStorage(keyXThumbStyle),
+        yThumbStyle: sharer.getSharedStorage(keyYThumbStyle),
+        $horizontal,
+        $vertical,
+      });
+    },
+
+    disuse() {
+      destroyStyles(rootClassName);
+      // clear dom
+      $horizontal?.remove();
+      $horizontal = null;
+      $vertical?.remove();
+      $vertical = null;
+    },
 
     resetConfig(config) {
       innerConfig = { ...innerConfig, ...config };
@@ -92,8 +179,9 @@ export const MiddlewareScroller: Middleware<DeepScrollerSharedStorage, any, Midd
     wheel: (e: BoardWatherWheelEvent) => {
       viewer.scroll({
         moveX: 0 - e.deltaX,
-        moveY: 0 - e.deltaY
+        moveY: 0 - e.deltaY,
       });
+      updateScrollbar();
       viewer.drawFrame();
     },
 
@@ -101,36 +189,35 @@ export const MiddlewareScroller: Middleware<DeepScrollerSharedStorage, any, Midd
       if (isBusy === true) {
         return false;
       }
-      const { point } = e;
-      const thumbType = getThumbType(point);
+      const { nativeEvent } = e;
+      const thumbType = getThumbType(nativeEvent);
       if (thumbType === 'X' || thumbType === 'Y') {
-        if (thumbType === 'X') {
-          sharer.setSharedStorage(keyHoverXThumbRect, true);
-          sharer.setSharedStorage(keyHoverYThumbRect, false);
-        } else {
-          sharer.setSharedStorage(keyHoverXThumbRect, false);
-          sharer.setSharedStorage(keyHoverYThumbRect, true);
-        }
         eventHub.trigger(coreEventKeys.CURSOR, { type: 'default' });
         return false;
       }
 
-      sharer.setSharedStorage(keyHoverXThumbRect, false);
-      sharer.setSharedStorage(keyHoverYThumbRect, false);
+      if (isInScrollbar(nativeEvent)) {
+        return false;
+      }
     },
 
     pointStart: (e: PointWatcherEvent) => {
-      const { point } = e;
-      const thumbType = getThumbType(point);
+      const { point, nativeEvent } = e;
+      const thumbType = getThumbType(nativeEvent);
       if (thumbType === 'X' || thumbType === 'Y') {
         isBusy = true;
         sharer.setSharedStorage(keyActiveThumbType, thumbType);
         sharer.setSharedStorage(keyPrevPoint, point);
         return false;
       }
+
+      if (isInScrollbar(nativeEvent)) {
+        return false;
+      }
     },
+
     pointMove: (e: PointWatcherEvent) => {
-      const { point } = e;
+      const { point, nativeEvent } = e;
       const activeThumbType = sharer.getSharedStorage(keyActiveThumbType);
       if (activeThumbType === 'X' || activeThumbType === 'Y') {
         sharer.setSharedStorage(keyActivePoint, point);
@@ -142,6 +229,9 @@ export const MiddlewareScroller: Middleware<DeepScrollerSharedStorage, any, Midd
         sharer.setSharedStorage(keyPrevPoint, point);
         return false;
       }
+      if (isInScrollbar(nativeEvent)) {
+        return false;
+      }
     },
     pointEnd: () => {
       isBusy = false;
@@ -149,31 +239,18 @@ export const MiddlewareScroller: Middleware<DeepScrollerSharedStorage, any, Midd
       clear();
       if (activeThumbType === 'X' || activeThumbType === 'Y') {
         viewer.scroll({ moveX: 0, moveY: 0 });
+        updateScrollbar();
         viewer.drawFrame();
         return false;
       }
     },
-    beforeDrawFrame({ snapshot }) {
-      const {
-        thumbBackground,
-        thumbBorderColor,
-        hoverThumbBackground,
-        hoverThumbBorderColor,
-        activeThumbBackground,
-        activeThumbBorderColor
-      } = innerConfig;
-
-      const style = {
-        thumbBackground,
-        thumbBorderColor,
-        hoverThumbBackground,
-        hoverThumbBorderColor,
-        activeThumbBackground,
-        activeThumbBorderColor
-      };
-      const { xThumbRect, yThumbRect } = drawScroller(overlayContext, { snapshot, style });
-      sharer.setSharedStorage(keyXThumbRect, xThumbRect);
-      sharer.setSharedStorage(keyYThumbRect, yThumbRect);
-    }
+    beforeDrawFrame() {
+      updateScrollbarStyles({
+        $horizontal,
+        $vertical,
+        xThumbStyle: sharer.getSharedStorage(keyXThumbStyle),
+        yThumbStyle: sharer.getSharedStorage(keyYThumbStyle),
+      });
+    },
   };
 };

@@ -15,15 +15,15 @@ export async function getImageBlobURL(
   const outputSize = calcVisiableViewSize(data);
 
   return await exportImageFileBlobURL({
-    width: outputSize.w,
-    height: outputSize.h,
+    width: outputSize.width,
+    height: outputSize.height,
     devicePixelRatio,
     data,
     viewScaleInfo: { scale: 1, offsetLeft: -outputSize.x, offsetTop: -outputSize.y, offsetBottom: 0, offsetRight: 0 },
     viewSizeInfo: {
       ...viewSizeInfo,
-      ...{ devicePixelRatio }
+      ...{ devicePixelRatio },
     },
-    loadItemMap: core.getLoadItemMap()
+    loadItemMap: core.getLoadItemMap(),
   });
 }

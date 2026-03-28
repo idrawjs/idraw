@@ -1,19 +1,18 @@
 import {
   Point,
-  PointSize,
   Data,
   ViewScaleInfo,
   ViewSizeInfo,
-  Element,
-  ElementType,
-  ElementSize,
+  StrictMaterial,
+  MaterialType,
+  MaterialSize,
   ViewContext2D,
   ViewRectVertexes,
-  ViewRectInfo
+  BoundingInfo,
 } from '@idraw/types';
-import { rotateElementVertexes } from './rotate';
+import { rotateMaterialVertexes } from './rotate';
 import { checkRectIntersect } from './rect';
-import { calcElementVertexesInGroup, calcElementVertexes } from './vertex';
+import { calcMaterialVertexesInGroup, calcMaterialVertexes } from './vertex';
 import { getCenterFromTwoPoints } from './point';
 
 export function calcViewScaleInfo(
@@ -35,14 +34,14 @@ export function calcViewScaleInfo(
     offsetLeft,
     offsetTop,
     offsetRight,
-    offsetBottom
+    offsetBottom,
   };
   return newScaleInfo;
 }
 
 export function viewScale(opts: {
   scale: number;
-  point: PointSize;
+  point: Point;
   viewScaleInfo: ViewScaleInfo;
   viewSizeInfo: ViewSizeInfo;
 }): {
@@ -58,7 +57,7 @@ export function viewScale(opts: {
   const moveY = y0 - y0 * scaleDiff + (offsetTop * scaleDiff - offsetTop);
   return {
     moveX,
-    moveY
+    moveY,
   };
 }
 
@@ -91,33 +90,49 @@ export function viewScroll(opts: {
     offsetTop,
     offsetLeft,
     offsetRight,
-    offsetBottom
+    offsetBottom,
   };
 }
 
-export function calcViewElementSize(size: ElementSize, opts: { viewScaleInfo: ViewScaleInfo }): ElementSize {
+export function calcViewMaterialSize(
+  size: MaterialSize,
+  opts: { viewScaleInfo: Partial<ViewScaleInfo> }
+): MaterialSize {
   const { viewScaleInfo } = opts;
-  const { x, y, w, h, angle } = size;
-  const { scale, offsetTop, offsetLeft } = viewScaleInfo;
+  const { id, x, y, width, height, angle } = size;
+  const { scale = 1, offsetTop = 0, offsetLeft = 0 } = viewScaleInfo;
 
-  const newSize = {
+  const newSize: MaterialSize = {
+    id,
     x: x * scale + offsetLeft,
     y: y * scale + offsetTop,
-    w: w * scale,
-    h: h * scale,
-    angle
+    width: width * scale,
+    height: height * scale,
+    angle,
   };
   return newSize;
 }
 
-export function calcViewPointSize(size: PointSize, opts: { viewScaleInfo: ViewScaleInfo }): PointSize {
+export function calcViewPoint(size: Point, opts: { viewScaleInfo: ViewScaleInfo }): Point {
   const { viewScaleInfo } = opts;
   const { x, y } = size;
   const { scale, offsetTop, offsetLeft } = viewScaleInfo;
 
   const newSize = {
     x: x * scale + offsetLeft,
-    y: y * scale + offsetTop
+    y: y * scale + offsetTop,
+  };
+  return newSize;
+}
+
+export function calcPointFromView(viewPoint: Point, opts: { viewScaleInfo: ViewScaleInfo }): Point {
+  const { viewScaleInfo } = opts;
+  const { x, y } = viewPoint;
+  const { scale, offsetTop, offsetLeft } = viewScaleInfo;
+
+  const newSize = {
+    x: (x - offsetLeft) / scale,
+    y: (y - offsetTop) / scale,
   };
   return newSize;
 }
@@ -127,25 +142,25 @@ export function calcViewVertexes(
   opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }
 ): ViewRectVertexes {
   return [
-    calcViewPointSize(vertexes[0], opts),
-    calcViewPointSize(vertexes[1], opts),
-    calcViewPointSize(vertexes[2], opts),
-    calcViewPointSize(vertexes[3], opts)
+    calcViewPoint(vertexes[0], opts),
+    calcViewPoint(vertexes[1], opts),
+    calcViewPoint(vertexes[2], opts),
+    calcViewPoint(vertexes[3], opts),
   ];
 }
 
 /**
  * @deprecated
  */
-export function isViewPointInElement(
+export function isViewPointInMaterial(
   p: Point,
-  opts: { context2d: ViewContext2D; element: ElementSize; viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }
+  opts: { context2d: ViewContext2D; material: MaterialSize; viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }
 ): boolean {
-  const { context2d: ctx, element: elem, viewScaleInfo } = opts;
+  const { context2d: ctx, material: mtrl, viewScaleInfo } = opts;
 
-  const { angle = 0 } = elem;
-  const { x, y, w, h } = calcViewElementSize(elem, { viewScaleInfo });
-  const vertexes = rotateElementVertexes({ x, y, w, h, angle });
+  const { angle = 0 } = mtrl;
+  const { x, y, width, height } = calcViewMaterialSize(mtrl, { viewScaleInfo });
+  const vertexes = rotateMaterialVertexes({ x, y, width, height, angle });
   if (vertexes.length >= 2) {
     ctx.beginPath();
     ctx.moveTo(vertexes[0].x, vertexes[0].y);
@@ -160,14 +175,14 @@ export function isViewPointInElement(
   return false;
 }
 
-export function isViewPointInElementSize(
+export function isViewPointInMaterialSize(
   p: Point,
-  elemSize: ElementSize,
+  mtrlSize: MaterialSize,
   opts?: {
     includeBorder?: boolean;
   }
 ): boolean {
-  const vertexes = calcElementVertexes(elemSize);
+  const vertexes = calcMaterialVertexes(mtrlSize);
   return isViewPointInVertexes(p, vertexes, opts);
 }
 
@@ -194,22 +209,22 @@ export function isViewPointInVertexes(
   return false;
 }
 
-export function getViewPointAtElement(
+export function getViewPointAtMaterial(
   p: Point,
   opts: {
     context2d: ViewContext2D;
     data: Data;
     viewScaleInfo: ViewScaleInfo;
     viewSizeInfo: ViewSizeInfo;
-    groupQueue?: Element<'group'>[];
+    groupQueue?: StrictMaterial<'group'>[];
   }
-): { index: number; element: null | Element<ElementType>; groupQueueIndex: number } {
+): { index: number; material: null | StrictMaterial<MaterialType>; groupQueueIndex: number } {
   const { context2d: ctx, data, viewScaleInfo, viewSizeInfo, groupQueue } = opts;
 
-  const result: { index: number; element: null | Element<ElementType>; groupQueueIndex: number } = {
+  const result: { index: number; material: null | StrictMaterial<MaterialType>; groupQueueIndex: number } = {
     index: -1,
-    element: null,
-    groupQueueIndex: -1
+    material: null,
+    groupQueueIndex: -1,
   };
 
   if (groupQueue && Array.isArray(groupQueue) && groupQueue?.length > 0) {
@@ -227,22 +242,22 @@ export function getViewPointAtElement(
 
       const lastGroup = groupQueue[gIdx];
 
-      if (lastGroup && lastGroup.type === 'group' && Array.isArray(lastGroup.detail?.children)) {
-        for (let i = 0; i < lastGroup.detail.children.length; i++) {
-          const child = lastGroup.detail.children[i];
+      if (lastGroup && lastGroup.type === 'group' && Array.isArray(lastGroup?.children)) {
+        for (let i = 0; i < lastGroup.children.length; i++) {
+          const child = lastGroup.children[i];
           if (child?.operations?.invisible === true) {
             continue;
           }
           if (child) {
-            const elemSize = {
+            const mtrlSize: MaterialSize = {
               x: totalX + child.x,
               y: totalY + child.y,
-              w: child.w,
-              h: child.h,
-              angle: totalAngle + (child.angle || 0)
+              width: child.width,
+              height: child.height,
+              angle: totalAngle + (child.angle || 0),
             };
-            if (isViewPointInElement(p, { context2d: ctx, element: elemSize, viewScaleInfo, viewSizeInfo })) {
-              result.element = child;
+            if (isViewPointInMaterial(p, { context2d: ctx, material: mtrlSize, viewScaleInfo, viewSizeInfo })) {
+              result.material = child;
               if (gIdx < groupQueue.length - 1 || child.type !== 'group') {
                 result.groupQueueIndex = gIdx;
               }
@@ -253,23 +268,23 @@ export function getViewPointAtElement(
           }
         }
       }
-      if (result.element) {
+      if (result.material) {
         break;
       }
     }
   }
-  if (result.element) {
+  if (result.material) {
     return result;
   }
 
-  for (let i = data.elements.length - 1; i >= 0; i--) {
-    const elem = data.elements[i];
-    if (elem?.operations?.invisible === true) {
+  for (let i = data.materials.length - 1; i >= 0; i--) {
+    const mtrl = data.materials[i];
+    if (mtrl?.operations?.invisible === true) {
       continue;
     }
-    if (isViewPointInElement(p, { context2d: ctx, element: elem, viewScaleInfo, viewSizeInfo })) {
+    if (isViewPointInMaterial(p, { context2d: ctx, material: mtrl, viewScaleInfo, viewSizeInfo })) {
       result.index = i;
-      result.element = elem;
+      result.material = mtrl;
       break;
     }
   }
@@ -279,34 +294,34 @@ export function getViewPointAtElement(
 /**
  * @deprecated
  */
-export function isElementInView(
-  elem: ElementSize,
+export function isMaterialInView(
+  mtrl: MaterialSize,
   opts: { viewScaleInfo: ViewScaleInfo; viewSizeInfo: ViewSizeInfo }
 ): boolean {
   const { viewSizeInfo, viewScaleInfo } = opts;
   const { width, height } = viewSizeInfo;
-  const { angle } = elem;
-  const { x, y, w, h } = calcViewElementSize(elem, { viewScaleInfo });
-  const ves = rotateElementVertexes({ x, y, w, h, angle });
-  const viewSize = { x: 0, y: 0, w: width, h: height };
+  const { angle } = mtrl;
+  const { x, y, width: w, height: h } = calcViewMaterialSize(mtrl, { viewScaleInfo });
+  const ves = rotateMaterialVertexes({ x, y, width: w, height: h, angle });
+  const viewSize = { x: 0, y: 0, width, height };
 
-  const elemStartX = Math.min(ves[0].x, ves[1].x, ves[2].x, ves[3].x);
-  const elemStartY = Math.min(ves[0].y, ves[1].y, ves[2].y, ves[3].y);
-  const elemEndX = Math.max(ves[0].x, ves[1].x, ves[2].x, ves[3].x);
-  const elemEndY = Math.max(ves[0].y, ves[1].y, ves[2].y, ves[3].y);
-  const elemSize = { x: elemStartX, y: elemStartY, w: elemEndX - elemStartX, h: elemEndY - elemStartY };
-  return checkRectIntersect(viewSize, elemSize);
+  const mtrlStartX = Math.min(ves[0].x, ves[1].x, ves[2].x, ves[3].x);
+  const mtrlStartY = Math.min(ves[0].y, ves[1].y, ves[2].y, ves[3].y);
+  const mtrlEndX = Math.max(ves[0].x, ves[1].x, ves[2].x, ves[3].x);
+  const mtrlEndY = Math.max(ves[0].y, ves[1].y, ves[2].y, ves[3].y);
+  const mtrlSize = { x: mtrlStartX, y: mtrlStartY, width: mtrlEndX - mtrlStartX, height: mtrlEndY - mtrlStartY };
+  return checkRectIntersect(viewSize, mtrlSize);
 }
 
-export function calcElementOriginRectInfo(
-  elemSize: ElementSize,
+export function calcMaterialBoundingInfo(
+  mtrlSize: MaterialSize,
   opts: {
-    groupQueue: Element<'group'>[];
+    groupQueue: StrictMaterial<'group'>[];
   }
-): ViewRectInfo {
+): BoundingInfo {
   const { groupQueue } = opts;
 
-  const vertexes = calcElementVertexesInGroup(elemSize, { groupQueue }) as ViewRectVertexes;
+  const vertexes = calcMaterialVertexesInGroup(mtrlSize, { groupQueue }) as ViewRectVertexes;
 
   const top = getCenterFromTwoPoints(vertexes[0], vertexes[1]);
   const right = getCenterFromTwoPoints(vertexes[1], vertexes[2]);
@@ -322,12 +337,12 @@ export function calcElementOriginRectInfo(
   const maxY = Math.max(topLeft.y, topRight.y, bottomRight.y, bottomLeft.y);
   const minX = Math.min(topLeft.x, topRight.x, bottomRight.x, bottomLeft.x);
   const minY = Math.min(topLeft.y, topRight.y, bottomRight.y, bottomLeft.y);
-  const center: PointSize = {
+  const center: Point = {
     x: (maxX + minX) / 2,
-    y: (maxY + minY) / 2
+    y: (maxY + minY) / 2,
   };
 
-  const rectInfo: ViewRectInfo = {
+  const boundingBox: BoundingInfo = {
     center,
     topLeft,
     topRight,
@@ -336,39 +351,39 @@ export function calcElementOriginRectInfo(
     top,
     right,
     left,
-    bottom
+    bottom,
   };
 
-  return rectInfo;
+  return boundingBox;
 }
 
-export function originRectInfoToRangeRectInfo(originRectInfo: ViewRectInfo): ViewRectInfo {
+export function boundingInfoToRangeBoundingInfo(boundingInfo: BoundingInfo): BoundingInfo {
   const rangeMaxX = Math.max(
-    originRectInfo.topLeft.x,
-    originRectInfo.topRight.x,
-    originRectInfo.bottomRight.x,
-    originRectInfo.bottomLeft.x
+    boundingInfo.topLeft.x,
+    boundingInfo.topRight.x,
+    boundingInfo.bottomRight.x,
+    boundingInfo.bottomLeft.x
   );
   const rangeMaxY = Math.max(
-    originRectInfo.topLeft.y,
-    originRectInfo.topRight.y,
-    originRectInfo.bottomRight.y,
-    originRectInfo.bottomLeft.y
+    boundingInfo.topLeft.y,
+    boundingInfo.topRight.y,
+    boundingInfo.bottomRight.y,
+    boundingInfo.bottomLeft.y
   );
   const rangeMinX = Math.min(
-    originRectInfo.topLeft.x,
-    originRectInfo.topRight.x,
-    originRectInfo.bottomRight.x,
-    originRectInfo.bottomLeft.x
+    boundingInfo.topLeft.x,
+    boundingInfo.topRight.x,
+    boundingInfo.bottomRight.x,
+    boundingInfo.bottomLeft.x
   );
   const rangeMinY = Math.min(
-    originRectInfo.topLeft.y,
-    originRectInfo.topRight.y,
-    originRectInfo.bottomRight.y,
-    originRectInfo.bottomLeft.y
+    boundingInfo.topLeft.y,
+    boundingInfo.topRight.y,
+    boundingInfo.bottomRight.y,
+    boundingInfo.bottomLeft.y
   );
 
-  const rangeCenter = { x: originRectInfo.center.x, y: originRectInfo.center.y };
+  const rangeCenter = { x: boundingInfo.center.x, y: boundingInfo.center.y };
   const rangeTopLeft = { x: rangeMinX, y: rangeMinY };
   const rangeTopRight = { x: rangeMaxX, y: rangeMinY };
   const rangeBottomRight = { x: rangeMaxX, y: rangeMaxY };
@@ -379,7 +394,7 @@ export function originRectInfoToRangeRectInfo(originRectInfo: ViewRectInfo): Vie
   const rangeLeft = getCenterFromTwoPoints(rangeTopLeft, rangeBottomLeft);
   const rangeRight = getCenterFromTwoPoints(rangeTopRight, rangeBottomRight);
 
-  const rangeRectInfo: ViewRectInfo = {
+  const rangeBoundingInfo: BoundingInfo = {
     center: rangeCenter,
     topLeft: rangeTopLeft,
     topRight: rangeTopRight,
@@ -388,66 +403,66 @@ export function originRectInfoToRangeRectInfo(originRectInfo: ViewRectInfo): Vie
     top: rangeTop,
     right: rangeRight,
     left: rangeLeft,
-    bottom: rangeBottom
+    bottom: rangeBottom,
   };
-  return rangeRectInfo;
+  return rangeBoundingInfo;
 }
 
-export function calcElementViewRectInfo(
-  elemSize: ElementSize,
+export function calcMaterialViewBoundingInfo(
+  mtrlSize: MaterialSize,
   opts: {
-    groupQueue: Element<'group'>[];
+    groupQueue: StrictMaterial<'group'>[];
     viewScaleInfo: ViewScaleInfo;
     range?: boolean;
   }
-): ViewRectInfo {
+): BoundingInfo {
   const { groupQueue, viewScaleInfo, range } = opts;
 
-  // Original RectInfo
-  const originRectInfo = calcElementOriginRectInfo(elemSize, { groupQueue });
-  const { center, top, bottom, left, right, topLeft, topRight, bottomLeft, bottomRight } = originRectInfo;
+  // Original BoundingInfo
+  const boundingInfo = calcMaterialBoundingInfo(mtrlSize, { groupQueue });
+  const { center, top, bottom, left, right, topLeft, topRight, bottomLeft, bottomRight } = boundingInfo;
 
-  // View RectInfo
-  const viewRectInfo: ViewRectInfo = {
-    center: calcViewPointSize(center, { viewScaleInfo }),
-    topLeft: calcViewPointSize(topLeft, { viewScaleInfo }),
-    topRight: calcViewPointSize(topRight, { viewScaleInfo }),
-    bottomLeft: calcViewPointSize(bottomLeft, { viewScaleInfo }),
-    bottomRight: calcViewPointSize(bottomRight, { viewScaleInfo }),
-    top: calcViewPointSize(top, { viewScaleInfo }),
-    right: calcViewPointSize(right, { viewScaleInfo }),
-    left: calcViewPointSize(left, { viewScaleInfo }),
-    bottom: calcViewPointSize(bottom, { viewScaleInfo })
+  // View BoundingInfo
+  const viewBoundingInfo: BoundingInfo = {
+    center: calcViewPoint(center, { viewScaleInfo }),
+    topLeft: calcViewPoint(topLeft, { viewScaleInfo }),
+    topRight: calcViewPoint(topRight, { viewScaleInfo }),
+    bottomLeft: calcViewPoint(bottomLeft, { viewScaleInfo }),
+    bottomRight: calcViewPoint(bottomRight, { viewScaleInfo }),
+    top: calcViewPoint(top, { viewScaleInfo }),
+    right: calcViewPoint(right, { viewScaleInfo }),
+    left: calcViewPoint(left, { viewScaleInfo }),
+    bottom: calcViewPoint(bottom, { viewScaleInfo }),
   };
 
   if (range === true) {
-    // Range RectInfo
+    // Range BoundingInfo
     const viewMaxX = Math.max(
-      viewRectInfo.topLeft.x,
-      viewRectInfo.topRight.x,
-      viewRectInfo.bottomRight.x,
-      viewRectInfo.bottomLeft.x
+      viewBoundingInfo.topLeft.x,
+      viewBoundingInfo.topRight.x,
+      viewBoundingInfo.bottomRight.x,
+      viewBoundingInfo.bottomLeft.x
     );
     const viewMaxY = Math.max(
-      viewRectInfo.topLeft.y,
-      viewRectInfo.topRight.y,
-      viewRectInfo.bottomRight.y,
-      viewRectInfo.bottomLeft.y
+      viewBoundingInfo.topLeft.y,
+      viewBoundingInfo.topRight.y,
+      viewBoundingInfo.bottomRight.y,
+      viewBoundingInfo.bottomLeft.y
     );
     const viewMinX = Math.min(
-      viewRectInfo.topLeft.x,
-      viewRectInfo.topRight.x,
-      viewRectInfo.bottomRight.x,
-      viewRectInfo.bottomLeft.x
+      viewBoundingInfo.topLeft.x,
+      viewBoundingInfo.topRight.x,
+      viewBoundingInfo.bottomRight.x,
+      viewBoundingInfo.bottomLeft.x
     );
     const viewMinY = Math.min(
-      viewRectInfo.topLeft.y,
-      viewRectInfo.topRight.y,
-      viewRectInfo.bottomRight.y,
-      viewRectInfo.bottomLeft.y
+      viewBoundingInfo.topLeft.y,
+      viewBoundingInfo.topRight.y,
+      viewBoundingInfo.bottomRight.y,
+      viewBoundingInfo.bottomLeft.y
     );
 
-    const rangeCenter = { x: viewRectInfo.center.x, y: viewRectInfo.center.y };
+    const rangeCenter = { x: viewBoundingInfo.center.x, y: viewBoundingInfo.center.y };
     const rangeTopLeft = { x: viewMinX, y: viewMinY };
     const rangeTopRight = { x: viewMaxX, y: viewMinY };
     const rangeBottomRight = { x: viewMaxX, y: viewMaxY };
@@ -458,7 +473,7 @@ export function calcElementViewRectInfo(
     const rangeLeft = getCenterFromTwoPoints(rangeTopLeft, rangeBottomLeft);
     const rangeRight = getCenterFromTwoPoints(rangeTopRight, rangeBottomRight);
 
-    const rangeRectInfo: ViewRectInfo = {
+    const rangeBoundingInfo: BoundingInfo = {
       center: rangeCenter,
       topLeft: rangeTopLeft,
       topRight: rangeTopRight,
@@ -467,10 +482,10 @@ export function calcElementViewRectInfo(
       top: rangeTop,
       right: rangeRight,
       left: rangeLeft,
-      bottom: rangeBottom
+      bottom: rangeBottom,
     };
-    return rangeRectInfo;
+    return rangeBoundingInfo;
   }
 
-  return viewRectInfo;
+  return viewBoundingInfo;
 }

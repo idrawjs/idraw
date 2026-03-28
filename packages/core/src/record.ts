@@ -1,33 +1,33 @@
-import type { RecursivePartial, FlattenElement, Element, ModifyRecord } from '@idraw/types';
-import { toFlattenElement, get } from '@idraw/util';
+import type { RecursivePartial, FlattenMaterial, Material, ModifyRecord } from '@idraw/types';
+import { toFlattenMaterial, get } from '@idraw/util';
 
-export function getModifyElementRecord(opts: {
-  modifiedElement: RecursivePartial<Omit<Element, 'uuid'>> & Pick<Element, 'uuid'>;
-  beforeElement: Element;
-}): ModifyRecord<'modifyElement'> {
-  const { modifiedElement, beforeElement } = opts;
-  const { uuid, ...restElement } = modifiedElement;
-  const after = toFlattenElement(restElement);
-  let before: FlattenElement = {};
+export function getModifyMaterialRecord(opts: {
+  modifiedMaterial: RecursivePartial<Omit<Material, 'id'>> & Pick<Material, 'id'>;
+  beforeMaterial: Material;
+}): ModifyRecord<'modifyMaterial'> {
+  const { modifiedMaterial, beforeMaterial } = opts;
+  const { id, ...restMaterial } = modifiedMaterial;
+  const after = toFlattenMaterial(restMaterial);
+  let before: FlattenMaterial = {};
   Object.keys(after).forEach((key: string) => {
-    let val = get(beforeElement, key);
-    if (val === undefined && /(borderRadius|borderWidth)\[[0-9]{1,}\]$/.test(key)) {
+    let val = get(beforeMaterial, key);
+    if (val === undefined && /(cornerRadius|strokeWidth)\[[0-9]{1,}\]$/.test(key)) {
       key = key.replace(/\[[0-9]{1,}\]$/, '');
-      val = get(beforeElement, key);
+      val = get(beforeMaterial, key);
     }
     before[key] = val;
   });
-  before = toFlattenElement(before);
+  before = toFlattenMaterial(before);
 
-  const record: ModifyRecord<'modifyElement'> = {
-    type: 'modifyElement',
+  const record: ModifyRecord<'modifyMaterial'> = {
+    type: 'modifyMaterial',
     time: Date.now(),
     content: {
-      method: 'modifyElement',
-      uuid,
+      method: 'modifyMaterial',
+      id,
       before,
-      after
-    }
+      after,
+    },
   };
 
   return record;

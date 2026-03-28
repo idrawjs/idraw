@@ -10,7 +10,11 @@ export function downloadImageFromCanvas(canvas: HTMLCanvasElement, opts: { fileN
   downloadLink = null;
 }
 
-export function pickFile(opts: { accept?: string; success: (data: { file: File }) => void; error?: (err: Error | any) => void }) {
+export function pickFile(opts: {
+  accept?: string;
+  success: (data: { file: File }) => void;
+  error?: (err: Error | any) => void;
+}) {
   const { accept, success, error } = opts;
   let input: HTMLInputElement | null = document.createElement('input') as HTMLInputElement;
   input.type = 'file';
@@ -20,7 +24,7 @@ export function pickFile(opts: { accept?: string; success: (data: { file: File }
   input.addEventListener('change', function () {
     const file: File = (input as HTMLInputElement).files?.[0] as File;
     success({
-      file: file
+      file: file,
     });
     input = null;
   });
@@ -76,7 +80,7 @@ export function parseFileToText(file: File): Promise<string | ArrayBuffer> {
 export function parseTextToBlobURL(text: string) {
   const bytes = new TextEncoder().encode(text);
   const blob = new Blob([bytes], {
-    type: 'text/plain;charset=utf-8'
+    type: 'text/plain;charset=utf-8',
   });
   const blobURL = window.URL.createObjectURL(blob);
   return blobURL;

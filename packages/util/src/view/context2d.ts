@@ -48,7 +48,7 @@ export class Context2D implements ViewContext2D {
     this.$setFont({
       fontSize: defaultFontSize,
       fontFamily: defaultFontFamily,
-      fontWeight: defaultFontWeight
+      fontWeight: defaultFontWeight,
     });
   }
 
@@ -64,8 +64,8 @@ export class Context2D implements ViewContext2D {
     this.#opts = {
       ...this.#opts,
       ...{
-        devicePixelRatio
-      }
+        devicePixelRatio,
+      },
     };
     if (resetStyle === true) {
       canvas.style.width = `${width}px`;
@@ -79,7 +79,7 @@ export class Context2D implements ViewContext2D {
     return {
       width: width / devicePixelRatio,
       height: height / devicePixelRatio,
-      devicePixelRatio
+      devicePixelRatio,
     };
   }
 
@@ -163,6 +163,27 @@ export class Context2D implements ViewContext2D {
     this.#ctx.lineCap = lineCap;
   }
 
+  get lineJoin() {
+    return this.#ctx.lineJoin;
+  }
+  set lineJoin(lineJoin: CanvasLineJoin) {
+    this.#ctx.lineJoin = lineJoin;
+  }
+
+  get lineDashOffset() {
+    return this.#ctx.lineDashOffset;
+  }
+  set lineDashOffset(lineDashOffset: number) {
+    this.#ctx.lineDashOffset = lineDashOffset;
+  }
+
+  get miterLimit() {
+    return this.#ctx.miterLimit;
+  }
+  set miterLimit(miterLimit: number) {
+    this.#ctx.miterLimit = miterLimit;
+  }
+
   get globalCompositeOperation(): GlobalCompositeOperation {
     return this.#ctx.globalCompositeOperation;
   }
@@ -171,8 +192,10 @@ export class Context2D implements ViewContext2D {
     this.#ctx.globalCompositeOperation = operations;
   }
 
-  fill(...args: [fillRule?: CanvasFillRule | undefined] | [path: Path2D, fillRule?: CanvasFillRule | undefined]): void {
-    return this.#ctx.fill(...(args as [path: Path2D, fillRule?: CanvasFillRule | undefined]));
+  fill(
+    ...params: [fillRule?: CanvasFillRule | undefined] | [path: Path2D, fillRule?: CanvasFillRule | undefined]
+  ): void {
+    return this.#ctx.fill(...(params as [path: Path2D, fillRule?: CanvasFillRule | undefined]));
   }
 
   arc(
@@ -281,19 +304,19 @@ export class Context2D implements ViewContext2D {
     return this.#ctx.rotate(angle);
   }
 
-  drawImage(...args: any[]) {
-    const image: CanvasImageSource = args[0];
-    const sx: number = args[1];
-    const sy: number = args[2];
-    const sw: number = args[3];
-    const sh: number = args[4];
+  drawImage(...params: any[]) {
+    const image: CanvasImageSource = params[0];
+    const sx: number = params[1];
+    const sy: number = params[2];
+    const sw: number = params[3];
+    const sh: number = params[4];
 
-    const dx: number = args[args.length - 4];
-    const dy: number = args[args.length - 3];
-    const dw: number = args[args.length - 2];
-    const dh: number = args[args.length - 1];
+    const dx: number = params[params.length - 4];
+    const dy: number = params[params.length - 3];
+    const dw: number = params[params.length - 2];
+    const dh: number = params[params.length - 1];
 
-    if (args.length === 9) {
+    if (params.length === 9) {
       return this.#ctx.drawImage(
         image,
         this.$doPixelRatio(sx),
@@ -375,14 +398,36 @@ export class Context2D implements ViewContext2D {
     );
   }
 
+  ellipse(
+    x: number,
+    y: number,
+    radiusX: number,
+    radiusY: number,
+    rotation: number,
+    startAngle: number,
+    endAngle: number,
+    counterclockwise?: boolean
+  ): void {
+    this.#ctx.ellipse(
+      this.$doPixelRatio(x),
+      this.$doPixelRatio(y),
+      this.$doPixelRatio(radiusX),
+      this.$doPixelRatio(radiusY),
+      rotation,
+      startAngle,
+      endAngle,
+      counterclockwise
+    );
+  }
+
   isPointInPath(x: number, y: number) {
     return this.#ctx.isPointInPath(this.$doPixelRatio(x), this.$doPixelRatio(y));
   }
 
   // clip(fillRule?: CanvasFillRule): void;
   // clip(path: Path2D, fillRule?: CanvasFillRule): void;
-  clip(...args: [fillRule?: CanvasFillRule | undefined] | [path: Path2D, fillRule?: CanvasFillRule | undefined]) {
-    return this.#ctx.clip(...(args as any[]));
+  clip(...params: [fillRule?: CanvasFillRule | undefined] | [path: Path2D, fillRule?: CanvasFillRule | undefined]) {
+    return this.#ctx.clip(...(params as any[]));
   }
 
   setTransform(a: number, b: number, c: number, d: number, e: number, f: number) {

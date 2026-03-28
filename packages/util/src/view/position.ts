@@ -1,8 +1,8 @@
-import type { ElementPosition } from '@idraw/types';
+import type { MaterialPosition } from '@idraw/types';
 
-export function calcResultMovePosition(opts: { from: ElementPosition; to: ElementPosition }): {
-  from: ElementPosition;
-  to: ElementPosition;
+export function calcResultMovePosition(opts: { from: MaterialPosition; to: MaterialPosition }): {
+  from: MaterialPosition;
+  to: MaterialPosition;
 } | null {
   const from = [...opts.from];
   const to = [...opts.to];
@@ -91,9 +91,9 @@ export function calcResultMovePosition(opts: { from: ElementPosition; to: Elemen
   return { from, to };
 }
 
-export function calcRevertMovePosition(opts: { from: ElementPosition; to: ElementPosition }): {
-  from: ElementPosition;
-  to: ElementPosition;
+export function calcRevertMovePosition(opts: { from: MaterialPosition; to: MaterialPosition }): {
+  from: MaterialPosition;
+  to: MaterialPosition;
 } | null {
   const result = calcResultMovePosition(opts);
   if (!result) {
@@ -101,6 +101,6 @@ export function calcRevertMovePosition(opts: { from: ElementPosition; to: Elemen
   }
   return {
     from: [...result.to],
-    to: [...result.from]
+    to: [...result.from],
   };
 }

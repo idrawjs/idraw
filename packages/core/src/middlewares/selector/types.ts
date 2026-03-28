@@ -1,69 +1,67 @@
 import {
   Data,
-  ElementSize,
-  ElementType,
-  Element,
+  MaterialSize,
+  MaterialType,
+  StrictMaterial,
+  Material,
   ViewContext2D,
   Point,
-  PointSize,
   ViewScaleInfo,
   ViewSizeInfo,
   ViewCalculator,
   PointWatcherEvent,
   Middleware,
   ViewRectVertexes,
-  ElementSizeController,
-  ElementPosition
+  MaterialPosition,
+  ModifyRecord,
 } from '@idraw/types';
 import {
+  keyPrevPoint,
+  keyPointStartMaterialSizeList,
+  keyMoveOriginalStartPoint,
+  keyMoveOriginalStartMaterialSize,
+  keyInBusyMode,
+  keyHasChangedData,
+  keyStartResizeGroupRecord,
+  keyEndResizeGroupRecord,
+
+  // legacy
   keyActionType,
   keyResizeType,
   keyAreaStart,
   keyAreaEnd,
   keyGroupQueue,
-  keyGroupQueueVertexesList,
-  keyHoverElement,
-  keyHoverElementVertexes,
-  keySelectedElementList,
-  keySelectedElementListVertexes,
-  keySelectedElementController,
-  keySelectedElementPosition,
+  keyHoverMaterial,
+  keySelectedMaterialList,
+  keySelectedMaterialListVertexes,
+  keySelectedMaterialPosition,
   keyIsMoving,
   keyEnableSelectInGroup,
   keyEnableSnapToGrid,
-
-  // debug keys
-  keyDebugElemCenter,
-  keyDebugEnd0,
-  keyDebugEndHorizontal,
-  keyDebugEndVertical,
-  keyDebugStartHorizontal,
-  keyDebugStartVertical
-} from './config';
+} from './static';
 import { keyLayoutIsSelected, keyLayoutIsBusyMoving } from '../layout-selector';
 
 export {
   Data,
-  ElementType,
-  Element,
-  ElementSize,
+  MaterialType,
+  Material,
+  MaterialSize,
   ViewContext2D,
   Point,
-  PointSize,
   ViewScaleInfo,
   ViewSizeInfo,
   ViewCalculator,
   PointWatcherEvent,
-  Middleware
+  Middleware,
 };
 
-export type ControllerStyle = ElementSize & {
-  borderWidth: number;
-  borderColor: string;
+export type ControllerStyle = MaterialSize & {
+  strokeWidth: number;
+  stroke: string;
   background: string;
 };
 
-export type SelectedElementSizeController = Record<string, ControllerStyle>;
+export type SelectedMaterialSizeController = Record<string, ControllerStyle>;
 
 export type ResizeType =
   | 'resize-left'
@@ -76,43 +74,43 @@ export type ResizeType =
   | 'resize-bottom-right'
   | 'resize-rotate';
 
-export type PointTargetType = null | ResizeType | 'list-area' | 'over-element';
+export type PointTargetType = null | ResizeType | 'list-area' | 'over-material';
 
 export interface PointTarget {
   type: PointTargetType;
-  elements: Element<ElementType>[];
-  groupQueue: Element<'group'>[];
-  elementVertexesList: ViewRectVertexes[];
-  groupQueueVertexesList: ViewRectVertexes[];
+  materials: StrictMaterial<MaterialType>[];
+  groupQueue: StrictMaterial<'group'>[];
+  materialVertexesList: ViewRectVertexes[];
+  // groupQueueVertexesList: ViewRectVertexes[];
 }
 
-export type AreaSize = ElementSize;
+export type AreaSize = MaterialSize;
 
 export type ActionType = 'select' | 'drag-list' | 'drag-list-end' | 'drag' | 'hover' | 'resize' | 'area' | null;
 
 export type DeepSelectorSharedStorage = {
+  [keyPrevPoint]: Point | null; //  null;
+  [keyPointStartMaterialSizeList]: Array<Partial<MaterialSize> & { id: string }>; // [];
+  [keyMoveOriginalStartPoint]: Point | null; // null;
+  [keyMoveOriginalStartMaterialSize]: MaterialSize | null; //  null;
+  [keyInBusyMode]: 'resize' | 'drag' | 'drag-list' | 'area' | null; // null;
+  [keyHasChangedData]: boolean | null; // null;
+  [keyStartResizeGroupRecord]: ModifyRecord<'resizeMaterials'> | null; // null;
+  [keyEndResizeGroupRecord]: ModifyRecord<'resizeMaterials'> | null; // null;
+
+  // legacy
   [keyActionType]: ActionType | null;
   [keyResizeType]: ResizeType | null;
   [keyAreaStart]: Point | null;
   [keyAreaEnd]: Point | null;
-  [keyGroupQueue]: Element<'group'>[];
-  [keyGroupQueueVertexesList]: ViewRectVertexes[];
-  [keyHoverElement]: Element<ElementType> | null;
-  [keyHoverElementVertexes]: ViewRectVertexes | null;
-  [keySelectedElementList]: Array<Element<ElementType>>;
-  [keySelectedElementListVertexes]: ViewRectVertexes | null;
-  [keySelectedElementController]: ElementSizeController | null;
-  [keySelectedElementPosition]: ElementPosition;
+  [keyGroupQueue]: StrictMaterial<'group'>[];
+  [keyHoverMaterial]: StrictMaterial<MaterialType> | null;
+  [keySelectedMaterialList]: Array<StrictMaterial<MaterialType>>;
+  [keySelectedMaterialListVertexes]: ViewRectVertexes | null;
+  [keySelectedMaterialPosition]: MaterialPosition;
   [keyIsMoving]: boolean | null;
   [keyEnableSelectInGroup]: boolean | null;
   [keyEnableSnapToGrid]: boolean | null;
-
-  [keyDebugElemCenter]: PointSize | null;
-  [keyDebugEnd0]: PointSize | null;
-  [keyDebugEndHorizontal]: PointSize | null;
-  [keyDebugEndVertical]: PointSize | null;
-  [keyDebugStartHorizontal]: PointSize | null;
-  [keyDebugStartVertical]: PointSize | null;
 
   // layout-selector
   [keyLayoutIsSelected]: boolean | null;

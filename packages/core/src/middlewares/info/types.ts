@@ -1,7 +1,7 @@
-import { keySelectedElementList, keyHoverElement, keyActionType, keyGroupQueue } from '../selector';
+import { keySelectedMaterialList, keyHoverMaterial, keyActionType, keyGroupQueue } from '../selector';
 import type { DeepSelectorSharedStorage } from '../selector';
 
 export type DeepInfoSharedStorage = Pick<
   DeepSelectorSharedStorage,
-  typeof keySelectedElementList | typeof keyHoverElement | typeof keyActionType | typeof keyGroupQueue
+  typeof keySelectedMaterialList | typeof keyHoverMaterial | typeof keyActionType | typeof keyGroupQueue
 >;

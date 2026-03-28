@@ -3,30 +3,30 @@
 const packages = [
   {
     dirName: 'util',
-    globalName: 'iDrawUtil'
+    globalName: 'iDrawUtil',
   },
   {
     dirName: 'renderer',
-    globalName: 'iDrawRenderer'
+    globalName: 'iDrawRenderer',
   },
   {
     dirName: 'core',
-    globalName: 'iDrawCore'
+    globalName: 'iDrawCore',
   },
   {
     dirName: 'idraw',
-    globalName: 'iDraw'
+    globalName: 'iDraw',
   },
-  {
-    dirName: 'figma',
-    globalName: 'iDrawFigma'
-  }
+  // {
+  //   dirName: 'figma',
+  //   globalName: 'iDrawFigma'
+  // }
 ];
 
 function getTargetPackage(cmdTarget = '') {
   let target = '';
   if (typeof cmdTarget === 'string') {
-    target = cmdTarget.replace(/^--target-pkg\=/gi, '');
+    target = cmdTarget.replace(/^--target-pkg=/gi, '');
   }
   let pkgs = [];
   let targetIndex = -1;

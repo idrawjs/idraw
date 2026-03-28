@@ -1,17 +1,17 @@
 import type {
-  Element,
+  Material,
   ViewScaleInfo,
   ViewSizeInfo,
   ViewContext2D,
   BoardViewerFrameSnapshot,
-  ViewRectInfo,
+  BoundingInfo,
   ViewCalculator,
-  MiddlewareRulerStyle
+  MiddlewareRulerStyles,
 } from '@idraw/types';
 import { formatNumber, rotateByCenter, getViewScaleInfoFromSnapshot, getViewSizeInfoFromSnapshot } from '@idraw/util';
 import type { DeepRulerSharedStorage } from './types';
-import { keySelectedElementList, keyActionType } from '../selector';
-import { rulerSize, fontSize, fontWeight, lineSize, fontFamily } from './config';
+import { keySelectedMaterialList, keyActionType } from '../selector';
+import { rulerSize, fontSize, fontWeight, lineSize, fontFamily } from './static';
 
 // const rulerUnit = 10;
 // const rulerKeyUnit = 100;
@@ -81,7 +81,7 @@ function calcRulerScaleList(opts: { axis: 'X' | 'Y'; scale: number; viewLength: 
       position,
       showNum: num % rulerKeyUnit === 0,
       isKeyNum: num % rulerKeyUnit === 0,
-      isSubKeyNum: num % rulerSubKeyUnit === 0
+      isSubKeyNum: num % rulerSubKeyUnit === 0,
     };
     list.push(rulerScale);
     index++;
@@ -101,7 +101,7 @@ export function calcXRulerScaleList(opts: { viewScaleInfo: ViewScaleInfo; viewSi
     axis: 'X',
     scale,
     viewLength: width,
-    viewOffset: offsetLeft
+    viewOffset: offsetLeft,
   });
 }
 
@@ -116,7 +116,7 @@ export function calcYRulerScaleList(opts: { viewScaleInfo: ViewScaleInfo; viewSi
     axis: 'Y',
     scale,
     viewLength: height,
-    viewOffset: offsetTop
+    viewOffset: offsetTop,
   });
 }
 
@@ -124,11 +124,11 @@ export function drawXRuler(
   ctx: ViewContext2D,
   opts: {
     scaleList: RulerScale[];
-    style: MiddlewareRulerStyle;
+    styles: MiddlewareRulerStyles;
   }
 ) {
-  const { scaleList, style } = opts;
-  const { scaleColor, textColor } = style;
+  const { scaleList, styles } = opts;
+  const { scaleColor, textColor } = styles;
   const scaleDrawStart = rulerSize;
   const scaleDrawEnd = (rulerSize * 4) / 5;
   const subKeyScaleDrawEnd = (rulerSize * 2) / 5;
@@ -153,7 +153,7 @@ export function drawXRuler(
       ctx.$setFont({
         fontWeight,
         fontSize,
-        fontFamily
+        fontFamily,
       });
       ctx.fillText(`${item.num}`, item.position + fontStart, fontStart);
     }
@@ -164,11 +164,11 @@ export function drawYRuler(
   ctx: ViewContext2D,
   opts: {
     scaleList: RulerScale[];
-    style: MiddlewareRulerStyle;
+    styles: MiddlewareRulerStyles;
   }
 ) {
-  const { scaleList, style } = opts;
-  const { scaleColor, textColor } = style;
+  const { scaleList, styles } = opts;
+  const { scaleColor, textColor } = styles;
   const scaleDrawStart = rulerSize;
   const scaleDrawEnd = (rulerSize * 4) / 5;
   const subKeyScaleDrawEnd = (rulerSize * 2) / 5;
@@ -197,7 +197,7 @@ export function drawYRuler(
         ctx.$setFont({
           fontWeight,
           fontSize,
-          fontFamily
+          fontFamily,
         });
         ctx.fillText(numText, fontStart + fontSize, item.position + fontStart);
       });
@@ -210,13 +210,13 @@ export function drawRulerBackground(
   opts: {
     viewScaleInfo: ViewScaleInfo;
     viewSizeInfo: ViewSizeInfo;
-    style: MiddlewareRulerStyle;
+    styles: MiddlewareRulerStyles;
   }
 ) {
-  const { viewSizeInfo, style } = opts;
+  const { viewSizeInfo, styles } = opts;
   const { width, height } = viewSizeInfo;
 
-  const { background, borderColor } = style;
+  const { background, stroke } = styles;
 
   ctx.beginPath();
   // const basePosition = 0;
@@ -234,7 +234,7 @@ export function drawRulerBackground(
   ctx.fill('nonzero');
   ctx.lineWidth = lineSize;
   ctx.setLineDash([]);
-  ctx.strokeStyle = borderColor;
+  ctx.strokeStyle = stroke;
   ctx.stroke();
 }
 
@@ -245,12 +245,12 @@ export function drawGrid(
     yList: RulerScale[];
     viewScaleInfo: ViewScaleInfo;
     viewSizeInfo: ViewSizeInfo;
-    style: MiddlewareRulerStyle;
+    styles: MiddlewareRulerStyles;
   }
 ) {
-  const { xList, yList, viewSizeInfo, style } = opts;
+  const { xList, yList, viewSizeInfo, styles } = opts;
   const { width, height } = viewSizeInfo;
-  const { gridColor, gridPrimaryColor } = style;
+  const { gridColor, gridPrimaryColor } = styles;
   for (let i = 0; i < xList.length; i++) {
     const item = xList[i];
     ctx.beginPath();
@@ -289,41 +289,41 @@ export function drawScrollerSelectedArea(
   opts: {
     snapshot: BoardViewerFrameSnapshot<DeepRulerSharedStorage>;
     calculator: ViewCalculator;
-    style: MiddlewareRulerStyle;
+    styles: MiddlewareRulerStyles;
   }
 ) {
-  const { snapshot, calculator, style } = opts;
+  const { snapshot, calculator, styles } = opts;
   const { sharedStore } = snapshot;
-  const { selectedAreaColor } = style;
-  const selectedElementList = sharedStore[keySelectedElementList];
+  const { selectedAreaColor } = styles;
+  const selectedMaterialList = sharedStore[keySelectedMaterialList];
   const actionType = sharedStore[keyActionType];
 
   if (
     ['select', 'drag', 'drag-list', 'drag-list-end'].includes(actionType as string) &&
-    selectedElementList.length > 0
+    selectedMaterialList.length > 0
   ) {
     const viewScaleInfo = getViewScaleInfoFromSnapshot(snapshot);
     const viewSizeInfo = getViewSizeInfoFromSnapshot(snapshot);
-    const rangeRectInfoList: ViewRectInfo[] = [];
+    const rangeBoundingInfoList: BoundingInfo[] = [];
     const xAreaStartList: number[] = [];
     const xAreaEndList: number[] = [];
     const yAreaStartList: number[] = [];
     const yAreaEndList: number[] = [];
-    selectedElementList.forEach((elem: Element) => {
-      const rectInfo = calculator.calcViewRectInfoFromRange(elem.uuid, {
+    selectedMaterialList.forEach((mtrl: Material) => {
+      const boundingBox = calculator.calcViewBoundingInfoFromRange(mtrl.id, {
         viewScaleInfo,
-        viewSizeInfo
+        viewSizeInfo,
       });
-      if (rectInfo) {
-        rangeRectInfoList.push(rectInfo);
-        xAreaStartList.push(rectInfo.left.x);
-        xAreaEndList.push(rectInfo.right.x);
-        yAreaStartList.push(rectInfo.top.y);
-        yAreaEndList.push(rectInfo.bottom.y);
+      if (boundingBox) {
+        rangeBoundingInfoList.push(boundingBox);
+        xAreaStartList.push(boundingBox.left.x);
+        xAreaEndList.push(boundingBox.right.x);
+        yAreaStartList.push(boundingBox.top.y);
+        yAreaEndList.push(boundingBox.bottom.y);
       }
     });
 
-    if (!(rangeRectInfoList.length > 0)) {
+    if (!(rangeBoundingInfoList.length > 0)) {
       return;
     }
 

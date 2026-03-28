@@ -1,7 +1,26 @@
 import type { UtilEventEmitter, CoreEventMap } from '@idraw/types';
-import { limitAngle, loadImage, parseAngleToRadian } from '@idraw/util';
-import { CURSOR, CURSOR_RESIZE, CURSOR_DRAG_DEFAULT, CURSOR_DRAG_ACTIVE, CURSOR_RESIZE_ROTATE } from './cursor-image';
-import { coreEventKeys } from '../config';
+import {
+  limitAngle,
+  loadImage,
+  parseAngleToRadian,
+  createId,
+  addClassName,
+  removeClassName,
+  injectStyles,
+} from '@idraw/util';
+import {
+  CURSOR,
+  CURSOR_RESIZE,
+  CURSOR_DRAG_DEFAULT,
+  CURSOR_DRAG_ACTIVE,
+  CURSOR_RESIZE_ROTATE,
+  CURSOR_PEN,
+  CURSOR_PLUS,
+} from './cursor-image';
+import { coreEventKeys } from '../static';
+
+const key = `idraw-core-cursor`;
+const ID = `${key}-${createId()}`;
 
 export class Cursor {
   #eventHub: UtilEventEmitter<CoreEventMap>;
@@ -13,8 +32,12 @@ export class Cursor {
     'drag-default': CURSOR_DRAG_DEFAULT,
     'drag-active': CURSOR_DRAG_ACTIVE,
     'rotate-0': CURSOR_RESIZE,
-    rotate: CURSOR_RESIZE_ROTATE
+    rotate: CURSOR_RESIZE_ROTATE,
+    pen: CURSOR_PEN,
+    plus: CURSOR_PLUS,
   };
+  #classNameMap: Record<string, string> = {};
+
   constructor(
     container: HTMLDivElement,
     opts: {
@@ -25,13 +48,30 @@ export class Cursor {
     this.#eventHub = opts.eventHub;
     this.#init();
     this.#loadResizeCursorBaseImage();
+    Object.keys(this.#cursorImageMap).forEach((cursorKey: string) => {
+      const className = `${ID}-${cursorKey}`;
+      this.#classNameMap[cursorKey] = className;
+      const image = this.#cursorImageMap[cursorKey];
+      this.#injectCursorStyle(cursorKey, className, image);
+    });
+  }
+
+  #injectCursorStyle(cursorKey: string, className: string, image: string) {
+    const { offsetX, offsetY } = this.#getCursorOffset(cursorKey);
+    injectStyles({
+      rootClassName: className,
+      type: 'element',
+      styles: {
+        cursor: `image-set(url(${image})2x) ${offsetX} ${offsetY}, auto`,
+      },
+    });
   }
 
   #init() {
     const eventHub = this.#eventHub;
     this.#resetCursor('default');
     eventHub.on(coreEventKeys.CURSOR, (e) => {
-      if (e.type === 'over-element' || !e.type) {
+      if (e.type === 'over-material' || !e.type) {
         this.#resetCursor('auto');
       } else if (e.type === 'resize-rotate') {
         this.#resetCursor('rotate');
@@ -41,6 +81,10 @@ export class Cursor {
         this.#resetCursor('drag-default');
       } else if (e.type === 'drag-active') {
         this.#resetCursor('drag-active');
+      } else if (e.type === 'pen') {
+        this.#resetCursor('pen');
+      } else if (e.type === 'plus') {
+        this.#resetCursor('plus');
       } else {
         this.#resetCursor('auto');
       }
@@ -53,8 +97,28 @@ export class Cursor {
         this.#resizeCursorBaseImage = img;
       })
       .catch((err) => {
+        // eslint-disable-next-line no-console
         console.error(err);
       });
+  }
+
+  #getCursorOffset(cursorKey: string) {
+    let offsetX = 0;
+    let offsetY = 0;
+    if (cursorKey.startsWith('rotate-') && this.#cursorImageMap[cursorKey]) {
+      offsetX = 10;
+      offsetY = 10;
+    } else if (cursorKey === 'rotate') {
+      offsetX = 10;
+      offsetY = 10;
+    } else if (cursorKey === 'plus') {
+      offsetX = 5;
+      offsetY = 3;
+    }
+    return {
+      offsetX,
+      offsetY,
+    };
   }
 
   #resetCursor(cursorKey: string) {
@@ -62,21 +126,12 @@ export class Cursor {
       return;
     }
     this.#cursorType = cursorKey;
-    const image = this.#cursorImageMap[this.#cursorType] || this.#cursorImageMap['auto'];
-    let offsetX = 0;
-    let offsetY = 0;
-    if (cursorKey.startsWith('rotate-') && this.#cursorImageMap[this.#cursorType]) {
-      offsetX = 10;
-      offsetY = 10;
-    } else if (cursorKey === 'rotate') {
-      offsetX = 10;
-      offsetY = 10;
-    }
-    if (cursorKey === 'default') {
-      this.#container.style.cursor = 'default';
-    } else {
-      this.#container.style.cursor = `image-set(url(${image})2x) ${offsetX} ${offsetY}, auto`;
-    }
+
+    const container = this.#container;
+    const currentClassName = this.#classNameMap[cursorKey] || this.#classNameMap['auto'];
+    const allClassNames: string[] = Object.keys(this.#classNameMap).map((name) => this.#classNameMap[name]);
+    removeClassName(container, allClassNames);
+    addClassName(container, [currentClassName]);
   }
 
   #setCursorResize(e: CoreEventMap[typeof coreEventKeys.CURSOR]) {
@@ -98,7 +153,7 @@ export class Cursor {
     } else if (e.type === 'resize-top-left') {
       totalAngle += 315;
     }
-    totalAngle += limitAngle(e?.element?.angle || 0);
+    totalAngle += limitAngle(e?.material?.angle || 0);
     if (Array.isArray(e.groupQueue) && e.groupQueue.length > 0) {
       e.groupQueue.forEach((group) => {
         totalAngle += limitAngle(group.angle || 0);
@@ -110,8 +165,8 @@ export class Cursor {
   }
 
   #appendRotateResizeImage(angle: number): string {
-    const key = `rotate-${angle}`;
-    if (!this.#cursorImageMap[key]) {
+    const cursorKey = `rotate-${angle}`;
+    if (!this.#cursorImageMap[cursorKey]) {
       const baseImage = this.#resizeCursorBaseImage;
       if (baseImage) {
         const canvas = document.createElement('canvas');
@@ -119,7 +174,7 @@ export class Cursor {
         const h = baseImage.height;
         const center = {
           x: w / 2,
-          y: h / 2
+          y: h / 2,
         };
         canvas.width = w;
         canvas.height = h;
@@ -137,9 +192,13 @@ export class Cursor {
         ctx.translate(-center.x, -center.y);
 
         const base = canvas.toDataURL('image/png');
-        this.#cursorImageMap[key] = base;
+        this.#cursorImageMap[cursorKey] = base;
+
+        const className = `${ID}-${cursorKey}`;
+        this.#classNameMap[cursorKey] = className;
+        this.#injectCursorStyle(cursorKey, className, base);
       }
     }
-    return key;
+    return cursorKey;
   }
 }

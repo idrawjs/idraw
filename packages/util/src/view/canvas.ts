@@ -28,7 +28,7 @@ export function createOffscreenContext2D(opts: { width: number; height: number; 
     | OffscreenRenderingContext;
   const context2d = new Context2D(offCtx, {
     devicePixelRatio,
-    offscreenCanvas: offCanvas
+    offscreenCanvas: offCanvas,
   });
   return context2d;
 }
@@ -45,7 +45,7 @@ export function createBoardContent(
   const ctxOpts = {
     width,
     height,
-    devicePixelRatio
+    devicePixelRatio,
   };
 
   const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -75,7 +75,7 @@ export function createBoardContent(
     overlayContext,
     boardContext,
     tempContext,
-    drawView
+    drawView,
   };
   return content;
 }

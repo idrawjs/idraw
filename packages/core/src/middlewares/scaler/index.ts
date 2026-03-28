@@ -1,6 +1,6 @@
 import type { Middleware, CoreEventMap } from '@idraw/types';
 import { formatNumber } from '@idraw/util';
-import { coreEventKeys } from '../../config';
+import { coreEventKeys } from '../../static';
 
 export const MiddlewareScaler: Middleware<Record<string, any>, CoreEventMap> = (opts) => {
   const { viewer, sharer, eventHub } = opts;
@@ -27,6 +27,6 @@ export const MiddlewareScaler: Middleware<Record<string, any>, CoreEventMap> = (
       viewer.drawFrame();
       const scaleNum = formatNumber(scale);
       eventHub.trigger(coreEventKeys.SCALE, { scale: scaleNum });
-    }
+    },
   };
 };

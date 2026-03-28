@@ -1,15 +1,15 @@
-import type { RendererDrawElementOptions, ViewContext2D, ElementGlobal } from '@idraw/types';
+import type { RendererDrawMaterialOptions, ViewContext2D, DataGlobal } from '@idraw/types';
 
 export function drawGlobalBackground(
   ctx: ViewContext2D,
-  global: ElementGlobal | undefined,
-  opts: RendererDrawElementOptions
+  global: DataGlobal | undefined,
+  opts: RendererDrawMaterialOptions
 ) {
-  if (typeof global?.background === 'string') {
+  if (typeof global?.fill === 'string') {
     const { viewSizeInfo } = opts;
     const { width, height } = viewSizeInfo;
     ctx.globalAlpha = 1;
-    ctx.fillStyle = global.background;
+    ctx.fillStyle = global.fill as string;
     ctx.fillRect(0, 0, width, height);
   }
 }

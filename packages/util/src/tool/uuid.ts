@@ -1,10 +1,11 @@
 // import { generate32Base36Hash } from './hash';
 
+function createStr(num?: number) {
+  return (((1 + Math.random()) * 0x10000) | 0).toString(num || 16).substring(1);
+}
+
 export function createUUID(): string {
-  function _createStr() {
-    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
-  }
-  return `${_createStr()}${_createStr()}-${_createStr()}-${_createStr()}-${_createStr()}-${_createStr()}${_createStr()}${_createStr()}`;
+  return `${createStr()}${createStr()}-${createStr()}-${createStr()}-${createStr()}-${createStr()}${createStr()}${createStr()}`;
 }
 
 function limitHexStr(str: string, seed: number) {
@@ -23,9 +24,9 @@ function sumCharCodes(str: string): number {
   return sum;
 }
 
-export function createAssetId(assetStr: string, elemUUID: string): string {
+export function createAssetId(assetStr: string, mtrlUUID: string): string {
   const len = assetStr.length;
-  const seed = sumCharCodes(elemUUID);
+  const seed = sumCharCodes(mtrlUUID);
 
   const mid = Math.floor(len / 2);
   const start4 = assetStr.substring(0, 4).padStart(4, '0');

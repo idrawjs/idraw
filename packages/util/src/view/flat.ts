@@ -1,16 +1,16 @@
-import type { Element, ElementSize, Elements, ViewRectVertexes } from '@idraw/types';
-import { calcElementVertexesInGroup } from './vertex';
-import { limitAngle, parseAngleToRadian, calcElementCenterFromVertexes, rotatePoint } from './rotate';
+import type { StrictMaterial, MaterialSize, ViewRectVertexes } from '@idraw/types';
+import { calcMaterialVertexesInGroup } from './vertex';
+import { limitAngle, parseAngleToRadian, calcMaterialCenterFromVertexes, rotatePoint } from './rotate';
 
-function flatElementSize(
-  elemSize: ElementSize,
+function flatMaterialSize(
+  mtrlSize: MaterialSize,
   opts: {
-    groupQueue: Element<'group'>[];
+    groupQueue: StrictMaterial<'group'>[];
   }
-): ElementSize {
+): MaterialSize {
   const { groupQueue } = opts;
-  let { x, y } = elemSize;
-  const { w, h, angle = 0 } = elemSize;
+  let { x, y } = mtrlSize;
+  const { width, height, angle = 0 } = mtrlSize;
   let totalAngle = 0;
   groupQueue.forEach((group) => {
     x += group.x;
@@ -22,76 +22,76 @@ function flatElementSize(
     return {
       x,
       y,
-      w,
-      h,
-      angle
+      width,
+      height,
+      angle,
     };
   }
-  totalAngle += elemSize.angle || 0;
+  totalAngle += mtrlSize.angle || 0;
   totalAngle = limitAngle(totalAngle);
 
-  const vertexes = calcElementVertexesInGroup(elemSize, { groupQueue }) as ViewRectVertexes;
-  const center = calcElementCenterFromVertexes(vertexes);
+  const vertexes = calcMaterialVertexesInGroup(mtrlSize, { groupQueue }) as ViewRectVertexes;
+  const center = calcMaterialCenterFromVertexes(vertexes);
   const start = rotatePoint(center, vertexes[0], parseAngleToRadian(0 - totalAngle));
   x = start.x;
   y = start.y;
   return {
     x,
     y,
-    w,
-    h,
-    angle: totalAngle
+    width,
+    height,
+    angle: totalAngle,
   };
 }
 
-function isValidElement(elem: Element) {
-  if (['rect', 'circle'].includes(elem.type)) {
-    const detail = (elem as Element<'rect'>).detail;
-    if (!detail.background && !detail.borderWidth) {
+function isValidMaterial(mtrl: StrictMaterial) {
+  if (['rect', 'circle'].includes(mtrl.type)) {
+    const attributes = mtrl as StrictMaterial<'rect'>;
+    if (!attributes.fill && !attributes.strokeWidth) {
       return false;
     }
-    if (detail.background === 'transparent' && !detail.borderWidth) {
+    if (attributes.fill === 'transparent' && !attributes.strokeWidth) {
       return false;
     }
   }
-  if (['group'].includes(elem.type)) {
-    const detail = (elem as Element<'group'>).detail || {};
-    const { children } = detail;
+  if (['group'].includes(mtrl.type)) {
+    const attributes = mtrl as StrictMaterial<'group'>;
+    const { children } = attributes;
 
-    if (!(children.length > 0) && !detail.background && !detail.borderWidth) {
+    if (!(children.length > 0) && !attributes.fill && !attributes.strokeWidth) {
       return false;
     }
-    if (!(children.length > 0) && detail.background === 'transparent' && !detail.borderWidth) {
-      return false;
-    }
-  }
-  if (elem.type === 'text') {
-    if (!(elem as Element<'text'>).detail.text) {
+    if (!(children.length > 0) && attributes.fill === 'transparent' && !attributes.strokeWidth) {
       return false;
     }
   }
-
-  if (elem.type === 'image') {
-    if (!(elem as Element<'image'>).detail.src) {
+  if (mtrl.type === 'text') {
+    if (!(mtrl as StrictMaterial<'text'>).text) {
       return false;
     }
   }
 
-  if (elem.type === 'html') {
-    if (!(elem as Element<'html'>).detail.html) {
+  if (mtrl.type === 'image') {
+    if (!(mtrl as StrictMaterial<'image'>).href) {
       return false;
     }
   }
 
-  if (elem.type === 'svg') {
-    if (!(elem as Element<'svg'>).detail.svg) {
+  if (mtrl.type === 'foreignObject') {
+    if (!(mtrl as StrictMaterial<'foreignObject'>).content) {
       return false;
     }
   }
 
-  if (elem.type === 'path') {
-    const detail = (elem as Element<'path'>).detail;
-    if (!(detail?.commands?.length > 0)) {
+  if (mtrl.type === 'svgCode') {
+    if (!(mtrl as StrictMaterial<'svgCode'>).code) {
+      return false;
+    }
+  }
+
+  if (mtrl.type === 'path') {
+    const attributes = mtrl as StrictMaterial<'path'>;
+    if (!(attributes?.commands?.length > 0)) {
       return false;
     }
   }
@@ -99,46 +99,46 @@ function isValidElement(elem: Element) {
   return true;
 }
 
-export function flatElementList(list: Elements): Elements {
-  const elemeList: Elements = [];
-  const currentGroupQueue: Array<Element<'group'>> = [];
+export function flatMaterialList(list: StrictMaterial[]): StrictMaterial[] {
+  const mtrleList: StrictMaterial[] = [];
+  const currentGroupQueue: Array<StrictMaterial<'group'>> = [];
 
-  const _resetElemSize = (elem: Element) => {
-    if (!isValidElement(elem)) {
+  const _resetMtrlSize = (mtrl: StrictMaterial) => {
+    if (!isValidMaterial(mtrl)) {
       return;
     }
-    const newSize = flatElementSize(elem, { groupQueue: currentGroupQueue });
-    const resizeElem = {
-      ...elem,
-      ...newSize
+    const newSize = flatMaterialSize(mtrl, { groupQueue: currentGroupQueue });
+    const resizeMtrl = {
+      ...mtrl,
+      ...newSize,
     };
 
-    elemeList.push(resizeElem);
+    mtrleList.push(resizeMtrl);
   };
 
-  const _walk = (elem: Element) => {
-    if (elem?.operations?.invisible === true) {
+  const _walk = (mtrl: StrictMaterial) => {
+    if (mtrl?.operations?.invisible === true) {
       return;
     }
 
-    if (elem.type === 'group') {
-      const { detail } = elem as Element<'group'>;
-      const { children, ...restDetail } = detail;
-      _resetElemSize({ ...elem, ...{ detail: { ...restDetail, children: [] } } });
+    if (mtrl.type === 'group') {
+      const attributes = mtrl as StrictMaterial<'group'>;
+      const { children, ...restAttributes } = attributes;
+      _resetMtrlSize({ ...mtrl, ...{ attributes: { ...restAttributes, children: [] } } });
 
-      currentGroupQueue.push(elem as Element<'group'>);
+      currentGroupQueue.push(mtrl as StrictMaterial<'group'>);
       children.forEach((child) => {
         _walk(child);
       });
       currentGroupQueue.pop();
     } else {
-      _resetElemSize(elem);
+      _resetMtrlSize(mtrl);
     }
   };
   for (let i = 0; i < list.length; i++) {
-    const elem = list[i];
-    _walk(elem);
+    const mtrl = list[i];
+    _walk(mtrl);
   }
 
-  return elemeList;
+  return mtrleList;
 }

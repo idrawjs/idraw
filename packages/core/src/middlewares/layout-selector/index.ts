@@ -1,40 +1,45 @@
 import type {
   Middleware,
-  ElementSize,
+  MaterialSize,
   Point,
   MiddlewareLayoutSelectorConfig,
   CoreEventMap,
   RecursivePartial,
   ModifyRecord,
-  DataLayout
+  DataLayout,
 } from '@idraw/types';
 import {
-  calcLayoutSizeController,
-  isViewPointInVertexes,
-  getViewScaleInfoFromSnapshot,
-  isViewPointInElementSize,
-  calcViewElementSize,
-  getElementSize,
-  toFlattenLayout
+  // calcLayoutSizeController,
+  // isViewPointInVertexes,
+  // getViewScaleInfoFromSnapshot,
+  isViewPointInMaterialSize,
+  calcViewMaterialSize,
+  getMaterialSize,
+  toFlattenLayout,
 } from '@idraw/util';
 import type { LayoutSelectorSharedStorage, ControlType } from './types';
 import {
   keyLayoutActionType,
-  keyLayoutController,
+  // keyLayoutController,
   keyLayoutControlType,
   keyLayoutIsHoverContent,
   keyLayoutIsHoverController,
   keyLayoutIsSelected,
   keyLayoutIsBusyMoving,
   controllerSize,
-  defaultStyle
-} from './config';
+  defaultStyle,
+  getRootClassName,
+  ATTR_HANDLER_TYPE,
+} from './static';
+import { getMiddlewareLayoutSelectorStyles, initStyles, destroyStyles } from './styles';
 import {
-  keyActionType as keyElementActionType
-  // keyHoverElement
+  keyActionType as keyMaterialActionType,
+  // keyHoverMaterial
 } from '../selector';
-import { drawLayoutController, drawLayoutHover } from './util';
-import { coreEventKeys } from '../../config';
+// import { drawLayoutController, drawLayoutHover } from './util';
+import { resetMaterialSelectedBox, clearMaterialLayoutBoxs } from './dom';
+import { coreEventKeys } from '../../static';
+import { triggerChangeEvent } from '../common';
 
 export { keyLayoutIsSelected, keyLayoutIsBusyMoving };
 
@@ -43,24 +48,27 @@ export const MiddlewareLayoutSelector: Middleware<
   CoreEventMap,
   MiddlewareLayoutSelectorConfig
 > = (opts, config) => {
-  const { sharer, boardContent, calculator, viewer, eventHub } = opts;
-  const { overlayContext } = boardContent;
+  const { sharer, calculator, viewer, eventHub } = opts;
+  // const { overlayContext } = boardContent;
   let innerConfig = {
     ...defaultStyle,
-    ...config
+    ...config,
   };
+  const styles = getMiddlewareLayoutSelectorStyles(innerConfig);
+
+  const rootClassName = getRootClassName();
 
   let prevPoint: Point | null = null;
   let prevIsHoverContent: boolean | null = null;
   let prevIsSelected: boolean | null = null;
 
-  let pointStartLayoutSize: RecursivePartial<ElementSize> | null = null;
+  let pointStartLayoutSize: RecursivePartial<MaterialSize> | null = null;
 
   const clear = () => {
     prevPoint = null;
     sharer.setSharedStorage(keyLayoutActionType, null);
     sharer.setSharedStorage(keyLayoutControlType, null);
-    sharer.setSharedStorage(keyLayoutController, null);
+    // sharer.setSharedStorage(keyLayoutController, null);
     sharer.setSharedStorage(keyLayoutIsHoverContent, null);
     sharer.setSharedStorage(keyLayoutIsHoverController, null);
     sharer.setSharedStorage(keyLayoutIsSelected, null);
@@ -69,18 +77,9 @@ export const MiddlewareLayoutSelector: Middleware<
     prevIsSelected = null;
   };
 
-  // const isInElementHover = () => {
-  //   const hoverElement = sharer.getSharedStorage(keyHoverElement);
-  //   if (hoverElement) {
-  //     clear();
-  //     return true;
-  //   }
-  //   return false;
-  // };
-
-  const isInElementAction = () => {
-    const elementActionType = sharer.getSharedStorage(keyElementActionType);
-    if (elementActionType && elementActionType !== 'area') {
+  const isInMaterialAction = () => {
+    const materialActionType = sharer.getSharedStorage(keyMaterialActionType);
+    if (materialActionType && materialActionType !== 'area') {
       clear();
       return true;
     }
@@ -90,8 +89,8 @@ export const MiddlewareLayoutSelector: Middleware<
   const getLayoutSize = () => {
     const data = sharer.getActiveStorage('data');
     if (data?.layout) {
-      const { x, y, w, h } = data.layout;
-      return { x, y, w, h };
+      const { x, y, width, height } = data.layout;
+      return { x, y, width, height };
     }
     return null;
   };
@@ -99,55 +98,35 @@ export const MiddlewareLayoutSelector: Middleware<
   const isInLayout = (p: Point) => {
     const size = getLayoutSize();
     if (size) {
-      const { x, y, w, h } = size;
+      const { x, y, width, height } = size;
       const viewScaleInfo = sharer.getActiveViewScaleInfo();
-      const viewSize = calcViewElementSize(
+      const viewSize = calcViewMaterialSize(
         {
           x: x - controllerSize / 2,
           y: y - controllerSize / 2,
-          w: w + controllerSize,
-          h: h + controllerSize
+          width: width + controllerSize,
+          height: height + controllerSize,
         },
         { viewScaleInfo }
       );
-      return isViewPointInElementSize(p, viewSize);
+      return isViewPointInMaterialSize(p, viewSize);
     }
     return false;
   };
 
-  const resetController = () => {
-    const viewScaleInfo = sharer.getActiveViewScaleInfo();
-    const size: ElementSize | null = getLayoutSize();
-    if (size) {
-      const controller = calcLayoutSizeController(size, { viewScaleInfo, controllerSize: 10 });
-      sharer.setSharedStorage(keyLayoutController, controller);
-    } else {
-      sharer.setSharedStorage(keyLayoutController, null);
-    }
-  };
-
-  const resetControlType = (e?: { point: Point }) => {
+  const resetControlType = (e: { point: Point; nativeEvent: Event }) => {
     const data = sharer.getActiveStorage('data');
-    const controller = sharer.getSharedStorage(keyLayoutController);
+    const $target = e.nativeEvent.target as HTMLElement;
+
     let controllerType: ControlType | null = null;
-    if (controller && data?.layout && e?.point) {
-      // sharer.setSharedStorage(keyLayoutControlType, null);
-      let layoutControlType: ControlType | null = null;
-      if (controller) {
-        const { topLeft, top, topRight, right, bottomRight, bottom, bottomLeft, left } = controller;
-        const list = [topLeft, top, topRight, right, bottomRight, bottom, bottomLeft, left];
-        for (let i = 0; i < list.length; i++) {
-          const item = list[i];
-          if (isViewPointInVertexes(e.point, item.vertexes)) {
-            layoutControlType = `${item.type}` as ControlType;
-            break;
-          }
-        }
-        if (layoutControlType) {
-          sharer.setSharedStorage(keyLayoutControlType, layoutControlType);
-          eventHub.trigger(coreEventKeys.CLEAR_SELECT);
-          controllerType = layoutControlType;
-        }
+    if ($target?.hasAttribute(ATTR_HANDLER_TYPE) && data?.layout && e?.point) {
+      sharer.setSharedStorage(keyLayoutControlType, null);
+      const layoutControlType: ControlType | null = $target.getAttribute(ATTR_HANDLER_TYPE) as ControlType | null;
+
+      if (layoutControlType) {
+        sharer.setSharedStorage(keyLayoutControlType, layoutControlType);
+        eventHub.trigger(coreEventKeys.CLEAR_SELECT);
+        controllerType = layoutControlType;
       }
     }
 
@@ -167,7 +146,7 @@ export const MiddlewareLayoutSelector: Middleware<
     eventHub.trigger(coreEventKeys.CURSOR, {
       type: controlType ? `resize-${controlType}` : controlType,
       groupQueue: [],
-      element: getLayoutSize()
+      material: getLayoutSize(),
     });
   };
 
@@ -176,7 +155,12 @@ export const MiddlewareLayoutSelector: Middleware<
 
     use: () => {
       clear();
-      resetController();
+      initStyles(rootClassName, styles);
+    },
+
+    disuse: () => {
+      clear();
+      destroyStyles(rootClassName);
     },
 
     resetConfig(config) {
@@ -187,10 +171,7 @@ export const MiddlewareLayoutSelector: Middleware<
       if (sharer.getSharedStorage(keyLayoutIsBusyMoving) === true) {
         return;
       }
-      if (isInElementAction()) {
-        return;
-      }
-      // if (isInElementHover()) {
+      // if (isInMaterialAction()) {
       //   return;
       // }
 
@@ -204,65 +185,72 @@ export const MiddlewareLayoutSelector: Middleware<
         }
       }
 
-      if (sharer.getSharedStorage(keyLayoutIsSelected) === true) {
-        const prevLayoutActionType = sharer.getSharedStorage(keyLayoutActionType);
-        const data = sharer.getActiveStorage('data');
+      // if (sharer.getSharedStorage(keyLayoutIsSelected) === true) {
+      const prevLayoutActionType = sharer.getSharedStorage(keyLayoutActionType);
+      const data = sharer.getActiveStorage('data');
 
-        if (data?.layout) {
-          if (prevLayoutActionType !== 'resize') {
-            resetController();
-            const layoutControlType = resetControlType(e);
+      if (data?.layout) {
+        if (prevLayoutActionType !== 'resize') {
+          const layoutControlType = resetControlType(e);
 
-            if (layoutControlType) {
-              updateCursor(layoutControlType);
-            } else {
-              updateCursor();
-              sharer.setSharedStorage(keyLayoutActionType, null);
-            }
-          } else {
-            const layoutControlType = resetControlType(e);
+          if (layoutControlType) {
             updateCursor(layoutControlType);
+          } else {
+            updateCursor();
+            sharer.setSharedStorage(keyLayoutActionType, null);
           }
+        } else {
+          const layoutControlType = resetControlType(e);
+          updateCursor(layoutControlType);
         }
-        if (sharer.getSharedStorage(keyLayoutIsHoverController) === true) {
-          return false;
-        }
-        return;
       }
+      // if (sharer.getSharedStorage(keyLayoutIsHoverController) === true) {
+      //   return false;
+      // }
+      // return;
+      // }
 
-      if (sharer.getSharedStorage(keyLayoutIsHoverContent) && !prevIsHoverContent) {
-        viewer.drawFrame();
-      }
-      prevIsHoverContent = sharer.getSharedStorage(keyLayoutIsHoverContent);
+      // if (sharer.getSharedStorage(keyLayoutIsHoverContent) && !prevIsHoverContent) {
+      //   viewer.drawFrame();
+      // }
+      // prevIsHoverContent = sharer.getSharedStorage(keyLayoutIsHoverContent);
 
-      if (sharer.getSharedStorage(keyLayoutIsHoverController) === true) {
-        return false;
-      }
+      // if (sharer.getSharedStorage(keyLayoutIsHoverController) === true) {
+      //   return false;
+      // }
     },
 
     pointStart: (e) => {
-      if (isInElementAction()) {
-        return;
-      }
+      // const inMaterial = isInMaterialAction();
+      // if (inMaterial) {
+      //   if (opts.container) {
+      //     clearMaterialLayoutBoxs(opts.container, { rootClassName });
+      //   }
+      //   return;
+      // }
 
       if (isInLayout(e.point)) {
         sharer.setSharedStorage(keyLayoutIsSelected, true);
       } else {
         if (prevIsSelected === true) {
+          if (opts.container) {
+            clearMaterialLayoutBoxs(opts.container, { rootClassName });
+          }
           clear();
           viewer.drawFrame();
         }
         sharer.setSharedStorage(keyLayoutIsSelected, false);
       }
+
       const data = sharer.getActiveStorage('data');
       if (data?.layout) {
-        pointStartLayoutSize = getElementSize(data.layout as any);
+        pointStartLayoutSize = getMaterialSize(data.layout as any);
       } else {
         pointStartLayoutSize = null;
       }
 
-      resetController();
       const layoutControlType = resetControlType(e);
+
       prevPoint = e.point;
 
       if (layoutControlType) {
@@ -282,7 +270,7 @@ export const MiddlewareLayoutSelector: Middleware<
 
     pointMove: (e) => {
       if (!sharer.getSharedStorage(keyLayoutIsSelected)) {
-        if (isInElementAction()) {
+        if (isInMaterialAction()) {
           return;
         }
       }
@@ -299,70 +287,69 @@ export const MiddlewareLayoutSelector: Middleware<
           const viewMoveY = e.point.y - prevPoint.y;
           const moveX = viewMoveX / scale;
           const moveY = viewMoveY / scale;
-          const { x, y, w, h, operations = {} } = data.layout;
+          const { x, y, width, height, operations = {} } = data.layout;
           const { position = 'absolute' } = operations;
           if (layoutControlType === 'top') {
             if (position === 'relative') {
-              data.layout.h = calculator.toGridNum(h - moveY);
+              data.layout.height = calculator.toGridNum(height - moveY);
               viewer.scroll({ moveY: viewMoveY });
             } else {
               data.layout.y = calculator.toGridNum(y + moveY);
-              data.layout.h = calculator.toGridNum(h - moveY);
+              data.layout.height = calculator.toGridNum(height - moveY);
             }
           } else if (layoutControlType === 'right') {
-            data.layout.w = calculator.toGridNum(w + moveX);
+            data.layout.width = calculator.toGridNum(width + moveX);
           } else if (layoutControlType === 'bottom') {
-            data.layout.h = calculator.toGridNum(h + moveY);
+            data.layout.height = calculator.toGridNum(height + moveY);
           } else if (layoutControlType === 'left') {
             if (position === 'relative') {
-              data.layout.w = calculator.toGridNum(w - moveX);
+              data.layout.width = calculator.toGridNum(width - moveX);
               viewer.scroll({ moveX: viewMoveX });
             } else {
               data.layout.x = calculator.toGridNum(x + moveX);
-              data.layout.w = calculator.toGridNum(w - moveX);
+              data.layout.width = calculator.toGridNum(width - moveX);
             }
           } else if (layoutControlType === 'top-left') {
             if (position === 'relative') {
-              data.layout.w = calculator.toGridNum(w - moveX);
-              data.layout.h = calculator.toGridNum(h - moveY);
+              data.layout.width = calculator.toGridNum(width - moveX);
+              data.layout.height = calculator.toGridNum(height - moveY);
               viewer.scroll({ moveX: viewMoveX, moveY: viewMoveY });
             } else {
               data.layout.x = calculator.toGridNum(x + moveX);
               data.layout.y = calculator.toGridNum(y + moveY);
-              data.layout.w = calculator.toGridNum(w - moveX);
-              data.layout.h = calculator.toGridNum(h - moveY);
+              data.layout.width = calculator.toGridNum(width - moveX);
+              data.layout.height = calculator.toGridNum(height - moveY);
             }
           } else if (layoutControlType === 'top-right') {
             if (position === 'relative') {
               viewer.scroll({
-                moveY: viewMoveY
+                moveY: viewMoveY,
               });
-              data.layout.w = calculator.toGridNum(w + moveX);
-              data.layout.h = calculator.toGridNum(h - moveY);
+              data.layout.width = calculator.toGridNum(width + moveX);
+              data.layout.height = calculator.toGridNum(height - moveY);
             } else {
               data.layout.y = calculator.toGridNum(y + moveY);
-              data.layout.w = calculator.toGridNum(w + moveX);
-              data.layout.h = calculator.toGridNum(h - moveY);
+              data.layout.width = calculator.toGridNum(width + moveX);
+              data.layout.height = calculator.toGridNum(height - moveY);
             }
           } else if (layoutControlType === 'bottom-right') {
-            data.layout.w = calculator.toGridNum(w + moveX);
-            data.layout.h = calculator.toGridNum(h + moveY);
+            data.layout.width = calculator.toGridNum(width + moveX);
+            data.layout.height = calculator.toGridNum(height + moveY);
           } else if (layoutControlType === 'bottom-left') {
             if (position === 'relative') {
               viewer.scroll({
-                moveX: viewMoveX
+                moveX: viewMoveX,
               });
-              data.layout.w = calculator.toGridNum(w - moveX);
-              data.layout.h = calculator.toGridNum(h + moveY);
+              data.layout.width = calculator.toGridNum(width - moveX);
+              data.layout.height = calculator.toGridNum(height + moveY);
             } else {
               data.layout.x = calculator.toGridNum(x + moveX);
-              data.layout.w = calculator.toGridNum(w - moveX);
-              data.layout.h = calculator.toGridNum(h + moveY);
+              data.layout.width = calculator.toGridNum(width - moveX);
+              data.layout.height = calculator.toGridNum(height + moveY);
             }
           }
         }
         prevPoint = e.point;
-        resetController();
         viewer.drawFrame();
         return false;
       }
@@ -386,14 +373,14 @@ export const MiddlewareLayoutSelector: Middleware<
             content: {
               method: 'modifyLayout',
               before: toFlattenLayout(pointStartLayoutSize as DataLayout),
-              after: toFlattenLayout(getElementSize(data.layout as any) as DataLayout)
-            }
+              after: toFlattenLayout(getMaterialSize(data.layout as any) as DataLayout),
+            },
           };
         }
-        eventHub.trigger(coreEventKeys.CHANGE, {
+        triggerChangeEvent(eventHub, {
           type: 'resizeLayout',
           data,
-          modifyRecord
+          modifyRecord,
         });
       }
       pointStartLayoutSize = null;
@@ -407,42 +394,45 @@ export const MiddlewareLayoutSelector: Middleware<
     },
 
     beforeDrawFrame: ({ snapshot }) => {
-      if (isInElementAction()) {
+      if (isInMaterialAction()) {
         return;
       }
 
-      const { activeColor } = innerConfig;
-      const style = { activeColor };
+      const {
+        // sharedStore,
+        activeStore,
+      } = snapshot;
+      // const layoutActionType = sharedStore[keyLayoutActionType];
+      // const layoutIsHover = sharedStore[keyLayoutIsHoverContent];
+      // const layoutIsSelected = sharedStore[keyLayoutIsSelected];
 
-      const { sharedStore, activeStore } = snapshot;
-      const layoutActionType = sharedStore[keyLayoutActionType];
-      const layoutIsHover = sharedStore[keyLayoutIsHoverContent];
-      const layoutIsSelected = sharedStore[keyLayoutIsSelected];
+      const viewScaleInfo = sharer.getActiveViewScaleInfo();
 
-      if (activeStore.data?.layout) {
-        const { x, y, w, h } = activeStore.data.layout;
-        const viewScaleInfo = getViewScaleInfoFromSnapshot(snapshot);
-        const size = { x, y, w, h };
-        const controller = calcLayoutSizeController(size, { viewScaleInfo, controllerSize });
+      if (opts.container && activeStore.data?.layout) {
+        // if (activeStore.data?.layout) {
+        // if (layoutIsHover === true) {
+        //   resetMaterialSelectedBox(opts.container, {
+        //     rootClassName,
+        //     viewScaleInfo,
+        //     layout: activeStore.data?.layout,
+        //     hover: true,
+        //   });
+        // } else if (layoutIsHover === false) {
+        //   clearMaterialLayoutBoxs(opts.container, { rootClassName });
+        // }
 
-        if (layoutIsHover === true) {
-          const viewSize = calcViewElementSize(size, { viewScaleInfo });
-          drawLayoutHover(overlayContext, { layoutSize: viewSize, style });
-        }
-
-        if ((layoutActionType && ['resize'].includes(layoutActionType)) || layoutIsSelected === true) {
-          drawLayoutController(overlayContext, { controller, style });
-        }
+        // if (layoutActionType && ['resize'].includes(layoutActionType)) {
+        resetMaterialSelectedBox(opts.container, {
+          rootClassName,
+          viewScaleInfo,
+          layout: activeStore.data?.layout,
+          hover: false,
+        });
+        // }
+        // } else {
+        //   // clearMaterialLayoutBoxs(opts.container, { rootClassName });
+        // }
       }
     },
-    scrollX: () => {
-      clear();
-    },
-    scrollY: () => {
-      clear();
-    },
-    wheelScale: () => {
-      clear();
-    }
   };
 };

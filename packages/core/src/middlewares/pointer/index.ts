@@ -1,7 +1,7 @@
 import type { Middleware, CoreEventMap } from '@idraw/types';
 import type { DeepPointerSharedStorage } from './types';
-import { keySelectedElementList } from '../selector';
-import { coreEventKeys } from '../../config';
+import { keySelectedMaterialList } from '../selector';
+import { coreEventKeys } from '../../static';
 
 export const MiddlewarePointer: Middleware<DeepPointerSharedStorage, CoreEventMap> = (opts) => {
   const { boardContent, eventHub, sharer } = opts;
@@ -39,11 +39,11 @@ export const MiddlewarePointer: Middleware<DeepPointerSharedStorage, CoreEventMa
       contextMenuPointer.style.left = `${left + point.x}px`;
       contextMenuPointer.style.top = `${top + point.y}px`;
 
-      const selectedElements = sharer.getSharedStorage(keySelectedElementList);
+      const selectedMaterials = sharer.getSharedStorage(keySelectedMaterialList);
       eventHub.trigger(coreEventKeys.CONTEXT_MENU, {
         pointerContainer: contextMenuPointer,
-        selectedElements: selectedElements || []
+        selectedMaterials: selectedMaterials || [],
       });
-    }
+    },
   };
 };

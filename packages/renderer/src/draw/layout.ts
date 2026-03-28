@@ -1,56 +1,48 @@
-import type { RendererDrawElementOptions, ViewContext2D, DataLayout, Element } from '@idraw/types';
-import { calcViewElementSize, calcViewBoxSize } from '@idraw/util';
-import { drawBoxShadow, drawBoxBackground, drawBoxBorder } from './box';
+import type { RendererDrawMaterialOptions, ViewContext2D, DataLayout, StrictMaterial } from '@idraw/types';
+import { calcViewMaterialSize } from '@idraw/util';
+import { createColor } from './color';
 
 export function drawLayout(
   ctx: ViewContext2D,
   layout: DataLayout,
-  opts: RendererDrawElementOptions,
+  opts: RendererDrawMaterialOptions,
   renderContent: (ctx: ViewContext2D) => void
 ) {
-  const { viewScaleInfo, viewSizeInfo, parentOpacity } = opts;
-  const elem: Element = { uuid: 'layout', type: 'group', ...layout } as Element;
-  const { x, y, w, h } = calcViewElementSize(elem, { viewScaleInfo }) || elem;
-  const angle = 0;
-  const viewElem: Element = { ...elem, ...{ x, y, w, h, angle } } as Element;
+  const { parentOpacity } = opts;
+
   ctx.globalAlpha = 1;
-  drawBoxShadow(ctx, viewElem, {
-    viewScaleInfo,
-    viewSizeInfo,
-    renderContent: () => {
-      drawBoxBackground(ctx, viewElem, { viewScaleInfo, viewSizeInfo });
-    }
-  });
 
-  if (layout.detail.overflow === 'hidden') {
-    const { viewScaleInfo, viewSizeInfo } = opts;
-    const elem: Element<'group'> = { uuid: 'layout', type: 'group', ...layout } as Element<'group'>;
-    const viewElemSize = calcViewElementSize(elem, { viewScaleInfo }) || elem;
-    const viewElem = { ...elem, ...viewElemSize };
-    const { x, y, w, h, radiusList } = calcViewBoxSize(viewElem, {
-      viewScaleInfo,
-      viewSizeInfo
-    });
-    ctx.save();
+  const { viewScaleInfo } = opts;
+  const mtrl: StrictMaterial<'group'> = {
+    id: 'layout',
+    type: 'group',
+    ...layout,
+  } as unknown as StrictMaterial<'group'>;
+  const viewMtrlSize = calcViewMaterialSize(mtrl, { viewScaleInfo }) || mtrl;
+  const viewMtrl = { ...mtrl, ...viewMtrlSize };
+  const { x, y, width, height, fill } = viewMtrl;
+  const radiusList: number[] = [0, 0, 0, 0]; // TODO
 
-    ctx.fillStyle = 'transparent';
-    ctx.beginPath();
-    ctx.moveTo(x + radiusList[0], y);
-    ctx.arcTo(x + w, y, x + w, y + h, radiusList[1]);
-    ctx.arcTo(x + w, y + h, x, y + h, radiusList[2]);
-    ctx.arcTo(x, y + h, x, y, radiusList[3]);
-    ctx.arcTo(x, y, x + w, y, radiusList[0]);
-    ctx.closePath();
-    ctx.fill('nonzero');
+  ctx.save();
+  ctx.fillStyle = createColor(ctx, fill, { viewMaterialSize: viewMtrlSize, viewScaleInfo, opacity: mtrl.opacity || 1 });
+  ctx.beginPath();
+  ctx.moveTo(x + radiusList[0], y);
+  ctx.arcTo(x + width, y, x + width, y + height, radiusList[1]);
+  ctx.arcTo(x + width, y + height, x, y + height, radiusList[2]);
+  ctx.arcTo(x, y + height, x, y, radiusList[3]);
+  ctx.arcTo(x, y, x + width, y, radiusList[0]);
+  ctx.closePath();
+  ctx.fill('nonzero');
+
+  if (layout.overflow === 'hidden') {
     ctx.clip('nonzero');
   }
 
   renderContent(ctx);
 
-  if (layout.detail.overflow === 'hidden') {
+  if (layout.overflow === 'hidden') {
     ctx.restore();
   }
 
-  drawBoxBorder(ctx, viewElem, { originElem: elem, viewScaleInfo, viewSizeInfo });
   ctx.globalAlpha = parentOpacity;
 }

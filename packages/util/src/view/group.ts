@@ -1,12 +1,12 @@
-import type { Elements, Element, ElementPosition } from '@idraw/types';
-import { findElementFromListByPosition, calcElementListSize } from './element';
-import { deleteElementInListByPosition, insertElementToListByPosition } from './handle-element';
+import type { StrictMaterial, MaterialPosition } from '@idraw/types';
+import { findMaterialFromListByPosition, calcMaterialListSize } from './material';
+import { deleteMaterialInListByPosition, insertMaterialToListByPosition } from './handle-material';
 import { createUUID } from '../tool/uuid';
 
-export function groupElementsByPosition(list: Elements, positions: ElementPosition[]): Elements {
+export function groupMaterialsByPosition(list: StrictMaterial[], positions: MaterialPosition[]): StrictMaterial[] {
   if (positions.length > 1) {
     let isValidPositions: boolean = true;
-    let lastIndexs: number[] = [];
+    const lastIndexs: number[] = [];
     for (let i = 1; i < positions.length; i++) {
       const prevPosition = positions[i - 1];
       const position = positions[i];
@@ -32,65 +32,65 @@ export function groupElementsByPosition(list: Elements, positions: ElementPositi
       }
     }
     if (isValidPositions !== true) {
-      console.error('[idraw]: The grouped elements are not siblings!');
+      // eslint-disable-next-line no-console
+      console.error('[idraw]: The grouped materials are not siblings!');
       return list;
     }
     lastIndexs.sort((a, b) => a - b);
     const groupParentPosition = [...positions[0]].splice(0, positions[0].length - 1);
-    const groupChildren: Elements = [];
+    const groupChildren: StrictMaterial[] = [];
 
     const groupPosition = [...groupParentPosition, lastIndexs[0]];
     for (let i = 0; i < lastIndexs.length; i++) {
       const position = [...groupParentPosition, lastIndexs[i]];
-      const elem = findElementFromListByPosition(position, list);
-      if (elem) {
-        groupChildren.push(elem);
+      const mtrl = findMaterialFromListByPosition(position, list);
+      if (mtrl) {
+        groupChildren.push(mtrl);
       }
     }
 
-    const groupSize = calcElementListSize(groupChildren);
+    const groupSize = calcMaterialListSize(groupChildren);
     for (let i = 0; i < groupChildren.length; i++) {
-      const elem = groupChildren[i];
-      if (elem) {
-        elem.x -= groupSize.x;
-        elem.y -= groupSize.y;
+      const mtrl = groupChildren[i];
+      if (mtrl) {
+        mtrl.x -= groupSize.x;
+        mtrl.y -= groupSize.y;
       }
     }
 
     for (let i = lastIndexs.length - 1; i >= 0; i--) {
       const position = [...groupParentPosition, lastIndexs[i]];
-      deleteElementInListByPosition(position, list);
+      deleteMaterialInListByPosition(position, list);
     }
 
-    const group: Element<'group'> = {
+    const group: StrictMaterial<'group'> = {
       name: 'Group',
-      uuid: createUUID(),
+      id: createUUID(),
       type: 'group',
       ...groupSize,
-      detail: {
-        children: groupChildren
-      }
+      children: groupChildren,
     };
-    insertElementToListByPosition(group, groupPosition, list);
+    insertMaterialToListByPosition(group, groupPosition, list);
   }
   return list;
 }
 
-export function ungroupElementsByPosition(list: Elements, position: ElementPosition): Elements {
-  const elem = findElementFromListByPosition(position, list) as Element<'group'>;
-  if (!(elem && elem?.type === 'group' && Array.isArray(elem?.detail?.children))) {
-    console.error('[idraw]: The ungrouped element is not a group element!');
+export function ungroupMaterialsByPosition(list: StrictMaterial[], position: MaterialPosition): StrictMaterial[] {
+  const mtrl = findMaterialFromListByPosition(position, list) as StrictMaterial<'group'>;
+  if (!(mtrl && mtrl?.type === 'group' && Array.isArray(mtrl?.children))) {
+    // eslint-disable-next-line no-console
+    console.error('[idraw]: The ungrouped material is not a group material!');
   }
   const groupParentPosition = [...position].splice(0, position.length - 1);
   const groupLastIndex = position[position.length - 1];
 
-  const { x, y } = elem;
-  deleteElementInListByPosition(position, list);
-  elem.detail.children.forEach((child, i) => {
+  const { x, y } = mtrl;
+  deleteMaterialInListByPosition(position, list);
+  mtrl.children.forEach((child, i) => {
     child.x += x;
     child.y += y;
-    const elemPosition = [...groupParentPosition, groupLastIndex + i];
-    insertElementToListByPosition(child, elemPosition, list);
+    const mtrlPosition = [...groupParentPosition, groupLastIndex + i];
+    insertMaterialToListByPosition(child, mtrlPosition, list);
   });
 
   return list;

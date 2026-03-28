@@ -1,95 +1,19 @@
-import type {
-  Point,
-  BoardViewerFrameSnapshot,
-  ViewScaleInfo,
-  ViewSizeInfo,
-  ViewContext2D,
-  ElementSize,
-  MiddlewareScrollerStyle
-} from '@idraw/types';
-import { getViewScaleInfoFromSnapshot, getViewSizeInfoFromSnapshot } from '@idraw/util';
-import {
-  keyActivePoint,
-  keyActiveThumbType,
-  keyPrevPoint,
-  keyXThumbRect,
-  keyYThumbRect,
-  keyHoverXThumbRect,
-  keyHoverYThumbRect
-} from './config';
+import type { ViewScaleInfo, ViewSizeInfo, HTMLCSSProps } from '@idraw/types';
+import { scrollbarTrackSize, scrollbarThumbLength } from './static';
+import type { ScrollbarStyles } from './types';
 
-const scrollerLineWidth = 16;
-const minThumbLength = scrollerLineWidth * 2.5;
-
-export type ScrollbarThumbType = 'X' | 'Y';
-
-function isPointAtRect(overlayContext: ViewContext2D, p: Point, rect: ElementSize): boolean {
-  const ctx = overlayContext;
-  const { x, y, w, h } = rect;
-  ctx.beginPath();
-  ctx.rect(x, y, w, h);
-  ctx.closePath();
-  if (ctx.isPointInPath(p.x, p.y)) {
-    return true;
-  }
-  return false;
-}
-
-export function isPointInScrollThumb(
-  overlayContext: ViewContext2D,
-  p: Point,
-  opts: {
-    xThumbRect?: ElementSize | null;
-    yThumbRect?: ElementSize | null;
-  }
-): ScrollbarThumbType | null {
-  let thumbType: ScrollbarThumbType | null = null;
-  const { xThumbRect, yThumbRect } = opts;
-  if (xThumbRect && isPointAtRect(overlayContext, p, xThumbRect)) {
-    thumbType = 'X';
-  } else if (yThumbRect && isPointAtRect(overlayContext, p, yThumbRect)) {
-    thumbType = 'Y';
-  }
-  return thumbType;
-}
-
-interface ScrollInfo {
-  activePoint: Point | null;
-  prevPoint: Point | null;
-  activeThumbType: ScrollbarThumbType | null;
-  xThumbRect: ElementSize | null;
-  yThumbRect: ElementSize | null;
-  hoverXThumb: boolean | null;
-  hoverYThumb: boolean | null;
-}
-function getScrollInfoFromSnapshot(snapshot: BoardViewerFrameSnapshot): ScrollInfo {
-  const { sharedStore } = snapshot;
-  const info: ScrollInfo = {
-    activePoint: sharedStore[keyActivePoint] || null,
-    prevPoint: sharedStore[keyPrevPoint] || null,
-    activeThumbType: sharedStore[keyActiveThumbType] || null,
-    xThumbRect: sharedStore[keyXThumbRect] || null,
-    yThumbRect: sharedStore[keyYThumbRect] || null,
-    hoverXThumb: sharedStore[keyHoverXThumbRect],
-    hoverYThumb: sharedStore[keyHoverYThumbRect]
-  };
-  return info;
-}
-
-function calcScrollerInfo(opts: {
+export function calcScrollbarStyles(opts: {
   viewScaleInfo: ViewScaleInfo;
   viewSizeInfo: ViewSizeInfo;
-  hoverXThumb: boolean | null;
-  hoverYThumb: boolean | null;
-  style: MiddlewareScrollerStyle;
-}) {
-  const { viewScaleInfo, viewSizeInfo, hoverXThumb, hoverYThumb, style } = opts;
+}): ScrollbarStyles {
+  const { viewScaleInfo, viewSizeInfo } = opts;
   const { width, height } = viewSizeInfo;
   const { offsetTop, offsetBottom, offsetLeft, offsetRight } = viewScaleInfo;
+  const scrollerLineWidth = scrollbarTrackSize;
+  const minThumbLength = scrollbarThumbLength;
+
   const sliderMinSize = minThumbLength;
   const lineSize = scrollerLineWidth;
-  const { thumbBackground, thumbBorderColor, hoverThumbBackground, hoverThumbBorderColor } = style;
-
   let xSize = 0;
   let ySize = 0;
   xSize = Math.max(sliderMinSize, width - lineSize * 2 - (Math.abs(offsetLeft) + Math.abs(offsetRight)));
@@ -127,170 +51,17 @@ function calcScrollerInfo(opts: {
     translateY = yStart + ((height - ySize) * Math.abs(offsetTop)) / (Math.abs(offsetTop) + Math.abs(offsetBottom));
     translateY = Math.min(Math.max(0, translateY - yStart), height - ySize);
   }
-  const xThumbRect: ElementSize = {
-    x: translateX,
-    y: height - lineSize,
-    w: xSize,
-    h: lineSize
+  const xThumbStyle: HTMLCSSProps = {
+    left: translateX,
+    width: xSize,
   };
-  const yThumbRect: ElementSize = {
-    x: width - lineSize,
-    y: translateY,
-    w: lineSize,
-    h: ySize
+  const yThumbStyle: HTMLCSSProps = {
+    top: translateY,
+    height: ySize,
   };
-  const scrollWrapper = {
-    lineSize,
-    xSize,
-    ySize,
-    translateY,
-    translateX,
-    xThumbBackground: hoverXThumb ? hoverThumbBackground : thumbBackground,
-    yThumbBackground: hoverYThumb ? hoverThumbBackground : thumbBackground,
-    xThumbBorderColor: hoverXThumb ? hoverThumbBorderColor : thumbBorderColor,
-    yThumbBorderColor: hoverYThumb ? hoverThumbBorderColor : thumbBorderColor,
-    // scrollBarColor: scrollConfig.scrollBarColor,
-    xThumbRect,
-    yThumbRect
+  const scrollbarInfo: ScrollbarStyles = {
+    xThumbStyle,
+    yThumbStyle,
   };
-  return scrollWrapper;
-}
-
-function drawScrollerThumb(
-  ctx: ViewContext2D,
-  opts: {
-    axis: ScrollbarThumbType;
-    x: number;
-    y: number;
-    w: number;
-    h: number;
-    r: number;
-    background: string;
-    borderColor: string;
-  }
-): void {
-  let { x, y, h, w } = opts;
-  const { background, borderColor } = opts;
-
-  ctx.save();
-  ctx.shadowColor = '#FFFFFF';
-  ctx.shadowOffsetX = 0;
-  ctx.shadowOffsetY = 0;
-  ctx.shadowBlur = 1;
-  {
-    const { axis } = opts;
-    if (axis === 'X') {
-      y = y + h / 4 + 0;
-      h = h / 2;
-    } else if (axis === 'Y') {
-      x = x + w / 4 + 0;
-      w = w / 2;
-    }
-
-    let r = opts.r;
-    r = Math.min(r, w / 2, h / 2);
-    if (w < r * 2 || h < r * 2) {
-      r = 0;
-    }
-    ctx.globalAlpha = 1;
-    ctx.beginPath();
-    ctx.moveTo(x + r, y);
-    ctx.arcTo(x + w, y, x + w, y + h, r);
-    ctx.arcTo(x + w, y + h, x, y + h, r);
-    ctx.arcTo(x, y + h, x, y, r);
-    ctx.arcTo(x, y, x + w, y, r);
-    ctx.closePath();
-    ctx.fillStyle = background;
-    ctx.fill('nonzero');
-
-    ctx.beginPath();
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = borderColor;
-    ctx.setLineDash([]);
-    ctx.moveTo(x + r, y);
-    ctx.arcTo(x + w, y, x + w, y + h, r);
-    ctx.arcTo(x + w, y + h, x, y + h, r);
-    ctx.arcTo(x, y + h, x, y, r);
-    ctx.arcTo(x, y, x + w, y, r);
-    ctx.closePath();
-    ctx.stroke();
-  }
-  ctx.restore();
-}
-
-function drawScrollerInfo(
-  overlayContext: ViewContext2D,
-  opts: {
-    viewScaleInfo: ViewScaleInfo;
-    viewSizeInfo: ViewSizeInfo;
-    scrollInfo: ScrollInfo;
-    style: MiddlewareScrollerStyle;
-  }
-) {
-  const ctx = overlayContext;
-  const { viewScaleInfo, viewSizeInfo, scrollInfo, style } = opts;
-  const { activeThumbType, prevPoint, activePoint, hoverXThumb, hoverYThumb } = scrollInfo;
-  // const { width, height } = viewSizeInfo;
-  const wrapper = calcScrollerInfo({ viewScaleInfo, viewSizeInfo, hoverXThumb, hoverYThumb, style });
-  let xThumbRect: ElementSize = { ...wrapper.xThumbRect };
-  let yThumbRect: ElementSize = { ...wrapper.yThumbRect };
-
-  if (activeThumbType && prevPoint && activePoint) {
-    if (activeThumbType === 'X' && scrollInfo.xThumbRect) {
-      xThumbRect = { ...scrollInfo.xThumbRect };
-      xThumbRect.x = xThumbRect.x + (activePoint.x - prevPoint.x);
-    } else if (activeThumbType === 'Y' && scrollInfo.yThumbRect) {
-      yThumbRect = { ...scrollInfo.yThumbRect };
-      yThumbRect.y = yThumbRect.y + (activePoint.y - prevPoint.y);
-    }
-  }
-
-  // // x-bar
-  // if (scrollConfig.showScrollBar === true) {
-  //   ctx.fillStyle = wrapper.scrollBarColor;
-  //   // x-line
-  //   ctx.fillRect(0, height - wrapper.lineSize, width, wrapper.lineSize);
-  // }
-
-  // x-thumb
-  drawScrollerThumb(ctx, {
-    axis: 'X',
-    ...xThumbRect,
-    r: wrapper.lineSize / 2,
-    background: wrapper.xThumbBackground,
-    borderColor: wrapper.xThumbBorderColor
-  });
-
-  // // y-bar
-  // if (scrollConfig.showScrollBar === true) {
-  //   ctx.fillStyle = wrapper.scrollBarColor;
-  //   // y-line
-  //   ctx.fillRect(width - wrapper.lineSize, 0, wrapper.lineSize, height);
-  // }
-
-  // y-thumb
-  drawScrollerThumb(ctx, {
-    axis: 'Y',
-    ...yThumbRect,
-    r: wrapper.lineSize / 2,
-    background: wrapper.yThumbBackground,
-    borderColor: wrapper.yThumbBorderColor
-  });
-
-  return {
-    xThumbRect,
-    yThumbRect
-  };
-}
-
-export function drawScroller(
-  ctx: ViewContext2D,
-  opts: { snapshot: BoardViewerFrameSnapshot; style: MiddlewareScrollerStyle }
-) {
-  const { snapshot, style } = opts;
-  const viewSizeInfo = getViewSizeInfoFromSnapshot(snapshot);
-  const viewScaleInfo = getViewScaleInfoFromSnapshot(snapshot);
-  const scrollInfo = getScrollInfoFromSnapshot(snapshot);
-  const { xThumbRect, yThumbRect } = drawScrollerInfo(ctx, { viewSizeInfo, viewScaleInfo, scrollInfo, style });
-  return { xThumbRect, yThumbRect };
+  return scrollbarInfo;
 }

@@ -1,9 +1,20 @@
-import { Core, MiddlewareInfo, MiddlewareLayoutSelector, MiddlewareRuler, MiddlewareScroller, MiddlewareSelector } from '@idraw/core';
+import {
+  Core,
+  MiddlewareInfo,
+  MiddlewareLayoutSelector,
+  MiddlewareRuler,
+  MiddlewareScroller,
+  MiddlewareSelector,
+} from '@idraw/core';
 import { Store } from '@idraw/util';
 import type { IDrawSettings, IDrawStorage } from '@idraw/types';
 import type { IDrawEvent } from '../event';
 
-export function changeStyles(styles: Required<IDrawSettings>['styles'], core: Core<IDrawEvent>, store: Store<IDrawStorage>) {
+export function changeStyles(
+  styles: Required<IDrawSettings>['styles'],
+  core: Core<IDrawEvent>,
+  store: Store<IDrawStorage>
+) {
   const { selector, info, ruler, scroller, layoutSelector } = styles;
   const middlewareStyles = store.get('middlewareStyles');
   if (selector) {

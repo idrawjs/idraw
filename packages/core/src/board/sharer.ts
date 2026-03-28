@@ -1,4 +1,4 @@
-import type { ActiveStore, Element, ElementDetailMap, RecursivePartial, StoreSharer, ViewScaleInfo, ViewSizeInfo } from '@idraw/types';
+import type { ActiveStore, Material, RecursivePartial, StoreSharer, ViewScaleInfo, ViewSizeInfo } from '@idraw/types';
 import { Store } from '@idraw/util';
 
 const defaultActiveStorage: ActiveStore = {
@@ -7,13 +7,13 @@ const defaultActiveStorage: ActiveStore = {
   devicePixelRatio: 1,
   contextWidth: 0,
   contextHeight: 0,
-  data: null,
+  data: { materials: [] },
   scale: 1,
   offsetLeft: 0,
   offsetRight: 0,
   offsetTop: 0,
   offsetBottom: 0,
-  overrideElementMap: null
+  overrideMaterialMap: null,
 };
 
 export class Sharer implements StoreSharer<Record<string | number | symbol | any, any>> {
@@ -24,10 +24,10 @@ export class Sharer implements StoreSharer<Record<string | number | symbol | any
 
   constructor() {
     const activeStore = new Store<ActiveStore>({
-      defaultStorage: defaultActiveStorage
+      defaultStorage: defaultActiveStorage,
     });
     const sharedStore = new Store({
-      defaultStorage: {}
+      defaultStorage: {},
     });
     this.#activeStore = activeStore;
     this.#sharedStore = sharedStore;
@@ -65,7 +65,7 @@ export class Sharer implements StoreSharer<Record<string | number | symbol | any
       offsetTop: this.#activeStore.get('offsetTop'),
       offsetBottom: this.#activeStore.get('offsetBottom'),
       offsetLeft: this.#activeStore.get('offsetLeft'),
-      offsetRight: this.#activeStore.get('offsetRight')
+      offsetRight: this.#activeStore.get('offsetRight'),
     };
     return viewScaleInfo;
   }
@@ -93,16 +93,16 @@ export class Sharer implements StoreSharer<Record<string | number | symbol | any
       height: this.#activeStore.get('height'),
       devicePixelRatio: this.#activeStore.get('devicePixelRatio'),
       contextWidth: this.#activeStore.get('contextWidth'),
-      contextHeight: this.#activeStore.get('contextHeight')
+      contextHeight: this.#activeStore.get('contextHeight'),
     };
     return sizeInfo;
   }
 
-  getActiveOverrideElemenentMap(): Record<string, RecursivePartial<Element<keyof ElementDetailMap, Record<string, any>>>> | null {
-    return this.#activeStore.get('overrideElementMap');
+  getActiveOverrideMaterialMap(): Record<string, RecursivePartial<Material>> | null {
+    return this.#activeStore.get('overrideMaterialMap');
   }
 
-  setActiveOverrideElemenentMap(map: Record<string, RecursivePartial<Element<keyof ElementDetailMap, Record<string, any>>>> | null): void {
-    this.#activeStore.set('overrideElementMap', map);
+  setActiveOverrideMaterialMap(map: Record<string, RecursivePartial<Material>> | null): void {
+    this.#activeStore.set('overrideMaterialMap', map);
   }
 }

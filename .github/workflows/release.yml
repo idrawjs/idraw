@@ -21,8 +21,8 @@ jobs:
       - run: npm run test
       - run: npm run build
       - run: npm run version:reset-for-release
-      # - run: npm publish --provenance --access public -w ./packages/types --tag next
-      - run: npm publish --provenance --access public -w ./packages/types
+      - run: npm publish --provenance --access public -w ./packages/types --tag next
+        # - run: npm publish --provenance --access public -w ./packages/types
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - run: npm publish --provenance --access public -w ./packages/util
