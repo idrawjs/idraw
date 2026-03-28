@@ -1,5 +1,4 @@
-import { iDraw, useHistory, deepClone, createMaterial, set, get, toFlattenMaterial } from 'idraw';
-import type { RecursivePartial, Material } from 'idraw';
+import { iDraw, useHistory, deepClone, createMaterial, toFlattenMaterial, mergeMaterial } from 'idraw';
 
 const createData = () => ({
   materials: [
@@ -37,7 +36,7 @@ describe('idraw: useHistory ', () => {
     jest.useFakeTimers().setSystemTime(new Date('2025-01-01'));
   });
 
-  test('modifyMaterial', () => {
+  test('updateMaterial', () => {
     const data = createData();
     const div = document.createElement('div') as HTMLDivElement;
 
@@ -52,29 +51,23 @@ describe('idraw: useHistory ', () => {
     const targetMaterial = deepClone(data.materials[0]);
 
     // modify 1: do
-    const modifiedInfo1 = {
-      x: targetMaterial.x + 1,
-      y: targetMaterial.y + 2,
-      fill: '#123456',
-      cornerRadius: 3,
-    };
-    idraw.modifyMaterial({
-      id: targetMaterial.id,
-      ...deepClone(modifiedInfo1),
-    });
+    const updatedMaterial1 = deepClone(targetMaterial);
+    updatedMaterial1.x += 1;
+    updatedMaterial1.y += 2;
+    updatedMaterial1.fill = '#123456';
+    updatedMaterial1.cornerRadius = 3;
+    idraw.updateMaterial(updatedMaterial1);
+
+    const beforeInfo1: Record<string, any> = toFlattenMaterial(targetMaterial);
+    const afterInfo1: Record<string, any> = toFlattenMaterial(updatedMaterial1);
+
     const expectedData1 = createData();
-    const flattenModifiedInfo1 = toFlattenMaterial(modifiedInfo1);
-    const beforeInfo1: Record<string, any> = {};
-    const afterInfo1 = { ...flattenModifiedInfo1 };
-    Object.keys(flattenModifiedInfo1).forEach((key) => {
-      beforeInfo1[key] = get(expectedData1.materials[0], key);
-      set(expectedData1.materials[0], key, flattenModifiedInfo1[key]);
-    });
+    mergeMaterial(expectedData1.materials[0], updatedMaterial1);
     const record1 = {
-      type: 'modifyMaterial',
+      type: 'updateMaterial',
       time: new Date().getTime(),
       content: {
-        method: 'modifyMaterial',
+        method: 'updateMaterial',
         id: targetMaterial.id,
         before: beforeInfo1,
         after: afterInfo1,
@@ -85,37 +78,21 @@ describe('idraw: useHistory ', () => {
     expect(__getUndoRecords()).toStrictEqual([]);
 
     // modify 2: do
-    const modifiedInfo2 = {
-      x: modifiedInfo1.x + 3,
-      y: modifiedInfo1.y + 4,
-      cornerRadius: [2, 4, 6, 8],
-    } as unknown as RecursivePartial<Omit<Material, 'id'>>;
+    const updatedMaterial2 = deepClone(updatedMaterial1);
+    updatedMaterial2.x += 3;
+    updatedMaterial2.y += 4;
+    updatedMaterial2.cornerRadius = [2, 4, 6, 8];
+    idraw.updateMaterial(updatedMaterial2);
+    const beforeInfo2: Record<string, any> = toFlattenMaterial(updatedMaterial1);
+    const afterInfo2: Record<string, any> = toFlattenMaterial(updatedMaterial2);
 
-    idraw.modifyMaterial({
-      id: targetMaterial.id,
-      ...deepClone(modifiedInfo2),
-    } as RecursivePartial<Omit<Material, 'id'>> & Pick<Material, 'id'>);
-
-    const expectedData2 = deepClone(expectedData1);
-    const flattenModifiedInfo2 = toFlattenMaterial(modifiedInfo2);
-    const beforeInfo2: Record<string, any> = {};
-    const afterInfo2 = { ...flattenModifiedInfo2 };
-
-    Object.keys(flattenModifiedInfo2).forEach((key) => {
-      let beforeVal = get(expectedData1.materials[0], key);
-      let beforeKey = key;
-      if (beforeVal === undefined && /(cornerRadius|strokeWidth)\[[0-9]{1,}\]$/.test(beforeKey)) {
-        beforeKey = beforeKey.replace(/\[[0-9]{1,}\]$/, '');
-        beforeVal = get(expectedData1.materials[0], beforeKey);
-      }
-      beforeInfo2[beforeKey] = beforeVal;
-      set(expectedData2.materials[0], key, flattenModifiedInfo2[key]);
-    });
+    const expectedData2 = createData();
+    mergeMaterial(expectedData2.materials[0], updatedMaterial2);
     const record2 = {
-      type: 'modifyMaterial',
+      type: 'updateMaterial',
       time: new Date().getTime(),
       content: {
-        method: 'modifyMaterial',
+        method: 'updateMaterial',
         id: targetMaterial.id,
         before: beforeInfo2,
         after: afterInfo2,
@@ -131,7 +108,7 @@ describe('idraw: useHistory ', () => {
       type: 'undo',
       time: new Date().getTime(),
       content: {
-        method: 'modifyMaterial',
+        method: 'updateMaterial',
         id: targetMaterial.id,
         before: deepClone(record2.content.after),
         after: deepClone(record2.content.before),
@@ -147,7 +124,7 @@ describe('idraw: useHistory ', () => {
       type: 'undo',
       time: new Date().getTime(),
       content: {
-        method: 'modifyMaterial',
+        method: 'updateMaterial',
         id: targetMaterial.id,
         before: deepClone(record1.content.after),
         after: deepClone(record1.content.before),
@@ -163,7 +140,7 @@ describe('idraw: useHistory ', () => {
       type: 'redo',
       time: new Date().getTime(),
       content: {
-        method: 'modifyMaterial',
+        method: 'updateMaterial',
         id: targetMaterial.id,
         before: deepClone(record4.content.after),
         after: deepClone(record4.content.before),
@@ -179,7 +156,7 @@ describe('idraw: useHistory ', () => {
       type: 'redo',
       time: new Date().getTime(),
       content: {
-        method: 'modifyMaterial',
+        method: 'updateMaterial',
         id: targetMaterial.id,
         before: deepClone(record3.content.after),
         after: deepClone(record3.content.before),

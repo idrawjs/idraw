@@ -1,3 +1,0 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
-
-exports[`@idraw/util: lib/file downloadImageFromCanvas 1`] = `<canvas />`;

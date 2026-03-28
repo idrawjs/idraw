@@ -3,30 +3,60 @@ import type { RecursivePartial, Material } from 'idraw';
 
 const createData = () => ({
   materials: [
-    createMaterial('rect', {
+    createMaterial('group', {
       id: 'test-001',
       x: 0,
       y: 0,
-      width: 100,
-      height: 100,
-      fill: '#DDDDDD',
-    }),
-    createMaterial('circle', { id: 'test-002' }),
-    createMaterial('text', {
-      id: 'test-003',
-      text: 'Hello World',
-    }),
-    createMaterial('image', { id: 'test-004', src: 'https://example.com/001.png' }),
-    createMaterial('group', {
-      id: 'test-005',
+      width: 2000,
+      height: 2000,
       children: [
-        createMaterial('rect', { id: 'test-006' }),
-        createMaterial('circle', { id: 'test-007' }),
+        createMaterial('rect', { id: 'test-002', x: 20, y: 20, width: 20, height: 20 }),
+        createMaterial('circle', { id: 'test-003', x: 40, y: 40, width: 40, height: 40 }),
         createMaterial('text', {
-          id: 'test-008',
+          id: 'test-004',
+          x: 60,
+          y: 60,
+          width: 60,
+          height: 60,
+          fontSize: 16,
           text: 'Text in Group',
         }),
-        createMaterial('image', { id: 'test-009', src: 'https://example.com/002.png' }),
+        createMaterial('image', {
+          id: 'test-005',
+          x: 80,
+          y: 80,
+          width: 80,
+          height: 80,
+          src: 'https://example.com/002.png',
+        }),
+        createMaterial('group', {
+          id: 'test-101',
+          x: 500,
+          y: 500,
+          width: 1000,
+          height: 1000,
+          children: [
+            createMaterial('rect', { id: 'test-102', x: 20, y: 20, width: 20, height: 20 }),
+            createMaterial('circle', { id: 'test-103', x: 40, y: 40, width: 40, height: 40 }),
+            createMaterial('text', {
+              id: 'test-104',
+              x: 60,
+              y: 60,
+              width: 60,
+              height: 60,
+              fontSize: 16,
+              text: 'Text in Group',
+            }),
+            createMaterial('image', {
+              id: 'test-105',
+              x: 80,
+              y: 80,
+              width: 80,
+              height: 80,
+              src: 'https://example.com/002.png',
+            }),
+          ],
+        }),
       ],
     }),
   ],
@@ -64,7 +94,7 @@ describe('idraw: useHistory ', () => {
     });
     const expectedData1 = createData();
     const flattenModifiedInfo1 = toFlattenMaterial(modifiedInfo1);
-    const beforeInfo1: Record<string, any> = {};
+    const beforeInfo1: Record<string, unknown> = {};
     const afterInfo1 = { ...flattenModifiedInfo1 };
     Object.keys(flattenModifiedInfo1).forEach((key) => {
       beforeInfo1[key] = get(expectedData1.materials[0], key);
@@ -98,7 +128,7 @@ describe('idraw: useHistory ', () => {
 
     const expectedData2 = deepClone(expectedData1);
     const flattenModifiedInfo2 = toFlattenMaterial(modifiedInfo2);
-    const beforeInfo2: Record<string, any> = {};
+    const beforeInfo2: Record<string, unknown> = {};
     const afterInfo2 = { ...flattenModifiedInfo2 };
 
     Object.keys(flattenModifiedInfo2).forEach((key) => {

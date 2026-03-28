@@ -1,44 +1,36 @@
-import { iDraw, useHistory, deepClone, createElement, set, get, toFlattenGlobal } from 'idraw';
+import { iDraw, useHistory, deepClone, createMaterial, set, get, toFlattenGlobal } from 'idraw';
 import type { Data, DataGlobal, RecursivePartial } from 'idraw';
 
 const createData = () =>
   ({
-    elements: [
-      createElement('rect', {
-        uuid: 'test-001',
+    materials: [
+      createMaterial('rect', {
+        id: 'test-001',
         x: 0,
         y: 0,
-        w: 100,
-        h: 100,
-        detail: {
-          background: '#DDDDDD'
-        }
+        width: 100,
+        height: 100,
+        fill: '#DDDDDD',
       }),
-      createElement('circle', { uuid: 'test-002' }),
-      createElement('text', {
-        uuid: 'test-003',
-        detail: {
-          text: 'Hello World'
-        }
+      createMaterial('circle', { id: 'test-002' }),
+      createMaterial('text', {
+        id: 'test-003',
+        text: 'Hello World',
       }),
-      createElement('image', { uuid: 'test-004', detail: { src: 'https://example.com/001.png' } }),
-      createElement('group', {
-        uuid: 'test-005',
-        detail: {
-          children: [
-            createElement('rect', { uuid: 'test-006' }),
-            createElement('circle', { uuid: 'test-007' }),
-            createElement('text', {
-              uuid: 'test-008',
-              detail: {
-                text: 'Text in Group'
-              }
-            }),
-            createElement('image', { uuid: 'test-009', detail: { src: 'https://example.com/002.png' } })
-          ]
-        }
-      })
-    ]
+      createMaterial('image', { id: 'test-004', src: 'https://example.com/001.png' }),
+      createMaterial('group', {
+        id: 'test-005',
+        children: [
+          createMaterial('rect', { id: 'test-006' }),
+          createMaterial('circle', { id: 'test-007' }),
+          createMaterial('text', {
+            id: 'test-008',
+            text: 'Text in Group',
+          }),
+          createMaterial('image', { id: 'test-009', src: 'https://example.com/002.png' }),
+        ],
+      }),
+    ],
   } as Data);
 
 describe('idraw: useHistory ', () => {
@@ -52,7 +44,7 @@ describe('idraw: useHistory ', () => {
 
     const idraw = new iDraw(div, {
       height: 200,
-      width: 200
+      width: 200,
     });
     const { MiddlewareHistory, historyHandler } = useHistory({ core: idraw.getCore() });
     const { undo, redo, __getDoRecords, __getUndoRecords } = historyHandler;
@@ -61,14 +53,14 @@ describe('idraw: useHistory ', () => {
 
     // modify 1: do
     const modifiedInfo1 = {
-      background: '#123456'
+      fill: '#123456',
     };
     idraw.modifyGlobal({
-      ...deepClone(modifiedInfo1)
+      ...deepClone(modifiedInfo1),
     });
     const expectedData1 = createData();
     const flattenModifiedInfo1 = toFlattenGlobal(modifiedInfo1);
-    const beforeInfo1: Record<string, any> | null = null;
+    const beforeInfo1: Record<string, unknown> | null = null;
     const afterInfo1 = { ...flattenModifiedInfo1 };
 
     Object.keys(flattenModifiedInfo1).forEach((k) => {
@@ -81,8 +73,8 @@ describe('idraw: useHistory ', () => {
       content: {
         method: 'modifyGlobal',
         before: beforeInfo1,
-        after: afterInfo1
-      }
+        after: afterInfo1,
+      },
     };
     expect(idraw.getData()).toStrictEqual(expectedData1);
     expect(__getDoRecords()).toStrictEqual([record1]);
@@ -90,14 +82,14 @@ describe('idraw: useHistory ', () => {
 
     // modify 2: do
     const modifiedInfo2 = {
-      background: '#AAAAAA'
+      fill: '#AAAAAA',
     } as unknown as RecursivePartial<DataGlobal>;
 
     idraw.modifyGlobal({ ...modifiedInfo2 });
 
     const expectedData2 = deepClone(expectedData1);
     const flattenModifiedInfo2 = toFlattenGlobal(modifiedInfo2);
-    const beforeInfo2: Record<string, any> = {};
+    const beforeInfo2: Record<string, unknown> = {};
     const afterInfo2 = { ...flattenModifiedInfo2 };
 
     Object.keys(flattenModifiedInfo2).forEach((key) => {
@@ -110,8 +102,8 @@ describe('idraw: useHistory ', () => {
       content: {
         method: 'modifyGlobal',
         before: beforeInfo2,
-        after: afterInfo2
-      }
+        after: afterInfo2,
+      },
     };
     expect(idraw.getData()).toStrictEqual(expectedData2);
     expect(__getDoRecords()).toStrictEqual([record1, record2]);
@@ -125,8 +117,8 @@ describe('idraw: useHistory ', () => {
       content: {
         method: 'modifyGlobal',
         before: deepClone(record2.content.after),
-        after: deepClone(record2.content.before)
-      }
+        after: deepClone(record2.content.before),
+      },
     };
     expect(idraw.getData()).toStrictEqual(expectedData1);
     expect(__getDoRecords()).toStrictEqual([record1]);
@@ -140,8 +132,8 @@ describe('idraw: useHistory ', () => {
       content: {
         method: 'modifyGlobal',
         before: deepClone(record1.content.after),
-        after: deepClone(record1.content.before)
-      }
+        after: deepClone(record1.content.before),
+      },
     };
     expect(idraw.getData()).toStrictEqual(createData());
     expect(__getDoRecords()).toStrictEqual([]);
@@ -155,8 +147,8 @@ describe('idraw: useHistory ', () => {
       content: {
         method: 'modifyGlobal',
         before: deepClone(record4.content.after),
-        after: deepClone(record4.content.before)
-      }
+        after: deepClone(record4.content.before),
+      },
     };
     expect(idraw.getData()).toStrictEqual(expectedData1);
     expect(__getDoRecords()).toStrictEqual([record5]);
@@ -170,8 +162,8 @@ describe('idraw: useHistory ', () => {
       content: {
         method: 'modifyGlobal',
         before: deepClone(record3.content.after),
-        after: deepClone(record3.content.before)
-      }
+        after: deepClone(record3.content.before),
+      },
     };
     expect(idraw.getData()).toStrictEqual(expectedData2);
     expect(__getDoRecords()).toStrictEqual([record5, record6]);
