@@ -25,16 +25,16 @@ jobs:
         # - run: npm publish --provenance --access public -w ./packages/types
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - run: npm publish --provenance --access public -w ./packages/util
+      - run: npm publish --provenance --access public -w ./packages/util --tag next
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - run: npm publish --provenance --access public -w ./packages/renderer
+      - run: npm publish --provenance --access public -w ./packages/renderer --tag next
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - run: npm publish --provenance --access public -w ./packages/core
+      - run: npm publish --provenance --access public -w ./packages/core --tag next
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - run: npm publish --provenance --access public -w ./packages/idraw
+      - run: npm publish --provenance --access public -w ./packages/idraw --tag next
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       # - run: npm publish --provenance --access public -w ./packages/figma
