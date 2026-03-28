@@ -2,13 +2,13 @@ import type {
   ViewContext2D,
   LayoutSizeController,
   ViewRectVertexes,
-  PointSize,
-  ElementSize,
-  MiddlewareLayoutSelectorStyle
+  Point,
+  MaterialSize,
+  MiddlewareLayoutSelectorStyles,
 } from '@idraw/types';
 
-function drawControllerBox(ctx: ViewContext2D, boxVertexes: ViewRectVertexes, style: MiddlewareLayoutSelectorStyle) {
-  const { activeColor } = style;
+function drawControllerBox(ctx: ViewContext2D, boxVertexes: ViewRectVertexes, styles: MiddlewareLayoutSelectorStyles) {
+  const { activeColor } = styles;
   ctx.setLineDash([]);
   ctx.fillStyle = '#FFFFFF';
   ctx.beginPath();
@@ -32,10 +32,10 @@ function drawControllerBox(ctx: ViewContext2D, boxVertexes: ViewRectVertexes, st
 
 function drawControllerLine(
   ctx: ViewContext2D,
-  opts: { start: PointSize; end: PointSize; centerVertexes: ViewRectVertexes; style: MiddlewareLayoutSelectorStyle }
+  opts: { start: Point; end: Point; centerVertexes: ViewRectVertexes; styles: MiddlewareLayoutSelectorStyles }
 ) {
-  const { start, end, style } = opts;
-  const { activeColor } = style;
+  const { start, end, styles } = opts;
+  const { activeColor } = styles;
   const lineWidth = 2;
   const strokeStyle = activeColor;
   ctx.setLineDash([]);
@@ -52,56 +52,56 @@ export function drawLayoutController(
   ctx: ViewContext2D,
   opts: {
     controller: LayoutSizeController;
-    style: MiddlewareLayoutSelectorStyle;
+    styles: MiddlewareLayoutSelectorStyles;
   }
 ) {
-  const { controller, style } = opts;
+  const { controller, styles } = opts;
   const { topLeft, topRight, bottomLeft, bottomRight, topMiddle, rightMiddle, bottomMiddle, leftMiddle } = controller;
 
-  drawControllerLine(ctx, { start: topLeft.center, end: topRight.center, centerVertexes: topMiddle.vertexes, style });
+  drawControllerLine(ctx, { start: topLeft.center, end: topRight.center, centerVertexes: topMiddle.vertexes, styles });
   drawControllerLine(ctx, {
     start: topRight.center,
     end: bottomRight.center,
     centerVertexes: rightMiddle.vertexes,
-    style
+    styles,
   });
   drawControllerLine(ctx, {
     start: bottomRight.center,
     end: bottomLeft.center,
     centerVertexes: bottomMiddle.vertexes,
-    style
+    styles,
   });
   drawControllerLine(ctx, {
     start: bottomLeft.center,
     end: topLeft.center,
     centerVertexes: leftMiddle.vertexes,
-    style
+    styles,
   });
 
-  drawControllerBox(ctx, topLeft.vertexes, style);
-  drawControllerBox(ctx, topRight.vertexes, style);
-  drawControllerBox(ctx, bottomRight.vertexes, style);
-  drawControllerBox(ctx, bottomLeft.vertexes, style);
+  drawControllerBox(ctx, topLeft.vertexes, styles);
+  drawControllerBox(ctx, topRight.vertexes, styles);
+  drawControllerBox(ctx, bottomRight.vertexes, styles);
+  drawControllerBox(ctx, bottomLeft.vertexes, styles);
 }
 
 export function drawLayoutHover(
   ctx: ViewContext2D,
   opts: {
-    layoutSize: ElementSize;
-    style: MiddlewareLayoutSelectorStyle;
+    layoutSize: MaterialSize;
+    styles: MiddlewareLayoutSelectorStyles;
   }
 ) {
-  const { layoutSize, style } = opts;
-  const { activeColor } = style;
-  const { x, y, w, h } = layoutSize;
+  const { layoutSize, styles } = opts;
+  const { activeColor } = styles;
+  const { x, y, width, height } = layoutSize;
   ctx.setLineDash([]);
   ctx.strokeStyle = activeColor;
   ctx.lineWidth = 1;
   ctx.beginPath();
   ctx.moveTo(x, y);
-  ctx.lineTo(x + w, y);
-  ctx.lineTo(x + w, y + h);
-  ctx.lineTo(x, y + h);
+  ctx.lineTo(x + width, y);
+  ctx.lineTo(x + width, y + height);
+  ctx.lineTo(x, y + height);
   ctx.lineTo(x, y);
   ctx.closePath();
   ctx.stroke();

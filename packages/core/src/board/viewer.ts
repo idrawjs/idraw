@@ -1,6 +1,6 @@
 import { EventEmitter, viewScale, viewScroll, calcViewScaleInfo } from '@idraw/util';
 import type {
-  PointSize,
+  Point,
   BoardViewer,
   BoardViewerEventMap,
   BoardViewerOptions,
@@ -9,7 +9,7 @@ import type {
   BoardViewerFrameSnapshot,
   ViewScaleInfo,
   ViewSizeInfo,
-  Data
+  Data,
 } from '@idraw/types';
 
 const { requestAnimationFrame } = window;
@@ -55,7 +55,7 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
         height,
         contextHeight,
         contextWidth,
-        devicePixelRatio
+        devicePixelRatio,
       } = snapshot.activeStore;
 
       const viewScaleInfo: ViewScaleInfo = {
@@ -63,19 +63,19 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
         offsetTop,
         offsetBottom,
         offsetLeft,
-        offsetRight
+        offsetRight,
       };
       const viewSizeInfo: ViewSizeInfo = {
         width,
         height,
         contextHeight,
         contextWidth,
-        devicePixelRatio
+        devicePixelRatio,
       };
       if (snapshot?.activeStore.data) {
         renderer.drawData(snapshot.activeStore.data, {
           viewScaleInfo,
-          viewSizeInfo
+          viewSizeInfo,
         });
       }
 
@@ -98,7 +98,7 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
     }
   }
 
-  resetVirtualFlatItemMap(
+  resetVirtualItemMap(
     data: Data,
     opts: {
       viewScaleInfo: ViewScaleInfo;
@@ -106,7 +106,7 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
     }
   ): void {
     if (data) {
-      this.#opts.calculator.resetVirtualFlatItemMap(data, opts);
+      this.#opts.calculator.resetVirtualItemMap(data, opts);
     }
   }
 
@@ -116,14 +116,15 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
     const sharedStore: Record<string, any> = sharer.getSharedStoreSnapshot();
     // const activeStore: ActiveStore = sharer.getActiveStoreSnapshot({ deepClone: true });
     // const sharedStore: Record<string, any> = sharer.getSharedStoreSnapshot({ deepClone: true });
+
     this.#drawFrameSnapshotQueue.push({
       activeStore,
-      sharedStore
+      sharedStore,
     });
     this.#drawAnimationFrame();
   }
 
-  scale(opts: { scale: number; point: PointSize; ignoreUpdateVisibleStatus?: boolean }): {
+  scale(opts: { scale: number; point: Point; ignoreUpdateVisibleStatus?: boolean }): {
     moveX: number;
     moveY: number;
   } {
@@ -133,13 +134,13 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
       scale,
       point,
       viewScaleInfo: sharer.getActiveViewScaleInfo(),
-      viewSizeInfo: sharer.getActiveViewSizeInfo()
+      viewSizeInfo: sharer.getActiveViewSizeInfo(),
     });
     sharer.setActiveStorage('scale', scale);
     if (!ignoreUpdateVisibleStatus) {
       this.#opts.calculator.updateVisiableStatus({
         viewScaleInfo: sharer.getActiveViewScaleInfo(),
-        viewSizeInfo: sharer.getActiveViewSizeInfo()
+        viewSizeInfo: sharer.getActiveViewSizeInfo(),
       });
     }
     return { moveX, moveY };
@@ -154,13 +155,13 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
       moveX,
       moveY,
       viewScaleInfo: prevViewScaleInfo,
-      viewSizeInfo
+      viewSizeInfo,
     });
     sharer.setActiveViewScaleInfo(viewScaleInfo);
     if (!ignoreUpdateVisibleStatus) {
       this.#opts.calculator.updateVisiableStatus({
         viewScaleInfo: sharer.getActiveViewScaleInfo(),
-        viewSizeInfo: sharer.getActiveViewSizeInfo()
+        viewSizeInfo: sharer.getActiveViewSizeInfo(),
       });
     }
     return viewScaleInfo;
@@ -169,14 +170,14 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
   updateViewScaleInfo(opts: { scale: number; offsetX: number; offsetY: number }): ViewScaleInfo {
     const { sharer } = this.#opts;
     const viewScaleInfo = calcViewScaleInfo(opts, {
-      viewSizeInfo: sharer.getActiveViewSizeInfo()
+      viewSizeInfo: sharer.getActiveViewSizeInfo(),
     });
 
     sharer.setActiveViewScaleInfo(viewScaleInfo);
 
     this.#opts.calculator.updateVisiableStatus({
       viewScaleInfo: sharer.getActiveViewScaleInfo(),
-      viewSizeInfo: sharer.getActiveViewSizeInfo()
+      viewSizeInfo: sharer.getActiveViewSizeInfo(),
     });
     return viewScaleInfo;
   }
@@ -206,7 +207,7 @@ export class Viewer extends EventEmitter<BoardViewerEventMap> implements BoardVi
     if (!opts?.ignoreUpdateVisibleStatus) {
       this.#opts.calculator.updateVisiableStatus({
         viewScaleInfo: sharer.getActiveViewScaleInfo(),
-        viewSizeInfo: sharer.getActiveViewSizeInfo()
+        viewSizeInfo: sharer.getActiveViewSizeInfo(),
       });
     }
     return newViewSize;

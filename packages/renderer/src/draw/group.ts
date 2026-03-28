@@ -1,69 +1,87 @@
-import type { Element, ElementType, ElementSize, RendererDrawElementOptions, ViewContext2D } from '@idraw/types';
-import { rotateElement, calcViewBoxSize, calcViewElementSize } from '@idraw/util';
-import { drawCircle } from './circle';
+import type {
+  StrictMaterial,
+  MaterialType,
+  MaterialSize,
+  RendererDrawMaterialOptions,
+  ViewContext2D,
+} from '@idraw/types';
+// import { calcViewMaterialSize } from '@idraw/util';
 import { drawRect } from './rect';
+import { drawCircle } from './circle';
+import { drawEllipse } from './ellipse';
 import { drawImage } from './image';
 import { drawText } from './text';
-import { drawSVG } from './svg';
-import { drawHTML } from './html';
-import { drawBox, drawBoxShadow, getOpacity } from './box';
+import { drawSVGCode } from './svg-code';
+import { drawForeignObject } from './foreign-object';
 import { drawPath } from './path';
+import { drawBase, rotateViewMaterial } from './base';
 
 const visiableMinSize = 0.4; // px;
 
-export function drawElement(ctx: ViewContext2D, elem: Element<ElementType>, opts: RendererDrawElementOptions) {
-  if (elem?.operations?.invisible === true) {
+export function drawMaterial(
+  ctx: ViewContext2D,
+  mtrl: StrictMaterial<MaterialType>,
+  opts: RendererDrawMaterialOptions
+) {
+  if (mtrl?.operations?.invisible === true) {
     return;
   }
-  const { w, h } = elem;
+  const { width, height } = mtrl;
   const { scale } = opts.viewScaleInfo;
-  if ((scale < 1 && (w * scale < visiableMinSize || h * scale < visiableMinSize)) || opts.parentOpacity === 0) {
+  if (
+    (scale < 1 && (width * scale < visiableMinSize || height * scale < visiableMinSize)) ||
+    opts.parentOpacity === 0
+  ) {
     return;
   }
 
-  const { overrideElementMap } = opts;
-  if (overrideElementMap?.[elem.uuid]?.operations?.invisible) {
+  const { overrideMaterialMap } = opts;
+  if (overrideMaterialMap?.[mtrl.id]?.operations?.invisible) {
     return;
   }
 
   try {
-    switch (elem.type) {
+    switch (mtrl.type) {
       case 'rect': {
-        drawRect(ctx, elem as Element<'rect'>, opts);
+        drawRect(ctx, mtrl as StrictMaterial<'rect'>, opts);
         break;
       }
       case 'circle': {
-        drawCircle(ctx, elem as Element<'circle'>, opts);
+        drawCircle(ctx, mtrl as StrictMaterial<'circle'>, opts);
+        break;
+      }
+      case 'ellipse': {
+        drawEllipse(ctx, mtrl as StrictMaterial<'ellipse'>, opts);
         break;
       }
       case 'text': {
-        drawText(ctx, elem as Element<'text'>, opts);
+        drawText(ctx, mtrl as StrictMaterial<'text'>, opts);
         break;
       }
       case 'image': {
-        drawImage(ctx, elem as Element<'image'>, opts);
+        drawImage(ctx, mtrl as StrictMaterial<'image'>, opts);
         break;
       }
-      case 'svg': {
-        drawSVG(ctx, elem as Element<'svg'>, opts);
+      case 'svgCode': {
+        drawSVGCode(ctx, mtrl as StrictMaterial<'svgCode'>, opts);
         break;
       }
-      case 'html': {
-        drawHTML(ctx, elem as Element<'html'>, opts);
+      case 'foreignObject': {
+        drawForeignObject(ctx, mtrl as StrictMaterial<'foreignObject'>, opts);
         break;
       }
       case 'path': {
-        drawPath(ctx, elem as Element<'path'>, opts);
+        drawPath(ctx, mtrl as StrictMaterial<'path'>, opts);
         break;
       }
       case 'group': {
         const assets = {
-          ...(opts.elementAssets || {}),
-          ...((elem as Element<'group'>).detail.assets || {})
+          ...(opts.materialAssets || {}),
+          ...((mtrl as StrictMaterial<'group'>).assets || {}),
         };
-        drawGroup(ctx, elem as Element<'group'>, {
+        drawGroup(ctx, mtrl as StrictMaterial<'group'>, {
           ...opts,
-          elementAssets: assets
+          materialAssets: assets,
         });
         break;
       }
@@ -77,85 +95,73 @@ export function drawElement(ctx: ViewContext2D, elem: Element<ElementType>, opts
   }
 }
 
-export function drawGroup(ctx: ViewContext2D, elem: Element<'group'>, opts: RendererDrawElementOptions) {
-  const { viewScaleInfo, viewSizeInfo, parentOpacity } = opts;
-  const { x, y, w, h, angle } =
-    calcViewElementSize({ x: elem.x, y: elem.y, w: elem.w, h: elem.h, angle: elem.angle }, { viewScaleInfo }) || elem;
-  const viewElem = { ...elem, ...{ x, y, w, h, angle } };
-  rotateElement(ctx, { x, y, w, h, angle }, () => {
-    ctx.globalAlpha = getOpacity(elem) * parentOpacity;
-    drawBoxShadow(ctx, viewElem, {
-      viewScaleInfo,
-      viewSizeInfo,
-      renderContent: () => {
-        drawBox(ctx, viewElem, {
-          originElem: elem,
-          calcElemSize: { x, y, w, h, angle },
-          viewScaleInfo,
-          viewSizeInfo,
-          parentOpacity,
-          renderContent: () => {
-            const { x, y, w, h, radiusList } = calcViewBoxSize(viewElem, {
-              viewScaleInfo,
-              viewSizeInfo
-            });
-            if (elem.detail.overflow === 'hidden') {
-              ctx.save();
+export function drawGroup(ctx: ViewContext2D, mtrl: StrictMaterial<'group'>, opts: RendererDrawMaterialOptions) {
+  // const { viewScaleInfo } = opts;
+  // const { x, y } = calcViewMaterialSize(mtrl, { viewScaleInfo }) || mtrl;
 
-              ctx.fillStyle = 'transparent';
-              ctx.beginPath();
-              ctx.moveTo(x + radiusList[0], y);
-              ctx.arcTo(x + w, y, x + w, y + h, radiusList[1]);
-              ctx.arcTo(x + w, y + h, x, y + h, radiusList[2]);
-              ctx.arcTo(x, y + h, x, y, radiusList[3]);
-              ctx.arcTo(x, y, x + w, y, radiusList[0]);
-              ctx.closePath();
-              ctx.fill('nonzero');
-              ctx.clip('nonzero');
-            }
-
-            if (Array.isArray(elem.detail.children)) {
-              const { parentElementSize: parentSize } = opts;
-              const newParentSize: ElementSize = {
-                x: parentSize.x + elem.x,
-                y: parentSize.y + elem.y,
-                w: elem.w || parentSize.w,
-                h: elem.h || parentSize.h,
-                angle: elem.angle
-              };
-              const { calculator } = opts;
-
-              for (let i = 0; i < elem.detail.children.length; i++) {
-                let child = elem.detail.children[i];
-                child = {
-                  ...child,
-                  ...{
-                    x: newParentSize.x + child.x,
-                    y: newParentSize.y + child.y
-                  }
-                };
-                if (opts.forceDrawAll !== true) {
-                  if (!calculator?.needRender(child)) {
-                    continue;
-                  }
-                }
-
-                try {
-                  drawElement(ctx, child, { ...opts, ...{ parentOpacity: parentOpacity * getOpacity(elem) } });
-                } catch (err) {
-                  // eslint-disable-next-line no-console
-                  console.error(err);
-                }
-              }
-            }
-
-            if (elem.detail.overflow === 'hidden') {
-              ctx.restore();
-            }
-          }
-        });
-      }
-    });
-    ctx.globalAlpha = parentOpacity;
+  rotateViewMaterial(ctx, mtrl, opts, () => {
+    drawBase(ctx, mtrl, opts);
   });
+
+  // // render group children
+  // const { offsetLeft, offsetTop } = viewScaleInfo;
+  // const translateX = x - offsetLeft;
+  // const translateY = y - offsetTop;
+  // // move start point
+  // ctx.translate(translateX, translateY);
+  // rotateViewMaterial(
+  //   ctx,
+  //   {
+  //     ...mtrl,
+  //     x: x - translateX,
+  //     y: y - translateY,
+  //   },
+  //   opts,
+  //   () => {
+  //     // if (mtrl.overflow === 'hidden') {
+  //     //   ctx.save();
+  //     //   // TODO
+  //     // }
+  //     // if (mtrl.overflow === 'hidden') {
+  //     //   ctx.restore();
+  //     // }
+  //   }
+  // );
+  // // reset start point
+  // ctx.translate(-translateX, -translateY);
+
+  if (Array.isArray(mtrl.children)) {
+    const { parentMaterialSize: parentSize } = opts;
+    const newParentSize: MaterialSize = {
+      x: parentSize.x + mtrl.x,
+      y: parentSize.y + mtrl.y,
+      width: mtrl.width || parentSize.width,
+      height: mtrl.height || parentSize.height,
+      angle: mtrl.angle,
+    };
+    const { calculator } = opts;
+
+    for (let i = 0; i < mtrl.children.length; i++) {
+      let child = mtrl.children[i];
+      child = {
+        ...child,
+        ...{
+          x: newParentSize.x + child.x,
+          y: newParentSize.y + child.y,
+        },
+      };
+      if (opts.forceDrawAll !== true) {
+        if (!calculator?.needRender(child)) {
+          continue;
+        }
+      }
+
+      try {
+        drawMaterial(ctx, child, opts);
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error(err);
+      }
+    }
+  }
 }

@@ -1,6 +1,6 @@
-import type { ViewContext2D, PointSize, ElementSize, ViewRectVertexes, Element } from '@idraw/types';
+import type { ViewContext2D, Point, MaterialSize, ViewRectVertexes, StrictMaterial } from '@idraw/types';
 import { calcDistance } from './point';
-// import { calcElementVertexes } from './vertex';
+// import { calcMaterialVertexes } from './vertex';
 
 export function parseRadianToAngle(radian: number): number {
   return (radian / Math.PI) * 180;
@@ -10,10 +10,10 @@ export function parseAngleToRadian(angle: number): number {
   return (angle / 180) * Math.PI;
 }
 
-// export function calcElementCenter(elem: ElementSize): PointSize {
+// export function calcMaterialCenter(mtrl: MaterialSize): Point {
 //   const p = {
-//     x: elem.x + elem.w / 2,
-//     y: elem.y + elem.h / 2
+//     x: mtrl.x + mtrl.w / 2,
+//     y: mtrl.y + mtrl.h / 2
 //   };
 //   return p;
 // }
@@ -21,7 +21,7 @@ export function parseAngleToRadian(angle: number): number {
 export function rotateByCenter(
   ctx: ViewContext2D | CanvasRenderingContext2D | ViewContext2D,
   angle: number,
-  center: PointSize,
+  center: Point,
   callback: (ctx: ViewContext2D | CanvasRenderingContext2D) => void
 ): void {
   const radian = parseAngleToRadian(angle || 0);
@@ -38,40 +38,40 @@ export function rotateByCenter(
   }
 }
 
-export function rotateElement(
+export function rotateMaterial(
   ctx: ViewContext2D | CanvasRenderingContext2D | ViewContext2D,
-  elemSize: ElementSize,
+  mtrlSize: MaterialSize,
   callback: (ctx: ViewContext2D | CanvasRenderingContext2D) => void
 ): void {
-  const center = calcElementCenter(elemSize);
-  rotateByCenter(ctx, elemSize.angle || 0, center, () => {
+  const center = calcMaterialCenter(mtrlSize);
+  rotateByCenter(ctx, mtrlSize.angle || 0, center, () => {
     callback(ctx);
   });
 }
 
-export function calcElementCenter(elem: ElementSize): PointSize {
+export function calcMaterialCenter(mtrl: MaterialSize): Point {
   const p = {
-    x: elem.x + elem.w / 2,
-    y: elem.y + elem.h / 2
+    x: mtrl.x + mtrl.width / 2,
+    y: mtrl.y + mtrl.height / 2,
   };
   return p;
 }
 
-export function calcElementCenterFromVertexes(ves: ViewRectVertexes): PointSize {
+export function calcMaterialCenterFromVertexes(ves: ViewRectVertexes): Point {
   const startX = Math.min(ves[0].x, ves[1].x, ves[2].x, ves[3].x);
   const startY = Math.min(ves[0].y, ves[1].y, ves[2].y, ves[3].y);
   const endX = Math.max(ves[0].x, ves[1].x, ves[2].x, ves[3].x);
   const endY = Math.max(ves[0].y, ves[1].y, ves[2].y, ves[3].y);
-  const elemSize = {
+  const mtrlSize = {
     x: startX,
     y: startY,
-    w: endX - startX,
-    h: endY - startY
+    width: endX - startX,
+    height: endY - startY,
   };
-  return calcElementCenter(elemSize);
+  return calcMaterialCenter(mtrlSize);
 }
 
-export function calcRadian(center: PointSize, start: PointSize, end: PointSize): number {
+export function calcRadian(center: Point, start: Point, end: Point): number {
   const startRadian = calcLineRadian(center, start);
   const endRadian = calcLineRadian(center, end);
 
@@ -89,7 +89,7 @@ export function calcRadian(center: PointSize, start: PointSize, end: PointSize):
   }
 }
 
-function calcLineRadian(center: PointSize, p: PointSize): number {
+function calcLineRadian(center: Point, p: Point): number {
   const x = p.x - center.x;
   const y = p.y - center.y;
   if (x === 0) {
@@ -119,7 +119,7 @@ function calcLineRadian(center: PointSize, p: PointSize): number {
   return 0;
 }
 
-export function rotatePoint(center: PointSize, start: PointSize, radian: number): PointSize {
+export function rotatePoint(center: Point, start: Point, radian: number): Point {
   const startRadian = calcLineRadian(center, start);
 
   const rotateRadian = radian;
@@ -171,31 +171,31 @@ export function rotatePoint(center: PointSize, start: PointSize, radian: number)
   return { x, y };
 }
 
-export function rotatePointInGroup(point: PointSize, groupQueue: Element<'group'>[]): PointSize {
+export function rotatePointInGroup(point: Point, groupQueue: StrictMaterial<'group'>[]): Point {
   if (groupQueue?.length > 0) {
     let resultX = point.x;
     let resultY = point.y;
     groupQueue.forEach((group) => {
-      const { x, y, w, h, angle = 0 } = group;
-      const center = calcElementCenter({ x, y, w, h, angle });
+      const { x, y, width, height, angle = 0 } = group;
+      const center = calcMaterialCenter({ x, y, width, height, angle });
       const temp = rotatePoint(center, { x: resultX, y: resultY }, parseAngleToRadian(angle));
       resultX = temp.x;
       resultY = temp.y;
     });
     return {
       x: resultX,
-      y: resultY
+      y: resultY,
     };
   }
   return point;
 }
 
-export function getElementRotateVertexes(elemSize: ElementSize, center: PointSize, angle: number): ViewRectVertexes {
-  const { x, y, w, h } = elemSize;
+export function getMaterialRotateVertexes(mtrlSize: MaterialSize, center: Point, angle: number): ViewRectVertexes {
+  const { x, y, width, height } = mtrlSize;
   let p1 = { x, y };
-  let p2 = { x: x + w, y };
-  let p3 = { x: x + w, y: y + h };
-  let p4 = { x, y: y + h };
+  let p2 = { x: x + width, y };
+  let p3 = { x: x + width, y: y + height };
+  let p4 = { x, y: y + height };
   if (angle && (angle > 0 || angle < 0)) {
     const radian = parseAngleToRadian(limitAngle(angle));
     p1 = rotatePoint(center, p1, radian);
@@ -206,18 +206,18 @@ export function getElementRotateVertexes(elemSize: ElementSize, center: PointSiz
   return [p1, p2, p3, p4];
 }
 
-export function rotateElementVertexes(elemSize: ElementSize): ViewRectVertexes {
-  const { angle = 0 } = elemSize;
-  const center = calcElementCenter(elemSize);
-  return getElementRotateVertexes(elemSize, center, angle);
+export function rotateMaterialVertexes(mtrlSize: MaterialSize): ViewRectVertexes {
+  const { angle = 0 } = mtrlSize;
+  const center = calcMaterialCenter(mtrlSize);
+  return getMaterialRotateVertexes(mtrlSize, center, angle);
 }
 
-export function rotateVertexes(center: PointSize, ves: ViewRectVertexes, radian: number): ViewRectVertexes {
+export function rotateVertexes(center: Point, ves: ViewRectVertexes, radian: number): ViewRectVertexes {
   return [
     rotatePoint(center, { x: ves[0].x, y: ves[0].y }, radian),
     rotatePoint(center, { x: ves[1].x, y: ves[1].y }, radian),
     rotatePoint(center, { x: ves[2].x, y: ves[2].y }, radian),
-    rotatePoint(center, { x: ves[3].x, y: ves[3].y }, radian)
+    rotatePoint(center, { x: ves[3].x, y: ves[3].y }, radian),
   ];
 }
 

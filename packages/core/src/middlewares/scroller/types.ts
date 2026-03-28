@@ -1,12 +1,16 @@
-import type { Point, ElementSize } from '@idraw/types';
-import { keyXThumbRect, keyYThumbRect, keyPrevPoint, keyActivePoint, keyActiveThumbType, keyHoverXThumbRect, keyHoverYThumbRect } from './config';
+import type { Point, HTMLCSSProps } from '@idraw/types';
+import { keyXThumbStyle, keyYThumbStyle, keyPrevPoint, keyActivePoint, keyActiveThumbType } from './static';
 
 export type DeepScrollerSharedStorage = {
-  [keyXThumbRect]: null | ElementSize;
-  [keyYThumbRect]: null | ElementSize;
-  [keyHoverXThumbRect]: boolean | null;
-  [keyHoverYThumbRect]: boolean | null;
+  [keyXThumbStyle]: null | HTMLCSSProps;
+  [keyYThumbStyle]: null | HTMLCSSProps;
+
   [keyPrevPoint]: null | Point;
   [keyActivePoint]: null | Point;
   [keyActiveThumbType]: null | 'X' | 'Y';
+};
+
+export type ScrollbarStyles = {
+  xThumbStyle: HTMLCSSProps | null;
+  yThumbStyle: HTMLCSSProps | null;
 };

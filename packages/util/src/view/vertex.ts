@@ -1,57 +1,63 @@
-import { PointSize, Element, ElementSize, ViewRectVertexes } from '@idraw/types';
-import { getElementRotateVertexes, calcElementCenter, parseAngleToRadian, rotateVertexes, calcElementCenterFromVertexes } from './rotate';
+import { Point, StrictMaterial, MaterialSize, ViewRectVertexes } from '@idraw/types';
+import {
+  getMaterialRotateVertexes,
+  calcMaterialCenter,
+  parseAngleToRadian,
+  rotateVertexes,
+  calcMaterialCenterFromVertexes,
+} from './rotate';
 
-export function getElementVertexes(elemSize: ElementSize): ViewRectVertexes {
-  const { x, y, h, w } = elemSize;
+export function getMaterialVertexes(mtrlSize: MaterialSize): ViewRectVertexes {
+  const { x, y, height, width } = mtrlSize;
   return [
     { x, y },
-    { x: x + w, y },
-    { x: x + w, y: y + h },
-    { x, y: y + h }
+    { x: x + width, y },
+    { x: x + width, y: y + height },
+    { x, y: y + height },
   ];
 }
 
-export function calcElementVertexes(elemSize: ElementSize) {
-  const { x, y, w, h, angle = 0 } = elemSize;
+export function calcMaterialVertexes(mtrlSize: MaterialSize) {
+  const { x, y, width, height, angle = 0 } = mtrlSize;
   if (angle === 0) {
-    return getElementVertexes(elemSize);
+    return getMaterialVertexes(mtrlSize);
   }
-  return getElementRotateVertexes(elemSize, calcElementCenter({ x, y, w, h, angle }), angle);
+  return getMaterialRotateVertexes(mtrlSize, calcMaterialCenter({ x, y, width, height, angle }), angle);
 }
 
-export function calcElementQueueVertexesQueueInGroup(groupQueue: ElementSize[]): ViewRectVertexes[] {
+export function calcMaterialQueueVertexesQueueInGroup(groupQueue: MaterialSize[]): ViewRectVertexes[] {
   const vesList: ViewRectVertexes[] = [];
   let totalX = 0;
   let totalY = 0;
 
   const rotateActionList: Array<{
-    center: PointSize;
+    center: Point;
     angle: number;
     radian: number;
   }> = [];
 
-  const elemQueue = [...groupQueue];
-  for (let i = 0; i < elemQueue.length; i++) {
-    const { x, y, w, h, angle = 0 } = elemQueue[i];
+  const mtrlQueue = [...groupQueue];
+  for (let i = 0; i < mtrlQueue.length; i++) {
+    const { x, y, width, height, angle = 0 } = mtrlQueue[i];
     totalX += x;
     totalY += y;
-    let ves: [PointSize, PointSize, PointSize, PointSize];
+    let ves: [Point, Point, Point, Point];
     if (i === 0) {
-      const elemSize: ElementSize = { x: totalX, y: totalY, w, h, angle };
-      ves = calcElementVertexes({ x, y, w, h, angle });
+      const mtrlSize: MaterialSize = { x: totalX, y: totalY, width, height, angle };
+      ves = calcMaterialVertexes({ x, y, width, height, angle });
       rotateActionList.push({
-        center: calcElementCenter(elemSize),
+        center: calcMaterialCenter(mtrlSize),
         angle,
-        radian: parseAngleToRadian(angle)
+        radian: parseAngleToRadian(angle),
       });
     } else {
-      const elemSize: ElementSize = { x: totalX, y: totalY, w, h, angle };
-      ves = getElementVertexes(elemSize);
+      const mtrlSize: MaterialSize = { x: totalX, y: totalY, width, height, angle };
+      ves = getMaterialVertexes(mtrlSize);
       for (let aIdx = 0; aIdx < rotateActionList.length; aIdx++) {
         const { center, radian } = rotateActionList[aIdx];
         ves = rotateVertexes(center, ves, radian);
       }
-      const vesCenter = calcElementCenterFromVertexes(ves);
+      const vesCenter = calcMaterialCenterFromVertexes(ves);
       if (angle > 0 || angle < 0) {
         const radian = parseAngleToRadian(angle);
         ves = rotateVertexes(vesCenter, ves, radian);
@@ -59,7 +65,7 @@ export function calcElementQueueVertexesQueueInGroup(groupQueue: ElementSize[]):
       rotateActionList.push({
         center: vesCenter,
         angle,
-        radian: parseAngleToRadian(angle)
+        radian: parseAngleToRadian(angle),
       });
     }
 
@@ -68,18 +74,24 @@ export function calcElementQueueVertexesQueueInGroup(groupQueue: ElementSize[]):
   return vesList;
 }
 
-export function calcElementVertexesQueueInGroup(targetElem: ElementSize, opts: { groupQueue: Element<'group'>[] }): ViewRectVertexes[] {
+export function calcMaterialVertexesQueueInGroup(
+  targetMtrl: MaterialSize,
+  opts: { groupQueue: StrictMaterial<'group'>[] }
+): ViewRectVertexes[] {
   const { groupQueue } = opts;
   if (!(groupQueue.length > 0)) {
-    return [calcElementVertexes(targetElem)];
+    return [calcMaterialVertexes(targetMtrl)];
   }
-  const elemQueue = [...groupQueue, ...[targetElem]];
-  const vesList = calcElementQueueVertexesQueueInGroup(elemQueue);
+  const mtrlQueue = [...groupQueue, ...[targetMtrl]];
+  const vesList = calcMaterialQueueVertexesQueueInGroup(mtrlQueue);
   return vesList;
 }
 
-export function calcElementVertexesInGroup(targetElem: ElementSize, opts: { groupQueue: Element<'group'>[] }): ViewRectVertexes | null {
-  const vesList = calcElementVertexesQueueInGroup(targetElem, opts);
+export function calcMaterialVertexesInGroup(
+  targetMtrl: MaterialSize,
+  opts: { groupQueue: StrictMaterial<'group'>[] }
+): ViewRectVertexes | null {
+  const vesList = calcMaterialVertexesQueueInGroup(targetMtrl, opts);
   const ves = vesList.pop();
   return ves || null;
 }

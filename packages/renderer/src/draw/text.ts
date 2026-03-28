@@ -1,74 +1,106 @@
-import type { Element, RendererDrawElementOptions, ViewContext2D } from '@idraw/types';
-import { rotateElement, calcViewElementSize, enhanceFontFamliy } from '@idraw/util';
-import { is, isColorStr, getDefaultElementDetailConfig } from '@idraw/util';
-import { drawBox, drawBoxShadow, getOpacity } from './box';
+import type { StrictMaterial, RendererDrawMaterialOptions, ViewContext2D } from '@idraw/types';
+import { enhanceFontFamliy, calcViewMaterialSize } from '@idraw/util';
+import { getDefaultMaterialAttributes } from '@idraw/util';
+import { rotateViewMaterial, drawClipPath } from './base';
+import { createColor } from './color';
 
-const detailConfig = getDefaultElementDetailConfig();
+const defaultAttrs = getDefaultMaterialAttributes();
 
-export function drawText(ctx: ViewContext2D, elem: Element<'text'>, opts: RendererDrawElementOptions) {
-  const { viewScaleInfo, viewSizeInfo, parentOpacity, calculator } = opts;
-  const { x, y, w, h, angle } = calcViewElementSize(elem, { viewScaleInfo }) || elem;
-  const viewElem = { ...elem, ...{ x, y, w, h, angle } };
-  rotateElement(ctx, { x, y, w, h, angle }, () => {
-    drawBoxShadow(ctx, viewElem, {
-      viewScaleInfo,
-      viewSizeInfo,
-      renderContent: () => {
-        drawBox(ctx, viewElem, {
-          originElem: elem,
-          calcElemSize: { x, y, w, h, angle },
-          viewScaleInfo,
-          viewSizeInfo,
-          parentOpacity
-        });
-      }
-    });
+export function drawText(ctx: ViewContext2D, mtrl: StrictMaterial<'text'>, opts: RendererDrawMaterialOptions) {
+  const { viewScaleInfo, viewSizeInfo, calculator } = opts;
+  const viewMaterialSize = calcViewMaterialSize(mtrl, { viewScaleInfo }) || mtrl;
+
+  const { scale } = viewScaleInfo;
+
+  rotateViewMaterial(ctx, mtrl, opts, ({ viewWorldSize }) => {
     {
-      const detail: Element<'text'>['detail'] = {
-        ...detailConfig,
-        ...elem.detail
+      const attributes = {
+        ...defaultAttrs,
+        ...mtrl,
       };
-      const originFontSize = detail.fontSize || detailConfig.fontSize;
+      const { x, y } = viewWorldSize;
+
+      const originFontSize = attributes.fontSize || defaultAttrs.fontSize;
       const fontSize = originFontSize * viewScaleInfo.scale;
+
+      const {
+        opacity,
+        fill,
+        fillOpacity,
+        stroke,
+        strokeWidth,
+        strokeOpacity,
+        strokeLinecap,
+        strokeLinejoin,
+        strokeDasharray,
+        strokeDashoffset,
+        strokeMiterlimit,
+      } = attributes;
 
       if (fontSize < 2) {
         return;
       }
 
-      const { parentOpacity } = opts;
-      const opacity = getOpacity(elem) * parentOpacity;
-      ctx.globalAlpha = opacity;
-      ctx.fillStyle = elem.detail.color || detailConfig.color;
+      const originGlobalAlpha = ctx.globalAlpha;
+      const virtualTextAttributes = calculator.getVirtualItem(mtrl.id);
       ctx.textBaseline = 'top';
       ctx.$setFont({
-        fontWeight: detail.fontWeight,
+        fontWeight: attributes.fontWeight,
         fontSize: fontSize,
-        fontFamily: enhanceFontFamliy(detail.fontFamily)
+        fontFamily: enhanceFontFamliy(attributes.fontFamily),
       });
 
-      {
-        const virtualTextDetail = calculator.getVirtualFlatItem(elem.uuid);
-        if (Array.isArray(virtualTextDetail?.textLines) && virtualTextDetail?.textLines?.length > 0) {
-          if (detail.textShadowColor !== undefined && isColorStr(detail.textShadowColor)) {
-            ctx.shadowColor = detail.textShadowColor;
-          }
-          if (detail.textShadowOffsetX !== undefined && is.number(detail.textShadowOffsetX)) {
-            ctx.shadowOffsetX = detail.textShadowOffsetX;
-          }
-          if (detail.textShadowOffsetY !== undefined && is.number(detail.textShadowOffsetY)) {
-            ctx.shadowOffsetY = detail.textShadowOffsetY;
-          }
-          if (detail.textShadowBlur !== undefined && is.number(detail.textShadowBlur)) {
-            ctx.shadowBlur = detail.textShadowBlur;
+      drawClipPath(ctx, mtrl, {
+        viewScaleInfo,
+        viewSizeInfo,
+        calculator,
+        renderContent: () => {
+          // fill
+          if (fill) {
+            if (typeof fillOpacity === 'number' && fillOpacity > 0) {
+              ctx.globalAlpha = originGlobalAlpha * fillOpacity * opacity;
+            }
+            ctx.fillStyle = createColor(ctx, fill, { viewMaterialSize, viewScaleInfo, opacity: mtrl.opacity || 1 });
+            if (Array.isArray(virtualTextAttributes?.textLines) && virtualTextAttributes?.textLines?.length > 0) {
+              virtualTextAttributes?.textLines?.forEach((line) => {
+                ctx.fillText(line.text, x + line.x * viewScaleInfo.scale, y + line.y * viewScaleInfo.scale);
+              });
+            }
+            ctx.globalAlpha = originGlobalAlpha;
           }
 
-          virtualTextDetail?.textLines?.forEach((line) => {
-            ctx.fillText(line.text, x + line.x * viewScaleInfo.scale, y + line.y * viewScaleInfo.scale);
-          });
-        }
-      }
+          // stroke
+          if (typeof strokeWidth === 'number' && strokeWidth > 0) {
+            if (typeof strokeOpacity === 'number' && strokeOpacity > 0) {
+              ctx.globalAlpha = originGlobalAlpha * strokeOpacity * opacity;
+            }
 
-      ctx.globalAlpha = parentOpacity;
+            ctx.lineCap = strokeLinecap;
+            ctx.lineJoin = strokeLinejoin;
+            ctx.lineDashOffset = strokeDashoffset;
+            ctx.miterLimit = strokeMiterlimit;
+
+            if (Array.isArray(strokeDasharray)) {
+              const lineDash = strokeDasharray.map((dash) => scale * dash);
+              ctx.setLineDash(lineDash);
+            }
+            ctx.lineWidth = strokeWidth * scale;
+            ctx.strokeStyle = stroke as string; // TODO
+
+            virtualTextAttributes?.textLines?.forEach((line) => {
+              ctx.strokeText(line.text, x + line.x * viewScaleInfo.scale, y + line.y * viewScaleInfo.scale);
+            });
+            ctx.setLineDash([]);
+
+            // reset
+            ctx.lineCap = defaultAttrs.strokeLinecap;
+            ctx.lineJoin = defaultAttrs.strokeLinejoin;
+            ctx.lineDashOffset = defaultAttrs.strokeDashoffset;
+            ctx.miterLimit = defaultAttrs.strokeMiterlimit;
+            ctx.globalAlpha = originGlobalAlpha;
+          }
+        },
+      });
     }
   });
 }

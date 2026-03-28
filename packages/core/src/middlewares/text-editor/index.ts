@@ -1,85 +1,122 @@
-import type { Middleware, CoreEventMap, Element, ElementSize, ViewScaleInfo, ElementPosition } from '@idraw/types';
-import { limitAngle, getDefaultElementDetailConfig, enhanceFontFamliy, updateElementInList } from '@idraw/util';
-import { coreEventKeys } from '../../config';
+import type {
+  Middleware,
+  CoreEventMap,
+  StrictMaterial,
+  MaterialPosition,
+  MiddlewareTextEditorStyles,
+  MiddlewareTextEditorConfig,
+} from '@idraw/types';
+import {
+  updateMaterialInList,
+  getGroupQueueByMaterialPosition,
+  getMaterialAndGroupQueueFromList,
+  addClassName,
+  removeClassName,
+  createHTMLElement,
+  setHTMLCSSProps,
+} from '@idraw/util';
+import { coreEventKeys } from '../../static';
+import { initStyles, destroyStyles, resetTextArea } from './dom';
+import { classNameMap, getRootClassName, defaultStyles, getMiddlewareTextEditorStyles } from './static';
+import type { TextEditEvent, InnerOptions, ExtendEventMap } from './types';
+import { triggerChangeEvent } from '../common';
 
-type TextEditEvent = {
-  element: Element<'text'>;
-  position: ElementPosition;
-  groupQueue: Element<'group'>[];
-  viewScaleInfo: ViewScaleInfo;
-};
+export { getMiddlewareTextEditorStyles };
 
-type TextChangeEvent = {
-  element: {
-    uuid: string;
-    detail: {
-      text: string;
-    };
-  };
-  position: ElementPosition;
-};
-
-type ExtendEventMap = Record<typeof coreEventKeys.TEXT_EDIT, TextEditEvent> &
-  Record<typeof coreEventKeys.TEXT_CHANGE, TextChangeEvent>;
-
-const defaultElementDetail = getDefaultElementDetailConfig();
-
-export const MiddlewareTextEditor: Middleware<ExtendEventMap, CoreEventMap & ExtendEventMap> = (opts) => {
-  const { eventHub, boardContent, viewer, sharer, calculator } = opts;
+export const MiddlewareTextEditor: Middleware<
+  ExtendEventMap,
+  CoreEventMap & ExtendEventMap,
+  MiddlewareTextEditorConfig
+> = (options, config) => {
+  const { eventHub, boardContent, viewer, sharer, calculator } = options;
   const canvas = boardContent.boardContext.canvas;
-  const container = opts.container || document.body;
-  let textarea = document.createElement('div');
-  textarea.setAttribute('contenteditable', 'true');
-  let canvasWrapper = document.createElement('div');
-  let mask = document.createElement('div');
-  let activeElem: Element<'text'> | null = null;
-  let activePosition: ElementPosition = [];
+  const container = options.container || document.body;
+
+  const innerConfig = { ...defaultStyles, ...config };
+
+  const styles: MiddlewareTextEditorStyles = getMiddlewareTextEditorStyles(innerConfig);
+
+  let activeMtrl: StrictMaterial<'text'> | null = null;
+  let activePosition: MaterialPosition = [];
   let originText: string = '';
+  let isShow: boolean | null = false;
 
   const id = `idraw-middleware-text-editor-${Math.random().toString(26).substring(2)}`;
-  mask.setAttribute('id', id);
-  canvasWrapper.appendChild(textarea);
+  const rootClassName = getRootClassName();
 
-  canvasWrapper.style.position = 'absolute';
-  mask.appendChild(canvasWrapper);
+  let textarea: HTMLDivElement | null = null;
+  let canvasWrapper: HTMLDivElement | null = null;
+  let root: HTMLDivElement | null = null;
 
-  mask.style.position = 'fixed';
-  mask.style.top = '0';
-  mask.style.bottom = '0';
-  mask.style.left = '0';
-  mask.style.right = '0';
-  mask.style.display = 'none';
-  container.appendChild(mask);
+  const initDOM = () => {
+    if (isShow === true) {
+      return;
+    }
+    textarea = createHTMLElement('div', {
+      className: classNameMap.textarea,
+      contenteditable: 'true',
+    });
+    canvasWrapper = createHTMLElement(
+      'div',
+      {
+        className: classNameMap.canvasWrapper,
+      },
+      [textarea]
+    );
+    root = createHTMLElement(
+      'div',
+      {
+        id,
+        className: rootClassName,
+      },
+      [canvasWrapper]
+    );
+    container.appendChild(root);
+  };
 
-  const showTextArea = (e: TextEditEvent) => {
+  const destroyDOM = () => {
+    root?.remove();
+  };
+
+  const showTextArea = (e: InnerOptions) => {
+    if (!root || !textarea) {
+      return;
+    }
     resetCanvasWrapper();
-    resetTextArea(e);
-    mask.style.display = 'block';
+    resetTextArea(textarea, canvasWrapper, e);
+    removeClassName(root, [classNameMap.hide]);
     originText = '';
-    if (activeElem?.uuid) {
-      sharer.setActiveOverrideElemenentMap({
-        [activeElem.uuid]: {
-          operations: { invisible: true }
-        }
+    isShow = true;
+    // moveCursorToEnd(textarea);
+    textarea.focus();
+    if (activeMtrl?.id) {
+      sharer.setActiveOverrideMaterialMap({
+        [activeMtrl.id]: {
+          operations: { invisible: true },
+        },
       });
-      originText = activeElem.detail.text || '';
+      originText = activeMtrl.text || '';
       viewer.drawFrame();
     }
   };
 
   const hideTextArea = () => {
-    if (activeElem?.uuid) {
-      const map = sharer.getActiveOverrideElemenentMap();
+    if (activeMtrl?.id) {
+      const map = sharer.getActiveOverrideMaterialMap();
       if (map) {
-        delete map[activeElem.uuid];
+        delete map[activeMtrl.id];
       }
-      sharer.setActiveOverrideElemenentMap(map);
+      sharer.setActiveOverrideMaterialMap(map);
       viewer.drawFrame();
     }
+    if (root) {
+      addClassName(root, [classNameMap.hide]);
+    }
 
-    mask.style.display = 'none';
-    activeElem = null;
+    activeMtrl = null;
     activePosition = [];
+    isShow = false;
+    destroyDOM();
   };
 
   const getCanvasRect = () => {
@@ -88,215 +125,120 @@ export const MiddlewareTextEditor: Middleware<ExtendEventMap, CoreEventMap & Ext
     return { left, top, width, height };
   };
 
-  const createBox = (opts: { size: ElementSize; parent: HTMLDivElement }) => {
-    const { size, parent } = opts;
-    const div = document.createElement('div');
-    const { x, y, w, h } = size;
-    const angle = limitAngle(size.angle || 0);
-    div.style.position = 'absolute';
-    div.style.left = `${x}px`;
-    div.style.top = `${y}px`;
-    div.style.width = `${w}px`;
-    div.style.height = `${h}px`;
-    div.style.transform = `rotate(${angle}deg)`;
-    parent.appendChild(div);
-    return div;
-  };
-
-  const resetTextArea = (e: TextEditEvent) => {
-    const { viewScaleInfo, element, groupQueue } = e;
-    const { scale, offsetTop, offsetLeft } = viewScaleInfo;
-
-    if (canvasWrapper.children) {
-      Array.from(canvasWrapper.children).forEach((child) => {
-        child.remove();
-      });
-    }
-    let parent = canvasWrapper;
-    for (let i = 0; i < groupQueue.length; i++) {
-      const group = groupQueue[i];
-      const { x, y, w, h } = group;
-      const angle = limitAngle(group.angle || 0);
-      const size = {
-        x: x * scale,
-        y: y * scale,
-        w: w * scale,
-        h: h * scale,
-        angle
-      };
-      if (i === 0) {
-        size.x += offsetLeft;
-        size.y += offsetTop;
-      }
-      parent = createBox({ size, parent });
-    }
-
-    const detail = {
-      ...defaultElementDetail,
-      ...element.detail
-    };
-
-    let elemX = element.x * scale + offsetLeft;
-    let elemY = element.y * scale + offsetTop;
-    let elemW = element.w * scale;
-    let elemH = element.h * scale;
-
-    if (groupQueue.length > 0) {
-      elemX = element.x * scale;
-      elemY = element.y * scale;
-      elemW = element.w * scale;
-      elemH = element.h * scale;
-    }
-
-    let justifyContent: ElementCSSInlineStyle['style']['justifyContent'] = 'center';
-    let alignItems = 'center';
-    if (detail.textAlign === 'left') {
-      justifyContent = 'start';
-    } else if (detail.textAlign === 'right') {
-      justifyContent = 'end';
-    }
-
-    if (detail.verticalAlign === 'top') {
-      alignItems = 'start';
-    } else if (detail.verticalAlign === 'bottom') {
-      alignItems = 'end';
-    }
-
-    textarea.style.display = 'inline-flex';
-    textarea.style.flexDirection = 'column';
-    textarea.style.justifyContent = justifyContent;
-    textarea.style.alignItems = alignItems;
-
-    textarea.style.position = 'absolute';
-    textarea.style.left = `${elemX - 1}px`;
-    textarea.style.top = `${elemY - 1}px`;
-    textarea.style.width = `${elemW + 2}px`;
-    textarea.style.height = `${elemH + 2}px`;
-    textarea.style.transform = `rotate(${limitAngle(element.angle || 0)}deg)`;
-    // textarea.style.border = 'none';
-    textarea.style.boxSizing = 'border-box';
-    textarea.style.border = '1px solid #1973ba';
-    textarea.style.resize = 'none';
-    textarea.style.overflow = 'hidden';
-    textarea.style.wordBreak = 'break-all';
-    textarea.style.borderRadius = `${(typeof detail.borderRadius === 'number' ? detail.borderRadius : 0) * scale}px`;
-    textarea.style.background = `${detail.background || 'transparent'}`;
-    textarea.style.color = `${detail.color || '#333333'}`;
-    textarea.style.fontSize = `${detail.fontSize * scale}px`;
-    textarea.style.lineHeight = `${(detail.lineHeight || detail.fontSize) * scale}px`;
-    textarea.style.fontFamily = enhanceFontFamliy(detail.fontFamily);
-    textarea.style.fontWeight = `${detail.fontWeight}`;
-    textarea.style.padding = '0';
-    textarea.style.margin = '0';
-    textarea.style.outline = 'none';
-
-    // textarea.value = detail.text || '';
-    textarea.innerText = detail.text || '';
-    parent.appendChild(textarea);
-  };
-
   const resetCanvasWrapper = () => {
+    if (!canvasWrapper) {
+      return;
+    }
     const { left, top, width, height } = getCanvasRect();
-    canvasWrapper.style.position = 'absolute';
-    canvasWrapper.style.overflow = 'hidden';
-    canvasWrapper.style.top = `${top}px`;
-    canvasWrapper.style.left = `${left}px`;
-    canvasWrapper.style.width = `${width}px`;
-    canvasWrapper.style.height = `${height}px`;
-    // canvasWrapper.style.background = '#000000';
+    setHTMLCSSProps(canvasWrapper, {
+      position: 'absolute',
+      overflow: 'hidden',
+      top: `${top}px`,
+      left: `${left}px`,
+      width: `${width}px`,
+      height: `${height}px`,
+    });
   };
 
   const maskClickEvent = () => {
     hideTextArea();
   };
 
-  const textareaClickEvent = (e: MouseEvent) => {
+  const textareaDoubleClickEvent = (e: MouseEvent) => {
     e.stopPropagation();
+    e.preventDefault();
+    window?.getSelection()?.removeAllRanges();
+  };
+  const textareaSelectStartEvent = (e: any) => {
+    if (e.attributes === 2) {
+      // attributes=2 double click
+      e.preventDefault();
+    }
   };
 
   const textareaInputEvent = () => {
-    if (activeElem && activePosition) {
-      // activeElem.detail.text = (e.target as any).value || '';
-      activeElem.detail.text = textarea.innerText || '';
+    if (!textarea) {
+      return;
+    }
+    if (activeMtrl && activePosition) {
+      // activeMtrl.text = (e.target as any).value || '';
+      activeMtrl.text = textarea.innerText || '';
       eventHub.trigger(coreEventKeys.TEXT_CHANGE, {
-        element: {
-          uuid: activeElem.uuid,
-          detail: {
-            text: activeElem.detail.text
-          }
+        material: {
+          id: activeMtrl.id,
+          attributes: {
+            text: activeMtrl.text,
+          },
         },
-        position: [...(activePosition || [])]
+        position: [...(activePosition || [])],
       });
-      calculator.modifyText(activeElem);
+      const virtualItem = calculator.getVirtualItem(activeMtrl.id);
+      const data = sharer.getActiveStorage('data') || { materials: [] };
+      calculator.modifyVirtualAttributes(activeMtrl, {
+        viewScaleInfo: sharer.getActiveViewScaleInfo(),
+        viewSizeInfo: sharer.getActiveViewSizeInfo(),
+        groupQueue: getGroupQueueByMaterialPosition(data.materials, virtualItem?.position || []) || [],
+      });
       viewer.drawFrame();
     }
   };
 
   const textareaBlurEvent = () => {
-    if (activeElem && activePosition) {
-      activeElem.detail.text = textarea.innerText || '';
+    if (activeMtrl && activePosition) {
+      activeMtrl.text = textarea?.innerText || '';
       eventHub.trigger(coreEventKeys.TEXT_CHANGE, {
-        element: {
-          uuid: activeElem.uuid,
-          detail: {
-            text: activeElem.detail.text
-          }
+        material: {
+          id: activeMtrl.id,
+          attributes: {
+            text: activeMtrl.text,
+          },
         },
-        position: [...activePosition]
+        position: [...activePosition],
       });
 
-      const data = sharer.getActiveStorage('data') || { elements: [] };
+      const data = sharer.getActiveStorage('data') || { materials: [] };
       const updateContent = {
-        detail: {
-          text: activeElem.detail.text
-        }
+        text: activeMtrl.text,
       };
-      updateElementInList(activeElem.uuid, updateContent, data.elements);
+      updateMaterialInList(activeMtrl.id, updateContent, data.materials);
 
-      eventHub.trigger(coreEventKeys.CHANGE, {
-        selectedElements: [
+      triggerChangeEvent(eventHub, {
+        selectedMaterials: [
           {
-            ...activeElem,
-            detail: {
-              ...activeElem.detail,
-              ...updateContent.detail
-            }
-          }
+            ...activeMtrl,
+            ...activeMtrl,
+            ...updateContent,
+          },
         ],
         data,
-        type: 'modifyElement',
+        type: 'modifyMaterial',
         modifyRecord: {
-          type: 'modifyElement',
+          type: 'modifyMaterial',
           time: Date.now(),
           content: {
-            method: 'modifyElement',
-            uuid: activeElem.uuid as string,
+            method: 'modifyMaterial',
+            id: activeMtrl.id as string,
             before: {
-              'detail.text': originText
+              'attributes.text': originText,
             },
             after: {
-              'detail.text': activeElem.detail.text
-            }
-          }
-        }
+              'attributes.text': activeMtrl.text,
+            },
+          },
+        },
       });
-
-      calculator.modifyText(activeElem);
+      const virtualItem = calculator.getVirtualItem(activeMtrl.id);
+      calculator.modifyVirtualAttributes(activeMtrl, {
+        viewScaleInfo: sharer.getActiveViewScaleInfo(),
+        viewSizeInfo: sharer.getActiveViewSizeInfo(),
+        groupQueue: getGroupQueueByMaterialPosition(data.materials, virtualItem?.position || []) || [],
+      });
       viewer.drawFrame();
     }
-
     hideTextArea();
   };
 
-  const textareaKeyDownEvent = (e: KeyboardEvent) => {
-    e.stopPropagation();
-  };
-
-  const textareaKeyPressEvent = (e: KeyboardEvent) => {
-    e.stopPropagation();
-  };
-
-  const textareaKeyUpEvent = (e: KeyboardEvent) => {
+  const preventDefaultEvent = (e: KeyboardEvent | MouseEvent) => {
     e.stopPropagation();
   };
 
@@ -305,51 +247,102 @@ export const MiddlewareTextEditor: Middleware<ExtendEventMap, CoreEventMap & Ext
     e.preventDefault();
   };
 
-  mask.addEventListener('click', maskClickEvent);
-  textarea.addEventListener('click', textareaClickEvent);
-  textarea.addEventListener('input', textareaInputEvent);
-  textarea.addEventListener('blur', textareaBlurEvent);
-  textarea.addEventListener('keydown', textareaKeyDownEvent);
-  textarea.addEventListener('keypress', textareaKeyPressEvent);
-  textarea.addEventListener('keyup', textareaKeyUpEvent);
-  textarea.addEventListener('wheel', textareaWheelEvent);
+  const onEvents = () => {
+    root?.addEventListener('click', maskClickEvent);
+    textarea?.addEventListener('mousedown', preventDefaultEvent);
+    textarea?.addEventListener('mouseover', preventDefaultEvent);
+    textarea?.addEventListener('mouseenter', preventDefaultEvent);
+    textarea?.addEventListener('mouseleave', preventDefaultEvent);
+    textarea?.addEventListener('dblclick', textareaDoubleClickEvent);
+    textarea?.addEventListener('selectstart', textareaSelectStartEvent);
+    textarea?.addEventListener('click', preventDefaultEvent);
+    textarea?.addEventListener('input', textareaInputEvent);
+    textarea?.addEventListener('blur', textareaBlurEvent);
+    textarea?.addEventListener('keydown', preventDefaultEvent);
+    textarea?.addEventListener('keypress', preventDefaultEvent);
+    textarea?.addEventListener('keyup', preventDefaultEvent);
+    textarea?.addEventListener('wheel', textareaWheelEvent);
+  };
+
+  const offEvents = () => {
+    root?.removeEventListener('click', maskClickEvent);
+    textarea?.removeEventListener('mousedown', preventDefaultEvent);
+    textarea?.removeEventListener('mouseover', preventDefaultEvent);
+    textarea?.removeEventListener('mouseenter', preventDefaultEvent);
+    textarea?.removeEventListener('mouseleave', preventDefaultEvent);
+    textarea?.removeEventListener('dblclick', textareaDoubleClickEvent);
+    textarea?.removeEventListener('selectstart', textareaSelectStartEvent);
+    textarea?.removeEventListener('click', preventDefaultEvent);
+    textarea?.removeEventListener('input', textareaInputEvent);
+    textarea?.removeEventListener('blur', textareaBlurEvent);
+    textarea?.removeEventListener('keydown', preventDefaultEvent);
+    textarea?.removeEventListener('keypress', preventDefaultEvent);
+    textarea?.removeEventListener('keyup', preventDefaultEvent);
+    textarea?.removeEventListener('wheel', textareaWheelEvent);
+  };
 
   const textEditCallback = (e: TextEditEvent) => {
-    if (e?.position && e?.element && e?.element?.type === 'text') {
-      activeElem = e.element;
-      activePosition = e.position;
+    const { id } = e;
+    if (!(typeof id === 'string' && id)) {
+      return;
     }
-    showTextArea(e);
+    initDOM();
+    onEvents();
+
+    const data = sharer.getActiveStorage('data');
+    const { material, groupQueue, position } = getMaterialAndGroupQueueFromList(id, data.materials);
+
+    if (material?.type === 'text') {
+      activeMtrl = material as StrictMaterial<'text'>;
+      activePosition = position;
+
+      showTextArea({
+        material: activeMtrl,
+        groupQueue,
+        viewScaleInfo: sharer.getActiveViewScaleInfo(),
+        styles,
+      });
+    }
+  };
+
+  const preventAction = () => {
+    if (isShow === true) {
+      return false;
+    }
   };
 
   return {
     name: '@middleware/text-editor',
     use() {
+      initStyles(rootClassName, styles);
       eventHub.on(coreEventKeys.TEXT_EDIT, textEditCallback);
     },
     disuse() {
+      destroyStyles(rootClassName);
       eventHub.off(coreEventKeys.TEXT_EDIT, textEditCallback);
-      mask.removeEventListener('click', maskClickEvent);
-      textarea.removeEventListener('click', textareaClickEvent);
-      textarea.removeEventListener('input', textareaInputEvent);
-      textarea.removeEventListener('blur', textareaBlurEvent);
-      textarea.removeEventListener('keydown', textareaKeyDownEvent);
-      textarea.removeEventListener('keypress', textareaKeyPressEvent);
-      textarea.removeEventListener('keyup', textareaKeyUpEvent);
-      textarea.removeEventListener('wheel', textareaWheelEvent);
-      canvasWrapper.removeChild(textarea);
-      mask.removeChild(canvasWrapper);
-      container.removeChild(mask);
+      offEvents();
+      destroyDOM();
 
-      textarea.remove();
-      canvasWrapper.remove();
-      mask = null as any;
       textarea = null as any;
       canvasWrapper = null as any;
-      mask = null as any;
-      activeElem = null;
+      root = null as any;
+
+      activeMtrl = null;
       activePosition = null as any;
       originText = null as any;
-    }
+    },
+
+    hover: preventAction,
+    pointStart: preventAction,
+    pointMove: preventAction,
+    pointEnd: preventAction,
+    pointLeave: preventAction,
+    doubleClick: preventAction,
+    contextMenu: preventAction,
+    wheel: preventAction,
+    wheelScale: preventAction,
+    scrollX: preventAction,
+    scrollY: preventAction,
+    resize: preventAction,
   };
 };

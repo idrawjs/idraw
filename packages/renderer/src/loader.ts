@@ -5,69 +5,80 @@ import type {
   LoadContent,
   LoadItem,
   LoadItemMap,
-  LoadElementType,
-  Element,
-  ElementAssets,
-  RecursivePartial
+  LoadMaterialType,
+  StrictMaterial,
+  MaterialAssets,
+  RecursivePartial,
 } from '@idraw/types';
-import { loadImage, loadHTML, loadSVG, EventEmitter, createAssetId, isAssetId, createUUID } from '@idraw/util';
+import {
+  loadImage,
+  loadForeignObject,
+  loadSVGCode,
+  EventEmitter,
+  createAssetId,
+  isAssetId,
+  createUUID,
+} from '@idraw/util';
 
-const supportElementTypes: LoadElementType[] = ['image', 'svg', 'html'];
+const supportMaterialTypes: LoadMaterialType[] = ['image', 'svgCode', 'foreignObject'];
 
-const getAssetIdFromElement = (element: Element<'image' | 'svg' | 'html'>) => {
+const getAssetIdFromMaterial = (material: StrictMaterial<'image' | 'svgCode' | 'foreignObject'>) => {
   let source: string | null = null;
-  if (element.type === 'image') {
-    source = (element as Element<'image'>)?.detail?.src || null;
-  } else if (element.type === 'svg') {
-    source = (element as Element<'svg'>)?.detail?.svg || null;
-  } else if (element.type === 'html') {
-    source = (element as Element<'html'>)?.detail?.html || null;
+  if (material.type === 'image') {
+    source = (material as StrictMaterial<'image'>)?.href || null;
+  } else if (material.type === 'svgCode') {
+    source = (material as StrictMaterial<'svgCode'>)?.code || null;
+  } else if (material.type === 'foreignObject') {
+    source = (material as StrictMaterial<'foreignObject'>)?.content || null;
   }
   if (typeof source === 'string' && source) {
     if (isAssetId(source)) {
       return source;
     }
-    return createAssetId(source, element.uuid);
+    return createAssetId(source, material.id);
   }
-  return createAssetId(`${createUUID()}-${element.uuid}-${createUUID()}-${createUUID()}`, element.uuid);
+  return createAssetId(`${createUUID()}-${material.id}-${createUUID()}-${createUUID()}`, material.id);
 };
 
 export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoader {
-  #loadFuncMap: Record<LoadElementType | string, LoadFunc<LoadElementType, LoadContent>> = {};
+  #loadFuncMap: Record<LoadMaterialType | string, LoadFunc<LoadMaterialType, LoadContent>> = {};
   #currentLoadItemMap: LoadItemMap = {};
   #storageLoadItemMap: LoadItemMap = {};
   #hasDestroyed: boolean = false;
 
   constructor() {
     super();
-    this.#registerLoadFunc<'image'>('image', async (elem: Element<'image'>, assets: ElementAssets) => {
-      const src = assets[elem.detail.src]?.value || elem.detail.src;
-      const content = await loadImage(src);
+    this.#registerLoadFunc<'image'>('image', async (mtrl: StrictMaterial<'image'>, assets: MaterialAssets) => {
+      const href = assets[mtrl.href]?.value || mtrl.href;
+      const content = await loadImage(href);
       return {
-        uuid: elem.uuid,
+        id: mtrl.id,
         lastModified: Date.now(),
-        content
+        content,
       };
     });
-    this.#registerLoadFunc<'html'>('html', async (elem: Element<'html'>, assets: ElementAssets) => {
-      const html = assets[elem.detail.html]?.value || elem.detail.html;
-      const content = await loadHTML(html, {
-        width: elem.detail.originW || elem.w,
-        height: elem.detail.originH || elem.h
-      });
+    this.#registerLoadFunc<'foreignObject'>(
+      'foreignObject',
+      async (mtrl: StrictMaterial<'foreignObject'>, assets: MaterialAssets) => {
+        const html = assets[mtrl.content]?.value || mtrl.content;
+        const content = await loadForeignObject(html, {
+          width: mtrl.originW || mtrl.width,
+          height: mtrl.originH || mtrl.height,
+        });
+        return {
+          id: mtrl.id,
+          lastModified: Date.now(),
+          content,
+        };
+      }
+    );
+    this.#registerLoadFunc<'svgCode'>('svgCode', async (mtrl: StrictMaterial<'svgCode'>, assets: MaterialAssets) => {
+      const svg = assets[mtrl.code]?.value || mtrl.code;
+      const content = await loadSVGCode(svg);
       return {
-        uuid: elem.uuid,
+        id: mtrl.id,
         lastModified: Date.now(),
-        content
-      };
-    });
-    this.#registerLoadFunc<'svg'>('svg', async (elem: Element<'svg'>, assets: ElementAssets) => {
-      const svg = assets[elem.detail.svg]?.value || elem.detail.svg;
-      const content = await loadSVG(svg);
-      return {
-        uuid: elem.uuid,
-        lastModified: Date.now(),
-        content
+        content,
       };
     });
   }
@@ -84,23 +95,26 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
     this.#storageLoadItemMap = {};
   }
 
-  resetElementAsset(element: Element<LoadElementType> | RecursivePartial<Element>) {
-    if (supportElementTypes.includes((element as Element<LoadElementType>).type)) {
+  resetMaterialAsset(material: StrictMaterial<LoadMaterialType> | RecursivePartial<StrictMaterial>) {
+    if (supportMaterialTypes.includes((material as StrictMaterial<LoadMaterialType>).type)) {
       let assetId: string | null = null;
       let resource: string | null = null;
-      if (element.type === 'image' && typeof (element as Element<'image'>)?.detail?.src === 'string') {
-        resource = (element as Element<'image'>).detail.src;
-      } else if (element.type === 'svg' && typeof (element as Element<'svg'>)?.detail?.svg === 'string') {
-        resource = (element as Element<'svg'>).detail.svg;
-      } else if (element.type === 'html' && typeof (element as Element<'html'>)?.detail?.html === 'string') {
-        resource = (element as Element<'html'>).detail.html;
+      if (material.type === 'image' && typeof (material as StrictMaterial<'image'>)?.href === 'string') {
+        resource = (material as StrictMaterial<'image'>).href;
+      } else if (material.type === 'svgCode' && typeof (material as StrictMaterial<'svgCode'>)?.code === 'string') {
+        resource = (material as StrictMaterial<'svgCode'>).code;
+      } else if (
+        material.type === 'foreignObject' &&
+        typeof (material as StrictMaterial<'foreignObject'>)?.content === 'string'
+      ) {
+        resource = (material as StrictMaterial<'foreignObject'>).content;
       }
       if (typeof resource === 'string') {
-        this.load(element as Element<LoadElementType>, {});
+        this.load(material as StrictMaterial<LoadMaterialType>, {});
         if (isAssetId(resource)) {
           assetId = resource;
-        } else if (element.uuid) {
-          assetId = createAssetId(resource, element.uuid);
+        } else if (material.id) {
+          assetId = createAssetId(resource, material.id);
         }
       }
       if (assetId && isAssetId(assetId)) {
@@ -118,38 +132,38 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
     this.#storageLoadItemMap = null as any;
   }
 
-  #registerLoadFunc<T extends LoadElementType>(type: T, func: LoadFunc<T, LoadContent>) {
+  #registerLoadFunc<T extends LoadMaterialType>(type: T, func: LoadFunc<T, LoadContent>) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     this.#loadFuncMap[type] = func;
   }
 
-  #getLoadElementSource(element: Element<LoadElementType>): null | string {
+  #getLoadMaterialSource(material: StrictMaterial<LoadMaterialType>): null | string {
     let source: string | null = null;
-    if (element.type === 'image') {
-      source = (element as Element<'image'>)?.detail?.src || null;
-    } else if (element.type === 'svg') {
-      source = (element as Element<'svg'>)?.detail?.svg || null;
-    } else if (element.type === 'html') {
-      source = (element as Element<'html'>)?.detail?.html || null;
+    if (material.type === 'image') {
+      source = (material as StrictMaterial<'image'>)?.href || null;
+    } else if (material.type === 'svgCode') {
+      source = (material as StrictMaterial<'svgCode'>)?.code || null;
+    } else if (material.type === 'foreignObject') {
+      source = (material as StrictMaterial<'foreignObject'>)?.content || null;
     }
     return source;
   }
 
-  #createLoadItem(element: Element<LoadElementType>): LoadItem {
+  #createLoadItem(material: StrictMaterial<LoadMaterialType>): LoadItem {
     return {
-      element,
+      material,
       status: 'null',
       content: null,
       error: null,
       startTime: -1,
       endTime: -1,
-      source: this.#getLoadElementSource(element)
+      source: this.#getLoadMaterialSource(material),
     };
   }
 
   #emitLoad(item: LoadItem) {
-    const assetId = getAssetIdFromElement(item.element);
+    const assetId = getAssetIdFromMaterial(item.material);
     const storageItem = this.#storageLoadItemMap[assetId];
     if (!this.#hasDestroyed) {
       if (storageItem) {
@@ -165,7 +179,7 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
   }
 
   #emitError(item: LoadItem) {
-    const assetId = getAssetIdFromElement(item.element);
+    const assetId = getAssetIdFromMaterial(item.material);
     const storageItem = this.#storageLoadItemMap?.[assetId];
     if (!this.#hasDestroyed) {
       if (storageItem) {
@@ -180,18 +194,18 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
     }
   }
 
-  #loadResource(element: Element<LoadElementType>, assets: ElementAssets) {
-    const item = this.#createLoadItem(element);
-    const assetId = getAssetIdFromElement(element);
+  #loadResource(material: StrictMaterial<LoadMaterialType>, assets: MaterialAssets) {
+    const item = this.#createLoadItem(material);
+    const assetId = getAssetIdFromMaterial(material);
     if (this.#currentLoadItemMap[assetId]) {
       return;
     }
 
     this.#currentLoadItemMap[assetId] = item;
-    const loadFunc = this.#loadFuncMap[element.type];
+    const loadFunc = this.#loadFuncMap[material.type];
     if (typeof loadFunc === 'function' && !this.#hasDestroyed) {
       item.startTime = Date.now();
-      loadFunc(element, assets)
+      loadFunc(material, assets)
         .then((result) => {
           if (!this.#hasDestroyed) {
             item.content = result.content;
@@ -202,7 +216,7 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
         })
         .catch((err: Error) => {
           // eslint-disable-next-line no-console
-          console.warn(`Load element source "${item.source}" fail`, err, element);
+          console.warn(`Load material source "${item.source}" fail`, err, material);
           item.endTime = Date.now();
           item.status = 'error';
           item.error = err;
@@ -211,35 +225,35 @@ export class Loader extends EventEmitter<LoaderEventMap> implements RendererLoad
     }
   }
 
-  #isExistingErrorStorage(element: Element<LoadElementType>) {
-    const assetId = getAssetIdFromElement(element);
+  #isExistingErrorStorage(material: StrictMaterial<LoadMaterialType>) {
+    const assetId = getAssetIdFromMaterial(material);
     const existItem = this.#currentLoadItemMap?.[assetId];
     if (
       existItem &&
       existItem.status === 'error' &&
       existItem.source &&
-      existItem.source === this.#getLoadElementSource(element)
+      existItem.source === this.#getLoadMaterialSource(material)
     ) {
       return true;
     }
     return false;
   }
 
-  load(element: Element<LoadElementType>, assets: ElementAssets) {
+  load(material: StrictMaterial<LoadMaterialType>, assets: MaterialAssets) {
     if (this.#hasDestroyed === true) {
       return;
     }
-    if (this.#isExistingErrorStorage(element)) {
+    if (this.#isExistingErrorStorage(material)) {
       return;
     }
-    if (supportElementTypes.includes(element.type)) {
-      // const elem = deepClone(element);
-      this.#loadResource(element, assets);
+    if (supportMaterialTypes.includes(material.type)) {
+      // const mtrl = deepClone(material);
+      this.#loadResource(material, assets);
     }
   }
 
-  getContent(element: Element<LoadElementType>): LoadContent | null {
-    const assetId = getAssetIdFromElement(element);
+  getContent(material: StrictMaterial<LoadMaterialType>): LoadContent | null {
+    const assetId = getAssetIdFromMaterial(material);
     return this.#storageLoadItemMap?.[assetId]?.content || null;
   }
 

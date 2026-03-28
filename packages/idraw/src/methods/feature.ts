@@ -15,18 +15,18 @@ export function setFeature(
       ruler: 'enableRuler',
       scroll: 'enableScroll',
       scale: 'enableScale',
-      info: 'enableInfo'
+      info: 'enableInfo',
     };
     store.set(map[feat], !!status);
-    runMiddlewares(core, store);
+    runMiddlewares(null, core, store);
     core.refresh();
   } else if (feat === 'selectInGroup') {
     core.trigger(coreEventKeys.SELECT_IN_GROUP, {
-      enable: !!status
+      enable: !!status,
     });
   } else if (feat === 'snapToGrid') {
     core.trigger(coreEventKeys.SNAP_TO_GRID, {
-      enable: !!status
+      enable: !!status,
     });
   }
 }

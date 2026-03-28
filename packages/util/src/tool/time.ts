@@ -29,27 +29,27 @@ export function delay(time: number): Promise<void> {
   });
 }
 
-export function throttle(fn: (...args: any[]) => any, timeout: number): (...args: any[]) => any {
+export function throttle(fn: (...params: any[]) => any, timeout: number): (...params: any[]) => any {
   let timer: any = -1;
-  return function (...args: any[]) {
+  return function (...params: any[]) {
     if (timer >= 0) {
       return;
     }
     timer = setTimeout(() => {
-      fn(...args);
+      fn(...params);
       timer = -1;
     }, timeout);
   };
 }
 
-export function debounce(fn: (...args: any[]) => any, timeout: number): (...args: any[]) => any {
+export function debounce(fn: (...params: any[]) => any, timeout: number): (...params: any[]) => any {
   let timer: any = -1;
-  return function (...args: any[]) {
+  return function (...params: any[]) {
     if (timer >= 0) {
       window.clearTimeout(timer);
     }
     timer = setTimeout(() => {
-      fn(...args);
+      fn(...params);
       timer = -1;
     }, timeout);
   };

@@ -1,4 +1,4 @@
-import type { Middleware, ViewRectInfo, Element, MiddlewareInfoConfig, CoreEventMap } from '@idraw/types';
+import type { Middleware, BoundingInfo, Material, MiddlewareInfoConfig, CoreEventMap } from '@idraw/types';
 import {
   formatNumber,
   getViewScaleInfoFromSnapshot,
@@ -6,17 +6,19 @@ import {
   createUUID,
   limitAngle,
   rotatePoint,
-  parseAngleToRadian
+  parseAngleToRadian,
 } from '@idraw/util';
-import { keySelectedElementList, keyActionType, keyGroupQueue } from '../selector';
+import { keySelectedMaterialList, keyActionType, keyGroupQueue } from '../selector';
 import { drawSizeInfoText, drawPositionInfoText, drawAngleInfoText } from './draw-info';
 import type { DeepInfoSharedStorage } from './types';
-import { defaltStyle, MIDDLEWARE_INTERNAL_EVENT_SHOW_INFO_ANGLE } from './config';
+import { defaltStyle, MIDDLEWARE_INTERNAL_EVENT_SHOW_INFO_ANGLE, getMiddlewareInfoStyles } from './static';
 
 export { MIDDLEWARE_INTERNAL_EVENT_SHOW_INFO_ANGLE };
 
 const infoFontSize = 10;
 const infoLineHeight = 16;
+
+export { getMiddlewareInfoStyles };
 
 export const MiddlewareInfo: Middleware<
   DeepInfoSharedStorage,
@@ -29,8 +31,9 @@ export const MiddlewareInfo: Middleware<
   const { overlayContext } = boardContent;
   let innerConfig = {
     ...defaltStyle,
-    ...config
+    ...config,
   };
+  const styles = getMiddlewareInfoStyles(innerConfig);
 
   let showAngleInfo = true;
 
@@ -54,74 +57,69 @@ export const MiddlewareInfo: Middleware<
     },
 
     beforeDrawFrame({ snapshot }) {
-      const { textBackground, textColor } = innerConfig;
-      const style = {
-        textBackground,
-        textColor
-      };
       const { sharedStore } = snapshot;
 
-      const selectedElementList = sharedStore[keySelectedElementList];
+      const selectedMaterialList = sharedStore[keySelectedMaterialList];
       const actionType = sharedStore[keyActionType];
       const groupQueue = sharedStore[keyGroupQueue] || [];
 
-      if (selectedElementList.length === 1) {
-        const elem = selectedElementList[0];
-        if (elem && ['select', 'drag', 'resize'].includes(actionType as string)) {
+      if (selectedMaterialList?.length === 1) {
+        const mtrl = selectedMaterialList[0];
+        if (mtrl && ['select', 'drag', 'resize'].includes(actionType as string)) {
           const viewScaleInfo = getViewScaleInfoFromSnapshot(snapshot);
           const viewSizeInfo = getViewSizeInfoFromSnapshot(snapshot);
-          const { x, y, w, h, angle } = elem;
+          const { x, y, width, height, angle } = mtrl;
           const totalGroupQueue = [
             ...groupQueue,
             ...[
               {
-                uuid: createUUID(),
+                id: createUUID(),
                 x,
                 y,
-                w,
-                h,
+                width,
+                height,
                 angle,
                 type: 'group',
-                detail: { children: [] }
-              } as Element<'group'>
-            ]
+                children: [],
+              } as Material,
+            ],
           ];
 
           const calcOpts = { viewScaleInfo, viewSizeInfo };
 
-          const rangeRectInfo = calculator.calcViewRectInfoFromOrigin(elem.uuid, calcOpts);
+          const rangeBoundingInfo = calculator.calcViewBoundingInfoFromOrigin(mtrl.id, calcOpts);
           let totalAngle = 0;
           totalGroupQueue.forEach((group) => {
             totalAngle += group.angle || 0;
           });
           const totalRadian = parseAngleToRadian(limitAngle(0 - totalAngle));
 
-          if (rangeRectInfo) {
-            const elemCenter = rangeRectInfo?.center;
-            const rectInfo: ViewRectInfo = {
-              topLeft: rotatePoint(elemCenter, rangeRectInfo.topLeft, totalRadian),
-              topRight: rotatePoint(elemCenter, rangeRectInfo.topRight, totalRadian),
-              bottomRight: rotatePoint(elemCenter, rangeRectInfo.bottomRight, totalRadian),
-              bottomLeft: rotatePoint(elemCenter, rangeRectInfo.bottomLeft, totalRadian),
-              center: rotatePoint(elemCenter, rangeRectInfo.center, totalRadian),
-              top: rotatePoint(elemCenter, rangeRectInfo.top, totalRadian),
-              right: rotatePoint(elemCenter, rangeRectInfo.right, totalRadian),
-              bottom: rotatePoint(elemCenter, rangeRectInfo.bottom, totalRadian),
-              left: rotatePoint(elemCenter, rangeRectInfo.left, totalRadian)
+          if (rangeBoundingInfo) {
+            const mtrlCenter = rangeBoundingInfo?.center;
+            const boundingBox: BoundingInfo = {
+              topLeft: rotatePoint(mtrlCenter, rangeBoundingInfo.topLeft, totalRadian),
+              topRight: rotatePoint(mtrlCenter, rangeBoundingInfo.topRight, totalRadian),
+              bottomRight: rotatePoint(mtrlCenter, rangeBoundingInfo.bottomRight, totalRadian),
+              bottomLeft: rotatePoint(mtrlCenter, rangeBoundingInfo.bottomLeft, totalRadian),
+              center: rotatePoint(mtrlCenter, rangeBoundingInfo.center, totalRadian),
+              top: rotatePoint(mtrlCenter, rangeBoundingInfo.top, totalRadian),
+              right: rotatePoint(mtrlCenter, rangeBoundingInfo.right, totalRadian),
+              bottom: rotatePoint(mtrlCenter, rangeBoundingInfo.bottom, totalRadian),
+              left: rotatePoint(mtrlCenter, rangeBoundingInfo.left, totalRadian),
             };
 
-            const x = formatNumber(elem.x, { decimalPlaces: 2 });
-            const y = formatNumber(elem.y, { decimalPlaces: 2 });
-            const w = formatNumber(elem.w, { decimalPlaces: 2 });
-            const h = formatNumber(elem.h, { decimalPlaces: 2 });
+            const x = formatNumber(mtrl.x, { decimalPlaces: 2 });
+            const y = formatNumber(mtrl.y, { decimalPlaces: 2 });
+            const w = formatNumber(mtrl.width, { decimalPlaces: 2 });
+            const h = formatNumber(mtrl.height, { decimalPlaces: 2 });
 
             // // test start ----
             // const ctx = overlayContext;
             // ctx.beginPath();
-            // ctx.moveTo(rectInfo.topLeft.x, rectInfo.topLeft.y);
-            // ctx.lineTo(rectInfo.topRight.x, rectInfo.topRight.y);
-            // ctx.lineTo(rectInfo.bottomRight.x, rectInfo.bottomRight.y);
-            // ctx.lineTo(rectInfo.bottomLeft.x, rectInfo.bottomLeft.y);
+            // ctx.moveTo(boundingBox.topLeft.x, boundingBox.topLeft.y);
+            // ctx.lineTo(boundingBox.topRight.x, boundingBox.topRight.y);
+            // ctx.lineTo(boundingBox.bottomRight.x, boundingBox.bottomRight.y);
+            // ctx.lineTo(boundingBox.bottomLeft.x, boundingBox.bottomLeft.y);
             // ctx.closePath();
             // ctx.strokeStyle = 'red';
             // ctx.stroke();
@@ -129,53 +127,53 @@ export const MiddlewareInfo: Middleware<
 
             const xyText = `${formatNumber(x, { decimalPlaces: 0 })},${formatNumber(y, { decimalPlaces: 0 })}`;
             const whText = `${formatNumber(w, { decimalPlaces: 0 })}x${formatNumber(h, { decimalPlaces: 0 })}`;
-            const angleText = `${formatNumber(elem.angle || 0, { decimalPlaces: 0 })}°`;
+            const angleText = `${formatNumber(limitAngle(mtrl.angle || 0), { decimalPlaces: 0 })}°`;
 
             drawSizeInfoText(overlayContext, {
               point: {
-                x: rectInfo.bottom.x,
-                y: rectInfo.bottom.y + infoFontSize
+                x: boundingBox.bottom.x,
+                y: boundingBox.bottom.y + infoFontSize,
               },
-              rotateCenter: rectInfo.center,
+              rotateCenter: boundingBox.center,
               angle: totalAngle,
               text: whText,
               fontSize: infoFontSize,
               lineHeight: infoLineHeight,
-              style
+              styles,
             });
 
             drawPositionInfoText(overlayContext, {
               point: {
-                x: rectInfo.topLeft.x,
-                y: rectInfo.topLeft.y - infoFontSize * 2
+                x: boundingBox.topLeft.x,
+                y: boundingBox.topLeft.y - infoFontSize * 2,
               },
-              rotateCenter: rectInfo.center,
+              rotateCenter: boundingBox.center,
               angle: totalAngle,
               text: xyText,
               fontSize: infoFontSize,
               lineHeight: infoLineHeight,
-              style
+              styles,
             });
 
             if (showAngleInfo) {
-              if (elem.operations?.rotatable !== false) {
+              if (mtrl.operations?.rotatable !== false) {
                 drawAngleInfoText(overlayContext, {
                   point: {
-                    x: rectInfo.top.x + infoFontSize + 4,
-                    y: rectInfo.top.y - infoFontSize * 2 - 18
+                    x: boundingBox.top.x + infoFontSize + 4,
+                    y: boundingBox.top.y - infoFontSize * 2 - 18,
                   },
-                  rotateCenter: rectInfo.center,
+                  rotateCenter: boundingBox.center,
                   angle: totalAngle,
                   text: angleText,
                   fontSize: infoFontSize,
                   lineHeight: infoLineHeight,
-                  style
+                  styles,
                 });
               }
             }
           }
         }
       }
-    }
+    },
   };
 };

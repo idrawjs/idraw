@@ -16,10 +16,11 @@ export function reset(
   const newOpts: IDrawSettings = {};
   store.clear();
   if (mode) {
-    changeMode(mode, core, store);
+    changeMode(mode, undefined, core, store);
     newOpts.mode = mode;
     needFresh = true;
   }
+
   if (styles) {
     changeStyles(styles, core, store);
     newOpts.styles = styles;

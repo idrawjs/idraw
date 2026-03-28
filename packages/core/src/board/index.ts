@@ -1,8 +1,8 @@
 import { Renderer, Calculator } from '@idraw/renderer';
 import {
   // throttle,
-  calcElementsContextSize,
-  EventEmitter
+  calcMaterialsContextSize,
+  EventEmitter,
 } from '@idraw/util';
 import type {
   Data,
@@ -11,9 +11,9 @@ import type {
   BoardMiddlewareObject,
   BoardWatcherEventMap,
   ViewSizeInfo,
-  PointSize,
+  Point,
   BoardExtendEventMap,
-  UtilEventEmitter
+  UtilEventEmitter,
 } from '@idraw/types';
 import { BoardWatcher } from './watcher';
 import { Sharer } from './sharer';
@@ -40,18 +40,19 @@ export class Board<T extends BoardExtendEventMap = BoardExtendEventMap> {
   #eventHub: EventEmitter<T> = new EventEmitter<T>();
   #hasDestroyed: boolean = false;
   constructor(opts: BoardOptions) {
-    const { boardContent } = opts;
+    const { boardContent, container } = opts;
     const sharer = new Sharer();
 
     const watcher = new BoardWatcher({
       boardContent,
       sharer,
-      disabled: opts?.disableWatcher
+      disabled: opts?.disableWatcher,
+      container,
     });
     const renderer = new Renderer({
       viewContext: boardContent.viewContext,
       tempContext: boardContent.tempContext,
-      sharer
+      sharer,
     });
     const calculator = renderer.getCalculator();
 
@@ -70,7 +71,7 @@ export class Board<T extends BoardExtendEventMap = BoardExtendEventMap> {
       },
       afterDrawFrame: (e) => {
         this.#handleAfterDrawFrame(e);
-      }
+      },
     });
     this.#init();
     this.#resetActiveMiddlewareObjs();
@@ -131,6 +132,7 @@ export class Board<T extends BoardExtendEventMap = BoardExtendEventMap> {
       this.#watcher.on('scrollX', this.#handleScrollX.bind(this));
       this.#watcher.on('scrollY', this.#handleScrollY.bind(this));
       this.#watcher.on('resize', this.#handleResize.bind(this));
+      this.#watcher.on('click', this.#handleClick.bind(this));
       this.#watcher.on('doubleClick', this.#handleDoubleClick.bind(this));
       this.#watcher.on('contextMenu', this.#handleContextMenu.bind(this));
     }
@@ -184,6 +186,16 @@ export class Board<T extends BoardExtendEventMap = BoardExtendEventMap> {
     for (let i = 0; i < this.#activeMiddlewareObjs.length; i++) {
       const obj = this.#activeMiddlewareObjs[i];
       const result = obj?.hover?.(e);
+      if (result === false) {
+        return;
+      }
+    }
+  }
+
+  #handleClick(e: BoardWatcherEventMap['click']) {
+    for (let i = 0; i < this.#activeMiddlewareObjs.length; i++) {
+      const obj = this.#activeMiddlewareObjs[i];
+      const result = obj?.click?.(e);
       if (result === false) {
         return;
       }
@@ -320,21 +332,21 @@ export class Board<T extends BoardExtendEventMap = BoardExtendEventMap> {
     const viewSizeInfo = sharer.getActiveViewSizeInfo();
     const viewScaleInfo = sharer.getActiveViewScaleInfo();
     // const currentScaleInfo = sharer.getActiveViewScaleInfo();
-    const newViewContextSize = calcElementsContextSize(data.elements, {
+    const newViewContextSize = calcMaterialsContextSize(data.materials, {
       viewWidth: viewSizeInfo.width,
       viewHeight: viewSizeInfo.height,
-      extend: true
+      extend: true,
     });
 
-    this.#viewer.resetVirtualFlatItemMap(data, {
+    this.#viewer.resetVirtualItemMap(data, {
       viewSizeInfo,
-      viewScaleInfo
+      viewScaleInfo,
     });
 
     this.#viewer.drawFrame();
     const newViewSizeInfo = {
       ...viewSizeInfo,
-      ...newViewContextSize
+      ...newViewContextSize,
     };
 
     this.#sharer.setActiveViewSizeInfo(newViewSizeInfo);
@@ -372,7 +384,7 @@ export class Board<T extends BoardExtendEventMap = BoardExtendEventMap> {
     this.#middlewareMap.set(middleware, {
       status: 'enable',
       middlewareObject: obj,
-      config
+      config,
     });
     this.#resetActiveMiddlewareObjs();
   }
@@ -398,14 +410,14 @@ export class Board<T extends BoardExtendEventMap = BoardExtendEventMap> {
     }
   }
 
-  scale(opts: { scale: number; point: PointSize; ignoreUpdateVisibleStatus?: boolean }) {
+  scale(opts: { scale: number; point: Point; ignoreUpdateVisibleStatus?: boolean }) {
     const viewer = this.#viewer;
     const { ignoreUpdateVisibleStatus } = opts;
     const { moveX, moveY } = viewer.scale({
       ...opts,
       ...{
-        ignoreUpdateVisibleStatus: true
-      }
+        ignoreUpdateVisibleStatus: true,
+      },
     });
     viewer.scroll({ moveX, moveY, ignoreUpdateVisibleStatus });
   }

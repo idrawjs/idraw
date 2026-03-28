@@ -1,34 +1,54 @@
 import type { IDrawSettings, IDrawOptions, IDrawStorage, IDrawMode } from '@idraw/types';
 import { istype } from '@idraw/util';
+import {
+  getMiddlewareCreatorStyles,
+  getMiddlewareSelectorStyles,
+  getMiddlewareScrollerStyles,
+  getMiddlewareRulerStyles,
+  getMiddlewareTextEditorStyles,
+  getMiddlewareInfoStyles,
+  getMiddlewarePathEditorStyles,
+  getMiddlewarePathCreatorStyles,
+} from '@idraw/core';
 
 export const defaultMode: IDrawMode = 'select';
 
 export const defaultSettings: Required<Pick<IDrawSettings, 'mode' | 'history'>> = {
   mode: defaultMode,
-  history: false
+  history: false,
 };
 
 export const defaultOptions: Required<Pick<IDrawOptions, 'devicePixelRatio'>> = {
-  devicePixelRatio: window.devicePixelRatio
+  devicePixelRatio: window.devicePixelRatio,
 };
 
 export function getDefaultStorage(): IDrawStorage {
   const storage: IDrawStorage = {
     mode: defaultMode,
-    enableRuler: false,
-    enableScale: false,
-    enableScroll: false,
+    enableCreate: false,
+    enablePathCreate: false,
+    enablePathEdit: false,
     enableSelect: false,
+    enableSelectLayout: false,
     enableTextEdit: false,
     enableDrag: false,
-    enableInfo: false,
+
+    enableRuler: true,
+    enableScroll: true,
+    enableInfo: true,
+    enableScale: true,
+
     middlewareStyles: {
       selector: {},
       info: {},
       ruler: {},
       scroller: {},
-      layoutSelector: {}
-    }
+      layoutSelector: {},
+      creator: {},
+      textEditor: {},
+      pathCreator: {},
+      pathEditor: {},
+    },
   };
   return storage;
 }
@@ -77,76 +97,42 @@ export function parseStyles(settings: IDrawSettings): Required<Required<IDrawSet
     ruler: {},
     info: {},
     scroller: {},
-    layoutSelector: {}
+    layoutSelector: {},
+    creator: {},
+    textEditor: {},
+    pathCreator: {},
+    pathEditor: {},
   };
   if (settings.styles) {
+    const { selector, ruler, info, scroller, layoutSelector, creator, textEditor, pathCreator, pathEditor } =
+      settings.styles;
+
     // selector
-    const { selector, info, ruler, scroller, layoutSelector } = settings.styles;
-    if (istype.string(selector?.activeColor)) {
-      styles.selector.activeColor = selector?.activeColor;
-    }
-    if (istype.string(selector?.activeAreaColor)) {
-      styles.selector.activeAreaColor = selector?.activeAreaColor;
-    }
-    if (istype.string(selector?.lockedColor)) {
-      styles.selector.lockedColor = selector?.lockedColor;
-    }
-    if (istype.string(selector?.referenceColor)) {
-      styles.selector.referenceColor = selector?.referenceColor;
-    }
+    styles.selector = getMiddlewareSelectorStyles(selector);
+
+    // creator
+    styles.creator = getMiddlewareCreatorStyles(creator);
 
     // info
-    if (istype.string(info?.textBackground)) {
-      styles.info.textBackground = info?.textBackground;
-    }
-    if (istype.string(info?.textColor)) {
-      styles.info.textColor = info?.textColor;
-    }
+    styles.info = getMiddlewareInfoStyles(info);
 
     // ruler
-    if (istype.string(ruler?.background)) {
-      styles.ruler.background = ruler?.background;
-    }
-    if (istype.string(ruler?.borderColor)) {
-      styles.ruler.borderColor = ruler?.borderColor;
-    }
-    if (istype.string(ruler?.scaleColor)) {
-      styles.ruler.scaleColor = ruler?.scaleColor;
-    }
-    if (istype.string(ruler?.textColor)) {
-      styles.ruler.textColor = ruler?.textColor;
-    }
-    if (istype.string(ruler?.gridColor)) {
-      styles.ruler.gridColor = ruler?.gridColor;
-    }
-    if (istype.string(ruler?.gridPrimaryColor)) {
-      styles.ruler.gridPrimaryColor = ruler?.gridPrimaryColor;
-    }
-    if (istype.string(ruler?.selectedAreaColor)) {
-      styles.ruler.selectedAreaColor = ruler?.selectedAreaColor;
-    }
+    styles.ruler = getMiddlewareRulerStyles(ruler);
 
     // scroller
-    if (istype.string(scroller?.thumbBackground)) {
-      styles.scroller.thumbBackground = scroller?.thumbBackground;
-    }
-    if (istype.string(scroller?.thumbBorderColor)) {
-      styles.scroller.thumbBorderColor = scroller?.thumbBorderColor;
-    }
-    if (istype.string(scroller?.hoverThumbBackground)) {
-      styles.scroller.hoverThumbBackground = scroller?.hoverThumbBackground;
-    }
-    if (istype.string(scroller?.hoverThumbBorderColor)) {
-      styles.scroller.hoverThumbBorderColor = scroller?.hoverThumbBorderColor;
-    }
-    if (istype.string(scroller?.activeThumbBackground)) {
-      styles.scroller.activeThumbBackground = scroller?.activeThumbBackground;
-    }
-    if (istype.string(scroller?.activeThumbBorderColor)) {
-      styles.scroller.activeThumbBorderColor = scroller?.activeThumbBorderColor;
-    }
+    styles.scroller = getMiddlewareScrollerStyles(scroller);
+
+    // textEditor
+    styles.textEditor = getMiddlewareTextEditorStyles(textEditor);
+
+    // pathCreator
+    styles.pathCreator = getMiddlewarePathCreatorStyles(pathCreator);
+
+    // pathEditor
+    styles.pathEditor = getMiddlewarePathEditorStyles(pathEditor);
 
     // layoutSelector
+    // TODO
     if (istype.string(layoutSelector?.activeColor)) {
       styles.layoutSelector.activeColor = layoutSelector?.activeColor;
     }

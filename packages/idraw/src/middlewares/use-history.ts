@@ -1,11 +1,11 @@
 import type {
   Middleware,
   ModifyRecord,
-  Element,
+  Material,
   DataLayout,
   RecursivePartial,
   DataGlobal,
-  HistoryHandler
+  HistoryHandler,
 } from '@idraw/types';
 import { unflatObject, calcResultMovePosition } from '@idraw/util';
 import { Core } from '@idraw/core';
@@ -13,16 +13,16 @@ import type { IDrawEvent } from '../event';
 import { eventKeys } from '../event';
 
 const supportRecordTypes = [
-  'updateElement',
-  'modifyElement',
-  'deleteElement',
-  'moveElement',
-  'addElement',
-  'resizeElement',
-  'resizeElements',
+  'updateMaterial',
+  'modifyMaterial',
+  'deleteMaterial',
+  'moveMaterial',
+  'addMaterial',
+  'resizeMaterial',
+  'resizeMaterials',
   'resizeLayout',
   'modifyLayout',
-  'modifyGlobal'
+  'modifyGlobal',
 ];
 
 const LIMIT = 100;
@@ -45,37 +45,37 @@ export const useHistory = (opts: { core: Core; limit?: number }) => {
         return;
       }
       let undoRecord: ModifyRecord = { ...record };
-      if (record.content.method === 'modifyElement') {
+      if (record.content.method === 'modifyMaterial') {
         const info = unflatObject(record.content.before || {});
-        undoRecord = core.modifyElement({
+        undoRecord = core.modifyMaterial({
           ...info,
-          uuid: (record as ModifyRecord<'modifyElement'>).content?.uuid
+          id: (record as ModifyRecord<'modifyMaterial'>).content?.id,
         }) as ModifyRecord;
-      } else if (record.content.method === 'updateElement') {
-        const info = unflatObject(record.content.before || {}) as Element;
-        undoRecord = core.updateElement({ ...info, uuid: record.content.uuid }) as ModifyRecord;
-      } else if (record.content.method === 'addElement') {
-        const uuid = record.content.uuid;
-        undoRecord = core.deleteElement(uuid) as ModifyRecord;
-      } else if (record.content.method === 'deleteElement') {
-        const { element, position } = record.content;
-        if (!element) {
+      } else if (record.content.method === 'updateMaterial') {
+        const info = unflatObject(record.content.before || {}) as Material;
+        undoRecord = core.updateMaterial({ ...info, id: record.content.id }) as ModifyRecord;
+      } else if (record.content.method === 'addMaterial') {
+        const id = record.content.id;
+        undoRecord = core.deleteMaterial(id) as ModifyRecord;
+      } else if (record.content.method === 'deleteMaterial') {
+        const { material, position } = record.content;
+        if (!material) {
           return;
         }
-        if (!element) {
+        if (!material) {
           return;
         }
-        undoRecord = core.addElement(element, { position }) as ModifyRecord;
-      } else if (record.content.method === 'moveElement') {
-        const uuid = record.content.uuid;
+        undoRecord = core.addMaterial(material, { position }) as ModifyRecord;
+      } else if (record.content.method === 'moveMaterial') {
+        const id = record.content.id;
         const moveResult = calcResultMovePosition({
           from: record.content.from,
-          to: record.content.to
+          to: record.content.to,
         });
         if (!moveResult) {
           return;
         }
-        undoRecord = core.moveElement(uuid, moveResult.from) as ModifyRecord;
+        undoRecord = core.moveMaterial(id, moveResult.from) as ModifyRecord;
       } else if (record.content.method === 'modifyLayout') {
         const info =
           record.content.before === null
@@ -88,10 +88,10 @@ export const useHistory = (opts: { core: Core; limit?: number }) => {
             ? null
             : (unflatObject(record.content.before || {}) as RecursivePartial<DataGlobal>);
         undoRecord = core.modifyGlobal(info) as ModifyRecord;
-      } else if (record.content.method === 'modifyElements') {
-        undoRecord = core.modifyElements(
+      } else if (record.content.method === 'modifyMaterials') {
+        undoRecord = core.modifyMaterials(
           record.content.before.map((item) => unflatObject(item)) as unknown as Array<
-            RecursivePartial<Omit<Element, 'uuid'>> & Pick<Element, 'uuid'>
+            RecursivePartial<Omit<Material, 'id'>> & Pick<Material, 'id'>
           >
         ) as ModifyRecord;
       }
@@ -111,34 +111,34 @@ export const useHistory = (opts: { core: Core; limit?: number }) => {
         return;
       }
       let redoRecord: ModifyRecord = { ...record };
-      if (record.content.method === 'modifyElement') {
+      if (record.content.method === 'modifyMaterial') {
         const info = unflatObject(record.content.before || {});
-        redoRecord = core.modifyElement({
+        redoRecord = core.modifyMaterial({
           ...info,
-          uuid: (record as ModifyRecord<'modifyElement'>).content.uuid
+          id: (record as ModifyRecord<'modifyMaterial'>).content.id,
         }) as ModifyRecord;
-      } else if (record.content.method === 'updateElement') {
-        const info = unflatObject(record.content.before || {}) as Element;
-        redoRecord = core.updateElement({ ...info, uuid: record.content.uuid }) as ModifyRecord;
-      } else if (record.content.method === 'addElement') {
-        const uuid = record.content.uuid;
-        redoRecord = core.deleteElement(uuid) as ModifyRecord;
-      } else if (record.content.method === 'deleteElement') {
-        const { element, position } = record.content;
-        if (!element) {
+      } else if (record.content.method === 'updateMaterial') {
+        const info = unflatObject(record.content.before || {}) as Material;
+        redoRecord = core.updateMaterial({ ...info, id: record.content.id }) as ModifyRecord;
+      } else if (record.content.method === 'addMaterial') {
+        const id = record.content.id;
+        redoRecord = core.deleteMaterial(id) as ModifyRecord;
+      } else if (record.content.method === 'deleteMaterial') {
+        const { material, position } = record.content;
+        if (!material) {
           return;
         }
-        redoRecord = core.addElement(element, { position }) as ModifyRecord;
-      } else if (record.content.method === 'moveElement') {
-        const uuid = record.content.uuid;
+        redoRecord = core.addMaterial(material, { position }) as ModifyRecord;
+      } else if (record.content.method === 'moveMaterial') {
+        const id = record.content.id;
         const moveResult = calcResultMovePosition({
           from: record.content.from,
-          to: record.content.to
+          to: record.content.to,
         });
         if (!moveResult) {
           return;
         }
-        redoRecord = core.moveElement(uuid, moveResult.from) as ModifyRecord;
+        redoRecord = core.moveMaterial(id, moveResult.from) as ModifyRecord;
       } else if (record.content.method === 'modifyLayout') {
         const info =
           record.content.before === null
@@ -151,10 +151,10 @@ export const useHistory = (opts: { core: Core; limit?: number }) => {
             ? null
             : (unflatObject(record.content.before || {}) as RecursivePartial<DataGlobal>);
         redoRecord = core.modifyGlobal(info) as ModifyRecord;
-      } else if (record.content.method === 'modifyElements') {
-        redoRecord = core.modifyElements(
+      } else if (record.content.method === 'modifyMaterials') {
+        redoRecord = core.modifyMaterials(
           record.content.before.map((item) => unflatObject(item)) as unknown as Array<
-            RecursivePartial<Omit<Element, 'uuid'>> & Pick<Element, 'uuid'>
+            RecursivePartial<Omit<Material, 'id'>> & Pick<Material, 'id'>
           >
         ) as ModifyRecord;
       }
@@ -190,7 +190,7 @@ export const useHistory = (opts: { core: Core; limit?: number }) => {
       },
       disuse() {
         offEvents();
-      }
+      },
     };
   };
 
@@ -222,11 +222,11 @@ export const useHistory = (opts: { core: Core; limit?: number }) => {
     canUndo: () => doRecords.length > 0,
     canRedo: () => undoRecords.length > 0,
     __getDoRecords: getDoRecords,
-    __getUndoRecords: getUndoRecords
+    __getUndoRecords: getUndoRecords,
   };
 
   return {
     MiddlewareHistory,
-    historyHandler
+    historyHandler,
   } as const;
 };

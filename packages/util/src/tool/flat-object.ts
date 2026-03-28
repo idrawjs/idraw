@@ -1,7 +1,7 @@
 type FlattenedObject = Record<string, any>;
 
 type FlatObjectOptions = {
-  ignorePaths?: string[]; // eg. ["detail.children"]
+  ignorePaths?: string[]; // eg. ["attributes.children"]
 };
 
 /**

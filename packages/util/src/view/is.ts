@@ -16,11 +16,11 @@ function y(value: any) {
   return number(value);
 }
 
-function w(value: any) {
+function width(value: any) {
   return positiveNum(value);
 }
 
-function h(value: any) {
+function height(value: any) {
   return positiveNum(value);
 }
 
@@ -28,7 +28,7 @@ function angle(value: any) {
   return typeof value === 'number' && value >= -360 && value <= 360;
 }
 
-function borderWidth(value: any) {
+function strokeWidth(value: any) {
   return (
     positiveNum(value) ||
     (Array.isArray(value) &&
@@ -39,7 +39,7 @@ function borderWidth(value: any) {
   );
 }
 
-function borderRadius(value: any) {
+function cornerRadius(value: any) {
   return (
     positiveNum(value) ||
     (Array.isArray(value) &&
@@ -99,10 +99,6 @@ function lineHeight(value: any) {
   return number(value) && value > 0;
 }
 
-function strokeWidth(value: any) {
-  return number(value) && value > 0;
-}
-
 function textAlign(value: any) {
   return ['center', 'left', 'right'].includes(value);
 }
@@ -120,25 +116,25 @@ function numberStr(value: any): boolean {
 }
 
 function type(value: any) {
-  return ['rect', 'circle', 'text', 'image', 'svg', 'html', 'group'].includes(value);
+  return ['rect', 'circle', 'text', 'image', 'svgCode', 'foreignObject', 'group'].includes(value);
 }
 
-function element(elem: any) {
-  if (!elem) {
+function material(mtrl: any) {
+  if (!mtrl) {
     return false;
   }
-  return type(elem?.type) && x(elem?.x) && y(elem?.y) && w(elem?.w) && h(elem?.h);
+  return type(mtrl?.type) && x(mtrl?.x) && y(mtrl?.y) && width(mtrl?.w) && height(mtrl?.h);
 }
 
 function layout(value: any) {
   if (!value) {
     return false;
   }
-  return x(value?.x) && y(value?.y) && w(value?.w) && h(value?.h);
+  return x(value?.x) && y(value?.y) && width(value?.w) && height(value?.h);
 }
 
 function data(d: any) {
-  if (Array(d?.elements) && d?.elements.length >= 0) {
+  if (Array(d?.materials) && d?.materials.length >= 0) {
     return true;
   }
   return false;
@@ -147,18 +143,18 @@ function data(d: any) {
 export const is = {
   positiveNum,
   data,
-  element,
+  material,
   layout,
   type,
   x,
   y,
-  w,
-  h,
+  width,
+  height,
   angle,
   number,
   numberStr,
-  borderWidth,
-  borderRadius,
+  strokeWidth,
+  cornerRadius,
   color,
   imageSrc,
   imageURL,
@@ -171,5 +167,4 @@ export const is = {
   textAlign,
   fontFamily,
   fontWeight,
-  strokeWidth
 };

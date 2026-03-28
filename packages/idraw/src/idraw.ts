@@ -1,29 +1,37 @@
 import { Core, coreEventKeys } from '@idraw/core';
 import type {
-  PointSize,
+  Point,
   IDrawOptions,
   IDrawSettings,
   IDrawFeature,
   IDrawMode,
+  IDrawModeEventMap,
   Data,
   ViewSizeInfo,
   ViewScaleInfo,
-  ElementType,
-  Element,
+  MaterialType,
+  StrictMaterial,
   RecursivePartial,
-  ElementPosition,
+  MaterialPosition,
   IDrawStorage,
   DataLayout,
   DataGlobal,
   Middleware,
-  HistoryHandler
+  HistoryHandler,
 } from '@idraw/types';
 import { filterCompactData, calcViewCenterContent, calcViewCenter, Store } from '@idraw/util';
 import { defaultSettings, defaultOptions, getDefaultStorage, defaultMode, parseStyles } from './setting/config';
 import type { ExportImageFileBaseOptions, ExportImageFileResult } from './file';
 import type { IDrawEvent } from './event';
 import { changeMode } from './setting/mode';
-import { createElement, updateElement, modifyElement, addElement, deleteElement, moveElement } from './methods/element';
+import {
+  createMaterial,
+  updateMaterial,
+  modifyMaterial,
+  addMaterial,
+  deleteMaterial,
+  moveMaterial,
+} from './methods/material';
 import { modifyLayout } from './methods/layout';
 import { modifyGlobal } from './methods/global';
 import { reset } from './methods/reset';
@@ -35,7 +43,7 @@ export class iDraw {
   #core: Core<IDrawEvent>;
   #opts: IDrawOptions;
   #store: Store<IDrawStorage> = new Store<IDrawStorage>({
-    defaultStorage: getDefaultStorage()
+    defaultStorage: getDefaultStorage(),
   });
   #historyHandler: HistoryHandler | null = null;
 
@@ -59,7 +67,7 @@ export class iDraw {
       this.#historyHandler = historyHandler;
       core.use(MiddlewareHistory);
     }
-    changeMode('select', core, store);
+    changeMode('select', undefined, core, store);
   }
 
   #setFeature(feat: IDrawFeature, status: boolean) {
@@ -79,11 +87,15 @@ export class iDraw {
     this.#opts = { ...this.#opts, ...newOpts };
   }
 
-  setMode(mode: IDrawMode) {
+  setMode<T extends IDrawMode>(mode: IDrawMode, e?: IDrawModeEventMap[T]) {
     const core = this.#core;
     const store = this.#store;
-    changeMode(mode || defaultMode, core, store);
+    changeMode<T>(mode || defaultMode, e, core, store);
     core.refresh();
+  }
+
+  getMode(): IDrawMode | undefined | null {
+    return this.#store.get('mode');
   }
 
   enable(feat: IDrawFeature) {
@@ -104,7 +116,7 @@ export class iDraw {
     const data = this.#core.getData();
     if (data && opts?.compact === true) {
       return filterCompactData(data, {
-        loadItemMap: this.#core.getLoadItemMap()
+        loadItemMap: this.#core.getLoadItemMap(),
       });
     }
     return data;
@@ -114,7 +126,7 @@ export class iDraw {
     return this.#core.getViewInfo();
   }
 
-  scale(opts: { scale: number; point: PointSize }) {
+  scale(opts: { scale: number; point: Point }) {
     this.#core.scale(opts);
   }
 
@@ -127,7 +139,7 @@ export class iDraw {
   centerContent(opts?: { data?: Data }) {
     const data = opts?.data || this.#core.getData();
     const { viewSizeInfo } = this.getViewInfo();
-    if (data?.layout || (Array.isArray(data?.elements) && data?.elements.length > 0)) {
+    if (data?.layout || (Array.isArray(data?.materials) && data?.materials.length > 0)) {
       const result = calcViewCenterContent(data, { viewSizeInfo });
       this.setViewScale(result);
     }
@@ -149,52 +161,52 @@ export class iDraw {
     this.#core.trigger(name, e as IDrawEvent[T]);
   }
 
-  selectElement(uuid: string, opts?: { type?: string }) {
-    this.trigger(coreEventKeys.SELECT, { uuids: [uuid], type: opts?.type || 'selectElement' });
+  selectMaterial(id: string, opts?: { type?: string }) {
+    this.trigger(coreEventKeys.SELECT, { ids: [id], type: opts?.type || 'selectMaterial' });
   }
 
-  selectElements(uuids: string[], opts?: { type?: string }) {
-    this.trigger(coreEventKeys.SELECT, { uuids, type: opts?.type || 'selectElements' });
+  selectMaterials(ids: string[], opts?: { type?: string }) {
+    this.trigger(coreEventKeys.SELECT, { ids, type: opts?.type || 'selectMaterials' });
   }
 
-  selectElementByPosition(position: ElementPosition, opts?: { type?: string }) {
-    this.trigger(coreEventKeys.SELECT, { positions: [position], type: opts?.type || 'selectElementByPosition' });
+  selectMaterialByPosition(position: MaterialPosition, opts?: { type?: string }) {
+    this.trigger(coreEventKeys.SELECT, { positions: [position], type: opts?.type || 'selectMaterialByPosition' });
   }
 
-  selectElementsByPositions(positions: ElementPosition[], opts?: { type?: string }) {
-    this.trigger(coreEventKeys.SELECT, { positions, type: opts?.type || 'selectElementsByPositions' });
+  selectMaterialsByPositions(positions: MaterialPosition[], opts?: { type?: string }) {
+    this.trigger(coreEventKeys.SELECT, { positions, type: opts?.type || 'selectMaterialsByPositions' });
   }
 
-  cancelElements() {
-    this.trigger(coreEventKeys.CLEAR_SELECT, { uuids: [] });
+  cancelMaterials() {
+    this.trigger(coreEventKeys.CLEAR_SELECT, { ids: [] });
   }
 
-  createElement<T extends ElementType>(
+  createMaterial<T extends MaterialType>(
     type: T,
-    element: RecursivePartial<Omit<Element, 'uuid' | 'type'>>,
+    material: RecursivePartial<Omit<StrictMaterial<T>, 'id' | 'type'>>,
     opts?: { viewCenter?: boolean }
-  ): Element<T> {
-    return createElement<T>({ core: this.#core }, type, element, opts);
+  ): StrictMaterial<T> {
+    return createMaterial<T>({ core: this.#core }, type, material as StrictMaterial, opts);
   }
 
-  updateElement(element: Element) {
-    return updateElement({ core: this.#core }, element);
+  updateMaterial(material: StrictMaterial) {
+    return updateMaterial({ core: this.#core }, material);
   }
 
-  modifyElement(element: RecursivePartial<Omit<Element, 'uuid'>> & Pick<Element, 'uuid'>) {
-    return modifyElement({ core: this.#core }, element);
+  modifyMaterial(material: RecursivePartial<Omit<StrictMaterial, 'id'>> & Pick<StrictMaterial, 'id'>) {
+    return modifyMaterial({ core: this.#core }, material);
   }
 
-  addElement(element: Element, opts?: { position: ElementPosition }): Data {
-    return addElement({ core: this.#core }, element, opts);
+  addMaterial(material: StrictMaterial, opts?: { position: MaterialPosition }): Data {
+    return addMaterial({ core: this.#core }, material, opts);
   }
 
-  deleteElement(uuid: string) {
-    return deleteElement({ core: this.#core }, uuid);
+  deleteMaterial(id: string) {
+    return deleteMaterial({ core: this.#core }, id);
   }
 
-  moveElement(uuid: string, to: ElementPosition) {
-    return moveElement({ core: this.#core }, uuid, to);
+  moveMaterial(id: string, to: MaterialPosition) {
+    return moveMaterial({ core: this.#core }, id, to);
   }
 
   modifyLayout(layout: RecursivePartial<DataLayout> | null) {
@@ -206,7 +218,7 @@ export class iDraw {
   }
 
   async getImageBlobURL(opts?: ExportImageFileBaseOptions): Promise<ExportImageFileResult> {
-    const data = this.getData() || { elements: [] };
+    const data = this.getData() || { materials: [] };
     const { viewSizeInfo } = this.getViewInfo();
     return await getImageBlobURL({ data, viewSizeInfo, core: this.#core }, opts);
   }
@@ -224,9 +236,9 @@ export class iDraw {
     this.#historyHandler = null as any;
   }
 
-  getViewCenter(): PointSize {
+  getViewCenter(): Point {
     const { viewScaleInfo, viewSizeInfo } = this.getViewInfo();
-    const pointSize: PointSize = calcViewCenter({ viewScaleInfo, viewSizeInfo });
+    const pointSize: Point = calcViewCenter({ viewScaleInfo, viewSizeInfo });
     return pointSize;
   }
 

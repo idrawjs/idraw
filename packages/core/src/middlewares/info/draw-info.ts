@@ -1,43 +1,43 @@
-import type { PointSize, ViewContext2D } from '@idraw/types';
+import type { Point, ViewContext2D } from '@idraw/types';
 import { rotateByCenter } from '@idraw/util';
-import type { MiddlewareInfoStyle } from '@idraw/types';
+import type { MiddlewareInfoStyles } from '@idraw/types';
 
 const fontFamily = 'monospace';
 
 export function drawSizeInfoText(
   ctx: ViewContext2D,
   opts: {
-    point: PointSize;
-    rotateCenter: PointSize;
+    point: Point;
+    rotateCenter: Point;
     angle: number;
     text: string;
     fontSize: number;
     lineHeight: number;
-    style: MiddlewareInfoStyle;
+    styles: MiddlewareInfoStyles;
   }
 ) {
-  const { point, rotateCenter, angle, text, style, fontSize, lineHeight } = opts;
-  const { textColor, textBackground } = style;
+  const { point, rotateCenter, angle, text, styles, fontSize, lineHeight } = opts;
+  const { textColor, textBackground } = styles;
 
   rotateByCenter(ctx, angle, rotateCenter, () => {
     ctx.$setFont({
       fontWeight: '300',
       fontSize,
-      fontFamily
+      fontFamily,
     });
     const padding = (lineHeight - fontSize) / 2;
     const textWidth = ctx.$undoPixelRatio(ctx.measureText(text).width);
     const bgStart = {
       x: point.x - textWidth / 2 - padding,
-      y: point.y
+      y: point.y,
     };
     const bgEnd = {
       x: bgStart.x + textWidth + padding * 2,
-      y: bgStart.y + fontSize + padding
+      y: bgStart.y + fontSize + padding,
     };
     const textStart = {
       x: point.x - textWidth / 2,
-      y: point.y
+      y: point.y,
     };
     ctx.setLineDash([]);
     ctx.fillStyle = textBackground;
@@ -58,37 +58,37 @@ export function drawSizeInfoText(
 export function drawPositionInfoText(
   ctx: ViewContext2D,
   opts: {
-    point: PointSize;
-    rotateCenter: PointSize;
+    point: Point;
+    rotateCenter: Point;
     angle: number;
     text: string;
     fontSize: number;
     lineHeight: number;
-    style: MiddlewareInfoStyle;
+    styles: MiddlewareInfoStyles;
   }
 ) {
-  const { point, rotateCenter, angle, text, style, fontSize, lineHeight } = opts;
-  const { textBackground, textColor } = style;
+  const { point, rotateCenter, angle, text, styles, fontSize, lineHeight } = opts;
+  const { textBackground, textColor } = styles;
 
   rotateByCenter(ctx, angle, rotateCenter, () => {
     ctx.$setFont({
       fontWeight: '300',
       fontSize,
-      fontFamily
+      fontFamily,
     });
     const padding = (lineHeight - fontSize) / 2;
     const textWidth = ctx.$undoPixelRatio(ctx.measureText(text).width);
     const bgStart = {
       x: point.x,
-      y: point.y
+      y: point.y,
     };
     const bgEnd = {
       x: bgStart.x + textWidth + padding * 2,
-      y: bgStart.y + fontSize + padding
+      y: bgStart.y + fontSize + padding,
     };
     const textStart = {
       x: point.x + padding,
-      y: point.y
+      y: point.y,
     };
     ctx.setLineDash([]);
     ctx.fillStyle = textBackground;
@@ -109,37 +109,37 @@ export function drawPositionInfoText(
 export function drawAngleInfoText(
   ctx: ViewContext2D,
   opts: {
-    point: PointSize;
-    rotateCenter: PointSize;
+    point: Point;
+    rotateCenter: Point;
     angle: number;
     text: string;
     fontSize: number;
     lineHeight: number;
-    style: MiddlewareInfoStyle;
+    styles: MiddlewareInfoStyles;
   }
 ) {
-  const { point, rotateCenter, angle, text, style, fontSize, lineHeight } = opts;
-  const { textBackground, textColor } = style;
+  const { point, rotateCenter, angle, text, styles, fontSize, lineHeight } = opts;
+  const { textBackground, textColor } = styles;
 
   rotateByCenter(ctx, angle, rotateCenter, () => {
     ctx.$setFont({
       fontWeight: '300',
       fontSize,
-      fontFamily
+      fontFamily,
     });
     const padding = (lineHeight - fontSize) / 2;
     const textWidth = ctx.$undoPixelRatio(ctx.measureText(text).width);
     const bgStart = {
       x: point.x,
-      y: point.y
+      y: point.y,
     };
     const bgEnd = {
       x: bgStart.x + textWidth + padding * 2,
-      y: bgStart.y + fontSize + padding
+      y: bgStart.y + fontSize + padding,
     };
     const textStart = {
       x: point.x + padding,
-      y: point.y
+      y: point.y,
     };
     ctx.setLineDash([]);
     ctx.fillStyle = textBackground;

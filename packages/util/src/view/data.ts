@@ -1,4 +1,4 @@
-import type { Data, ElementAssets, Elements, ElementType, Element, LoadItemMap } from '@idraw/types';
+import type { Data, MaterialAssets, MaterialType, StrictMaterial, LoadItemMap } from '@idraw/types';
 import { createAssetId, createUUID, isAssetId } from '../tool/uuid';
 
 export function deepClone<T = any>(target: T): T {
@@ -28,27 +28,27 @@ export function deepClone<T = any>(target: T): T {
   return _clone(target) as T;
 }
 
-export function deepCloneElement<T extends Element = Element>(element: T): T {
-  const elem = deepClone(element);
-  const _resetUUID = (e: Element) => {
-    e.uuid = createUUID();
-    if (e.type === 'group' && (e as Element<'group'>).detail.children) {
-      (e as Element<'group'>).detail.children.forEach((child) => {
+export function deepCloneMaterial<T extends StrictMaterial = StrictMaterial>(material: T): T {
+  const mtrl = deepClone(material);
+  const _resetUUID = (e: StrictMaterial) => {
+    e.id = createUUID();
+    if (e.type === 'group' && (e as StrictMaterial<'group'>).children) {
+      (e as StrictMaterial<'group'>).children.forEach((child) => {
         _resetUUID(child);
       });
     }
   };
-  _resetUUID(elem);
-  return elem;
+  _resetUUID(mtrl);
+  return mtrl;
 }
 
 export function deepCloneData(data: Data): Data {
-  const { elements, ...restData } = data;
+  const { materials, ...restData } = data;
   return {
     ...deepClone(restData),
     ...{
-      elements: elements.map((elem) => deepCloneElement(elem))
-    }
+      materials: materials.map((mtrl) => deepCloneMaterial(mtrl)),
+    },
   };
 }
 
@@ -63,135 +63,135 @@ function is(target: any): string {
 }
 
 export function sortDataAsserts(data: Data, opts?: { clone?: boolean }): Data {
-  const assets: ElementAssets = data.assets || {};
+  const assets: MaterialAssets = data.assets || {};
   let sortedData = data;
   if (opts?.clone === true) {
     sortedData = deepClone(data);
   }
-  const _scanElements = (elems: Elements) => {
-    elems.forEach((elem: Element<ElementType>) => {
-      if (elem.type === 'image' && (elem as Element<'image'>).detail.src) {
-        const src = (elem as Element<'image'>).detail.src;
-        const assetUUID = createAssetId(src, elem.uuid);
+  const _scanMaterials = (mtrls: StrictMaterial[]) => {
+    mtrls.forEach((mtrl: StrictMaterial<MaterialType>) => {
+      if (mtrl.type === 'image' && (mtrl as StrictMaterial<'image'>).href) {
+        const href = (mtrl as StrictMaterial<'image'>).href;
+        const assetUUID = createAssetId(href, mtrl.id);
         if (!assets[assetUUID]) {
           assets[assetUUID] = {
             type: 'image',
-            value: src
+            value: href,
           };
         }
-        (elem as Element<'image'>).detail.src = assetUUID;
-      } else if (elem.type === 'svg') {
-        const svg = (elem as Element<'svg'>).detail.svg;
-        const assetUUID = createAssetId(svg, elem.uuid);
+        (mtrl as StrictMaterial<'image'>).href = assetUUID;
+      } else if (mtrl.type === 'svgCode') {
+        const svg = (mtrl as StrictMaterial<'svgCode'>).code;
+        const assetUUID = createAssetId(svg, mtrl.id);
         if (!assets[assetUUID]) {
           assets[assetUUID] = {
-            type: 'svg',
-            value: svg
+            type: 'svgCode',
+            value: svg,
           };
         }
-        (elem as Element<'svg'>).detail.svg = assetUUID;
-      } else if (elem.type === 'html') {
-        const html = (elem as Element<'html'>).detail.html;
-        const assetUUID = createAssetId(html, elem.uuid);
+        (mtrl as StrictMaterial<'svgCode'>).code = assetUUID;
+      } else if (mtrl.type === 'foreignObject') {
+        const html = (mtrl as StrictMaterial<'foreignObject'>).content;
+        const assetUUID = createAssetId(html, mtrl.id);
         if (!assets[assetUUID]) {
           assets[assetUUID] = {
-            type: 'html',
-            value: html
+            type: 'foreignObject',
+            value: html,
           };
         }
-        (elem as Element<'html'>).detail.html = assetUUID;
-      } else if (elem.type === 'group' && Array.isArray((elem as Element<'group'>).detail.children)) {
-        const groupAssets = (elem as Element<'group'>).detail.assets || {};
+        (mtrl as StrictMaterial<'foreignObject'>).content = assetUUID;
+      } else if (mtrl.type === 'group' && Array.isArray((mtrl as StrictMaterial<'group'>).children)) {
+        const groupAssets = (mtrl as StrictMaterial<'group'>).assets || {};
         Object.keys(groupAssets).forEach((assetId) => {
           if (!assets[assetId]) {
             assets[assetId] = groupAssets[assetId];
           }
         });
-        delete (elem as Element<'group'>).detail.assets;
-        _scanElements((elem as Element<'group'>).detail.children);
+        delete (mtrl as StrictMaterial<'group'>).assets;
+        _scanMaterials((mtrl as StrictMaterial<'group'>).children);
       }
     });
   };
 
-  _scanElements(sortedData.elements);
+  _scanMaterials(sortedData.materials);
   sortedData.assets = assets;
   return sortedData;
 }
 
 export function filterCompactData(data: Data, opts?: { loadItemMap?: LoadItemMap }) {
-  const assets: ElementAssets = data.assets || {};
+  const assets: MaterialAssets = data.assets || {};
   const sortedData = deepClone(data);
   const loadItemMap = opts?.loadItemMap || {};
 
-  const _scanElements = (elems: Elements) => {
-    elems.forEach((elem: Element<ElementType>) => {
-      if (elem.type === 'image' && (elem as Element<'image'>).detail.src) {
-        const src = (elem as Element<'image'>).detail.src;
-        if (isAssetId(src) && !assets[src] && loadItemMap[src] && typeof loadItemMap[src]?.source === 'string') {
-          assets[src] = {
+  const _scanMaterials = (mtrls: StrictMaterial[]) => {
+    mtrls.forEach((mtrl: StrictMaterial<MaterialType>) => {
+      if (mtrl.type === 'image' && (mtrl as StrictMaterial<'image'>).href) {
+        const href = (mtrl as StrictMaterial<'image'>).href;
+        if (isAssetId(href) && !assets[href] && loadItemMap[href] && typeof loadItemMap[href]?.source === 'string') {
+          assets[href] = {
             type: 'image',
-            value: loadItemMap[src].source as string
+            value: loadItemMap[href].source as string,
           };
-        } else if (!assets[src]) {
-          const assetUUID = createAssetId(src, elem.uuid);
+        } else if (!assets[href]) {
+          const assetUUID = createAssetId(href, mtrl.id);
           if (!assets[assetUUID]) {
             assets[assetUUID] = {
               type: 'image',
-              value: src
+              value: href,
             };
           }
-          (elem as Element<'image'>).detail.src = assetUUID;
+          (mtrl as StrictMaterial<'image'>).href = assetUUID;
         }
-      } else if (elem.type === 'svg') {
-        const svg = (elem as Element<'svg'>).detail.svg;
+      } else if (mtrl.type === 'svgCode') {
+        const svg = (mtrl as StrictMaterial<'svgCode'>).code;
 
         if (isAssetId(svg) && !assets[svg] && loadItemMap[svg] && typeof loadItemMap[svg]?.source === 'string') {
           assets[svg] = {
-            type: 'svg',
-            value: loadItemMap[svg].source as string
+            type: 'svgCode',
+            value: loadItemMap[svg].source as string,
           };
         } else if (!assets[svg]) {
-          const assetUUID = createAssetId(svg, elem.uuid);
+          const assetUUID = createAssetId(svg, mtrl.id);
           if (!assets[assetUUID]) {
             assets[assetUUID] = {
-              type: 'svg',
-              value: svg
+              type: 'svgCode',
+              value: svg,
             };
           }
-          (elem as Element<'svg'>).detail.svg = assetUUID;
+          (mtrl as StrictMaterial<'svgCode'>).code = assetUUID;
         }
-      } else if (elem.type === 'html') {
-        const html = (elem as Element<'html'>).detail.html;
+      } else if (mtrl.type === 'foreignObject') {
+        const html = (mtrl as StrictMaterial<'foreignObject'>).content;
 
         if (isAssetId(html) && !assets[html] && loadItemMap[html] && typeof loadItemMap[html]?.source === 'string') {
           assets[html] = {
-            type: 'html',
-            value: loadItemMap[html].source as string
+            type: 'foreignObject',
+            value: loadItemMap[html].source as string,
           };
         } else if (!assets[html]) {
-          const assetUUID = createAssetId(html, elem.uuid);
+          const assetUUID = createAssetId(html, mtrl.id);
           if (!assets[assetUUID]) {
             assets[assetUUID] = {
-              type: 'html',
-              value: html
+              type: 'foreignObject',
+              value: html,
             };
           }
-          (elem as Element<'html'>).detail.html = assetUUID;
+          (mtrl as StrictMaterial<'foreignObject'>).content = assetUUID;
         }
-      } else if (elem.type === 'group' && Array.isArray((elem as Element<'group'>).detail.children)) {
-        const groupAssets = (elem as Element<'group'>).detail.assets || {};
+      } else if (mtrl.type === 'group' && Array.isArray((mtrl as StrictMaterial<'group'>).children)) {
+        const groupAssets = (mtrl as StrictMaterial<'group'>).assets || {};
         Object.keys(groupAssets).forEach((assetId) => {
           if (!assets[assetId]) {
             assets[assetId] = groupAssets[assetId];
           }
         });
-        delete (elem as Element<'group'>).detail.assets;
-        _scanElements((elem as Element<'group'>).detail.children);
+        delete (mtrl as StrictMaterial<'group'>).assets;
+        _scanMaterials((mtrl as StrictMaterial<'group'>).children);
       }
     });
   };
 
-  _scanElements(sortedData.elements);
+  _scanMaterials(sortedData.materials);
   sortedData.assets = assets;
   return sortedData;
 }

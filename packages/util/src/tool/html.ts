@@ -3,36 +3,36 @@ import { HTMLNode } from '@idraw/types';
 
 const attrRegExp = /\s([^'"/\s><]+?)[\s/>]|([^\s=]+)=\s?(".*?"|'.*?')/g;
 // eslint-disable-next-line no-useless-escape
-const elemRegExp = /<[a-zA-Z0-9\-\!\/](?:"[^"]*"|'[^']*'|[^'">])*>/g;
+const mtrlRegExp = /<[a-zA-Z0-9\-\!\/](?:"[^"]*"|'[^']*'|[^'">])*>/g;
 const whitespaceReg = /^\s*$/;
 
-const singleElements: Record<string, boolean> = {};
+const singleMaterials: Record<string, boolean> = {};
 
-function parseElement(element: string): HTMLNode {
+function parseMaterial(material: string): HTMLNode {
   const node: HTMLNode = {
-    type: 'element',
+    type: 'material',
     name: '',
     isVoid: false,
     attributes: {},
-    children: []
+    children: [],
   };
 
-  const elementMatch = element.match(/<\/?([^\s]+?)[/\s>]/);
-  if (elementMatch) {
-    node.name = elementMatch[1];
-    if (singleElements[elementMatch[1]] || element.charAt(element.length - 2) === '/') {
+  const materialMatch = material.match(/<\/?([^\s]+?)[/\s>]/);
+  if (materialMatch) {
+    node.name = materialMatch[1];
+    if (singleMaterials[materialMatch[1]] || material.charAt(material.length - 2) === '/') {
       node.isVoid = true;
     }
 
     if (node.name.startsWith('!--')) {
-      const endIndex = element.indexOf('-->');
+      const endIndex = material.indexOf('-->');
       return {
         type: 'comment',
         name: null,
         attributes: {},
         children: [],
         isVoid: false,
-        comment: endIndex !== -1 ? element.slice(4, endIndex) : ''
+        comment: endIndex !== -1 ? material.slice(4, endIndex) : '',
       };
     }
   }
@@ -40,7 +40,7 @@ function parseElement(element: string): HTMLNode {
   const reg = new RegExp(attrRegExp);
   let result = null;
   while (true) {
-    result = reg.exec(element);
+    result = reg.exec(material);
 
     if (result === null) {
       break;
@@ -72,36 +72,36 @@ export function parseHTML(html: string) {
   let current: HTMLNode | HTMLNode[];
   let level = -1;
   let inComponent = false;
-  html.replace(elemRegExp, (element: string, index: number) => {
+  html.replace(mtrlRegExp, (material: string, index: number) => {
     if (inComponent && !Array.isArray(current)) {
-      if (element !== '</' + current.name + '>') {
-        return element;
+      if (material !== '</' + current.name + '>') {
+        return material;
       } else {
         inComponent = false;
       }
     }
-    const isOpen = element.charAt(1) !== '/';
-    const isComment = element.startsWith('<!--');
-    const start = index + element.length;
+    const isOpen = material.charAt(1) !== '/';
+    const isComment = material.startsWith('<!--');
+    const start = index + material.length;
     const nextChar = html.charAt(start);
     let parent;
 
     if (isComment) {
-      const comment: HTMLNode = parseElement(element);
+      const comment: HTMLNode = parseMaterial(material);
 
       if (level < 0) {
         result.push(comment);
-        return element;
+        return material;
       }
       parent = arr[level];
       parent.children.push(comment);
-      return element;
+      return material;
     }
 
     if (isOpen) {
       level++;
 
-      current = parseElement(element);
+      current = parseMaterial(material);
       if (!current.isVoid && !inComponent && nextChar && nextChar !== '<') {
         const content = html.slice(start, html.indexOf('<', start));
         if (content.trim()) {
@@ -111,7 +111,7 @@ export function parseHTML(html: string) {
             attributes: {},
             children: [],
             isVoid: false,
-            textContent: content.trim()
+            textContent: content.trim(),
           });
         }
       }
@@ -130,7 +130,7 @@ export function parseHTML(html: string) {
     }
 
     if (!isOpen || (!Array.isArray(current) && current.isVoid)) {
-      if (level > -1 && !Array.isArray(current) && (current.isVoid || current.name === element.slice(2, -1))) {
+      if (level > -1 && !Array.isArray(current) && (current.isVoid || current.name === material.slice(2, -1))) {
         level--;
         current = level === -1 ? result : arr[level];
       }
@@ -151,13 +151,13 @@ export function parseHTML(html: string) {
               attributes: {},
               children: [],
               isVoid: false,
-              textContent: content.trim()
+              textContent: content.trim(),
             });
           }
         }
       }
     }
-    return element;
+    return material;
   });
   return result;
 }
@@ -177,7 +177,7 @@ function stringify(buff: string, htmlNode: HTMLNode): string {
   switch (htmlNode.type) {
     case 'text':
       return buff + htmlNode.textContent;
-    case 'element':
+    case 'material':
       buff +=
         '<' +
         htmlNode.name +
