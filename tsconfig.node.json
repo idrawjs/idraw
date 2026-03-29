@@ -3,7 +3,7 @@
     "module": "commonjs",
     "target": "ES6",
     "lib": ["ES6", "DOM"],
-    "moduleResolution": "Node",
+    "moduleResolution": "bundler",
     "strict": false,
     "jsx": "preserve",
     "sourceMap": true,
@@ -11,7 +11,8 @@
     "esModuleInterop": true,
     "importHelpers": true,
     "allowJs": true,
-    "composite": true
+    "composite": true,
+    "types": ["node"]
   },
   "include": [
     "scripts/",
