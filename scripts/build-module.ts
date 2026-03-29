@@ -1,6 +1,6 @@
 import ts from 'typescript';
 import type { CompilerOptions } from 'typescript';
-import { Project } from 'ts-morph';
+import { Project, ScriptTarget, ModuleResolutionKind } from 'ts-morph';
 import type { CompilerOptions as TsMorphCompilerOptions } from 'ts-morph';
 import path from 'path';
 import fs from 'fs';
@@ -59,8 +59,8 @@ function buildPackage(dirName: string) {
       noUnusedLocals: true,
       declaration: true,
       sourceMap: false,
-      target: ts.ScriptTarget.ES2015,
-      moduleResolution: ts.ModuleResolutionKind.NodeJs,
+      target: ScriptTarget.ES2015,
+      moduleResolution: ModuleResolutionKind.NodeJs,
       allowJs: false,
       strict: true,
       experimentalDecorators: true,
@@ -70,16 +70,16 @@ function buildPackage(dirName: string) {
       // lib: ['ES2016', 'dom'],
       outDir: joinPackagePath(dirName, 'dist', 'esm'),
       rootDir: joinPackagePath(dirName, 'src'),
-      skipLibCheck: true
+      skipLibCheck: true,
     };
     const project = new Project({
-      compilerOptions
+      compilerOptions,
       // tsConfigFilePath: joinProjectPath('tsconfig.web.json')
     });
 
     const program = ts.createProgram({
       rootNames: targetFiles,
-      options: compilerOptions as CompilerOptions
+      options: compilerOptions as CompilerOptions,
     });
 
     // const diagnostics = ts.getPreEmitDiagnostics(program);

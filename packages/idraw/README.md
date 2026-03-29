@@ -87,19 +87,17 @@ const idraw = new iDraw(
     devicePixelRatio: 1,
   }
 );
-idraw.addElement({
+idraw.addMaterial({
   name: "rect-1",
+  type: "rect",
   x: 140,
   y: 120,
-  w: 200,
-  h: 100,
-  type: "rect",
-  detail: {
-    background: "#f7d3c1",
-    borderRadius: 20,
-    borderWidth: 4,
-    borderColor: "#ff6032",
-  },
+  width: 200,
+  height: 100,
+  fill: "#f7d3c1",
+  strokeWidth: 4,
+  stroke: "#ff6032",
+  cornerRadius: 20,
 });
 ```
 
@@ -117,19 +115,16 @@ function Demo() {
       height: 400, 
       devicePixelRatio: 1,
     });
-    idraw.addElement({
+    idraw.addMaterial({
       name: "rect-001",
       x: 140,
       y: 120,
-      w: 200,
-      h: 100,
-      type: "rect",
-      detail: {
-        background: "#f7d3c1",
-        borderRadius: 20,
-        borderWidth: 4,
-        borderColor: "#ff6032",
-      },
+      width: 200,
+      height: 100,
+      fill: "#f7d3c1",
+      strokeWidth: 4,
+      stroke: "#ff6032",
+      cornerRadius: 20,
     })
   }, []);
 
@@ -157,19 +152,16 @@ onMounted(() => {
     height: 400, 
     devicePixelRatio: 1,
   });
-  idraw.addElement({
+  idraw.addMaterial({
     name: "rect-001",
     x: 140,
     y: 120,
-    w: 200,
-    h: 100,
-    type: "rect",
-    detail: {
-      background: "#f7d3c1",
-      borderRadius: 20,
-      borderWidth: 4,
-      borderColor: "#ff6032",
-    },
+    width: 200,
+    height: 100,
+    fill: "#f7d3c1",
+    strokeWidth: 4,
+    stroke: "#ff6032",
+    cornerRadius: 20,
   })
 })
 </script>
@@ -181,10 +173,11 @@ onMounted(() => {
 We appreciate your help!
 
 To contribute, please follow the steps:
+ 
 
 - `git clone git@github.com:idrawjs/idraw.git`
 - `cd idraw`
 - `pnpm i`
 - `npm run dev`
-
+ 
  

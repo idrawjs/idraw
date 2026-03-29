@@ -33,10 +33,10 @@ export function getDefaultStorage(): IDrawStorage {
     enableTextEdit: false,
     enableDrag: false,
 
-    enableRuler: true,
-    enableScroll: true,
-    enableInfo: true,
-    enableScale: true,
+    enableRuler: false,
+    enableScroll: false,
+    enableInfo: false,
+    enableScale: false,
 
     middlewareStyles: {
       selector: {},
