@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-assignment */
 import type {
   IDrawMode,
   IDrawModeEventMap,
